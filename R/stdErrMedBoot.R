@@ -1,0 +1,22 @@
+#' Standard eror of median by boot-strap
+#'
+#' \code{stdErrMedBoot} estimate standard eror of median by boot-strap approach. 
+#' Note: requires package \href{https://CRAN.R-project.org/package=boot}{boot}
+#'
+#' @param x (numeric) vector to estimate median and it's standard error
+#' @param nBoot (integer) number for iterations
+#' @return (numeric) vector with estimated standard error
+#' @seealso \code{\link[boot]{boot}}
+#' @examples
+#' set.seed(2014); ra1 <- c(rnorm(9,2,1),runif(8,1,2))
+#' rat1 <- ratioAllComb(ra1[1:9],ra1[10:17])
+#' median(rat1); stdErrMedBoot(rat1)
+#' @export
+stdErrMedBoot <- function(x,nBoot=99) {  
+  ## uses package boot
+  ## require(boot)
+  median.fun <- function(dat,indices) stats::median(dat[indices],na.rm=TRUE)
+  out <- try(stats::sd(boot::boot(data=x, statistic=median.fun, R=nBoot)$t))
+  if(class(out) == "try-error") stop(" package 'boot' may be missing !")
+  out }
+ 
