@@ -1,13 +1,15 @@
 #' Filter for unique elements
 #' 
 #' This function aims to identify and remove duplicated elements in list and maintaining the list-structure in the output. 
-#' \code{filtSizeUniq}  filters 'x' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'x') and of character length. 
-#' Note : This functions is fairly slow with long lists !!
-#' @param x list of character-vectors or character-vector
-#' @param ref (character) if not NULL used as alternative 'reference' for considering elements of 'x' as unique
-#' @param minSize (integer) minimum number of characters
+#' \code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length. 
+#'
+#' @param lst list of character-vectors or character-vector
+#' @param ref (character) optional alternative 'reference', if not \code{NULL} used in addition to 'lst' for considering elements of 'lst' as unique
+#' @param minSize (integer) minimum number of characters, if \code{NULL} set to 0
 #' @param maxSize (integer) maximum number of characters
-#' @param filtUnique (logical) if TRUE return unique-only strings, if FALSE return only repeated strings
+#' @param filtUnique (logical) if \code{TRUE} return unique-only character-strings
+#' @param byProt (logical) if \code{TRUE} organize output as list (by names of input, eg protein-names) - if 'lst' was named list
+#' @param inclEmpty (logical) optional including empty list-elements when all elements have been filtered away - if 'lst' was named list 
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return list of filtered input
@@ -18,24 +20,49 @@
 #' filtSizeUniq(list(A="a",B=c("b","bb","c"),D=c("dd","d","ddd","c")),ref=c(letters[c(1:26,1:3)],
 #'   "dd","dd","bb","ddd"),filtUn=TRUE,minSi=NULL)  # a,b,c,dd repeated 
 #' @export
-filtSizeUniq <- function(x,ref=NULL,minSize=5,maxSize=36,filtUnique=TRUE,silent=TRUE,callFrom=NULL) {
-  fxNa <- .composeCallName(callFrom,newNa="filtSizeUniq")
-  if(length(ref) <1) ref <- x
-  if(length(minSize)==1 & length(maxSize)==1) x <- lapply(x,.filtSize,min=minSize,max=maxSize)
-  chNch <- nchar(unlist(x,use.names=FALSE))
-  if(all(chNch <2)) stop(" check input x and/or min/max filtering : nothing left ...")
-  ref <- table(if(is.list(ref)) unlist(ref) else ref)
-  ref <- names(ref)[which(if(filtUnique) ref <2 else ref >1)]                 # switch unique only or multi-hit
-  if(length(ref) <1) stop(" nothing ",if(filtUnique) "unique" else "repeated"," !!")
-  xLe <- sapply(x,length)
-  names(xLe) <- names(x)
-  uni <- unlist(x,use.names=FALSE)                    # names of unlist() not usable since counter gets added wo separator
-  chUni <- uni %in% ref
-  if(filtUnique) uni[which(if(filtUnique) !chUni else chUni)] <- NA
-  if(filtUnique){ couUni <- table(chUni); message(" filtering  ",couUni[1]," unique and ",couUni[2]," non-unique")}
-  out <- tapply(uni,rep(names(xLe),xLe),function(y) as.character(naOmit(y)))      
-  out }
-
+filtSizeUniq <- function(lst,ref=NULL,minSize=6,maxSize=36,filtUnique=TRUE,byProt=TRUE,inclEmpty=TRUE,silent=FALSE,callFrom=NULL) {
+  ## filter protein sequences for size/length and for unique
+  fxNa <- wrMisc::.composeCallName(callFrom,newNa="filtSizeUniq")
+  chNa <- grep("\\.$", names(utils::head(lst)))                                   # check for attached tailing '.'
+  if(!is.list(lst)) {byProt <- FALSE; inclEmpty <- FALSE}
+  if(length(chNa) <= min(2,length(lst))) names(lst) <- paste(names(lst),".",sep="")
+  pep <- unlist(lst)
+  chNa <- max(sapply(lst,length),na.rm=TRUE)
+  if(chNa >1) names(pep) <- sub("\\.$","",names(pep))                 # remove tailing '.' of names if list-element has length=1
+  nPep <- length(pep)
+  nAA <- nchar(pep)
+  if(length(minSize) <1) minSize <- 0
+  if(length(maxSize) <1) {maxSize <- 40
+    if(!silent) message(fxNa," can't understant 'maxSize', setting to default=40")}
+  ## filter by size
+  chAA <- nAA >= minSize & nAA <= maxSize
+  if(any(!chAA)) {pep <- if(all(!chAA)) NULL else pep[which(chAA)]
+    if(!silent) message(fxNa,nPep - length(pep)," out of ",nPep," peptides beyond range (",minSize,"-",maxSize,")")}
+  ## filter unique /reundant
+  if(filtUnique) {
+    nPe2 <- length(pep)
+    if(length(ref) >0) {pep0 <- pep; pep <- c(pep,unique(unlist(ref))) } else pep0 <- NULL
+    chDup <- duplicated(pep,fromLast=FALSE)
+    if(any(chDup)) {
+      chDu2 <- duplicated(pep,fromLast=TRUE)
+      if(length(ref) >0) {pep <- pep0; chDup <- chDup[1:nPe2]; chDu2 <- chDu2[1:nPe2]} 
+      pep <- list(unique=pep[which(!chDu2 & !chDup)],allRedund=pep[which(!(!chDu2 & !chDup))], firstOfRed=pep[which(chDu2 & !chDup)])
+      if(!silent) message(fxNa,length(pep$allRedund)," out of ",nPe2," peptides redundant")
+    } else {if(length(ref) >0) {pep <- pep0; chDup <- chDup[1:nPe2]}}   
+  }
+  ##  
+  if(byProt) { fac <- sub("\\.[[:digit:]]+$","",names(if(filtUnique) pep$unique else pep))
+    pep <- tapply(if(filtUnique) pep$unique else pep,fac,function(x) x) 
+    if(length(pep) <1) pep <- character() 
+    if(inclEmpty) { iniPro <- sub("\\.$","",names(lst)) 
+      curPro <- names(pep) 
+      newNo <- sum(!iniPro %in% curPro)
+      if(newNo >0){ pep[length(curPro)+(1:newNo)] <- lapply(1:newNo,function(x) character())
+        names(pep)[length(curPro)+(1:newNo)] <- iniPro[which(!iniPro %in% curPro)]}
+    }
+  }
+  pep }
+  
 #' @export
 .filtSize <- function(x,minSize=5,maxSize=36) {nCha <- nchar(x); x[which(nCha >= minSize & nCha <= maxSize)]}      # filter by size (no of characters)
    

@@ -21,7 +21,7 @@ tableToPlot(matr, colPos = c(0.05, 0.35, 0.41, 0.56), useCex = 0.7,
 
 \item{useCol}{color specification for text (may be different for each column)}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
@@ -32,6 +32,8 @@ NULL (no R-object returned), print 'plot' in current device only
 \code{tableToPlot} prints all columns of matrix in plotting region for easier inclusion to reports (default values are set to work for output as A4-sized pdf).
 This function was made for integrating listings of text to graphical output to devices like \code{png}, \code{jpeg} or \code{pdf}. 
 This function was initially designed for listings with small/medium 1st col (eg couner or index), 2nd & 3rd col small and long 3rd col (like file paths).
+Obviously, the final number of lines one can pack and still read correctly into the graphical output depends on the size of the device 
+(on a pdf of size A4 one can pack up to apr. 11O lines). 
 Of ourse, \code{\link[utils]{Sweave}}, combined with LaTeX, provides a powerful alternative for wrapping text to pdf-output (and further combining text and graphics).
 Note: The final result on pdf devices may vary depending on screen-size (ie with of current device), the parameters 'colPos' and 'titOffS' may need some refinements.
 Note: In view of typical page/figure layouts like A4, the plotting region will be split to avoid too wide spacing between rows with less than 30 rows.

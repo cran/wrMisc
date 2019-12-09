@@ -30,7 +30,7 @@ convMatr2df <- function(mat,addIniNa=TRUE,duplTxtSep="_",silent=FALSE,callFrom=N
   iniNa <- rownames(mat)
   chNR <- length(iniNa) > length(unique(iniNa)) & length(iniNa) >0              # non-redundant ?
   if(is.data.frame(mat)) {y <- rep(F,ncol(mat))
-    for(i in 1:ncol(mat)) y[i] <- class(mat[,i]) 
+    for(i in 1:ncol(mat)) y[i] <- class(mat[,i])[1] 
     if(any("factor" %in% y)) for(i in which(y =="factor")) mat[,i] <- as.character(mat[,i])}
   se <- "(^([0-9]+)|(^[+-][0-9]+)|(^\\.[0-9]+))((\\.[0-9]+)?)(([eE][+-]?[0-9]+)?)$"
   chNum <- apply(mat,2,function(x) length(.mayBeNum(as.character(x),pattern=se)))==nrow(mat)

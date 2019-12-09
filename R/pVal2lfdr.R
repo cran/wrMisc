@@ -22,7 +22,7 @@ pVal2lfdr <- function(x,silent=TRUE,callFrom=NULL) {    ## take vector of p-valu
   if(sum(is.na(x)) >0 & !silent) message(fxNa," omitting ",sum(is.na(x))," NAs !")
   z <- as.numeric(naOmit(x)) 
   z <- try(fdrtool::fdrtool(z, statistic="pvalue",plot=FALSE,verbose=!silent)$lfdr)
-  if(class(z) == "try-error") {message(fxNa," FAILED to calulate lfdr !  (return empty); check if package is 'fdrtool' is installed")
+  if(any(class(z) == "try-error")) {message(fxNa," FAILED to calulate lfdr !  (return empty); check if package is 'fdrtool' is installed")
     return(NULL) } else { z <- as.numeric(z)
     lfdr <- rep(NA,length(x))
     lfdr[!is.na(x)] <- z                          #  for returning NA at place of initial NAs

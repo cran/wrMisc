@@ -19,8 +19,9 @@ Behaviour different to \code{\link[base]{unlist}} when unlisting list of matrixe
 }
 \examples{
 partUnlist(list(list(a=11:12,b=21:24),list(c=101:101,d=201:204)))
-partUnlist(list(c=1:3,L2=matrix(1:4,ncol=2),list(L1=11:12,L2=matrix(21:26,ncol=2))))
-unlist(list(c=1:3,L2=matrix(1:4,ncol=2),list(L1=11:12,L2=matrix(21:26,ncol=2))),rec=FALSE)
+li4 <- list(c=1:3,L2=matrix(1:4,ncol=2),li3=list(L1=11:12,L2=matrix(21:26,ncol=2)))
+partUnlist(li4)
+unlist(li4,rec=FALSE)
 }
 \seealso{
 \code{\link[base]{unlist}}, \code{\link{asSepList}}

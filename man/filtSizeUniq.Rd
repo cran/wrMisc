@@ -4,19 +4,24 @@
 \alias{filtSizeUniq}
 \title{Filter for unique elements}
 \usage{
-filtSizeUniq(x, ref = NULL, minSize = 5, maxSize = 36,
-  filtUnique = TRUE, silent = TRUE, callFrom = NULL)
+filtSizeUniq(lst, ref = NULL, minSize = 6, maxSize = 36,
+  filtUnique = TRUE, byProt = TRUE, inclEmpty = TRUE,
+  silent = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{x}{list of character-vectors or character-vector}
+\item{lst}{list of character-vectors or character-vector}
 
-\item{ref}{(character) if not NULL used as alternative 'reference' for considering elements of 'x' as unique}
+\item{ref}{(character) optional alternative 'reference', if not \code{NULL} used in addition to 'lst' for considering elements of 'lst' as unique}
 
-\item{minSize}{(integer) minimum number of characters}
+\item{minSize}{(integer) minimum number of characters, if \code{NULL} set to 0}
 
 \item{maxSize}{(integer) maximum number of characters}
 
-\item{filtUnique}{(logical) if TRUE return unique-only strings, if FALSE return only repeated strings}
+\item{filtUnique}{(logical) if \code{TRUE} return unique-only character-strings}
+
+\item{byProt}{(logical) if \code{TRUE} organize output as list (by names of input, eg protein-names) - if 'lst' was named list}
+
+\item{inclEmpty}{(logical) optional including empty list-elements when all elements have been filtered away - if 'lst' was named list}
 
 \item{silent}{(logical) suppress messages}
 
@@ -27,8 +32,7 @@ list of filtered input
 }
 \description{
 This function aims to identify and remove duplicated elements in list and maintaining the list-structure in the output. 
-\code{filtSizeUniq}  filters 'x' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'x') and of character length. 
-Note : This functions is fairly slow with long lists !!
+\code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length.
 }
 \examples{
 filtSizeUniq(list(A="a",B=c("b","bb","c"),D=c("dd","d","ddd","c")),filtUn=TRUE,minSi=NULL)

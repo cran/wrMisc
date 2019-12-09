@@ -7,11 +7,11 @@
 lrbind(lst, silent = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{lst}{(list) main input}
+\item{lst}{(list) main input (each list-element should have same number of columns, numeric vectors will be converted to number of columns of other elements)}
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message produced}
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
 matrix or data.frame

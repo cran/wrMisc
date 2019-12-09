@@ -49,7 +49,6 @@ asSepList <- function(y,asNumeric=TRUE,minLen=4,fxArg=NULL,silent=FALSE,callFrom
     chDa <- rep(NA,length(z))
     for(i in 1:length(z)) chDa[i] <- mode(z[[i]])
     chDa <- chDa=="character" & sapply(z,length) > minLen
-    #if(!is.null(fxArg)) chDa <- .checkArgNa(names(z),argNa=fxArg) & chDa
     for(i in which(chDa)) {
      if(!silent) message(fxNa," trying to convert to numeric content of series ",names(z)[i])
      z[[i]] <- convToNum(z[[i]],spaceRemove=TRUE,convert=c(NA,"sparseChar"),remove=NULL,euroStyle=TRUE,sciIncl=TRUE,callFrom=fxNa,silent=silent)}

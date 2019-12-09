@@ -60,7 +60,7 @@ readXlsxBatch <- function(fileNames=NULL,path=".",fileExtension="xlsx",excludeFi
   if(length(useFi) >0) {
     for(i in 1:length(useFi)) {
       tmp <- try(xlsx::read.xlsx(file=useFi[i],sheetIndex=sheetInd))
-      if(class(tmp) == "try-error") message(fxNa," unable to read '",fileNames[i],"''",
+      if("try-error" %in% class(tmp)) message(fxNa," unable to read '",fileNames[i],"''",
         if(i==1) "\n   Check if xlsx package is installed !?!")
       if(checkFormat) {
         ## display messages only for first file (others are presumed to repeat...)

@@ -55,8 +55,8 @@ readCsvBatch <- function(fileNames=NULL,path=".",fileFormat="Eur",checkFormat=TR
   if(!silent) message(fxNa," ready to start reading ",length(fileNames)," files;  expecting header : ", HeaderInData)
   tmp1 <- if(fileFormat !="Eur") try(utils::read.csv(fileNames[1],header=HeaderInData,stringsAsFactors=FALSE)) else NULL
   tmp2 <- if(fileFormat !="US") try(utils::read.csv2(fileNames[1],header=HeaderInData,stringsAsFactors=FALSE)) else NULL
-  cheF <- !c(class(tmp1),class(tmp2)) == "try-error"
-  if(sum(cheF) <1) stop(fxNa,"\n Problem with file format, can't read either as European or US type CSV !!")
+  cheF <- "try-error" %in% c(class(tmp1),class(tmp2)) 
+  if(cheF) stop(fxNa,"\n Problem with file format, can't read either as European or US type CSV !!")
   datDim  <- if(prod(dim(tmp1)) > prod(dim(tmp2))) dim(tmp1) else dim(tmp2)
   if(!silent) message(fxNa," csv-format used ",if(prod(dim(tmp1)) > prod(dim(tmp2))) "'US'" else "'Europe'  with ",datDim[1]," lines & ",datDim[2]," cols")
   datL <- list()

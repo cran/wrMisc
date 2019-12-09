@@ -35,7 +35,7 @@ test2factLimma <- function(datMatr,fac1,fac2,testSynerg=TRUE,testOrientation="="
   if(ncol(datMatr) != length(fac1) | ncol(datMatr) != length(fac2)) stop(msg1)
   datDesign <- if(testSynerg) stats::model.matrix(~ fac1 * fac2) else stats::model.matrix(~ fac1 + fac2)
   datFit <- try(limma::lmFit(datMatr, design=datDesign))                ## Fitting linear models
-  if(class(datFit) == "try-error") message(fxNa," check if package 'limma' is installed !?!")  
+  if("try-error" %in% class(datFit)) message(fxNa," check if package 'limma' is installed !?!")  
   datFit <- limma::eBayes(datFit)                                  ## Adjusting using empirical Bayes
   altHyp <- "two.sided"                                             # default, change only if explicit sign recognized
   if(length(testOrientation) <1) testOrientation <- altHyp
@@ -66,7 +66,7 @@ test2factLimma <- function(datMatr,fac1,fac2,testSynerg=TRUE,testOrientation="="
     if("lfdr" %in% tolower(addResults)) {out$lfdr <- if(is.matrix(out$p.value)) {
       apply(out$p.value,2,pVal2lfdr)} else pVal2lfdr(out$p.value)
      }
-    if(class(datFit$lfdr) == "try-error") {message(fxNa," PROBLEM with calulating lfdr ! ")}
+    if("try-error" %in% class(datFit$lfdr)) {message(fxNa," PROBLEM with calulating lfdr ! ")}
     if("BY" %in% toupper(addResults)) {datFit$BY <- if(length(dim(out$p.value)) >1) {
       apply(datFit$p.value,2,stats::p.adjust,meth="BY")} else stats::p.adjust(out$p.value,meth="BY")
      }

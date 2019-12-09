@@ -146,7 +146,7 @@ searchLinesAtGivenSlope <- function(dat,coeff=1.5,filtExtr=c(0,1),minMaxDistThr=
     dat2 <- as.data.frame(matrix(dat[filt1[which(bestPart$cluster==j)],1:2],ncol=2))
     colnames(dat2) <- c("slope","B")  #LETTERS[1:2]
     tryLm <- try(MASS::rlm(B ~ slope,data=dat2))
-    if(identical(class(tryLm),"try-error")) {
+    if("try-error" %in% class(tryLm)) {
       if(!silent) message(" group ",refCluNo[i],":  problem making robust regression, trying regular regression instead")
       tryLm <- try(stats::lm(B ~ slope,data=dat2))
     }

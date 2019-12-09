@@ -33,7 +33,7 @@ randIndFx <- function(ma,method="ARI",adjSense=TRUE,silent=FALSE,callFrom=NULL){
   maCo <- cbind(x=maCo[upper.tri(maCo)],y=t(maCo)[upper.tri(maCo)])
   maCo <- maCo[order(maCo[,1],maCo[,2]),]                                 # need proper order for upper.tri
   di <- try(apply(maCo,1,function(x) flexclust::comPart(ma[x[1],],ma[x[2],],type=method)))
-  if(class(di)=="try-error") message(fxNa," Problem running flexclust::comPart ! (package might not be installed) class ",class(di)," mode ",mode(di)," ",di)
+  if(any(class(di) == "try-error")) message(fxNa," Problem running flexclust::comPart ! (package might not be installed) class ",class(di)," mode ",mode(di)," ",di)
   out <- matrix(NA,nrow=nrow(ma),ncol=nrow(ma),dimnames=list(rownames(ma),colnames(ma)))
   out[upper.tri(out)] <- rev(di)                    # not used any more by as.dist()
   out[lower.tri(out)] <- di
@@ -43,8 +43,7 @@ randIndFx <- function(ma,method="ARI",adjSense=TRUE,silent=FALSE,callFrom=NULL){
     maX <- max(out,na.rm=TRUE)
     if(mi <0) out <- (out-mi)*maX/(maX-mi)
     orient <- try(stats::cor(t(ma)) >0)
-    if(class(orient) == "try-error" & !silent) {message(fxNa," PROBLEM with calulating cor() ")}
+    if("try-error" %in% class(orient) & !silent) {message(fxNa," PROBLEM with calulating cor() ")}
     out <- as.matrix(out)*(-1 +2*orient) }
-  #attr(res,"method") <- method   # need to check proper functioning
   stats::as.dist(out) }
    

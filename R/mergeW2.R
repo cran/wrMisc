@@ -49,13 +49,15 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
   fxNa <- .composeCallName(callFrom,newNa="mergeW2")
   if(length(unlist(chInp)) > length(unique(unlist(chInp)))) stop(fxNa,"Problem with redundant names in (predefined/custom) 'inputNamesLst'")
   if(length(inp) <1) stop(fxNa," No valid entries !")
-  cheCla <- sapply(inp,class)
-  if(debug) message(fxNa," class of arguments :  ",pasteC(cheCla))
-  if("MArrayLM" %in% cheCla) {
-    tmp <- inp[[which(cheCla == "MArrayLM")]]
+  ## note: potential problem with multiple classes per objet
+  cheCla <- lapply(inp,class)
+  cheCla2 <- sapply(cheCla,paste,collapse=" ")
+  if(debug) message(fxNa," class of arguments :  ",pasteC(cheCla2))
+  if("MArrayLM" %in% unlist(cheCla)) {
+    tmp <- inp[[which(grep("MArrayLM",cheCla2))]]
     if(!silent) message(fxNa,"Found 'MArrayLM'-object with ",length(names(tmp))," types of data for ",length(tmp)," elements/genes")
     tm2 <- .convertNa(names(tmp),chInp)
-    if(length(naOmit(tm2)) >length(unique(naOmit(tm2)))) {
+    if(length(naOmit(tm2)) > length(unique(naOmit(tm2)))) {
       tm2ta <- table(naOmit(tm2))
       msg <- c(fxNa,"PROBLEM : multiple names of MArrayLM-obj do match to (single) type of data searched '")
       for(i in which(tm2ta >1)) {
@@ -67,7 +69,8 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
     if(sum(!is.na(tm2)) >0) {names(tmp)[!is.na(tm2)] <- naOmit(tm2)            # set names of interest in MArray-obj to standard names
       if(!silent) message(fxNa,"Resetting names in 'MArrayLM'-obj to standardized names") }
     if(length(inp) >1) {
-      chLe <- cheCla != "MArrayLM" & sapply(inp,length) >0 & !is.na(.convertNa(names(inp),chInp))
+      ## regular case (not 'MArrayLM' class)
+      chLe <- length(grep("MArrayLM",cheCla2)) <1 & sapply(inp,length) >0 & !is.na(.convertNa(names(inp),chInp))
       inp2 <- if(sum(chLe) >0) inp[which(chLe)] else NULL
     } else inp2 <- NULL
     inp <- list()
@@ -110,10 +113,15 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
     names(inp) <- names(chInp)[1:length(inp)]
     txt <- "CAUTION: arguments are given without names, PRESUME same order of arguments as given in 'inputNamesLst' ! ie "
     if(!silent) message(fxNa,txt,pasteC(names(inp),quoteC="'")) }
-  if(any(cheCla =="list")) {                         # if lists (still) present in 'lst': try to bring elements searched down one level
-    for(i in which(cheCla =="list")) {               # select list elements potentially containing elements to extract
-      useEl <- which(names(inp[[i]]) %in% unlist(cheCla))
-      if(length(useEl) >0) for(j in 1:length(useEl)) {inp[[i]][[length(inp)+1]] <- inp[[i]][[useEl[j]]]; inp[[i]] <- inp[[i]][-1*useEl[j]]} }
+  cheCla2 <- sapply(cheCla,paste,collapse=" ")
+  chLis <- grep("list",cheCla2)
+  if(length(chLis) >0) {                         # if lists (still) present in 'lst': try to bring elements searched down one level
+    for(i in chLis) {               # select list elements potentially containing elements to extract
+      useEl <- which( sapply(names(inp[[i]]) %in% chInp))
+      ## note : bringing multiple elements dow one level (and elim initial)
+      if(length(useEl) >0) {
+        for(j in 1:length(useEl)) inp[[length(inp)+1]] <- inp[[i]][[j]]
+        inp <- inp[-i] }}
     if(debug) message(fxNa,"revised (list) names(inp) ",pasteC(names(inp)))
   }
   ## check for 1st input element matching (Mval essential), in case of merge keep names of 1st (Mval)

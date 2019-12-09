@@ -3,6 +3,8 @@
 #' \code{tableToPlot} prints all columns of matrix in plotting region for easier inclusion to reports (default values are set to work for output as A4-sized pdf).
 #' This function was made for integrating listings of text to graphical output to devices like \code{png}, \code{jpeg} or \code{pdf}. 
 #' This function was initially designed for listings with small/medium 1st col (eg couner or index), 2nd & 3rd col small and long 3rd col (like file paths).
+#' Obviously, the final number of lines one can pack and still read correctly into the graphical output depends on the size of the device 
+#' (on a pdf of size A4 one can pack up to apr. 11O lines). 
 #' Of ourse, \code{\link[utils]{Sweave}}, combined with LaTeX, provides a powerful alternative for wrapping text to pdf-output (and further combining text and graphics).
 #' Note: The final result on pdf devices may vary depending on screen-size (ie with of current device), the parameters 'colPos' and 'titOffS' may need some refinements.
 #' Note: In view of typical page/figure layouts like A4, the plotting region will be split to avoid too wide spacing between rows with less than 30 rows. 
@@ -12,10 +14,11 @@
 #' @param useAdj (numeric) left/cneter/right alignment for text (may be different for each column)
 #' @param useCol color specification for text (may be different for each column)
 #' @param titOffS (numeric) offset for title line (ralive to 'colPos')
-#' @param silent (logical) suppres messages
+#' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return NULL (no R-object returned), print 'plot' in current device only
 #' @seealso \code{\link[utils]{Sweave}} for more flexible framework
+#' @importFrom graphics par
 #' @examples
 #' ## as example let's make a listing of file-names and associated parameters in current directory
 #' mat <- dir()

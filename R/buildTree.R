@@ -34,7 +34,7 @@ buildTree <- function(disDat,startFr=NULL,posCo=c("beg","end"),silent=FALSE,call
   if(length(chSlash) >0) message(fxNa,": TROUBLE ahead, names of nodes should NOT contain '/' !!")
   disDat <- cbind(disDat[,1:2],le=disDat[,2]-disDat[,1]+1)            # add col for length # if(ncol(disDat)==2)   
   setX <- try(data.tree::Node$new("_Root_",len=0))  # virtual node as generuic root,  need to avoid reserved names (see NODE_RESERVED_NAMES_CONST)
-  if(any(class(setX) == "try-error")) stop(fxNa,": package 'data.tree' missing !")
+  if("try-error" %in% class(setX)) stop(fxNa,": package 'data.tree' missing !")
   ## check for dupl
   chDup <- duplicated(paste(disDat[,1],disDat[,2],sep="_"),fromLast=FALSE)
   names(chDup) <- rownames(disDat)
@@ -54,7 +54,7 @@ buildTree <- function(disDat,startFr=NULL,posCo=c("beg","end"),silent=FALSE,call
   names(rootBase) <- rootBaseNa
   ## check startFr
   startFr <- if(is.null(startFr)) rootBase[1] else try(as.integer(startFr))
-  if(any(class(startFr) == "try-error")) stop(fxNa,": 'startFr' should be NULL or integer (of length 1) !")  
+  if("try-error" %in% class(startFr)) stop(fxNa,": 'startFr' should be NULL or integer (of length 1) !")  
   if(!startFr %in% rootBase) { if(!silent) message(fxNa,": choice of 'startFr' is not close to root, resetting to ",rootBase[1]," ('",names(rootBase)[1],"')")
     startFr <- rootBase[1] } 
   names(startFr) <- rownames(disDat)[startFr]

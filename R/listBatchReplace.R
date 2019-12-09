@@ -16,7 +16,7 @@ listBatchReplace <- function(lst,searchValue,replaceBy,silent=FALSE,callFrom=NUL
   fxNa <- .composeCallName(callFrom,newNa="listBatchReplace")
   msg1 <- " 'searchValue' and 'replaceBy' should be vectors"
   if(length(searchValue) <1 | length(replaceBy) <1) stop(fxNa,msg1)
-  if(length(lst) <1 | class(lst) != "list") stop(fxNa," 'lst' should be list with at least 1 element")
+  if(length(lst) <1 | any(class(lst) != "list")) stop(fxNa," 'lst' should be list with at least 1 element")
   outNa <- names(lst)
   if(length(searchValue) ==1 & length(replaceBy) ==1){
     out <- lapply(lst,function(x) {x[x==searchValue] <- replaceBy; x})

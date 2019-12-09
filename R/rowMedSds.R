@@ -16,6 +16,6 @@ rowMedSds <- function(dat,nBoot=99){
   if(is.null(ncol(dat))) stop(msg,"multiple columns !") else if(ncol(dat) < 2) stop(msg,"at least 2 columns !")
   median.fun <- function(dat,indices) stats::median(dat[indices],na.rm=TRUE)
   out <- try(apply(dat,1,function(x) stats::sd(boot::boot(data=x, statistic=median.fun, R=nBoot)$t)))
-  if(class(out) == "try-error") stop(" package 'boot' may be missing !")
+  if("try-error" %in% class(out)) stop(" Could not run boot(), package 'boot' may be missing !")
   out }
    
