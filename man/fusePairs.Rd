@@ -4,8 +4,15 @@
 \alias{fusePairs}
 \title{Fuse pairs to generate cluster-names}
 \usage{
-fusePairs(datPair, refDatNames = NULL, inclRepLst = FALSE,
-  maxFuse = NULL, debug = FALSE, silent = TRUE, callFrom = NULL)
+fusePairs(
+  datPair,
+  refDatNames = NULL,
+  inclRepLst = FALSE,
+  maxFuse = NULL,
+  debug = FALSE,
+  silent = TRUE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{datPair}{2-column matrix where each line represents 1 pair}

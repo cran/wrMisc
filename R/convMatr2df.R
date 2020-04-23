@@ -8,7 +8,7 @@
 #' If the input is a data.frame containing factors, they will be converted to character before potential conversion.
 #' Note: for simpler version (only text to numeric) see from this package \code{.convertMatrToNum} .
 #' @param mat matrix (or data.frame) to be converted
-#' @param addIniNa (logical) add initial name
+#' @param addIniNa (logical) if \code{TRUE} an additional column ('ID') with rownames will be added at beginning
 #' @param duplTxtSep (character) separator for enumerating replicated names
 #' @param silent (logical) suppres messages
 #' @param callFrom (character) allow easier tracking of message(s) produced

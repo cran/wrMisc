@@ -4,8 +4,15 @@
 \alias{combineByEitherFactor}
 \title{Create factor-like column regrouping data regrouping simultaneaously by two factors}
 \usage{
-combineByEitherFactor(mat, refC1, refC2, nByGrp = FALSE,
-  convergeMax = TRUE, callFrom = NULL, silent = FALSE)
+combineByEitherFactor(
+  mat,
+  refC1,
+  refC2,
+  nByGrp = FALSE,
+  convergeMax = TRUE,
+  callFrom = NULL,
+  silent = FALSE
+)
 }
 \arguments{
 \item{mat}{input matrix}

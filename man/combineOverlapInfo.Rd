@@ -4,9 +4,18 @@
 \alias{combineOverlapInfo}
 \title{Find and combine points located very close in x/y space}
 \usage{
-combineOverlapInfo(dat, suplInfo = NULL, disThr = 0.01,
-  addNsimil = TRUE, txtSepChar = ",", combSym = "+", maxOverl = 50,
-  callFrom = NULL, debug = FALSE, silent = FALSE)
+combineOverlapInfo(
+  dat,
+  suplInfo = NULL,
+  disThr = 0.01,
+  addNsimil = TRUE,
+  txtSepChar = ",",
+  combSym = "+",
+  maxOverl = 50,
+  callFrom = NULL,
+  debug = FALSE,
+  silent = FALSE
+)
 }
 \arguments{
 \item{dat}{(matrix) matrix or data.frame with 2 cols (used ONLY 1st & 2nd column !), used as x & y coordinates}

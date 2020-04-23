@@ -4,8 +4,14 @@
 \alias{cleanReplicates}
 \title{Replace most distant values by NA}
 \usage{
-cleanReplicates(x, centrMeth = "median", nOutl = 2,
-  retOffPos = FALSE, silent = FALSE, callFrom = NULL)
+cleanReplicates(
+  x,
+  centrMeth = "median",
+  nOutl = 2,
+  retOffPos = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{matrix (or data.frame)}

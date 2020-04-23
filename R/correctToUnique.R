@@ -6,12 +6,14 @@
 #' @param atEnd (logical) decide location of placing the counter (at end or at beginning of initial text)
 #' @param maxIter (numeric) max number of iterations
 #' @param NAenum (logical) if TRUE NAs will be enumerated (NA_1,NA_2,...)
+#' @param callFrom (character) for better tracking of use of functions
 #' @return character vector
 #' @seealso \code{\link[base]{unique}} will simply remove repeated elements, ie length of 'x' won't remain constant, \code{\link{filtSizeUniq}} is more complex and slower, \code{\link{treatTxtDuplicates}}
 #' @examples
 #' correctToUnique(c("li0","n",NA,NA,rep(c("li2","li3"),2),rep("n",4))) 
 #' @export
-correctToUnique <- function(x,sep="_",atEnd=TRUE,maxIter=4,NAenum=TRUE){
+correctToUnique <- function(x,sep="_",atEnd=TRUE,maxIter=4,NAenum=TRUE,callFrom=NULL){
+  fxNa <- .composeCallName(callFrom,newNa="correctToUnique")
   chNA <- is.na(x)
   if(NAenum & any(chNA)) x[which(chNA)] <- "NA"
   dupR <- duplicated(x,fromLast=FALSE)

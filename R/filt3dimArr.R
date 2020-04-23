@@ -4,20 +4,21 @@
 #' and extract/display all col matching 'displCrit'.
 #'
 #' @param x array (3-dim) of numeric data
-#' @param displCrit (character) column-name(s) to display
 #' @param filtCrit (character, length=1) which column-name consider when filtering filter with 'filtVal' and 'filtTy'
 #' @param filtVal (numeric) for testing inferior/superor/equal condition 
-#' @param filtTy  (character) which type of testing to perform ('eq','inf','infeq','sup','supeq', ">", '<', '>=', "<=", "==")
+#' @param filtTy  (character) which type of testing to perform ('eq','inf','infeq','sup','supeq', '>', '<', '>=', '<=', '==')
+#' @param displCrit (character) column-name(s) to display
 #' @return list of filtered matrixes (by 3rd dim)
 #' @examples
 #' arr1 <- array(1:24,dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
 #'   paste("col",1:3,sep=""),c("ch1","ch2")))
 #' filt3dimArr(arr1,displCrit=c("col1","col2"),filtCrit="col2",filtVal=7)
 #' @export
-filt3dimArr <- function(x,displCrit,filtCrit,filtVal,filtTy=">"){
+filt3dimArr <- function(x,filtCrit,filtVal,filtTy=">",displCrit=NULL){
   if(length(dim(x)) != 3) stop("expecting 3 array as input for x")
   if(is.character(displCrit)) if(any(!displCrit %in% colnames(x))) stop(" can't find 'displCrit' in colnames of 'x'")
   if(is.character(filtCrit)) if(any(!filtCrit %in% colnames(x))) stop(" can't find 'filtCrit' in colnames of 'x'")
+  if(length(displCrit) <1) displCrit <- colnames(x)
   ##
   out <- list()
   out[[1]] <- x[.filterSw(x[,filtCrit,1],">",filtVal,indexRet=TRUE),displCrit,1]

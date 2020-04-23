@@ -16,7 +16,8 @@ rowSds <- function(dat) {
   if(is.data.frame(dat)) dat <- as.matrix(dat)
   allRowsNA <- rowSums(!is.na(dat)) <1
   out <- sqrt(rowSums(matrix(as.numeric(!is.na(dat)),ncol=ncol(dat))*((dat) - rowMeans(dat,na.rm=TRUE))^2,na.rm=TRUE)/(rowSums(!is.na(dat))-1)) 
-  out[is.nan(out)] <- NA      
+  chNan <- is.nan(out)
+  if(any(chNan)) out[which(chNan)] <- NA      
   if(any(allRowsNA)) out[which(allRowsNA)] <- NA              
   out }
    

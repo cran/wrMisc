@@ -1,7 +1,7 @@
 #' Organize data as separate list-entries
 #'
 #' \code{asSepList} allows reorganizing list into separate numeric vectors. For example, matrixes or data.frames will be split into separate columns 
-#' (differnt to \code{\link[wrMisc]{partUnlist} which maintains the original structure}. This function also works with lists of lists.
+#' (differnt to \code{\link[wrMisc]{partUnlist}} which maintains the original structure). This function also works with lists of lists.
 #' This function may be helpful for reorganizing data for plots.
 #'
 #' @param y list to be separated/split in vectors
@@ -32,6 +32,14 @@ asSepList <- function(y,asNumeric=TRUE,minLen=4,fxArg=NULL,silent=FALSE,callFrom
     if(any(chNa)) { if(!silent) message(fxNa," reducing list from ",length(z)," to ",sum(!chNa,na.rm=TRUE))
       z <- z[which(!chNa)]} }
   f1 <- function(x) if(length(dim(x)) >1) ncol(x) >1 else FALSE
+  ## main: reorganize lists
+  chLi <- sapply(lapply(z,class),function(x) "list" %in% x)    # will not pick data.frame
+  if(any(chLi)) for(i in which(chLi)) {
+    le0 <- length(z)
+    z[le0+1:length(z[[i]])] <- unlist(z[i],recursive=FALSE)
+    names(z)[le0+1:length(z[[i]])] <- names(z[[i]])
+    z <- z[c(if(i >1) 1:(i-1),le0+1:length(z[[i]]),if(i < le0) (i+1):le0)]
+  }    
   ## main : split matrixes or data.frames in separate lists
   chCol <- sapply(z,f1)
   if(any(chCol)) if(length(z)==1) z <- as.list(z[[1]]) else {
@@ -43,7 +51,7 @@ asSepList <- function(y,asNumeric=TRUE,minLen=4,fxArg=NULL,silent=FALSE,callFrom
       if(any(newNa %in% names(z))) newNa <- paste(newNa,"2",sep="_")
       names(z)[length(z)-(ncol(x):1)+1] <- newNa 
       chCol <- sapply(z,f1) }}
-  z <- if(asNumeric) lapply(z,function(x) as.numeric(as.matrix(x))) else z
+  z <- if(asNumeric) lapply(z,function(x) if(length(dim(x)) >1) as.numeric(as.matrix(x)) else x) else z
   ## transform to numeric (if possible)
   if(asNumeric) {
     chDa <- rep(NA,length(z))

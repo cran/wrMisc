@@ -2,12 +2,22 @@
 % Please edit documentation in R/closeMatchMatrix.R
 \name{closeMatchMatrix}
 \alias{closeMatchMatrix}
-\title{Reorganize results of search for close (similar) value values in matrix-view}
+\title{Reorganize results of search for close (similar) values in matrix-view}
 \usage{
-closeMatchMatrix(closeMatch, predMatr, measMatr, prefMatch = c("^x",
-  "^y"), colPred = 1, colMeas = 1, limitToBest = TRUE,
-  asDataFrame = FALSE, origNa = TRUE, silent = FALSE,
-  callFrom = NULL, debug = FALSE)
+closeMatchMatrix(
+  closeMatch,
+  predMatr,
+  measMatr,
+  prefMatch = c("^x", "^y"),
+  colPred = 1,
+  colMeas = 1,
+  limitToBest = TRUE,
+  asDataFrame = FALSE,
+  origNa = TRUE,
+  silent = FALSE,
+  callFrom = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{closeMatch}{(list) output from \code{\link[wrMisc]{findCloseMatch}}, ie list with hits for each 'x' (1st argument) : named vectors of value & x index in name; run with 'sortMatch'=F}

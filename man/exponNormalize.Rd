@@ -4,10 +4,20 @@
 \alias{exponNormalize}
 \title{Normalize by adjusting exponent}
 \usage{
-exponNormalize(dat, useExpon, dynExp = TRUE, nStep = 20,
-  startExp = 1, simMeas = "cor", refDat = NULL, refGrp = NULL,
-  refLines = NULL, rSquare = FALSE, silent = FALSE,
-  callFrom = NULL)
+exponNormalize(
+  dat,
+  useExpon,
+  dynExp = TRUE,
+  nStep = 20,
+  startExp = 1,
+  simMeas = "cor",
+  refDat = NULL,
+  refGrp = NULL,
+  refLines = NULL,
+  rSquare = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame of numeric data to be normalized}

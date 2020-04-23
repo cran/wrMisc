@@ -9,7 +9,7 @@ rowGrpSds(x, grp)
 \arguments{
 \item{x}{matrix where relplicates are organized into seprate columns}
 
-\item{grp}{(factor) defining which columns should be grouped (considered as replicates)}
+\item{grp}{(character or factor) defining which columns should be grouped (considered as replicates)}
 }
 \value{
 matrix of sd values
@@ -23,5 +23,5 @@ set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
 head(rowGrpSds(dat1,gr=gl(4,3,labels=LETTERS[1:4])[2:11]))
 }
 \seealso{
-\code{\link{rowGrpMeans}}, \code{\link{rowCVs}}, \code{\link{rowSEMs}},\code{\link[stats]{sd}},
+\code{\link{rowGrpMeans}}, \code{\link{rowCVs}}, \code{\link{rowSEMs}},\code{\link[stats]{sd}}
 }

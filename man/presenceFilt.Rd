@@ -4,31 +4,38 @@
 \alias{presenceFilt}
 \title{Filter lines of matrix for max number of NAs}
 \usage{
-presenceFilt(dat, grp, maxGrpMiss = 1, ratMaxNA = 0.8, minVal = NULL,
-  silent = FALSE, callFrom = NULL)
+presenceFilt(
+  dat,
+  grp,
+  maxGrpMiss = 1,
+  ratMaxNA = 0.8,
+  minVal = NULL,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
-\item{dat}{matrix or data.frame}
+\item{dat}{matrix or data.frame (abundance or expression-values which may contain some \code{NA}s).}
 
-\item{grp}{factor of min 2 levels describing which col of 'dat' belongs to which group (levels 1 & 2 will be used)}
+\item{grp}{factor of min 2 levels describing which column of 'dat' belongs to which group (levels 1 & 2 will be used)}
 
 \item{maxGrpMiss}{(numeric) at least 1 group has not more than this number of NAs (otherwise marke line as bad)}
 
-\item{ratMaxNA}{(numeric)}
+\item{ratMaxNA}{(numeric) at least 1 group reaches this content of non-\code{NA} values}
 
-\item{minVal}{(default NULL or numeric), any value below will be treated like NA}
+\item{minVal}{(default NULL or numeric), any value below will be treated like \code{NA}}
 
 \item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allow easier tracking of message produced}
 }
 \value{
-logical matrix (with separate col for each pairwise combination of 'grp' levels) indicating if line of 'dat' acceptable based on NAs (and values minVal)
+logical matrix (with separate col for each pairwise combination of 'grp' levels) indicating if line of 'dat' acceptable based on \code{NA}s (and values minVal)
 }
 \description{
-\code{presenceFilt} filters lines of 'dat' for sufficient presence/absence of NA values (ie limit number of NAs per line). 
-Filter abundance/expression data for min number and/or ratio of values present/above threshold (incl NA) in at east 1 of multiple groups
-difference proteomics/RNAseq : if peptide was identified its quantity is more certain than based on spectral alignment.
+\code{presenceFilt} produces logical matrix to be used as filter for lines of 'dat' for sufficient presence of non-\code{NA} values (ie limit number of NAs per line). 
+Filter abundance/expression data for min number and/or ratio of non-\code{NA} values in at east 1 of multiple groups.
+This type of procedure is common in proteomics and tanscriptomics, where a \code{NA} can many times be assocoaued with quantitation below detetction limit.
 }
 \examples{
 dat1 <- matrix(1:56,ncol=7)

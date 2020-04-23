@@ -4,9 +4,18 @@
 \alias{findSimilFrom2sets}
 \title{Find similar numeric values from two vectors/matrixes}
 \usage{
-findSimilFrom2sets(predMatr, measMatr, colMeas = 1, colPre = 1,
-  compareTy = "diff", limitComp = 0.5, bestOnly = FALSE,
-  silent = FALSE, callFrom = NULL, debug = FALSE)
+findSimilFrom2sets(
+  predMatr,
+  measMatr,
+  colMeas = 1,
+  colPre = 1,
+  compareTy = "diff",
+  limitComp = 0.5,
+  bestOnly = FALSE,
+  silent = FALSE,
+  callFrom = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{predMatr}{(matrix or numeric vector) dataset number 1, referred to as 'predicted', the colum speified in argument \code{colPre} points to the data to be used}

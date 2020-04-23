@@ -4,8 +4,13 @@
 \alias{regrBy1or2point}
 \title{Rescaling according to reference data using linear regression.}
 \usage{
-regrBy1or2point(inDat, refLst, regrTo = c(1, 0.5), silent = FALSE,
-  callFrom = NULL)
+regrBy1or2point(
+  inDat,
+  refLst,
+  regrTo = c(1, 0.5),
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{inDat}{matrix or data.frame}

@@ -4,8 +4,13 @@
 \alias{checkVectLength}
 \title{Check length of vector}
 \usage{
-checkVectLength(x, expeL = 1, stopOnProblem = FALSE, silent = FALSE,
-  callFrom = NULL)
+checkVectLength(
+  x,
+  expeL = 1,
+  stopOnProblem = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(numeric or charcter vector) input to check length}

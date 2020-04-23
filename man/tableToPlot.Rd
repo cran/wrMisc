@@ -4,9 +4,16 @@
 \alias{tableToPlot}
 \title{Print matrix-content as plot}
 \usage{
-tableToPlot(matr, colPos = c(0.05, 0.35, 0.41, 0.56), useCex = 0.7,
-  useAdj = c(0, 1, 1, 0), titOffS = 0, useCol = 1, silent = FALSE,
-  callFrom = NULL)
+tableToPlot(
+  matr,
+  colPos = c(0.05, 0.35, 0.41, 0.56),
+  useCex = 0.7,
+  useAdj = c(0, 1, 1, 0),
+  titOffS = 0,
+  useCol = 1,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{matr}{(matrix) main (character) matrix to display}

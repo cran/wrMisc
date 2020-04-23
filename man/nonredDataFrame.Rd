@@ -4,9 +4,13 @@
 \alias{nonredDataFrame}
 \title{Filter for unique elements}
 \usage{
-nonredDataFrame(dataFr, useCol = c(pepID = "peptide_id", protID =
-  "accession", seq = "sequence", mod = "modifications"),
-  sepCollapse = "//", callFrom = NULL)
+nonredDataFrame(
+  dataFr,
+  useCol = c(pepID = "peptide_id", protID = "accession", seq = "sequence", mod =
+    "modifications"),
+  sepCollapse = "//",
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dataFr}{(data.frame) main inpput}

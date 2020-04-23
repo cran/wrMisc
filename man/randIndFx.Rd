@@ -2,10 +2,9 @@
 % Please edit documentation in R/randIndFx.R
 \name{randIndFx}
 \alias{randIndFx}
-\title{Distance of categorical dara (Jaccard,Rand and adjusted Rand index)}
+\title{Distance of categorical data (Jaccard,Rand and adjusted Rand index)}
 \usage{
-randIndFx(ma, method = "ARI", adjSense = TRUE, silent = FALSE,
-  callFrom = NULL)
+randIndFx(ma, method = "ARI", adjSense = TRUE, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{ma}{(matrix) main input for distance calulation}

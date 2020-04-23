@@ -4,8 +4,7 @@
 \alias{combineRedBasedOnCol}
 \title{Combine/reduce redundant lines based on specified column}
 \usage{
-combineRedBasedOnCol(mat, colNa, sep = ",", silent = FALSE,
-  callFrom = NULL)
+combineRedBasedOnCol(mat, colNa, sep = ",", silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{mat}{input matrix or data.frame}

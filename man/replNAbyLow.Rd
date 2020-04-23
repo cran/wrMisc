@@ -4,8 +4,17 @@
 \alias{replNAbyLow}
 \title{Replace NAs by low values}
 \usage{
-replNAbyLow(x, grp, quant = 0.8, signific = 3, unif = TRUE,
-  absOnly = FALSE, seed = NULL, silent = FALSE, callFrom = NULL)
+replNAbyLow(
+  x,
+  grp,
+  quant = 0.8,
+  signific = 3,
+  unif = TRUE,
+  absOnly = FALSE,
+  seed = NULL,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(numeric matrix or data.frame) main input}

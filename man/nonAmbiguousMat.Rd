@@ -4,8 +4,14 @@
 \alias{nonAmbiguousMat}
 \title{Transform matrix to non-ambiguous matrix (in respect to given column)}
 \usage{
-nonAmbiguousMat(mat, byCol, uniqOnly = FALSE, asList = FALSE,
-  nameMod = "amb_", callFrom = NULL)
+nonAmbiguousMat(
+  mat,
+  byCol,
+  uniqOnly = FALSE,
+  asList = FALSE,
+  nameMod = "amb_",
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{numeric or character matrix (or data.frame), column specified by 'byCol' must be/will be used as.numeric, 1st column of 'mat' will be considered like index & used for adding prefix 'nameMod' (unless byCol=1, then 2nd col will be used)}

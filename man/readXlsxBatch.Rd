@@ -4,10 +4,19 @@
 \alias{readXlsxBatch}
 \title{Read batch of Excel xlsx-files}
 \usage{
-readXlsxBatch(fileNames = NULL, path = ".", fileExtension = "xlsx",
-  excludeFiles = NULL, sheetInd = 1, checkFormat = TRUE,
-  returnArray = TRUE, columns = c("Plate", "Well", "StainA"),
-  simpleNames = 3, silent = FALSE, callFrom = NULL)
+readXlsxBatch(
+  fileNames = NULL,
+  path = ".",
+  fileExtension = "xlsx",
+  excludeFiles = NULL,
+  sheetInd = 1,
+  checkFormat = TRUE,
+  returnArray = TRUE,
+  columns = c("Plate", "Well", "StainA"),
+  simpleNames = 3,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{fileNames}{(character) provide either explicit list of file-names to be read or leave \code{NULL} for reading all files ending with 'xlsx' in path specified with argument \code{path}}
@@ -53,5 +62,5 @@ identical(datAll,datAll2)
 }
 }
 \seealso{
-\code{\link[xlsx]{read.xlsx}}, for simple reading of xls-files under 32-bit R see also: \code{odbcConnectExcel} via \code{\link[RODBC]{odbcConnect}}
+\code{\link[xlsx]{read.xlsx}}, for simple reading of xls-files under 32-bit R see also package \href{https://CRAN.R-project.org/package=RODBC}{RODBC}
 }

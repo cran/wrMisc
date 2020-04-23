@@ -4,8 +4,14 @@
 \alias{makeMAList}
 \title{make MA-List object}
 \usage{
-makeMAList(mat, MAfac, useF = c("R", "G"), isLog = TRUE,
-  silent = FALSE, callFrom = NULL)
+makeMAList(
+  mat,
+  MAfac,
+  useF = c("R", "G"),
+  isLog = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{main input matrix}

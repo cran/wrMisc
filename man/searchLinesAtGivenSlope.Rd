@@ -4,11 +4,21 @@
 \alias{searchLinesAtGivenSlope}
 \title{Search points forming lines at given slope}
 \usage{
-searchLinesAtGivenSlope(dat, coeff = 1.5, filtExtr = c(0, 1),
-  minMaxDistThr = NULL, lmCompare = TRUE, indexPoints = TRUE,
-  displHist = FALSE, displScat = FALSE, bestCluByDistRat = TRUE,
-  neighbDiLim = NULL, silent = FALSE, debugM = FALSE,
-  callFrom = NULL)
+searchLinesAtGivenSlope(
+  dat,
+  coeff = 1.5,
+  filtExtr = c(0, 1),
+  minMaxDistThr = NULL,
+  lmCompare = TRUE,
+  indexPoints = TRUE,
+  displHist = FALSE,
+  displScat = FALSE,
+  bestCluByDistRat = TRUE,
+  neighbDiLim = NULL,
+  silent = FALSE,
+  debugM = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame}

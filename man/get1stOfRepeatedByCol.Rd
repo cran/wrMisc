@@ -4,9 +4,15 @@
 \alias{get1stOfRepeatedByCol}
 \title{Get first of repeated by column}
 \usage{
-get1stOfRepeatedByCol(mat, sortBy = "seq", sortSupl = "ty",
-  asFirstLast = c("full", "inter"), markIfAmbig = c("ambig", "seqNa"),
-  asList = FALSE, abmiPref = "_")
+get1stOfRepeatedByCol(
+  mat,
+  sortBy = "seq",
+  sortSupl = "ty",
+  asFirstLast = c("full", "inter"),
+  markIfAmbig = c("ambig", "seqNa"),
+  asList = FALSE,
+  abmiPref = "_"
+)
 }
 \arguments{
 \item{mat}{(matrix or data.frame) numeric vector to be tested}

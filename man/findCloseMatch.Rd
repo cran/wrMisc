@@ -4,9 +4,17 @@
 \alias{findCloseMatch}
 \title{Find close numeric values between two vectors}
 \usage{
-findCloseMatch(x, y, compTy = "ppm", limit = 5, asIndex = FALSE,
-  maxFitShort = 100, sortMatch = FALSE, silent = FALSE,
-  callFrom = NULL)
+findCloseMatch(
+  x,
+  y,
+  compTy = "ppm",
+  limit = 5,
+  asIndex = FALSE,
+  maxFitShort = 100,
+  sortMatch = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{numeric vector for comparison}

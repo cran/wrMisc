@@ -1,7 +1,8 @@
 #' Filter for unique elements
 #' 
-#' This function aims to identify and remove duplicated elements in list and maintaining the list-structure in the output. 
+#' This function aims to identify and remove duplicated elements in a list and maintain the list-structure in the output. 
 #' \code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length. 
+#' In addition, the min- and max- character length may be filtered, too. Eg, in proteomics this helps removing peptide sequences which would not be measured/detected any way.
 #'
 #' @param lst list of character-vectors or character-vector
 #' @param ref (character) optional alternative 'reference', if not \code{NULL} used in addition to 'lst' for considering elements of 'lst' as unique

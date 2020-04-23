@@ -4,11 +4,22 @@
 \alias{writeCsv}
 \title{Write (and convert) csv files}
 \usage{
-writeCsv(input, inPutFi = NULL, expTy = c("Eur", "US"),
-  imporTy = "Eur", filename = NULL, quote = FALSE,
-  filterCol = NULL, replMatr = NULL, returnOut = FALSE,
-  SYLKprevent = TRUE, digits = 22, silent = FALSE, debug = FALSE,
-  callFrom = NULL)
+writeCsv(
+  input,
+  inPutFi = NULL,
+  expTy = c("Eur", "US"),
+  imporTy = "Eur",
+  filename = NULL,
+  quote = FALSE,
+  filterCol = NULL,
+  replMatr = NULL,
+  returnOut = FALSE,
+  SYLKprevent = TRUE,
+  digits = 22,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{input}{either matrix or data.frame}

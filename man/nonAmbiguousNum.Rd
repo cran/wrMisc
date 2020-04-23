@@ -4,8 +4,13 @@
 \alias{nonAmbiguousNum}
 \title{make numeric vector non-ambiguous (ie unique)}
 \usage{
-nonAmbiguousNum(x, uniqOnly = FALSE, asList = FALSE,
-  nameMod = "amb_", callFrom = NULL)
+nonAmbiguousNum(
+  x,
+  uniqOnly = FALSE,
+  asList = FALSE,
+  nameMod = "amb_",
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(numeric) main input}

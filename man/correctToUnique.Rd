@@ -4,8 +4,14 @@
 \alias{correctToUnique}
 \title{Correct vector to unique}
 \usage{
-correctToUnique(x, sep = "_", atEnd = TRUE, maxIter = 4,
-  NAenum = TRUE)
+correctToUnique(
+  x,
+  sep = "_",
+  atEnd = TRUE,
+  maxIter = 4,
+  NAenum = TRUE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{input character vector}
@@ -17,6 +23,8 @@ correctToUnique(x, sep = "_", atEnd = TRUE, maxIter = 4,
 \item{maxIter}{(numeric) max number of iterations}
 
 \item{NAenum}{(logical) if TRUE NAs will be enumerated (NA_1,NA_2,...)}
+
+\item{callFrom}{(character) for better tracking of use of functions}
 }
 \value{
 character vector

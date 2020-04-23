@@ -4,8 +4,15 @@
 \alias{sortBy2CategorAnd1IntCol}
 \title{Sort matrix by two categorical and one integer columns}
 \usage{
-sortBy2CategorAnd1IntCol(mat, categCol, numCol, findNeighb = TRUE,
-  decreasing = FALSE, silent = FALSE, callFrom = NULL)
+sortBy2CategorAnd1IntCol(
+  mat,
+  categCol,
+  numCol,
+  findNeighb = TRUE,
+  decreasing = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{matrix (or data.frame) from which by 2 columns will be selected for sorting}

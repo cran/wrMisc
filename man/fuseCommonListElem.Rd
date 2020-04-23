@@ -4,8 +4,12 @@
 \alias{fuseCommonListElem}
 \title{Fuse content of list-elements with redundant (duplicated) names}
 \usage{
-fuseCommonListElem(lst, initOrd = TRUE, removeDuplicates = FALSE,
-  callFrom = NULL)
+fuseCommonListElem(
+  lst,
+  initOrd = TRUE,
+  removeDuplicates = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{lst}{(list) main input, list of numeric vectors}

@@ -9,7 +9,7 @@ rowGrpMeans(x, grp)
 \arguments{
 \item{x}{matrix or data.frame}
 
-\item{grp}{(factor) defining which columns should be grouped (considered as replicates)}
+\item{grp}{(character or factor) defining which columns should be grouped (considered as replicates)}
 }
 \value{
 matrix with mean values

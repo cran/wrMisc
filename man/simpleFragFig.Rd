@@ -6,8 +6,15 @@
  
 \code{simpleFragFig} draws figure showing start- and end-sites of edges (or fragments)}
 \usage{
-simpleFragFig(frag, fullSize = NULL, sortByHead = TRUE,
-  useTit = NULL, useCol = NULL, displNa = TRUE, useCex = 0.7)
+simpleFragFig(
+  frag,
+  fullSize = NULL,
+  sortByHead = TRUE,
+  useTit = NULL,
+  useCol = NULL,
+  displNa = TRUE,
+  useCex = 0.7
+)
 }
 \arguments{
 \item{frag}{(matrix) 2 columns defining begin- and end-sites (as interger values)}

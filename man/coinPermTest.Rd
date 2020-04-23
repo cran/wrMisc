@@ -4,8 +4,14 @@
 \alias{coinPermTest}
 \title{Compare means of two vectors by permutation test}
 \usage{
-coinPermTest(x1, x2, orient = "two.sided", nPerm = 5000,
-  silent = FALSE, callFrom = NULL)
+coinPermTest(
+  x1,
+  x2,
+  orient = "two.sided",
+  nPerm = 5000,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x1}{numeric vector (to be compared with vector 'x2')}

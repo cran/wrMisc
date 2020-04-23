@@ -4,7 +4,7 @@
 #' Groups are specified as columns of 'x' in 'grp' (so length of grp should match number of columns of 'x', NAs are allowed).
 #'
 #' @param x matrix or data.frame
-#' @param grp (factor) defining which columns should be grouped (considered as replicates)
+#' @param grp (character or factor) defining which columns should be grouped (considered as replicates)
 #' @return matrix with mean values
 #' @seealso \code{\link{rowSds}}, \code{\link[base]{colSums}}
 #' @examples

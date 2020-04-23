@@ -4,8 +4,7 @@
 \alias{listBatchReplace}
 \title{Replacements in list}
 \usage{
-listBatchReplace(lst, searchValue, replaceBy, silent = FALSE,
-  callFrom = NULL)
+listBatchReplace(lst, searchValue, replaceBy, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{lst}{input-list to be used for replacing}

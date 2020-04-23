@@ -4,9 +4,16 @@
 \alias{searchDataPairs}
 \title{Search duplicated data over multiple columns, ie pairs of data}
 \usage{
-searchDataPairs(dat, disThr = 0.01, byColumn = TRUE,
-  normRange = TRUE, altNa = NULL, realDupsOnly = TRUE,
-  silent = FALSE, callFrom = NULL)
+searchDataPairs(
+  dat,
+  disThr = 0.01,
+  byColumn = TRUE,
+  normRange = TRUE,
+  altNa = NULL,
+  realDupsOnly = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame}

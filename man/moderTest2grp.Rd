@@ -4,9 +4,15 @@
 \alias{moderTest2grp}
 \title{Moderated pair-wise t-test from limma}
 \usage{
-moderTest2grp(dat, grp, limmaOutput = TRUE, addResults = c("lfdr",
-  "FDR", "Mval", "means"), testOrientation = "=", silent = FALSE,
-  callFrom = NULL)
+moderTest2grp(
+  dat,
+  grp,
+  limmaOutput = TRUE,
+  addResults = c("lfdr", "FDR", "Mval", "means"),
+  testOrientation = "=",
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame with rows for multiple (independent) tests, use ONLY with 2 groups; assumed as log2-data}

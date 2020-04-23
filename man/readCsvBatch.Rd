@@ -4,11 +4,19 @@
 \alias{readCsvBatch}
 \title{Read batch of csv-files}
 \usage{
-readCsvBatch(fileNames = NULL, path = ".", fileFormat = "Eur",
-  checkFormat = TRUE, returnArray = TRUE, columns = c("Plate",
-  "Well", "StainA"), excludeFiles = "All infected plates",
-  simpleNames = TRUE, minNamesLe = 4, silent = FALSE,
-  callFrom = NULL)
+readCsvBatch(
+  fileNames = NULL,
+  path = ".",
+  fileFormat = "Eur",
+  checkFormat = TRUE,
+  returnArray = TRUE,
+  columns = c("Plate", "Well", "StainA"),
+  excludeFiles = "All infected plates",
+  simpleNames = TRUE,
+  minNamesLe = 4,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{fileNames}{(character) names of files to be read, if NULL all files fitting 'fileFormat'}

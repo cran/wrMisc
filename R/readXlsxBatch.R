@@ -18,7 +18,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allows easier tracking of message(s) produced
 #' @return list
-#' @seealso \code{\link[xlsx]{read.xlsx}}, for simple reading of xls-files under 32-bit R see also: \code{odbcConnectExcel} via \code{\link[RODBC]{odbcConnect}} 
+#' @seealso \code{\link[xlsx]{read.xlsx}}, for simple reading of xls-files under 32-bit R see also package \href{https://CRAN.R-project.org/package=RODBC}{RODBC} 
 #' @examples
 #' \donttest{
 #' path1 <- system.file("extdata",package="wrMisc")

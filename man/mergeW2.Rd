@@ -4,10 +4,20 @@
 \alias{mergeW2}
 \title{Extended version of merge for multiple objects (even without rownames)}
 \usage{
-mergeW2(..., nonRedundID = TRUE, convertDF = TRUE, selMerg = TRUE,
-  inputNamesLst = NULL, noMatchPursue = TRUE, standColNa = FALSE,
-  lastOfMultCols = c("p.value", "Lfdr"), duplTxtSep = "_",
-  silent = FALSE, debug = FALSE, callFrom = NULL)
+mergeW2(
+  ...,
+  nonRedundID = TRUE,
+  convertDF = TRUE,
+  selMerg = TRUE,
+  inputNamesLst = NULL,
+  noMatchPursue = TRUE,
+  standColNa = FALSE,
+  lastOfMultCols = c("p.value", "Lfdr"),
+  duplTxtSep = "_",
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{...}{all data (vectors, matrixes or data.frames) intendes for merge}

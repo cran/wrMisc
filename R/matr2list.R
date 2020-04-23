@@ -1,10 +1,10 @@
-#' Transform matrix to list of vectors
+#' Transform columns of matrix to list of vectors
 #'
 #' convert matrix to list of vectors: each column of 'mat' as vector of list 
 #' @param mat (matrix) main input
 #' @param concSym (character) symbol for concatenating: concatenation of named vectors in list names as colname(s)+'concSym'+rowname
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return matrix or array (1st dim is intraplate-position, 2nd .. plate-group/type, 3rd .. channels)
 #' @seealso \code{\link{convToNum}}
 #' @examples

@@ -4,8 +4,15 @@
 \alias{extrSpcText}
 \title{Extract specific text}
 \usage{
-extrSpcText(txt, cutFrom = " GN=", cutTo = " PE=", missingAs = NA,
-  exclFromTag = TRUE, silent = FALSE, callFrom = NULL)
+extrSpcText(
+  txt,
+  cutFrom = " GN=",
+  cutTo = " PE=",
+  missingAs = NA,
+  exclFromTag = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{txt}{character vector to be treated}

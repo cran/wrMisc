@@ -4,13 +4,20 @@
 \alias{colorAccording2}
 \title{Transform numeric values to color-gradient}
 \usage{
-colorAccording2(x, gradTy = "rainbow", nStartOmit = NULL,
-  nEndOmit = NULL, revCol = FALSE, alpha = 1, callFrom = NULL)
+colorAccording2(
+  x,
+  gradTy = "rainbow",
+  nStartOmit = NULL,
+  nEndOmit = NULL,
+  revCol = FALSE,
+  alpha = 1,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(character) color input}
 
-\item{gradTy}{(character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'cm.colors', 'grey.colors'}
+\item{gradTy}{(character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'cm.colors', 'grey.colors', 'gray.colorsW' or 'logGray'}
 
 \item{nStartOmit}{(integer)  omit n steps from beginnin of gradient range}
 
@@ -33,7 +40,7 @@ set.seed(2015); dat1 <- round(runif(15),2)
 plot(1:15,dat1,pch=16,cex=2,col=colorAccording2(dat1))
 plot(1:15,dat1,pch=16,cex=2,col=colorAccording2(dat1,nStartO=0,nEndO=4,revCol=TRUE))
 plot(1:9,pch=3)
-points(1:9,1:9,col=.transpGraySca(st=0,en=0.8,nSt=9,trans=0.3),cex=42,pch=16)
+points(1:9,1:9,col=transpGraySca(st=0,en=0.8,nSt=9,trans=0.3),cex=42,pch=16)
 }
 \seealso{
 \code{\link[base]{cut}}

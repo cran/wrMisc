@@ -4,9 +4,19 @@
 \alias{mergeSelCol3}
 \title{mergeSelCol3}
 \usage{
-mergeSelCol3(dat1, dat2, dat3, selCols, supCols2 = NULL,
-  supCols3 = NULL, byC = NULL, useAll = FALSE, setRownames = TRUE,
-  newSuff = c(".x", ".y", ".z"), callFrom = NULL)
+mergeSelCol3(
+  dat1,
+  dat2,
+  dat3,
+  selCols,
+  supCols2 = NULL,
+  supCols3 = NULL,
+  byC = NULL,
+  useAll = FALSE,
+  setRownames = TRUE,
+  newSuff = c(".x", ".y", ".z"),
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat1}{matrix or data.frame for fusing}

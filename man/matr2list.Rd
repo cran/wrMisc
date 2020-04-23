@@ -2,7 +2,7 @@
 % Please edit documentation in R/matr2list.R
 \name{matr2list}
 \alias{matr2list}
-\title{Transform matrix to list of vectors}
+\title{Transform columns of matrix to list of vectors}
 \usage{
 matr2list(mat, concSym = ".", silent = FALSE, callFrom = NULL)
 }
@@ -13,7 +13,7 @@ matr2list(mat, concSym = ".", silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 matrix or array (1st dim is intraplate-position, 2nd .. plate-group/type, 3rd .. channels)

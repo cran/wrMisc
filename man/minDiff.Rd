@@ -4,8 +4,7 @@
 \alias{minDiff}
 \title{Minimum distance/difference between values}
 \usage{
-minDiff(x, digSig = 3, ppm = TRUE, initOrder = TRUE,
-  callFrom = NULL)
+minDiff(x, digSig = 3, ppm = TRUE, initOrder = TRUE, callFrom = NULL)
 }
 \arguments{
 \item{x}{(numeric) vector to search minimum difference}

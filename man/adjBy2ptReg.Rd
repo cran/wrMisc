@@ -4,8 +4,7 @@
 \alias{adjBy2ptReg}
 \title{Linear rescaling of numeric vertor or matrix}
 \usage{
-adjBy2ptReg(dat, lims, regrTo = c(0.1, 0.9), refLines = NULL,
-  callFrom = NULL)
+adjBy2ptReg(dat, lims, regrTo = c(0.1, 0.9), refLines = NULL, callFrom = NULL)
 }
 \arguments{
 \item{dat}{numeric vector, matrix or data.frame}

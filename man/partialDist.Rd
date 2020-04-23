@@ -4,8 +4,14 @@
 \alias{partialDist}
 \title{Partial distance matrix (focus on closest)}
 \usage{
-partialDist(dat, groups, overLap = TRUE, method = "euclidean",
-  silent = FALSE, callFrom = NULL)
+partialDist(
+  dat,
+  groups,
+  overLap = TRUE,
+  method = "euclidean",
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{(matrix of numeric values) main input}

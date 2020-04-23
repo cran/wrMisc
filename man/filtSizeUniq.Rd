@@ -4,9 +4,17 @@
 \alias{filtSizeUniq}
 \title{Filter for unique elements}
 \usage{
-filtSizeUniq(lst, ref = NULL, minSize = 6, maxSize = 36,
-  filtUnique = TRUE, byProt = TRUE, inclEmpty = TRUE,
-  silent = FALSE, callFrom = NULL)
+filtSizeUniq(
+  lst,
+  ref = NULL,
+  minSize = 6,
+  maxSize = 36,
+  filtUnique = TRUE,
+  byProt = TRUE,
+  inclEmpty = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{lst}{list of character-vectors or character-vector}
@@ -31,8 +39,9 @@ filtSizeUniq(lst, ref = NULL, minSize = 6, maxSize = 36,
 list of filtered input
 }
 \description{
-This function aims to identify and remove duplicated elements in list and maintaining the list-structure in the output. 
-\code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length.
+This function aims to identify and remove duplicated elements in a list and maintain the list-structure in the output. 
+\code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length. 
+In addition, the min- and max- character length may be filtered, too. Eg, in proteomics this helps removing peptide sequences which would not be measured/detected any way.
 }
 \examples{
 filtSizeUniq(list(A="a",B=c("b","bb","c"),D=c("dd","d","ddd","c")),filtUn=TRUE,minSi=NULL)

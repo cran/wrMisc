@@ -4,8 +4,13 @@
 \alias{organizeAsListOfRepl}
 \title{(re)organize data of (3-dim) array as list of replicates}
 \usage{
-organizeAsListOfRepl(arrIn, inspNChar = 0, byDim = 3, silent = TRUE,
-  callFrom = NULL)
+organizeAsListOfRepl(
+  arrIn,
+  inspNChar = 0,
+  byDim = 3,
+  silent = TRUE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{arrIn}{(array) main input}

@@ -4,8 +4,14 @@
 \alias{stableMode}
 \title{Estimate mode (most frequent value)}
 \usage{
-stableMode(x, histLike = FALSE, rangeSign = 1:6, nCl = 50,
-  callFrom = NULL, silent = FALSE)
+stableMode(
+  x,
+  histLike = FALSE,
+  rangeSign = 1:6,
+  nCl = 50,
+  callFrom = NULL,
+  silent = FALSE
+)
 }
 \arguments{
 \item{x}{numeric vector}

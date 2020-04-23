@@ -4,9 +4,18 @@
 \alias{uniqCountReport}
 \title{Report number of unique and redundant elements (optional figure)}
 \usage{
-uniqCountReport(dat, frL = NULL, plotDispl = FALSE, tit = NULL,
-  col = NULL, radius = 0.9, sizeTo = NULL, clockwise = FALSE,
-  silent = FALSE, callFrom = NULL)
+uniqCountReport(
+  dat,
+  frL = NULL,
+  plotDispl = FALSE,
+  tit = NULL,
+  col = NULL,
+  radius = 0.9,
+  sizeTo = NULL,
+  clockwise = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{(charcter or numeric vector) main input where number of unique (and redunant) should be determined}

@@ -4,8 +4,13 @@
 \alias{buildTree}
 \title{Connect edges to form tree and extract all possible branches}
 \usage{
-buildTree(disDat, startFr = NULL, posCo = c("beg", "end"),
-  silent = FALSE, callFrom = NULL)
+buildTree(
+  disDat,
+  startFr = NULL,
+  posCo = c("beg", "end"),
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{disDat}{(matrix or data.frame) integer values with 1st column, ie start site of fragment, 2nd column as end of fragments, rownames as unique IDs (node-names)}

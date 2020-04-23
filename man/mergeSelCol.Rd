@@ -4,9 +4,17 @@
 \alias{mergeSelCol}
 \title{Merge selected columns out of 2 matrix or data.frames}
 \usage{
-mergeSelCol(dat1, dat2, selCols, supCols2 = NULL, byC = NULL,
-  useAll = FALSE, setRownames = TRUE, newSuff = c(".x", ".y"),
-  callFrom = NULL)
+mergeSelCol(
+  dat1,
+  dat2,
+  selCols,
+  supCols2 = NULL,
+  byC = NULL,
+  useAll = FALSE,
+  setRownames = TRUE,
+  newSuff = c(".x", ".y"),
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat1}{matrix or data.frame for fusing}

@@ -8,7 +8,7 @@
 #'
 #' @param x vector to be converted
 #' @param spaceRemove (logical) to remove all heading and trailing (white) space (until first non-space character)
-#' @param convert (character) define which type of non-conform entries to concert to NAs. Note, if \code{remove} is selected to eliminate character-entries they cannot be converted any more. Use 'allChar' for all character-entries; 'sparseChar' sparse (ie rare) character entries; \code{NA} for converting 'Na' or 'na' to \code{NA}; if 'none' or \code{NULL} no conversions at all. 
+#' @param convert (character) define which type of non-conform entries to convert to NAs. Note, if \code{remove} is selected to eliminate character-entries they cannot be converted any more. Use 'allChar' for all character-entries; 'sparseChar' sparse (ie rare) character entries; \code{NA} for converting 'Na' or 'na' to \code{NA}; if 'none' or \code{NULL} no conversions at all. 
 #' @param remove (character) define which type of non-conform entries to remove, removed items cannot converted to \code{NA} any more. Use 'allChar' for removing all character entries; \code{NA} for removing all instances of \code{NA} (execept thise created by converting text); all elements will be kept if 'none' or \code{NULL}. 
 #' @param euroStyle (logical) if \code{TRUE} will convert all ',' (eg used as European decimal-separator) to '.' (as internally used by R as decimal-separator), thus allowing converting the European decimal format. 
 #' @param sciIncl (logical) include recognizing scientific notation (eg 2e-4)
@@ -17,9 +17,13 @@
 #' @return numeric vector (or matrix (if 'x' is matrix))
 #' @seealso \code{\link[base]{numeric}}
 #' @examples
-#' x1 <- c("+4"," + 5","6","-7"," - 8","1e6","+ 2.3e4","-3E4","- 4E5") 
-#' convToNum(x1,convert=NA,remove=c("allChar",NA))
-#' convToNum(x1,convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
+#' x1 <- c("+4"," + 5","6","bb","Na","-7") 
+#' convToNum(x1,convert=c("allChar"))
+#' convToNum(x1)        # too many non-numeric instances for 'sparseChar'
+#' 
+#' x2 <- c("+4"," + 5","6","-7"," - 8","1e6","+ 2.3e4","-3E4","- 4E5") 
+#' convToNum(x2,convert=NA,remove=c("allChar",NA))
+#' convToNum(x2,convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
 #' @export 
 convToNum <- function(x,spaceRemove=TRUE,convert=c(NA,"sparseChar"),remove=NULL,euroStyle=TRUE,sciIncl=TRUE,callFrom=NULL,silent=TRUE) {
   fxNa <- .composeCallName(callFrom,newNa="convToNum")

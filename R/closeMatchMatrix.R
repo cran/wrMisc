@@ -1,4 +1,4 @@
-#' Reorganize results of search for close (similar) value values in matrix-view 
+#' Reorganize results of search for close (similar) values in matrix-view 
 #'
 #' \code{closeMatchMatrix} reorganizes/refines results from simple search of similar values of 2 sets of data by \code{\link[wrMisc]{findCloseMatch}} (as list for one-to many relations) to more human friendly/readable matrix.
 #' This function returns results combining two sets of data which were initially compared (eg measured and threoretical values) as matrix-view using output of \code{\link[wrMisc]{findCloseMatch}} and both original datastes

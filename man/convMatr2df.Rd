@@ -4,13 +4,18 @@
 \alias{convMatr2df}
 \title{Convert matrix (eg with redundant) row-names to data.frame}
 \usage{
-convMatr2df(mat, addIniNa = TRUE, duplTxtSep = "_", silent = FALSE,
-  callFrom = NULL)
+convMatr2df(
+  mat,
+  addIniNa = TRUE,
+  duplTxtSep = "_",
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{matrix (or data.frame) to be converted}
 
-\item{addIniNa}{(logical) add initial name}
+\item{addIniNa}{(logical) if \code{TRUE} an additional column ('ID') with rownames will be added at beginning}
 
 \item{duplTxtSep}{(character) separator for enumerating replicated names}
 

@@ -4,8 +4,16 @@
 \alias{lmSelClu}
 \title{Run lm on segmented data (from clustering)}
 \usage{
-lmSelClu(dat, useCol = 1:2, clu = "max", regTy = "lin",
-  filt1 = NULL, filt2 = NULL, silent = FALSE, callFrom = NULL)
+lmSelClu(
+  dat,
+  useCol = 1:2,
+  clu = "max",
+  regTy = "lin",
+  filt1 = NULL,
+  filt2 = NULL,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame}

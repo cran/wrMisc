@@ -4,8 +4,7 @@
 \alias{ratioToPpm}
 \title{Convert ratio to ppm}
 \usage{
-ratioToPpm(x, y = NULL, nSign = NULL, silent = FALSE,
-  callFrom = NULL)
+ratioToPpm(x, y = NULL, nSign = NULL, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{(numeric) main input}

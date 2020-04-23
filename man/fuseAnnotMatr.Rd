@@ -4,10 +4,16 @@
 \alias{fuseAnnotMatr}
 \title{Fuse annotation matrix to initial matrix}
 \usage{
-fuseAnnotMatr(iniTab, annotTab, refIniT = "Uniprot",
-  refAnnotT = "combName", addCol = c("ensembl_gene_id", "description",
-  "geneName", "combName"), debug = TRUE, silent = FALSE,
-  callFrom = NULL)
+fuseAnnotMatr(
+  iniTab,
+  annotTab,
+  refIniT = "Uniprot",
+  refAnnotT = "combName",
+  addCol = c("ensembl_gene_id", "description", "geneName", "combName"),
+  debug = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{iniTab}{(matrix), that may have lines with multiple (=repeated) key entries}

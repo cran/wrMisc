@@ -4,8 +4,7 @@
 \alias{extrNumericFromMatr}
 \title{Extract numeric part of matrix or data.frame}
 \usage{
-extrNumericFromMatr(dat, trimToData = TRUE, silent = FALSE,
-  callFrom = NULL)
+extrNumericFromMatr(dat, trimToData = TRUE, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{matrix (or data.frame) for extracting numeric parts}

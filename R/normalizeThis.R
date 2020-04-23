@@ -4,9 +4,11 @@
 #' The choice of normalization procedures must be done with care, plotting the data before and after normalization 
 #' may be critical to understandig the initial data structure and the effect of the procedure applied. 
 #' Inappropriate methods chosen may render interpretation of (further) results incorrect.
-#' Note : the normalized data may appear (depending on the procedure chosen) on a different scale.
+#' Normalization using the method \code{vsn} runs \code{\link[vsn]{justvsn}} from \href{https://bioconductor.org/packages/release/bioc/html/vsn.html}{vsn} 
+#' (this requires a minimum of 42 rows of input-data).
+#' Note : Depending on the procedure chosen, the normalized data may appear on a different scale.
 #' @param dat matrix or data.frame
-#' @param method (character) may be "mean","median","NULL","none", "trimMean", "slope", "exponent", "slope2Sections"; When NULL or 'none' is chosen the input will be returned
+#' @param method (character) may be "mean","median","NULL","none", "trimMean", "slope", "exponent", "slope2Sections", "vsn"; When NULL or 'none' is chosen the input will be returned
 #' @param refLines (NULL or numeric) allows to consider only specific lines of 'dat' when determining normalization factors (all data will be normalized)
 #' @param refGrp Only the columns indicated will be used as reference, default all columns (integer or colnames)
 #' @param trimFa (numeric, length=1) additional parameters for trimmed mean
@@ -15,7 +17,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message produced
 #' @return matrix of normalized data
-#' @seealso \code{\link{exponNormalize}}
+#' @seealso \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}} 
 #' @examples
 #' set.seed(2015); rand1 <- round(runif(300)+rnorm(300,0,2),3)
 #' dat1 <- cbind(ser1=round(100:1+rand1[1:100]),ser2=round(1.2*(100:1+rand1[101:200])-2),
@@ -36,11 +38,17 @@
 #' cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 #' @export
 normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NULL,quantFa=NULL,expFa=NULL,silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="normalizeThis")
-  out <- NULL
+  fxNa <- "normalizeThis"
+  out <- NULL  
+  chMe <- is.na(method)
+  if(sum(!chMe) <1) stop(" argument 'method' seems empty - nothing to do !")
+  method <- if(any(chMe)) wrMisc::naOmit(method)[1] else method[1] 
+  if(length(dim(dat)) !=2) stop(" expecting matrix or data.frame with >= 2 rows as 'dat' !")
   if(!is.matrix(dat)) dat <- as.matrix(dat)
   if(!is.null(refLines)) if(identical(refLines,1:nrow(dat))) {refLines <- NULL; message(fxNa," omit redundant 'refLines'")}
+  ## assemble parameters
   params <- list(refLines=refLines,trimFa=trimFa,useQ=quantFa,useExp=expFa)
+  ## method specific elements
   if(is.null(refGrp)) { refGrp <- 1:ncol(dat)
   } else if(min(refGrp) > ncol(dat) | max(refGrp) < 1) stop(fxNa," 'refGrp' should be integer vector indicating which columns to be used as reference")
   if(method %in% "trimMean") {
@@ -59,7 +67,12 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
      if(length(expFa) <1) { useExp <- c(log(c(10:1)),30,10,3)
        params$useExp <- sort(unique(c(round(1/(1+abs(useExp-useExp[1])),4),round(1+abs(useExp-useExp[1]),3)))) }
   }
-  out <- .normalize(dat,method,param=params)
+  if("vsn" %in% method & (if(length(refLines) >0) length(refLines) <nrow(dat) else FALSE)) {
+    pram$refLines <- NULL
+    if(!silent) message(fxNa," ignoring content of 'refLines', since 'vsn' can only normalize considering all data")}  
+  ## main normalization
+  out <- .normalize(dat,method,param=params,callFrom=fxNa)
+  if("try-error" %in% class(out)) { message(fxNa," Could not run normalization by '",method,"' which gave an error (return unnormalized)"); out <- dat}
   out }
 
 #' @export
@@ -67,42 +80,24 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   ## 'dat' .. matrix (>1 col, >1 li) to be normalized
   ## 'meth' .. method
   ## 'param' .. list with supl parameters (refLines, certain specific for norm methods)
-  fxNa <- .composeCallName(callFrom,newNa=".normalize")
+  fxNa <- ".normalize"
   if(identical(meth,"average")) meth <- "mean"
   asRefL <- (length(param$refLines) < nrow(dat) & !is.null(param$refLines))
+  datRef <- if(asRefL) {if(length(param$refLines) >1) dat[param$refLines,] else matrix(dat[param$refLines,],nrow=1)} else NULL
+  if("vsn" %in% meth & (nrow(if(asRefL) datRef else dat)) <42) message(callFrom,
+    " PROBLEM : Too few lines of data to run 'vsn' ! ")
   switch(meth,
     none=dat,  
-    mean= sum(dat,na.rm=TRUE)*dat/(matrix(rep(colMeans(if(asRefL) dat[param$refLines,] else dat,na.rm=TRUE),
+    mean= sum(dat,na.rm=TRUE)*dat/(matrix(rep(colMeans(if(asRefL) datRef else dat,na.rm=TRUE),
       each=nrow(dat)),nrow=nrow(dat))*sum(!is.na(dat))),
     trimMean=mean(dat,trim=param$trimFa,na.rm=TRUE)* dat/matrix(rep(apply(
-      if(asRefL) dat[param$refLines,] else dat,2,mean,trim=param$trimFa,na.rm=TRUE),each=nrow(dat)),nrow=nrow(dat)),
-    median=stats::median(dat,na.rm=TRUE)*dat/matrix(rep(apply(if(asRefL) dat[param$refLines,] else dat,2,stats::median,na.rm=TRUE),each=nrow(dat)),nrow=nrow(dat)),
+      if(asRefL) datRef else dat,2,mean,trim=param$trimFa,na.rm=TRUE),each=nrow(dat)),nrow=nrow(dat)),
+    median=stats::median(dat,na.rm=TRUE)*dat/matrix(rep(apply(if(asRefL) datRef else dat,2,stats::median,na.rm=TRUE),each=nrow(dat)),nrow=nrow(dat)),
     slope=.normConstSlope(mat=dat,useQuant=param$useQ,refLines=param$refLines,diagPlot=FALSE),
-    exponent=exponNormalize(dat,useExpon=param$useExp,refLines=param$refLines)$datNor,
-    slope2Sections=adjBy2ptReg(dat,lims=param$useQ,refLines=param$refLines) ) 
+    exponent=try(exponNormalize(dat,useExpon=param$useExp,refLines=param$refLines)$datNor),
+    slope2Sections=try(adjBy2ptReg(dat,lims=param$useQ,refLines=param$refLines)),
+    vsn=try(vsn::justvsn(dat)) ) 
   }
-
-#' @export
-.datSlope <- function(dat,typeOfPlot="sort",toNinX=FALSE,plotData=FALSE,callFrom=NULL){
-  ## search regression for simple vector
-  ## ''.. switch between sorted or summed values
-  ## toNinX will make regression to 1:length(dat) in x
-  fxNa <- .composeCallName(callFrom,newNa=".datSlope")
-  if(length(typeOfPlot) >1) {
-    message(fxNa,"invalid entry for typeOfPlot ",paste(typeOfPlot,collapse=", ")," (use 1st)")
-    typeOfPlot <- typeOfPlot[1] }
-  dat <- as.numeric(naOmit(sort(dat)))
-  y <- if(tolower(typeOfPlot) %in% "cumsum") cumsum(sort(dat)) else sort(dat)
-  y <- data.frame(out=y,n=1:length(dat))
-  out <- if(toNinX) stats::lm(n ~ out, data=y)$coefficients else stats::lm(out ~ n, data=y)$coefficients
-  if(plotData) {if(toNinX) {
-    graphics::plot(y,type="s",ylab=if(tolower(typeOfPlot) %in% "cumsum") "cumsum" else "sorted")
-    for(i in 2:ncol(out)) graphics::points(y); graphics::abline(out,lty=2,col=2)
-  } else {
-    graphics::plot(1:nrow(y),y[,1],type="s",ylab=if(tolower(typeOfPlot) %in% "cumsum") "cumsum" else "sorted")
-    graphics::points(1:nrow(y),y[,1]); graphics::abline(out,lty=2,col=2) } }
-  names(out) <- c("intercept","slope")
-  out }
 
 #' @export
 .normConstSlope <- function(mat,useQuant=c(0.2,0.8),refLines=NULL,diagPlot=TRUE,plotLog="",datName=NULL,silent=FALSE,callFrom=NULL){

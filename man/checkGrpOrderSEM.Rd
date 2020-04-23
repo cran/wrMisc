@@ -4,8 +4,15 @@
 \alias{checkGrpOrderSEM}
 \title{Check order of multiple groups including non-overlapping SEM-margins}
 \usage{
-checkGrpOrderSEM(x, grp, sdFact = 1, revRank = TRUE,
-  shrink1sampSd = TRUE, silent = FALSE, callFrom = NULL)
+checkGrpOrderSEM(
+  x,
+  grp,
+  sdFact = 1,
+  revRank = TRUE,
+  shrink1sampSd = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{matrix or data.frame}

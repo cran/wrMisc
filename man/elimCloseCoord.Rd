@@ -4,8 +4,15 @@
 \alias{elimCloseCoord}
 \title{Eliminate close (overlapping) points (in x & y space)}
 \usage{
-elimCloseCoord(dat, useCol = 1:2, elimIdentOnly = FALSE, refine = 2,
-  nDig = 3, callFrom = NULL, silent = FALSE)
+elimCloseCoord(
+  dat,
+  useCol = 1:2,
+  elimIdentOnly = FALSE,
+  refine = 2,
+  nDig = 3,
+  callFrom = NULL,
+  silent = FALSE
+)
 }
 \arguments{
 \item{dat}{matrix (or data.frame) with main numeric input}

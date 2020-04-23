@@ -4,9 +4,17 @@
 \alias{test2factLimma}
 \title{2-factorial limma-style t-test}
 \usage{
-test2factLimma(datMatr, fac1, fac2, testSynerg = TRUE,
-  testOrientation = "=", addResults = c("lfdr", "FDR", "Mval",
-  "means"), addGenes = NULL, silent = FALSE, callFrom = NULL)
+test2factLimma(
+  datMatr,
+  fac1,
+  fac2,
+  testSynerg = TRUE,
+  testOrientation = "=",
+  addResults = c("lfdr", "FDR", "Mval", "means"),
+  addGenes = NULL,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{datMatr}{matrix or data.frame with lines as indenpendent series of measures (eg different genes)}

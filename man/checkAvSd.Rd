@@ -4,9 +4,17 @@
 \alias{checkAvSd}
 \title{Check how multiple groups of data separate or overlap based on mean +/- sd}
 \usage{
-checkAvSd(daAv, daSd, nByGr = NULL, multSd = 2, codeConst = "const",
-  extSearch = FALSE, outAsLogical = TRUE, silent = FALSE,
-  callFrom = NULL)
+checkAvSd(
+  daAv,
+  daSd,
+  nByGr = NULL,
+  multSd = 2,
+  codeConst = "const",
+  extSearch = FALSE,
+  outAsLogical = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{daAv}{matrix or data.frame}

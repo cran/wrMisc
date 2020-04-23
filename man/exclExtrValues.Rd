@@ -4,9 +4,16 @@
 \alias{exclExtrValues}
 \title{Exclude extreme values (based on distance to mean)}
 \usage{
-exclExtrValues(dat, result = "val", CVlim = NULL, maxExcl = 1,
-  showNA = FALSE, goodValues = TRUE, silent = FALSE,
-  callFrom = NULL)
+exclExtrValues(
+  dat,
+  result = "val",
+  CVlim = NULL,
+  maxExcl = 1,
+  showNA = FALSE,
+  goodValues = TRUE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{numeric vector, main input}

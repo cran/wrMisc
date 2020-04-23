@@ -4,8 +4,13 @@
 \alias{regrMultBy1or2point}
 \title{Rescaling of multiple data-sets according to reference data using regression}
 \usage{
-regrMultBy1or2point(inDat, refLst, regrTo = c(1, 0.5), silent = FALSE,
-  callFrom = NULL)
+regrMultBy1or2point(
+  inDat,
+  refLst,
+  regrTo = c(1, 0.5),
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{inDat}{matrix or data.frame}

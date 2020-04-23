@@ -4,8 +4,7 @@
 \alias{diffCombin}
 \title{Compute matrix of differences for all pairwise combinations of numeric vector}
 \usage{
-diffCombin(x, diagAsNA = FALSE, prefix = TRUE, silent = FALSE,
-  callFrom = NULL)
+diffCombin(x, diagAsNA = FALSE, prefix = TRUE, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{numeric vector to compute differences for all combinations}

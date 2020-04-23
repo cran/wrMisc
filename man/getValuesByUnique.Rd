@@ -4,8 +4,13 @@
 \alias{getValuesByUnique}
 \title{Print matrix-content as plot}
 \usage{
-getValuesByUnique(dat, datUniq = NULL, asIndex = FALSE,
-  silent = FALSE, callFrom = NULL)
+getValuesByUnique(
+  dat,
+  datUniq = NULL,
+  asIndex = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{(numeric or character) main long input, must have names}

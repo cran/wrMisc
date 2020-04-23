@@ -17,7 +17,7 @@ completeArrLst(arrLst, silent = FALSE, callFrom = NULL)
 list of arrays, now with same dimension of arrays
 }
 \description{
-This functions aims to inspect repeaing structues of data given as list of arrays and will try to complete 
+This functions aims to inspect repeating structues of data given as list of arrays and will try to complete 
 arrays with fewer lines or columns (as this may appear eg with the very last set of high-thourput sceening data 
 if fewer measures remain in the last set). Thus, the dimensions of the arrays are compared and 
 cases with fewer (lost) columns (eg fewer experimental replicates) will be adjust/complete  by adding column(s) of NA.

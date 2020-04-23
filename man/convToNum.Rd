@@ -4,16 +4,23 @@
 \alias{convToNum}
 \title{Convert to numeric}
 \usage{
-convToNum(x, spaceRemove = TRUE, convert = c(NA, "sparseChar"),
-  remove = NULL, euroStyle = TRUE, sciIncl = TRUE, callFrom = NULL,
-  silent = TRUE)
+convToNum(
+  x,
+  spaceRemove = TRUE,
+  convert = c(NA, "sparseChar"),
+  remove = NULL,
+  euroStyle = TRUE,
+  sciIncl = TRUE,
+  callFrom = NULL,
+  silent = TRUE
+)
 }
 \arguments{
 \item{x}{vector to be converted}
 
 \item{spaceRemove}{(logical) to remove all heading and trailing (white) space (until first non-space character)}
 
-\item{convert}{(character) define which type of non-conform entries to concert to NAs. Note, if \code{remove} is selected to eliminate character-entries they cannot be converted any more. Use 'allChar' for all character-entries; 'sparseChar' sparse (ie rare) character entries; \code{NA} for converting 'Na' or 'na' to \code{NA}; if 'none' or \code{NULL} no conversions at all.}
+\item{convert}{(character) define which type of non-conform entries to convert to NAs. Note, if \code{remove} is selected to eliminate character-entries they cannot be converted any more. Use 'allChar' for all character-entries; 'sparseChar' sparse (ie rare) character entries; \code{NA} for converting 'Na' or 'na' to \code{NA}; if 'none' or \code{NULL} no conversions at all.}
 
 \item{remove}{(character) define which type of non-conform entries to remove, removed items cannot converted to \code{NA} any more. Use 'allChar' for removing all character entries; \code{NA} for removing all instances of \code{NA} (execept thise created by converting text); all elements will be kept if 'none' or \code{NULL}.}
 
@@ -36,9 +43,13 @@ Note: if 'x' is a matrix, its matrix-dimensions & -names will be preseved.
 Note: so far Inf  and -Inf do not get recognized as numeric.
 }
 \examples{
-x1 <- c("+4"," + 5","6","-7"," - 8","1e6","+ 2.3e4","-3E4","- 4E5") 
-convToNum(x1,convert=NA,remove=c("allChar",NA))
-convToNum(x1,convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
+x1 <- c("+4"," + 5","6","bb","Na","-7") 
+convToNum(x1,convert=c("allChar"))
+convToNum(x1)        # too many non-numeric instances for 'sparseChar'
+
+x2 <- c("+4"," + 5","6","-7"," - 8","1e6","+ 2.3e4","-3E4","- 4E5") 
+convToNum(x2,convert=NA,remove=c("allChar",NA))
+convToNum(x2,convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
 }
 \seealso{
 \code{\link[base]{numeric}}

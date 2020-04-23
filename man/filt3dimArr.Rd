@@ -4,18 +4,18 @@
 \alias{filt3dimArr}
 \title{Filter a three-dimensional array of numeric data}
 \usage{
-filt3dimArr(x, displCrit, filtCrit, filtVal, filtTy = ">")
+filt3dimArr(x, filtCrit, filtVal, filtTy = ">", displCrit = NULL)
 }
 \arguments{
 \item{x}{array (3-dim) of numeric data}
-
-\item{displCrit}{(character) column-name(s) to display}
 
 \item{filtCrit}{(character, length=1) which column-name consider when filtering filter with 'filtVal' and 'filtTy'}
 
 \item{filtVal}{(numeric) for testing inferior/superor/equal condition}
 
-\item{filtTy}{(character) which type of testing to perform ('eq','inf','infeq','sup','supeq', ">", '<', '>=', "<=", "==")}
+\item{filtTy}{(character) which type of testing to perform ('eq','inf','infeq','sup','supeq', '>', '<', '>=', '<=', '==')}
+
+\item{displCrit}{(character) column-name(s) to display}
 }
 \value{
 list of filtered matrixes (by 3rd dim)

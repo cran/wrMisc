@@ -4,14 +4,22 @@
 \alias{normalizeThis}
 \title{Normalize data in various modes}
 \usage{
-normalizeThis(dat, method = "mean", refLines = NULL, refGrp = NULL,
-  trimFa = NULL, quantFa = NULL, expFa = NULL, silent = FALSE,
-  callFrom = NULL)
+normalizeThis(
+  dat,
+  method = "mean",
+  refLines = NULL,
+  refGrp = NULL,
+  trimFa = NULL,
+  quantFa = NULL,
+  expFa = NULL,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame}
 
-\item{method}{(character) may be "mean","median","NULL","none", "trimMean", "slope", "exponent", "slope2Sections"; When NULL or 'none' is chosen the input will be returned}
+\item{method}{(character) may be "mean","median","NULL","none", "trimMean", "slope", "exponent", "slope2Sections", "vsn"; When NULL or 'none' is chosen the input will be returned}
 
 \item{refLines}{(NULL or numeric) allows to consider only specific lines of 'dat' when determining normalization factors (all data will be normalized)}
 
@@ -35,7 +43,9 @@ Generic normalization of 'dat' (by columns), multiple methods may be applied.
 The choice of normalization procedures must be done with care, plotting the data before and after normalization 
 may be critical to understandig the initial data structure and the effect of the procedure applied. 
 Inappropriate methods chosen may render interpretation of (further) results incorrect.
-Note : the normalized data may appear (depending on the procedure chosen) on a different scale.
+Normalization using the method \code{vsn} runs \code{\link[vsn]{justvsn}} from \href{https://bioconductor.org/packages/release/bioc/html/vsn.html}{vsn} 
+(this requires a minimum of 42 rows of input-data).
+Note : Depending on the procedure chosen, the normalized data may appear on a different scale.
 }
 \examples{
 set.seed(2015); rand1 <- round(runif(300)+rnorm(300,0,2),3)
@@ -57,5 +67,5 @@ cor(dat1[c(1:10,91:100),4],rowMeans(dat1[c(1:10,91:100),1:2],na.rm=TRUE),use="co
 cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 }
 \seealso{
-\code{\link{exponNormalize}}
+\code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
 }

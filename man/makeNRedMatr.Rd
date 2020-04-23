@@ -4,8 +4,15 @@
 \alias{makeNRedMatr}
 \title{Make non-redundant matrix}
 \usage{
-makeNRedMatr(dat, summarizeRedAs, iniID = "iniID", retDataFrame = TRUE,
-  callFrom = NULL, silent = FALSE, debug = FALSE)
+makeNRedMatr(
+  dat,
+  summarizeRedAs,
+  iniID = "iniID",
+  retDataFrame = TRUE,
+  callFrom = NULL,
+  silent = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{dat}{(matrix or data.frame) main input for making non-redundant}

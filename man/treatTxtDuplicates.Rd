@@ -4,8 +4,14 @@
 \alias{treatTxtDuplicates}
 \title{Locate duplicates in text and make non-redundant}
 \usage{
-treatTxtDuplicates(x, atEnd = TRUE, sep = "_",
-  onlyCorrectToUnique = FALSE, silent = FALSE, callFrom = NULL)
+treatTxtDuplicates(
+  x,
+  atEnd = TRUE,
+  sep = "_",
+  onlyCorrectToUnique = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(character) vector with character-entries to identify (and remove) duplicates}

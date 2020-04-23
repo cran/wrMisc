@@ -1,4 +1,4 @@
-#' Distance of categorical dara (Jaccard,Rand and adjusted Rand index) 
+#' Distance of categorical data (Jaccard,Rand and adjusted Rand index) 
 #'
 #' \code{randIndFx} calculates distance of categorical data (as Rand Index, Adjusted Rand Index or Jaccard Index). 
 #' Note: uses/requires package \href{https://CRAN.R-project.org/package=flexclust}{flexclust}
