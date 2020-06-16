@@ -8,7 +8,7 @@
 #' @param fac2 (character or factor) vector describing grouping elements of dat for second factor, must be of same langth as fac1
 #' @param inclInteraction (logical) decide if factor-interactions (eg synergy) should be included to model
 #' @return (uncorrected) p for factor 'Pr(>F)' (see \code{\link[stats]{aov}}) 
-#' @seealso \code{\link[stats]{aov}}, \code{\link[stats]{anova}}; for repeated tests including \code{\link[limma]{eBayes}} see \code{\link{test2factLimma}}
+#' @seealso \code{\link[stats]{aov}}, \code{\link[stats]{anova}}; for repeated tests using the  package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} including \code{\link[limma]{lmFit}} and \code{eBayes} see \code{\link{test2factLimma}}
 #' @examples
 #' set.seed(2012); dat <- round(runif(8),1)
 #' singleLineAnova(dat,gl(2,4),rep(1:2,4))

@@ -14,7 +14,8 @@
 #' @export
 stdErrMedBoot <- function(x,nBoot=99) {  
   ## uses package boot
-  ## require(boot)
+  chPa <- try(find.package("boot"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'boot' not found ! Please install first")   
   median.fun <- function(dat,indices) stats::median(dat[indices],na.rm=TRUE)
   out <- try(stats::sd(boot::boot(data=x, statistic=median.fun, R=nBoot)$t))
   if("try-error" %in% class(out)) stop(" package 'boot' may be missing !")

@@ -10,9 +10,10 @@
 #' @param startExp (numeric)
 #' @param simMeas (character) similarity metric to be used (so far only "cor"), if rSquare=TRRUE, the r-squared will be returned
 #' @param refDat (matrix or data.frame) if null average of each line from 'dat' will be used as reference in similarity measure
-#' @param refGrp (factor) designing which col of 'ref' should be used with which col of 'dat' (length equal to number of cols in 'dat').  Note: 'refGrp' not yet coded optimally to extract numeric part of character vector, protential problems when all lines or cols of dat are NA
+#' @param refGrp (factor) designing which col of 'ref' should be used with which col of 'dat' (length equal to number of cols in 'dat').  
+#'  Note: 'refGrp' not yet coded optimally to extract numeric part of character vector, protential problems when all lines or cols of dat are NA
 #' @param refLines (NULL or integer) optional subset of lines to be considered (only) when determining normalization factors
-#' @param rSquare (logical) if TRUE, add r-squared
+#' @param rSquare (logical) if \code{TRUE}, add r-squared
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return matrix of normalized data

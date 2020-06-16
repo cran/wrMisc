@@ -32,15 +32,17 @@ buildTree <- function(disDat,startFr=NULL,posCo=c("beg","end"),silent=FALSE,call
   rownames(disDat) <- rowNa
   chSlash <- grep("/",rownames(disDat))
   if(length(chSlash) >0) message(fxNa,": TROUBLE ahead, names of nodes should NOT contain '/' !!")
-  disDat <- cbind(disDat[,1:2],le=disDat[,2]-disDat[,1]+1)            # add col for length # if(ncol(disDat)==2)   
-  setX <- try(data.tree::Node$new("_Root_",len=0))  # virtual node as generuic root,  need to avoid reserved names (see NODE_RESERVED_NAMES_CONST)
-  if("try-error" %in% class(setX)) stop(fxNa,": package 'data.tree' missing !")
+  disDat <- cbind(disDat[,1:2], le=disDat[,2] -disDat[,1] +1)            # add col for length # if(ncol(disDat)==2)   
+  chPa <- try(find.package("data.tree"), silent=TRUE)
+  if("try-error" %in% class(chPa)) stop(fxNa,": package 'data.tree' missing ! Please install from CRAN")
+  setX <- try(data.tree::Node$new("_Root_",len=0))        # virtual node as generic root,  need to avoid reserved names (see NODE_RESERVED_NAMES_CONST)
+  if("try-error" %in% class(setX)) stop(fxNa,": Problem running package data-tree : Can't even create a new generic node")
   ## check for dupl
   chDup <- duplicated(paste(disDat[,1],disDat[,2],sep="_"),fromLast=FALSE)
   names(chDup) <- rownames(disDat)
   if(any(chDup)) {
-    chDu2 <- duplicated(paste(disDat[,1],disDat[,2],sep="_"),fromLast=TRUE)
-    hasDu <- chDu2 & !chDup                # the originals (of dupl) to keep
+    chDu2 <- duplicated(paste(disDat[,1],disDat[,2],sep="_"), fromLast=TRUE)
+    hasDu <- chDu2 & !chDup                    # the originals (of dupl) to keep
     names(hasDu) <- rownames(disDat)
     ## remove duplicated/redundant
     dupDat <- lapply(which(hasDu),function(x) {z <- paste(disDat[,2],disDat[,1],sep="_"); which(z %in% z[x])})  # index of replicated elements (line-no)
@@ -48,7 +50,7 @@ buildTree <- function(disDat,startFr=NULL,posCo=c("beg","end"),silent=FALSE,call
     disDat <- disDat[which(!chDup),]           # cleaned main data
   } else dupDat <- NULL
   ## check possible start sites
-  nodeWPrev <- sort(unique(names(which(rep(disDat[,1],nrow(disDat))== rep(disDat[,2]+1,each=nrow(disDat))))))
+  nodeWPrev <- sort(unique(names(which(rep(disDat[,1],nrow(disDat))== rep(disDat[,2]+1, each=nrow(disDat))))))
   rootBaseNa <- if(length(nodeWPrev) >0) rownames(disDat)[which(!rownames(disDat) %in% nodeWPrev)] else rownames(disDat)
   rootBase <- which(rownames(disDat) %in% rootBaseNa)
   names(rootBase) <- rootBaseNa

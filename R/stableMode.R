@@ -18,6 +18,10 @@
 stableMode <- function(x,histLike=FALSE,rangeSign=1:6,nCl=50,callFrom=NULL,silent=FALSE){
   fxNa <- .composeCallName(callFrom,newNa="stableMode")
   x <- naOmit(x)
+  if(!histLike) {  
+    chPa <- try(find.package("BBmisc"),silent=TRUE)
+    if("try-error" %in% class(chPa)) message("package 'BBmisc' not found ! Please install first \n   setting 'histLike' to TRUE") 
+    histLike <- TRUE }
   if(!histLike) {
     mo <- sapply(rangeSign,function(y) BBmisc::computeMode(signif(x,y)))
     posi <- .firstMin(diff(mo)/mo[-length(mo)],positionOnly=TRUE)

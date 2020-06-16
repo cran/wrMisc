@@ -30,8 +30,8 @@
 #' @export
 tableToPlot <- function(matr,colPos=c(0.05,0.35,0.41,0.56),useCex=0.7,useAdj=c(0,1,1,0),titOffS=0,useCol=1,silent=FALSE,callFrom=NULL){
   fxNa <- .composeCallName(callFrom,newNa="tableToPlot")
-  opar <- graphics::par(no.readonly=TRUE)  
-  on.exit(graphics::par(opar))  
+  opar <- list(mar=graphics::par("mar"))
+  on.exit(graphics::par(opar))
   msg <- " requires matrix (or data.frame) with >0 rows and 2-7 columns"
   msg2 <- " number of columns of 'matr' doesn't match with number of elements in 'colPos'"
   if(length(dim(matr)) <2) stop(msg)

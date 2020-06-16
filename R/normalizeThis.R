@@ -42,7 +42,7 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   out <- NULL  
   chMe <- is.na(method)
   if(sum(!chMe) <1) stop(" argument 'method' seems empty - nothing to do !")
-  method <- if(any(chMe)) wrMisc::naOmit(method)[1] else method[1] 
+  method <- if(any(chMe)) naOmit(method)[1] else method[1] 
   if(length(dim(dat)) !=2) stop(" expecting matrix or data.frame with >= 2 rows as 'dat' !")
   if(!is.matrix(dat)) dat <- as.matrix(dat)
   if(!is.null(refLines)) if(identical(refLines,1:nrow(dat))) {refLines <- NULL; message(fxNa," omit redundant 'refLines'")}
@@ -84,8 +84,9 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   if(identical(meth,"average")) meth <- "mean"
   asRefL <- (length(param$refLines) < nrow(dat) & !is.null(param$refLines))
   datRef <- if(asRefL) {if(length(param$refLines) >1) dat[param$refLines,] else matrix(dat[param$refLines,],nrow=1)} else NULL
-  if("vsn" %in% meth & (nrow(if(asRefL) datRef else dat)) <42) message(callFrom,
-    " PROBLEM : Too few lines of data to run 'vsn' ! ")
+  if("vsn" %in% meth) { chPa <- try(find.package("vsn"), silent=TRUE)
+    if("try-error" %in% class(chPa)) warning("package 'vsn' not found ! Please install first from Bioconductor") 
+    if(nrow(if(asRefL) datRef else dat) <42) message(callFrom," PROBLEM : Too few lines of data to run 'vsn' ! ")}
   switch(meth,
     none=dat,  
     mean= sum(dat,na.rm=TRUE)*dat/(matrix(rep(colMeans(if(asRefL) datRef else dat,na.rm=TRUE),

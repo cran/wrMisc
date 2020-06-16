@@ -51,5 +51,5 @@ test8 <- moderTestXgrp(t8,grp)
 head(test8$p.value,n=8)
 }
 \seealso{
-\code{\link[limma]{eBayes}} for basal tool and \code{\link{moderTest2grp}} for single comparison
+\code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
 }

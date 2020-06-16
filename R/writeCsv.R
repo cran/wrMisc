@@ -36,6 +36,8 @@
 writeCsv <- function(input,inPutFi=NULL,expTy=c("Eur","US"),imporTy="Eur",filename=NULL,quote=FALSE,filterCol=NULL,replMatr=NULL,returnOut=FALSE,SYLKprevent=TRUE,digits=22,silent=FALSE,debug=FALSE,callFrom=NULL){
   fxNa <- .composeCallName(callFrom,newNa="saveCsv")
   argN <- deparse(substitute(input))
+  chPa <- try(find.package("utils"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'utils' not found ! Please install first") 
   if(length(input) <1) stop(fxNa," 'input'  should be data or filename")
   if(is.character(input)) {if(file.exists(input)) {inPutFi <- as.character(dat)[1]; dat <- NULL
     if(!silent) message(fxNa,"trying to read  ",inPutFi,"  as format: ",imporTy)

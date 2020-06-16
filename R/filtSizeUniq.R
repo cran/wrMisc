@@ -23,7 +23,7 @@
 #' @export
 filtSizeUniq <- function(lst,ref=NULL,minSize=6,maxSize=36,filtUnique=TRUE,byProt=TRUE,inclEmpty=TRUE,silent=FALSE,callFrom=NULL) {
   ## filter protein sequences for size/length and for unique
-  fxNa <- wrMisc::.composeCallName(callFrom,newNa="filtSizeUniq")
+  fxNa <- .composeCallName(callFrom,newNa="filtSizeUniq")
   chNa <- grep("\\.$", names(utils::head(lst)))                                   # check for attached tailing '.'
   if(!is.list(lst)) {byProt <- FALSE; inclEmpty <- FALSE}
   if(length(chNa) <= min(2,length(lst))) names(lst) <- paste(names(lst),".",sep="")

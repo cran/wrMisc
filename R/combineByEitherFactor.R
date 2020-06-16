@@ -13,8 +13,8 @@
 #' Works on numeric as well as character input.  
 #'
 #' @param mat input matrix
-#' @param refC1 (numeric) column-number of 'mat' to use as 1st set
-#' @param refC2 (numeric) column-number of 'mat' to use as 2nd set
+#' @param refC1 (integer) column-number of 'mat' to use as 1st set
+#' @param refC2 (integer) column-number of 'mat' to use as 2nd set
 #' @param nByGrp (logical) add last col with n by group
 #' @param convergeMax (logical) if TRUE, run 2 add'l iteartive steps to search convergence to stable result
 #' @param silent (logical) suppres messages
@@ -45,7 +45,7 @@ combineByEitherFactor <- function(mat,refC1,refC2,nByGrp=FALSE,convergeMax=TRUE,
   ## express 1st index as 2nd :
   mat <- cbind(mat,grp=unlist(tapply(mat[,refC1],mat[,refC2],function(x) rep(x[1],length(x))))[rank(mat[,refC2],ties.method="first")]) 
   sup1 <- unlist(tapply(mat[,ncol(mat)],mat[,refC1],function(x) rep(x[1],length(x))))[order(mat[,refC1])]
-  msg <- c(" not reached convergence at ","2nd","4th"," pass, continue","6th pass (stop iterating)"," pass")
+  msg <- c(" did not reach convergence at ","2nd","4th"," pass, continuing ..","6th pass (stop iterating)"," pass")
   if(convergeMax & !all(sup1==mat[,ncol(mat)])) {
     if(!silent & nrow(mat) >999) message(fxNa,msg[c(1,2,4)])
     sup2 <- unlist(tapply(sup1,mat[,refC2],function(x) rep(x[1],length(x))))[order(mat[,refC2])]  

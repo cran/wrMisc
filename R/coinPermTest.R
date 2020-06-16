@@ -15,6 +15,8 @@
 #' coinPermTest(2,3)
 #' @export
 coinPermTest <- function(x1,x2,orient="two.sided",nPerm=5000,silent=FALSE,callFrom=NULL){
+  chPa <- try(find.package("coin"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'coin' not found") 
   tmp <- if(identical(orient,"greater")) coin::oneway_test(c(x1,x2) ~ factor(rep(c("A", "B"), c(length(x1),length(x2)))),
     alternative="greater", distribution=coin::approximate(B=nPerm)) else if(any(identical(orient,"fewer"),identical(orient,"less"))) {
       coin::oneway_test(c(x1,x2) ~ factor(rep(c("A", "B"), c(length(x1),length(x2)))),

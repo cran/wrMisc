@@ -26,8 +26,12 @@
 searchLinesAtGivenSlope <- function(dat,coeff=1.5,filtExtr=c(0,1),minMaxDistThr=NULL,lmCompare=TRUE,indexPoints=TRUE,
   displHist=FALSE,displScat=FALSE, bestCluByDistRat=TRUE,neighbDiLim=NULL,silent=FALSE,debugM=FALSE,callFrom=NULL){
   fxNa <- .composeCallName(callFrom,newNa="searchLinesAtGivenSlope")
-  opar <- graphics::par(no.readonly=TRUE)      
-  on.exit(graphics::par(opar))            
+  opar <- list(mfrow=graphics::par("mfrow"),mfcol=graphics::par("mfcol"))
+  on.exit(graphics::par(opar$mfrow))
+  on.exit(graphics::par(opar$mfcol))
+  if(lmCompare) { chPa <- try(find.package("MASS"),silent=TRUE)
+    if("try-error" %in% class(chPa)) message(fxNa," package 'MASS' not found ! Please install first \n   setting 'lmCompare' to FALSE")
+      lmCompare <- FALSE} 
   minNPoints <- 8                            ## min no of points to be included in primary selection of groups/clusters
   cvThr <- c(0.06,0.09)                      ## threshold for 1st flitering of clustering results
   argNa <- deparse(substitute(dat))
@@ -185,7 +189,7 @@ searchLinesAtGivenSlope <- function(dat,coeff=1.5,filtExtr=c(0,1),minMaxDistThr=
     if(!all(unique(bestPart$cluster) %in% rownames(offT))) {
       cluNa <- data.frame(clu=unique(bestPart$cluster),xx=NA,stringsAsFactors=FALSE)
       tmp <- data.frame(clu=rownames(offT),offT,stringsAsFactors=FALSE)
-      tmp <- base::merge(tmp,cluNa,by="clu",all=TRUE)
+      tmp <- merge(tmp,cluNa,by="clu",all=TRUE)
       grpChar1 <- tmp[,"neigbDist"]
       names(grpChar1) <- tmp[,"clu"]
     } 
@@ -250,6 +254,10 @@ searchLinesAtGivenSlope <- function(dat,coeff=1.5,filtExtr=c(0,1),minMaxDistThr=
   ## 'cluChar' .. to display cluster characteristics
   ## return clustering (class index) or (if 'cluChar'=TRUE) list with clustering and cluster-characteristics
   ## require(NbClust)
+  if(automClu) {
+    chPa <- try(find.package("NbClust"),silent=TRUE)
+    if("try-error" %in% class(chPa)) message("package 'NbClust' not found ! Please install first \n   setting 'automClu'=FALSE") 
+    automClu <- FALSE }
   if(automClu) {
     cluAut <- NbClust::NbClust(dat,method="average",index="ccc")     # cluster only best = smallest dist
     out <- cluAut$Best.partition

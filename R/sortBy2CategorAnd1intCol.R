@@ -37,7 +37,7 @@ sortBy2CategorAnd1IntCol <- function(mat,categCol,numCol,findNeighb=TRUE,decreas
     } else isNei <- mat[-1,categCol[1]]==mat[-nrow(mat),categCol[1]]
     isNei <- c(FALSE,isNei) & c(0,num[-1] -num[-nrow(mat)])== (if(decreasing) -1 else 1)
     gr <- cumsum(!isNei)
-    dup <- (base::duplicated(gr,fromLast=TRUE) | base::duplicated(gr,fromLast=FALSE))
+    dup <- (duplicated(gr,fromLast=TRUE) | duplicated(gr,fromLast=FALSE))
     if(any(!dup)) gr[which(!dup)] <- NA
     mat <- cbind(mat[,1:dimIni[2]],neiGr=gr) }
   mat }

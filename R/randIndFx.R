@@ -27,6 +27,8 @@ randIndFx <- function(ma,method="ARI",adjSense=TRUE,silent=FALSE,callFrom=NULL){
   ## wr 29jan15, cor 23mar16
   ## require(flexclust)
   fxNa <- .composeCallName(callFrom,newNa="randIndFx")
+  chPa <- try(find.package("flexclust"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'flexclust' not found ! Please install first") 
   if(!is.matrix(ma) & !silent) message(fxNa," Caution : data-frames with factors may cause problems !!")
   if(is.logical(ma)) stop(fxNa,"expecting matrix with integer values")
   maCo <- matrix(1:nrow(ma),ncol=nrow(ma),nrow=nrow(ma))

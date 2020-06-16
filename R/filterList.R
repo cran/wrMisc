@@ -22,7 +22,7 @@ filterList <- function(lst,filt,minLineRatio=0.5,silent=FALSE,callFrom=NULL) {
   ##  adjust all elements of lst to filtering
   ## minLineRatio (numeric) min ratio of columns where 
   ## assumes that all elements of lst are in correct order !
-  fxNa <- wrMisc::.composeCallName(callFrom,newNa="filterList")
+  fxNa <- .composeCallName(callFrom,newNa="filterList")
   if(length(filt) <1) stop(" 'filt' seems to empty")
   if(length(dim(filt)) >1) { 
     if(length(minLineRatio) <1 | !is.numeric(minLineRatio)) { minLineRatio <- 0.5

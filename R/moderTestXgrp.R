@@ -12,7 +12,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return limma-type MA-object (list)
-#' @seealso \code{\link[limma]{eBayes}} for basal tool and \code{\link{moderTest2grp}} for single comparison
+#' @seealso \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
 #' @examples
 #' grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
 #' set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2),ncol=8,
@@ -28,6 +28,9 @@
 #' @export
 moderTestXgrp <- function(dat,grp,limmaOutput=TRUE,addResults=c("lfdr","FDR","Mval","means"),testOrientation="=",silent=FALSE,callFrom=NULL){
   fxNa <- .composeCallName(callFrom,newNa="moderTestXgrp")
+  chPa <- try(find.package("limma"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'limma' not found !") 
+  chFdr <- try(find.package("fdrtool"), silent=TRUE)  
   if(!is.factor(grp)) grp <- as.factor(grp)
   if(length(levels(grp)) <2) stop(" need at least 2 groups in argument 'grp'")
   ## treat non-unique row-names ?
@@ -37,6 +40,9 @@ moderTestXgrp <- function(dat,grp,limmaOutput=TRUE,addResults=c("lfdr","FDR","Mv
   if(length(testOrientation) <1) testOrientation <- altHyp
   if(testOrientation %in% c("<","less","inf")) altHyp <- "less"           
   if(testOrientation %in% c(">","greater","sup")) altHyp <- "greater"
+  if(length(addResults) >0) if("lfdr" %in% tolower(addResults) & "try-error" %in% class(chFdr)) {
+    if(!silent) message(fxNa,"package 'fdrtool' not found ! Please install package fdrtool from CRAN for enabeling 'lfdr' estimations") 
+    addResults <- addResults[which(!tolower(addResults) %in% "lfdr")] }  
   datDesign <- stats::model.matrix(~ -1 + grp)                  # can't use directly, need contrasts !!
   colnames(datDesign) <- sub("^grp","",colnames(datDesign))
   comp <- triCoord(length(levels(grp)))

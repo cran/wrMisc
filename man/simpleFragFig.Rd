@@ -21,7 +21,7 @@ simpleFragFig(
 
 \item{fullSize}{(integer) optional max size used for figure (x-axis)}
 
-\item{sortByHead}{(logical) sort by begin-sites (if TRUE) or sort by end-sites}
+\item{sortByHead}{(logical) sort by begin-sites (if \code{TRUE}) or sort by end-sites}
 
 \item{useTit}{(character) custom title}
 
@@ -29,7 +29,7 @@ simpleFragFig(
 
 \item{displNa}{(character) display names of edges (figure may get crowded)}
 
-\item{useCex}{(numeric) expansion factor}
+\item{useCex}{(numeric) expansion factor, see also \code{\link[graphics]{par}}}
 }
 \value{
 matrix with mean values

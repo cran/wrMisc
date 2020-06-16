@@ -32,6 +32,8 @@
 readXlsxBatch <- function(fileNames=NULL,path=".",fileExtension="xlsx",excludeFiles=NULL,sheetInd=1,checkFormat=TRUE,
   returnArray=TRUE,columns=c("Plate","Well","StainA"),simpleNames=3,silent=FALSE,callFrom=NULL){
   fxNa <- .composeCallName(callFrom,newNa="readXlsxBatch")  
+  chPa <- try(find.package("xlsx"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'xlsx' not found ! Please install first")   
   if(is.null(path)) path <- "."
   chPath <- file.exists(path)
   if(!chPath) {message(fxNa," Cannot find path '",path,"' !  ... Setting to default='.'")}

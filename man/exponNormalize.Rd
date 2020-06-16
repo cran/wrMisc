@@ -35,11 +35,12 @@ in this case 1st line for exp for lowest data, 2nd line for highest}
 
 \item{refDat}{(matrix or data.frame) if null average of each line from 'dat' will be used as reference in similarity measure}
 
-\item{refGrp}{(factor) designing which col of 'ref' should be used with which col of 'dat' (length equal to number of cols in 'dat').  Note: 'refGrp' not yet coded optimally to extract numeric part of character vector, protential problems when all lines or cols of dat are NA}
+\item{refGrp}{(factor) designing which col of 'ref' should be used with which col of 'dat' (length equal to number of cols in 'dat').
+Note: 'refGrp' not yet coded optimally to extract numeric part of character vector, protential problems when all lines or cols of dat are NA}
 
 \item{refLines}{(NULL or integer) optional subset of lines to be considered (only) when determining normalization factors}
 
-\item{rSquare}{(logical) if TRUE, add r-squared}
+\item{rSquare}{(logical) if \code{TRUE}, add r-squared}
 
 \item{silent}{(logical) suppress messages}
 

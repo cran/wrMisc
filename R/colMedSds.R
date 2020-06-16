@@ -13,6 +13,8 @@
 colMedSds <- function(dat,nBoot=99){
   msg <- "'dat' should be matrix or data.frame with "
   if(is.null(ncol(dat))) stop(msg,"multiple columns !") else if(ncol(dat) < 2) stop(msg,"at least 2 columns !")
+  chPa <- try(find.package("boot"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'boot' not found") 
   median.fun <- function(dat,indices) stats::median(dat[indices],na.rm=TRUE)
   out <- apply(dat,2,function(x) stats::sd(boot::boot(data=x, statistic=median.fun, R=nBoot)$t))
   out }

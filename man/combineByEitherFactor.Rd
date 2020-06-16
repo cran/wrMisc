@@ -17,9 +17,9 @@ combineByEitherFactor(
 \arguments{
 \item{mat}{input matrix}
 
-\item{refC1}{(numeric) column-number of 'mat' to use as 1st set}
+\item{refC1}{(integer) column-number of 'mat' to use as 1st set}
 
-\item{refC2}{(numeric) column-number of 'mat' to use as 2nd set}
+\item{refC2}{(integer) column-number of 'mat' to use as 2nd set}
 
 \item{nByGrp}{(logical) add last col with n by group}
 

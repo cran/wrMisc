@@ -40,5 +40,5 @@ set.seed(2017); t4 <- matrix(round(runif(40,1,9),2),ncol=4,
 makeMAList(t4,gl(2,2,labels=c("R","G")))
 }
 \seealso{
-\code{MA.RG} in \code{\link[limma]{normalizeWithinArrays}}
+\code{\link{test2factLimma}}, for creating RG-lists within limma: \code{MA.RG} in \code{\link[limma]{normalizeWithinArrays}}
 }

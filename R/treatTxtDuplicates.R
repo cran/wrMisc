@@ -23,7 +23,7 @@ treatTxtDuplicates <- function(x,atEnd=TRUE,sep="_",onlyCorrectToUnique=FALSE,si
   if(any(is.na(x))) x[which(is.na(x))] <- "NA"
   out <- correctToUnique(x,sep=sep,atEnd=atEnd)
   if(!onlyCorrectToUnique) {
-    anyDu <- base::duplicated(x,fromL=FALSE) | base::duplicated(x,fromL=TRUE)
+    anyDu <- duplicated(x,fromL=FALSE) | duplicated(x,fromL=TRUE)
     if(any(anyDu)) { nrLst <- sapply(unique(x),function(z) which(x %in% z))
       if(!is.list(nrLst)) nrLst <- as.list(as.data.frame(nrLst))
       } else {nrLst <- as.list(1:length(x)); names(nrLst) <- x}

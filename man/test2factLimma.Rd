@@ -39,8 +39,9 @@ test2factLimma(
 object of class "MArrayLM" (from limma)
 }
 \description{
-\code{test2factLimma} runs 2 fact test on data 'datMatr' which should already be organized as matrix (rows = genes) using \code{\link[limma]{eBayes}}
-Note: this function uses the Bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
+The aim of this function is to provide convenient acces to two-factorial (linear) testing withing the framework of \code{\link{makeMAList}} including the emprical Bayes shrinkage. 
+The input data 'datMatr' which should already be organized as limma-type MAList, eg using using \code{\link{makeMAList}}. 
+Note: This function uses the Bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}.
 }
 \examples{
 ## example for testing change of ratio for 4 sets (AA-DD) of pairs of data  
@@ -50,7 +51,7 @@ t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
 ## via MAobj
 maOb8 <- makeMAList(t8,MAf=gl(2,4,labels=c("R","G")))
-fit8b <- test2factLimma(maOb8,c(1,1,1,1),c(0,0,1,1),testS=FALSE)  # same result as fit8e
+fit8b <- test2factLimma(maOb8,c(1,1,1,1),c(0,0,1,1),testS=FALSE)  # same result as below (fit8e)
 limma::topTable(fit8b,coef=1,n=5)                      # effect for c,d,g&h
 ## explicit (long) way via limma:
 fit8 <- limma::lmFit(maOb8, design= model.matrix(~ 0+factor(c(1,1,2,2))))
@@ -58,5 +59,5 @@ fit8e <- limma::eBayes(fit8)
 limma::topTable(fit8e,coef=1,n=5)                      # effect for c,d,g&h
 }
 \seealso{
-single line testing \code{\link[limma]{eBayes}}, for single line testing without eBayes see \code{\link{test2factLimma}}
+\code{\link{makeMAList}}, single line testing \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
 }

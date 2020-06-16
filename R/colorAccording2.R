@@ -42,6 +42,8 @@ colorAccording2 <- function(x,gradTy="rainbow",nStartOmit=NULL,nEndOmit=NULL,rev
   ## require(RColorBrewer)
   finCol <- grDevices::rgb(0.2,0.2,0.2,alpha=alph)                                  # dark grey
   if(nGrp >1 & nGrp < (9+4*paired)) {
+    if(paired) { chPa <- try(find.package("RColorBrewer"), silent=TRUE)
+      if("try-error" %in% class(chPa)) stop("package 'RColorBrewer' not found !")} 
     finCol <- if(paired) RColorBrewer::brewer.pal(12,"Paired")[c(5:6,1:4,7:12)] else RColorBrewer::brewer.pal(8,"Accent")[c(6,5,1:3,4,7:8)]   # red, blue,green,purple,orange,yellow,brown,grey
     if(nGrp < length(finCol)) finCol <- finCol[1:nGrp]
     if(alph <1 & alph >0) finCol <- convColorToTransp(finCol,alph=alph)}

@@ -10,6 +10,8 @@
 #' htmlSpecCharConv(x)
 #' @export
 htmlSpecCharConv <- function(txt) {
+  chPa <- try(find.package("stringi"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'stringi' not found !") 
   speCh <- c("\\u00b5","\\u00ba","\\u00b9","\\u00b2","\\u00b3",beta="\\u00df","\\u00e0", ced="\\u00e7",
     "\\u00e8","\\u00e9", ae="\\u00e2","\\u00f6","\\u00fc","\\u00f7","\\u00f5",x="\\u00d7")
   conv <- matrix(c(stringi::stri_unescape_unicode(speCh), "&micro","&ordm","&sup1","&sup2","&sup3","&szlig",          

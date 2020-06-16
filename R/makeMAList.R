@@ -10,7 +10,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allows easier tracking of message(s) produced
 #' @return limma-type "MAList" containing M and A values
-#' @seealso \code{MA.RG} in \code{\link[limma]{normalizeWithinArrays}}
+#' @seealso \code{\link{test2factLimma}}, for creating RG-lists within limma: \code{MA.RG} in \code{\link[limma]{normalizeWithinArrays}}
 #' @examples
 #' set.seed(2017); t4 <- matrix(round(runif(40,1,9),2),ncol=4,
 #'   dimnames=list(letters[c(1:5,3:4,6:4)],c("AA1","BB1","AA2","BB2")))
@@ -21,11 +21,13 @@ makeMAList <- function(mat,MAfac,useF=c("R","G"),isLog=TRUE,silent=FALSE,callFro
   ## 'MAfac' .. factor
   ## require(limma)
   fxNa <- .composeCallName(callFrom,newNa="makeMAList")
+  chPa <- try(find.package("limma"),silent=TRUE)
+  if("try-error" %in% class(chPa)) stop("package 'limma' not found !") 
   if(!all(useF %in% MAfac & length(useF) ==2 & length(MAfac) >1)) stop(" argument 'useF' should describe 2 elements of 'MAfac'")
   if(!isLog) {
     if(any(mat <0) & !silent) message(fxNa," negative values will create NAs at log2-transformation !") }
-  limma::MA.RG(if(isLog) list(R=2^mat[,which(MAfac==useF[1])],G=2^mat[,which(MAfac==useF[2])]) else {
-    list(R=mat[,which(MAfac==useF[1])],G=mat[,which(MAfac==useF[2])])}, bc.method="subtract", offset=0)}
+  limma::MA.RG(if(isLog) list(R=2^mat[,which(MAfac==useF[1])], G=2^mat[,which(MAfac==useF[2])]) else {
+    list(R=mat[,which(MAfac==useF[1])], G=mat[,which(MAfac==useF[2])])}, bc.method="subtract", offset=0)}
 
 #' @export
 .allRatios <- function(dat,ty="log2",colNaSep="_") {

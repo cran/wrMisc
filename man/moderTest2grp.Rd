@@ -21,7 +21,7 @@ moderTest2grp(
 
 \item{limmaOutput}{(logical) return full (or extended) MArrayLM-object from limma or 'FALSE' for only the (uncorrected) p.values}
 
-\item{addResults}{(character) types of results to add besides basic limma-output (eg "lfdr" using fdrtools-package,"FDR" for BY-FDR,"Mval" (assumes that data are log2 !),"means" or "nonMod" for non-moderated test)}
+\item{addResults}{(character) types of results to add besides basic limma-output (eg "lfdr" using packege fdrtools-package,"FDR" for BY-FDR,"Mval" (assumes that data are log2 !),"means" or "nonMod" for non-moderated test)}
 
 \item{testOrientation}{(character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2}
 
@@ -36,6 +36,7 @@ limma-type MA-object (list)
 Runs moderated t-test from package 'limma' on each line of data.
 Note: This function requires the package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} from bioconductor. 
 The limma contrast-matrix has to be read by column, the lines in the contrast-matrix containing '+1' will be compared to the '-1' lines, eg grpA-grpB .
+Local false discovery rates (lfdr) estimations will be made using the CRAN-package \href{https://CRAN.R-project.org/package=fdrtool}{fdrtool} (if available).
 }
 \examples{
 set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2),ncol=8,
@@ -49,5 +50,5 @@ fit4in <- moderTest2grp(t4,gl(2,2),testO="<")
 limma::topTable(fit4in,coef=1,n=5)
 }
 \seealso{
-\code{\link[limma]{lmFit}} and \code{\link[limma]{eBayes}}
+\code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
 }

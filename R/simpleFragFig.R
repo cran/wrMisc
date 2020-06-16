@@ -4,11 +4,11 @@
 #'
 #' @param frag (matrix) 2 columns defining begin- and end-sites (as interger values)
 #' @param fullSize (integer) optional max size used for figure (x-axis)
-#' @param sortByHead (logical) sort by begin-sites (if TRUE) or sort by end-sites
+#' @param sortByHead (logical) sort by begin-sites (if \code{TRUE}) or sort by end-sites
 #' @param useTit (character) custom title
 #' @param useCol (character) specify colors, if numeric vector will be onsidered as score values
 #' @param displNa (character) display names of edges (figure may get crowded)
-#' @param useCex (numeric) expansion factor
+#' @param useCex (numeric) expansion factor, see also \code{\link[graphics]{par}}
 #' @return matrix with mean values
 #' @seealso \code{\link{buildTree}}, \code{\link{countSameStartEnd}}, \code{\link{contribToContigPerFrag}}, 
 #' @examples
@@ -19,8 +19,8 @@
 #' @export
 simpleFragFig <- function(frag,fullSize=NULL,sortByHead=TRUE,useTit=NULL,useCol=NULL,displNa=TRUE,useCex=0.7){
   useColumn <- c(1,2)
-  opar <- graphics::par(no.readonly=TRUE)
-  on.exit(graphics::par(opar)) 
+  opar <- list(yaxt=graphics::par("yaxt"))
+  on.exit(graphics::par(opar))
   fra <- frag[,useColumn]
   if("score" %in% colnames(fra)) useCol <- fra[,"score"]
   tmp <- table(as.numeric(fra))
@@ -42,7 +42,7 @@ simpleFragFig <- function(frag,fullSize=NULL,sortByHead=TRUE,useTit=NULL,useCol=
   graphics::plot(c(1,fullSize),c(1,nrow(fra)),type="n",main=useTit,xlab="fragment location",ylab="",las=1)
   if(length(lin) >0) graphics::abline(v=lin,lty=2,col=grDevices::grey(0.7))
   graphics::segments(x0=fra[,1],y0=1:nrow(fra),x1=fra[,2],y1=1:nrow(fra),lty=1,lwd=4,col=useCol)
-  if(!is.null(rownames(fra)) &displNa) graphics::text(fra[,1]-labOff,1:nrow(fra),rownames(fra),cex=useCex)
+  if(!is.null(rownames(fra)) & displNa) graphics::text(fra[,1]-labOff,1:nrow(fra),rownames(fra),cex=useCex)
   if(length(useCol) >1) {
     grpMean <- paste(">", signif(seq(min(scoreV),max(scoreV),length.out=2*length(col1)+1)[2*(1:length(col1))-1],3))
     graphics::legend("bottomright",legend=grpMean,text.col="black",fill=col1,cex=0.8,xjust=0.5,yjust=0.5)

@@ -27,5 +27,5 @@ set.seed(2012); dat <- round(runif(8),1)
 singleLineAnova(dat,gl(2,4),rep(1:2,4))
 }
 \seealso{
-\code{\link[stats]{aov}}, \code{\link[stats]{anova}}; for repeated tests including \code{\link[limma]{eBayes}} see \code{\link{test2factLimma}}
+\code{\link[stats]{aov}}, \code{\link[stats]{anova}}; for repeated tests using the  package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} including \code{\link[limma]{lmFit}} and \code{eBayes} see \code{\link{test2factLimma}}
 }
