@@ -5,9 +5,10 @@
 \title{Read tabular content of files with variable number of columns}
 \usage{
 readVarColumns(
-  fi,
+  fiName,
   path = NULL,
   sep = "\\t",
+  header = TRUE,
   emptyFields = NA,
   refCo = NULL,
   supNa = NULL,
@@ -16,11 +17,13 @@ readVarColumns(
 )
 }
 \arguments{
-\item{fi}{(character) file-name}
+\item{fiName}{(character) file-name}
 
 \item{path}{(character) optional path}
 
 \item{sep}{(character) separator (between columns)}
+
+\item{header}{(logical) indicating whether the file contains the names of the variables as its first line.}
 
 \item{emptyFields}{(\code{NA} or character) missing headers will be replaced by the content of 'emptyFields', if \code{NA} the last column-name will be re-used and a counter added}
 
@@ -50,7 +53,7 @@ Note, that it is assumed, that any missing fields for the complete tabular view 
 \examples{
 path1 <- system.file("extdata",package="wrMisc")
 fiNa <- "Names1.tsv"
-datAll <- readCsvBatch(fiNa,path1)
+datAll <- readVarColumns(fiName=file.path(path1,fiNa))
 str(datAll)
 }
 \seealso{

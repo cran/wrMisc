@@ -74,7 +74,7 @@ partUnlist(lapply(bb,.asDF2))
 head(unlist(bb,recursive=FALSE))
 
 ## ----asSepList, echo=TRUE-----------------------------------------------------
-bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,ncol=2),li=list(li1=11:14,li2=data.frame(41:44)))
+bb <- list(fa=gl(2,2),c=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=data.frame(41:44)))
 asSepList(bb)
 
 ## ----lrbind, echo=TRUE--------------------------------------------------------
@@ -118,11 +118,11 @@ filterList(list1, list1$m1[,1] >0.4)       # filter according to 1st column of $
 filterList(list1, list1$m1 >0.4) 
 
 ## ----matr2list, echo=TRUE-----------------------------------------------------
-(mat1 <- matrix(1:12,ncol=3,dimnames=list(letters[1:4],LETTERS[1:3])))
+(mat1 <- matrix(1:12, ncol=3, dimnames=list(letters[1:4],LETTERS[1:3])))
 str(matr2list(mat1))
 
 ## ----array0, echo=TRUE--------------------------------------------------------
-(arr1 <- array(c(6:4,4:24),dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
+(arr1 <- array(c(6:4,4:24), dim=c(4,3,2), dimnames=list(c(LETTERS[1:4]),
   paste("col",1:3,sep=""),c("ch1","ch2"))))
 
 ## ----arrayCV1, echo=TRUE------------------------------------------------------
@@ -132,13 +132,13 @@ arrayCV(arr1)
 cbind(rowCVs(arr1[,,1]), rowCVs(arr1[,,2]))
 
 ## ----arrayCV2, echo=TRUE------------------------------------------------------
-arrayCV(arr1,byDim=2)
+arrayCV(arr1, byDim=2)
 
 ## ----cutArrayInCluLike, echo=TRUE---------------------------------------------
-cutArrayInCluLike(arr1,cluOrg=c(2,1,2,1))
+cutArrayInCluLike(arr1, cluOrg=c(2,1,2,1))
 
 ## ----filt3dimArr, echo=TRUE---------------------------------------------------
-filt3dimArr(arr1,displCrit=c("col1","col2"),filtCrit="col2",filtVal=7,filtTy=">")
+filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=">")
 
 ## ----repeated1, echo=TRUE-----------------------------------------------------
 ## some text toy data
@@ -155,13 +155,12 @@ names(aa) <- letters[1:length(aa)]
 aa
 
 ## ----findRepeated, echo=TRUE--------------------------------------------------
-
 findRepeated(aa) 
 
 ## ----firstOfRepeated, echo=TRUE-----------------------------------------------
 firstOfRepeated(aa)
 
-aa[firstOfRepeated(aa)$indUniq]          # only unique with names
+aa[firstOfRepeated(aa)$indUniq]          # only unique with their names
 
 unique(aa)                               # unique() does not return any names !
 
@@ -178,8 +177,8 @@ nonAmbiguousNum(aa, uniq=FALSE, asLi=TRUE)    # separate in list unique and repe
 
 ## ----cbindNR, echo=TRUE-------------------------------------------------------
 ## First we'll make soe toy data :
-(ma1 <- matrix(1:6,ncol=3,dimnames=list(1:2,LETTERS[3:1])))
-(ma2 <- matrix(11:16,ncol=3,dimnames=list(1:2,LETTERS[3:5])))
+(ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1])))
+(ma2 <- matrix(11:16, ncol=3, dimnames=list(1:2,LETTERS[3:5])))
 
 ## now we can join 2 or more matrixes  
 cbindNR(ma1, ma2, summarizeAs="mean")       # average of both columns 'C'
@@ -375,6 +374,12 @@ str(datAll)
 ## ----readCsvBatch2, echo=TRUE-------------------------------------------------
 ## batch reading of all csv files in specified path :
 datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
+
+## ----readVarColumns, echo=TRUE------------------------------------------------
+path1 <- system.file("extdata",package="wrMisc")
+fiNa <- "Names1.tsv"
+datAll <- readVarColumns(fiName=file.path(path1,fiNa), sep="\t")
+str(datAll)
 
 ## ----presenceFilt, echo=TRUE--------------------------------------------------
 dat1 <- matrix(1:56,ncol=7)

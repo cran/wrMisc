@@ -1,4 +1,4 @@
-274d0f4f6655f6c9d48e4bffd63376bb *DESCRIPTION
+62faa374e1bc01381c8453c97a10ee2a *DESCRIPTION
 db483db0dc8e99351a5c853d383fc13f *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
@@ -96,7 +96,7 @@ a87df016fdc6d4606b0c36c62c844945 *R/randIndFx.R
 61ede65b02e1902b7a761c5d2997d739 *R/ratioAllComb.R
 7822390bcb644f99bc02941f6af6a482 *R/ratioToPpm.R
 6bf4983f73a5aa4433c817fd978f0667 *R/readCsvBatch.R
-1cbe2d0b80b0326658160d686879b45f *R/readVarColumns.R
+30f61f2cde4d962c601b33e42ac35b80 *R/readVarColumns.R
 9fa385d0767cc6de8bba267efe8ad7ba *R/readXlsxBatch.R
 c9eae15f382026d1593ed3ab9c6813fb *R/reduceTable.R
 f55539046d3bd352d959f5529ee178eb *R/regrBy1or2point.R
@@ -121,7 +121,7 @@ db20dbf8e5edc1048d615fb369e7ee8f *R/stableMode.R
 e1fdf06699157754a1e39a50f95a7f9a *R/stdErrMedBoot.R
 67ed00a1d73f41a0c335a0fdce1fd1c4 *R/summarizeCols.R
 b065c7035e464fa840edd3826964b3ef *R/t.testAllInd.R
-b3b1acc2995b2584788e03a55f952f7c *R/tableToPlot.R
+f4745ff26334061b7e17ef3cc1f613c8 *R/tableToPlot.R
 3a41319a75f4e8f1cda98260f8d956ff *R/test2factLimma.R
 3dcb5934a1c8a50e7494b73be2998cc9 *R/transpGraySca.R
 47f43c0f4e47a21aff6a5dad74b96dca *R/treatTxtDuplicates.R
@@ -130,10 +130,10 @@ c821c2277d4c0236ae36b55dd061fee8 *R/triCoord.R
 fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 460d0e7abae2166c2a08f86e741cc656 *R/writeCsv.R
-3e448481c38544cc3e49c7b922d78dc7 *build/vignette.rds
-747688f92b4e54a74327f018bbe14d17 *inst/doc/wrMiscVignette1.R
-2321c56be9fdc355c238556780c392af *inst/doc/wrMiscVignette1.Rmd
-544ab30fcc835b87aa83075e6a2c27da *inst/doc/wrMiscVignette1.html
+19d436eda1b3c2fc713c980beb61533d *build/vignette.rds
+5f8d36bd32c320c7bc3773ecd9bbae94 *inst/doc/wrMiscVignette1.R
+edd70db11d298f1ddb4363e16a168c7a *inst/doc/wrMiscVignette1.Rmd
+3b086d2d6054382796778760ccf19df9 *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 13e7d1c6add7b3142aa228d1956d25d4 *inst/extdata/pl01_1.csv
 ca180004fbfdabc6c9b9eac0d89c7bcb *inst/extdata/pl01_1.xlsx
@@ -241,7 +241,7 @@ b2e26ed68d9dbd1b45dd929c36bdfe71 *man/pasteC.Rd
 88a9ed92de4ac5b52c98b83063690628 *man/ratioAllComb.Rd
 f7286ba623c44a56f5e1aa58f810bd69 *man/ratioToPpm.Rd
 fae4c3b591aeb676c0caca980291e98a *man/readCsvBatch.Rd
-d060d75164a3f6e5e446ed79fc8f28b2 *man/readVarColumns.Rd
+5c1fb7cebd34bf0221cbe3089edcad00 *man/readVarColumns.Rd
 1eb0b26355adc0853a37564f2cb56c29 *man/readXlsxBatch.Rd
 109e585c07f250a369a5800061f5894f *man/reduceTable.Rd
 46430e2c578f66178e7bc7f02132a991 *man/regrBy1or2point.Rd
@@ -266,7 +266,7 @@ cb53c96f48c9af65e604fb293fae66d9 *man/singleLineAnova.Rd
 8a17b1d904c2d5df1491a3f7b7f40c19 *man/stdErrMedBoot.Rd
 e31788949c49d68c10941cc0e4e39853 *man/summarizeCols.Rd
 8d9caafceb3c7413eb32c6f0568dca78 *man/tTestAllVal.Rd
-7e4db74253eab85f5dcf3a780fecb091 *man/tableToPlot.Rd
+800c1af660e12528a989b4e7d720e947 *man/tableToPlot.Rd
 98c2d0eff052539c718a922bab223f51 *man/test2factLimma.Rd
 72b0c0607e06eee36d12adb1379483d4 *man/transpGraySca.Rd
 35bfdc9aa7dd953c6483f30d2bf37132 *man/treatTxtDuplicates.Rd
@@ -275,4 +275,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 a72aacf31ebde1055dbf6b9974acb1a4 *man/writeCsv.Rd
-2321c56be9fdc355c238556780c392af *vignettes/wrMiscVignette1.Rmd
+edd70db11d298f1ddb4363e16a168c7a *vignettes/wrMiscVignette1.Rmd

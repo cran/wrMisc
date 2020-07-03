@@ -50,7 +50,7 @@ Note: In view of typical page/figure layouts like A4, the plotting region will b
 mat <- dir()
 mat <- cbind(no=1:length(mat),fileName=mat,mode=file.mode(mat),
   si=round(file.size(mat)/1024),path=getwd())
-## Now, we wrap all text into a figure (which could be saved as jpg etc)
+## Now, we wrap all text into a figure (which could be saved as jpg, pdf etc)
 tableToPlot(mat[,-1],colPos=c(0.01,0.4,0.46,0.6),titOffS=c(0.05,-0.03,-0.01,0.06))
 tableToPlot(mat,colPos=c(0,0.16,0.36,0.42,0.75),useAdj=0.5,titOffS=c(-0.01,0,-0.01,0,-0.1)) 
 }

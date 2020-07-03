@@ -157,21 +157,21 @@ bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,ncol=2),li=list(li1=11:14,li2=data
 partUnlist(lapply(bb,.asDF2))
 ```
 
-This won't be possible using unlist.
+This won't be possible using _unlist()_.
 ```{r unlist_1, echo=TRUE}
 head(unlist(bb,recursive=FALSE))
 ```
 
 To uniform such data to obtain a list with one column only for each list-element, the function _asSepList()_ provides help : 
 ```{r asSepList, echo=TRUE}
-bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,ncol=2),li=list(li1=11:14,li2=data.frame(41:44)))
+bb <- list(fa=gl(2,2),c=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=data.frame(41:44)))
 asSepList(bb)
 ```
 
 
 ### rbind on lists
 
-When a matrix (or data.frame) gets split into a list, like in the example using _by()_, such lists can get joined using lrbind in an _rbind_-like fashion.
+When a matrix (or data.frame) gets split into a list, like in the example using _by()_, as a reverse-function such lists can get joined using lrbind in an _rbind_-like fashion.
 
 ```{r lrbind, echo=TRUE}
 dat2 <- matrix(11:34, ncol=3, dimnames=list(letters[1:8],colnames=LETTERS[1:3]))
@@ -241,7 +241,7 @@ filterList(list1, list1$m1 >0.4)
 ### Transform columns of matrix to list of vectors
 
 ```{r matr2list, echo=TRUE}
-(mat1 <- matrix(1:12,ncol=3,dimnames=list(letters[1:4],LETTERS[1:3])))
+(mat1 <- matrix(1:12, ncol=3, dimnames=list(letters[1:4],LETTERS[1:3])))
 str(matr2list(mat1))
 ```
 
@@ -252,7 +252,7 @@ str(matr2list(mat1))
 
 Let's get stared with a little toy-array:
 ```{r array0, echo=TRUE}
-(arr1 <- array(c(6:4,4:24),dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
+(arr1 <- array(c(6:4,4:24), dim=c(4,3,2), dimnames=list(c(LETTERS[1:4]),
   paste("col",1:3,sep=""),c("ch1","ch2"))))
 ```
 
@@ -267,41 +267,41 @@ cbind(rowCVs(arr1[,,1]), rowCVs(arr1[,,2]))
   
 Similarly we can split along any other dimension, eg the 2nd dimension : 
 ```{r arrayCV2, echo=TRUE}
-arrayCV(arr1,byDim=2)
+arrayCV(arr1, byDim=2)
 ```
 
 ### Slice 3-dim array in list of matrixes (or arrays)
 This procedure is similar to (re-)organizing an intial array into clusters, here we split along a user-defined factor/vector.
 If a clustering-algorithm produces the cluster assignments, this function can be used to organize the input data accordingly.
 ```{r cutArrayInCluLike, echo=TRUE}
-cutArrayInCluLike(arr1,cluOrg=c(2,1,2,1))
+cutArrayInCluLike(arr1, cluOrg=c(2,1,2,1))
 ```
 
 Let's cut by filtering along the 3rd dimension for all lines where column 'col2' is >7, and then display only the content of columns 'col1' and 'col2' :
 ```{r filt3dimArr, echo=TRUE}
-filt3dimArr(arr1,displCrit=c("col1","col2"),filtCrit="col2",filtVal=7,filtTy=">")
+filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=">")
 ```
 
 
 ## Working with redundant data
 
-Semantics : Please note, that there are two ways of interpreting the term 'unique' :
+_Semantics_ : Please note, that there are two ways of interpreting the term 'unique' :
 
-* In regular understanding one this describes an event which occurs only once, and thus does not occur/happen anywhere else.
+* In regular understanding one describes this way an event which occurs only once, and thus does not occur/happen anywhere else.
 
-* The command `unique()` makes a vector with some redundant entries 'unique', ie in the resultant vector all content (values) occurs only once. However, initially repeated values will still be present (and you cannot tell which ones were not unique initially) ! Thus, the result of _unique()_ does not tell which values were '_unique_' in the first place.
+* The command `unique()` makes a vector with some redundant entries 'unique', ie in the resultant vector all values/content (values) occur only once. However, initially repeated values will still be present. Also, you cannot tell any more which ones were not unique initially ! Thus, the result of _unique()_ does not tell which values were '_unique_' in the first place.
 
-In some applications (eg proteomics) initial identifyers (IDs) may occur multiple times in the data to treat and we frequently need to isolate events/values that occur only once, as the first meaning of '_unique_'. 
-This package provides functions to easily distinguish values occuring just once from those occuring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
+In some applications (eg proteomics) initial identifyers (IDs) may occur multiple times in the data and we frequently need to isolate events/values that occur only once, as the first meaning of '_unique_'. 
+This package provides functions to easily distinguish values occuring just once (ie _unique_) from those occuring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
 
 ### Identify what is repeated (and where repeated do occur)
 ```{r repeated1, echo=TRUE}
 ## some text toy data
 tr <- c("li0","n",NA,NA,rep(c("li2","li3"),2),rep("n",4))
 ```
-Form the package base : The function table() is very useful get some insights when working with smaller objects, but may be slow to handle very large objects.
-As mentioned, unique() will make everything unqiue, and afterwards you won't know any more who was unique in the first place !
-The function `duplicated()` (from package base) helps us getting the information who is repeated.
+The function _table()_ (from the package -base_) is very useful get some insights when working with smaller objects, but may be slow to handle very large objects.
+As mentioned, _unique()_ will make everything unqiue, and afterwards you won't know any more who was unique in the first place !
+The function `duplicated()` (also from package base) helps us getting the information who is repeated.
 ```{r repeated2, echo=TRUE}
 table(tr)
 unique(tr) 
@@ -314,18 +314,18 @@ names(aa) <- letters[1:length(aa)]
 aa
 ```
 
-`findRepeated()` (from this package) will return the position/index (and content/value) of repeated elements :
+`findRepeated()` (from this package) will return the position/index (and content/value) of repeated elements. However, the output in form of a ist is not very convenient to the human eye.
 ```{r findRepeated, echo=TRUE}
-
 findRepeated(aa) 
 ```
+
 
 `firstOfRepeated()` tells the index of the first instance of repeated elements, which elements you need to make the vector 'unique', and which elements get stripped off when making unique.
 Please note, that NA (no matter if they occure once or more times) are automatically in the part suggested to be removed.
 ```{r firstOfRepeated, echo=TRUE}
 firstOfRepeated(aa)
 
-aa[firstOfRepeated(aa)$indUniq]          # only unique with names
+aa[firstOfRepeated(aa)$indUniq]          # only unique with their names
 
 unique(aa)                               # unique() does not return any names !
 ```
@@ -341,7 +341,7 @@ correctToUnique(aa)
 correctToUnique(aa, sep=".", NAenu=FALSE)       # keep NAs (ie without transforming to character)
 ```
 
-### Make unique and mark any duplicated (ie ambiguous) elements (by changing their names)
+### Mark any duplicated (ie ambiguous) elements by changing their names (and separate from unqiue)
 First, the truly unique values are reported and then the first occurance of repeated elements is given, NA instances get ignored.
 
 ```{r nonAmbiguousNum, echo=TRUE}
@@ -357,8 +357,8 @@ Here, it is supposed that you want to join 2 or more matrixes describing differe
 Common column-names are interpreted that theur respective information should be combined (either as average or as sum). 
 ```{r cbindNR, echo=TRUE}
 ## First we'll make soe toy data :
-(ma1 <- matrix(1:6,ncol=3,dimnames=list(1:2,LETTERS[3:1])))
-(ma2 <- matrix(11:16,ncol=3,dimnames=list(1:2,LETTERS[3:5])))
+(ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1])))
+(ma2 <- matrix(11:16, ncol=3, dimnames=list(1:2,LETTERS[3:5])))
 
 ## now we can join 2 or more matrixes  
 cbindNR(ma1, ma2, summarizeAs="mean")       # average of both columns 'C'
@@ -654,6 +654,24 @@ When setting the first argument _fileNames_ to _NULL_, you can read all files of
 datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
 ```
 
+### Reading incomplete tables
+
+Sometimes were may get confronted with data which look like 'incomplete' tables. 
+In such cases some rows do not conatain as many elements/columns as other columns. 
+Files with this type of data pose a problem for _read.table()_ (from the _utils_ package).
+The function _readVarColumns()_ (from this package) was designed to provide help in such cases.
+Basically each line is read an parsed separetely, the user should check the proper separator is used.
+
+The example below lists people's names in different locations, some locations have more persons ... 
+Sometimes exporting such data will gererate shorter lines in locations with fewer elements (here 'London') and no additonal separators will get added (to mark all empty fields) towards the end.
+The function _readVarColumns()_ (from this package) provides help to read such data, if the content (and separtors) of the last columns are missing.
+
+```{r readVarColumns, echo=TRUE}
+path1 <- system.file("extdata",package="wrMisc")
+fiNa <- "Names1.tsv"
+datAll <- readVarColumns(fiName=file.path(path1,fiNa), sep="\t")
+str(datAll)
+```
 
 
 ## Normalization
