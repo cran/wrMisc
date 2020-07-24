@@ -9,7 +9,7 @@ conv01toColNa(mat, colNa = NULL, zeroTex = "", pasteCol = FALSE)
 \arguments{
 \item{mat}{input matrix (with integer values)}
 
-\item{colNa}{alternative (column-)names to the ones from 'mat' (default colnames of mat)}
+\item{colNa}{alternative (column-)names to the ones from 'mat' (default colnames of 'mat')}
 
 \item{zeroTex}{text to display if 0 (default "")}
 
@@ -19,13 +19,13 @@ conv01toColNa(mat, colNa = NULL, zeroTex = "", pasteCol = FALSE)
 character vector
 }
 \description{
-\code{conv01toColNa} transforms matrix of integers (eg 0 and 1) to repeated & concatenated text from 'colNa', 
-the character string for 0 occurances 'zeroTex' may be customized.
+\code{conv01toColNa} transforms matrix of integers (eg 0 and 1) to repeated & concatenated text from argument \code{colNa}, 
+the character string for 0 occurances of argument \code{zeroTex} may be customized.
 Used eg when specifying (and concatenating) various counted elements (eg properties) along a vector like variable peptide modifications in proteomics.
 }
 \examples{
-(ma1 <- matrix(sample(0:3,40,repl=TRUE),ncol=4,dimnames=list(NULL,letters[11:14])))
+(ma1 <- matrix(sample(0:3,40,repl=TRUE), ncol=4, dimnames=list(NULL, letters[11:14])))
 conv01toColNa(ma1)
-conv01toColNa(ma1,colNa=LETTERS[1:4],ze=".")
-conv01toColNa(ma1,colNa=LETTERS[1:4],pasteCol=TRUE)
+conv01toColNa(ma1, colNa=LETTERS[1:4], ze=".")
+conv01toColNa(ma1, colNa=LETTERS[1:4], pasteCol=TRUE)
 }

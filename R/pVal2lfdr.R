@@ -20,14 +20,14 @@
 #' @export
 pVal2lfdr <- function(x,silent=TRUE,callFrom=NULL) {    ## take vector of p-values and return vector of lfdr-values
   fxNa <- .composeCallName(callFrom,newNa="pVal2lfdr")
-  chPa <- try(find.package("fdrtool"),silent=TRUE)
+  chPa <- try(find.package("fdrtool"), silent=TRUE)
   if("try-error" %in% class(chPa)) {
     warning("package 'fdrtool' not found ! Please install from CRAN  ... (returning NULL)")
     return(NULL) 
   } else {
     if(sum(is.na(x)) >0 & !silent) message(fxNa," omitting ",sum(is.na(x))," NAs !")
     z <- as.numeric(naOmit(x)) 
-    z <- try(fdrtool::fdrtool(z, statistic="pvalue",plot=FALSE,verbose=!silent)$lfdr)
+    z <- try(fdrtool::fdrtool(z, statistic="pvalue", plot=FALSE, verbose=!silent)$lfdr)
     if(any(class(z) == "try-error")) {message(fxNa," FAILED to calulate lfdr !  (return empty); check if package is 'fdrtool' is installed")
       return(NULL) } else { z <- as.numeric(z)
       lfdr <- rep(NA,length(x))

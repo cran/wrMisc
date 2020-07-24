@@ -4,10 +4,12 @@
 \alias{firstOfRepeated}
 \title{Find first of repeated elements}
 \usage{
-firstOfRepeated(x)
+firstOfRepeated(x, callFrom = NULL)
 }
 \arguments{
 \item{x}{(charcter or numeric) main input}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
 list with indices: $indRepeated,  $indUniq, $indRedund

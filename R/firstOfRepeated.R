@@ -5,6 +5,7 @@
 #' Used for reducing data to non-redundant status, however, for large numeric input the function nonAmbiguousNum() may perform better/faster.
 #' NAs won't be considered (NAs do not appear in reported  index of results), see also firstOfRepLines() .
 #' @param x (charcter or numeric) main input
+#' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return list with indices: $indRepeated,  $indUniq, $indRedund
 #' @seealso \code{\link[base]{duplicated}}, \code{\link{nonAmbiguousNum}}, \code{\link{firstOfRepLines}} gives less detail in output (lines/elements/indexes of omitted not directly accessible) and works fsster
 #' @examples
@@ -12,10 +13,11 @@
 #' firstOfRepeated(x)
 #' x[firstOfRepeated(x)$indUniq]          # only unique with names
 #' @export  
-firstOfRepeated <- function(x) {
+firstOfRepeated <- function(x,callFrom=NULL) {
+  fxNa <- .composeCallName(callFrom,newNa="firstOfRepeated")
   chNA <- is.na(x)
-  dupH <- duplicated(x,fromLast=FALSE)
-  dupL <- duplicated(x,fromLast=TRUE)
+  dupH <- duplicated(x, fromLast=FALSE)
+  dupL <- duplicated(x, fromLast=TRUE)
   out <- list()
   out$indRepeated <- which(!dupH & dupL & !chNA)
   names(out$indRepeated) <- x[out$indRepeated]

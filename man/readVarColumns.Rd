@@ -12,8 +12,8 @@ readVarColumns(
   emptyFields = NA,
   refCo = NULL,
   supNa = NULL,
-  callFrom = NULL,
-  silent = FALSE
+  silent = FALSE,
+  callFrom = NULL
 )
 }
 \arguments{
@@ -31,9 +31,9 @@ readVarColumns(
 
 \item{supNa}{(character) base for constructing name for columns wo names (+counter starting at 2), default column-name to left of 1st col wo colname}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
-
 \item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
 matrix (character or numeric)

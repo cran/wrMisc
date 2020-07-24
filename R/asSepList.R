@@ -6,7 +6,7 @@
 #'
 #' @param y list to be separated/split in vectors
 #' @param asNumeric (logical) to transform all list-elements in simple numeric vectors (won't work if some entries are character)
-#' @param fxArg (character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data, used in wrGraph::vioplot2)
+#' @param fxArg (character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)
 #' @param minLen (integer) (currently use of this argument not implemeneted!) min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced

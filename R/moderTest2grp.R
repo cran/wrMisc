@@ -8,7 +8,7 @@
 #' @param dat matrix or data.frame with rows for multiple (independent) tests, use ONLY with 2 groups; assumed as log2-data
 #' @param grp (factor) describes column-relationship of 'dat'   (1st factor is considered as reference -> orientation of M-values !!)
 #' @param limmaOutput (logical) return full (or extended) MArrayLM-object from limma or 'FALSE' for only the (uncorrected) p.values
-#' @param addResults (character) types of results to add besides basic limma-output (eg "lfdr" using packege fdrtools-package,"FDR" for BY-FDR,"Mval" (assumes that data are log2 !),"means" or "nonMod" for non-moderated test)
+#' @param addResults (character) types of results to add besides basic limma-output (eg "lfdr" using the fdrtool-package,"FDR" for BY-FDR,"Mval" (assumes that data are log2 !),"means" or "nonMod" for non-moderated test)
 #' @param testOrientation (character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced

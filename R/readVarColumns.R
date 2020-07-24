@@ -27,7 +27,7 @@
 #' datAll <- readVarColumns(fiName=file.path(path1,fiNa))
 #' str(datAll)
 #' @export
-readVarColumns <- function(fiName,path=NULL,sep="\t",header=TRUE,emptyFields=NA,refCo=NULL,supNa=NULL,callFrom=NULL,silent=FALSE) {
+readVarColumns <- function(fiName, path=NULL, sep="\t", header=TRUE, emptyFields=NA, refCo=NULL, supNa=NULL, silent=FALSE, callFrom=NULL) {
   ## slightly slower function for reading variable tabular content of files: This function allows reading variable number of elements per line (via parsing each line separately).
   ##  read content of file using separator 'sep'; 1st line is expectd to caintain some headers, missing headers will be replaced by the content of 'emptyFields'
   ## 'emptyFields'  (NA or character) content of fields

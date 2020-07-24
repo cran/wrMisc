@@ -18,16 +18,17 @@ filterList(lst, filt, minLineRatio = 0.5, silent = FALSE, callFrom = NULL)
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-list of filtered input
+filtered list
 }
 \description{
-This function aims to identify and remove duplicated elements in a list and maintain the list-structure in the output. 
-\code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length. 
-In addition, the min- and max- character length may be filtered, too. Eg, in proteomics this helps removing peptide sequences which would not be measured/detected any way.
+This function aims to apply a given filter-citerium, a matrix or vector of \code{FALSE/TRUE} which is typically combined with a second layer   
+which filters for a min content of filer-passing values per line for the first/main criterium.
+Then all lines concerned will be removed. This will be done for all list-elements (of appropriate size) of the input-list  
+(while maintaining the list-structure in the output) not matching the filtering criteria.
 }
 \examples{
 set.seed(2020); dat1 <- round(runif(80),2)
-list1 <- list(m1=matrix(dat1[1:40],ncol=8),m2=matrix(dat1[41:80],ncol=8),other=letters[1:8])
+list1 <- list(m1=matrix(dat1[1:40],ncol=8), m2=matrix(dat1[41:80],ncol=8), other=letters[1:8])
 rownames(list1$m1) <- rownames(list1$m2) <- paste0("line",1:5)
 filterList(list1, list1$m1[,1] >0.4) 
 filterList(list1, list1$m1 >0.4) 

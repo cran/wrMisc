@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2020-07-03" />
+<meta name="date" content="2020-07-24" />
 
 <title>Getting started with wrMisc</title>
 
@@ -369,7 +369,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2020-07-03</h4>
+<h4 class="date">2020-07-24</h4>
 
 
 <div id="TOC">
@@ -463,7 +463,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(<span class="st">&quot;wrMisc&quot;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co"># This is version no:</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="kw">packageVersion</span>(<span class="st">&quot;wrMisc&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &#39;1.2.4&#39;</code></pre>
+<pre><code>## [1] &#39;1.3.0&#39;</code></pre>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
 <h2>Speed optimized functions in the package wrMisc</h2>
@@ -494,7 +494,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##       0       0       0</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">system.time</span>(sd2 &lt;-<span class="st"> </span><span class="kw">apply</span>(dat1,<span class="dv">1</span>,sd))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.09    0.00    0.10</code></pre>
+##    0.09    0.00    0.09</code></pre>
 <p>On most systems the equivalent calculation using apply() will run much slower.</p>
 <p>Note, there is a minor issue with rounding :</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">table</span>(<span class="kw">round</span>(sd1,<span class="dv">13</span>)<span class="op">==</span><span class="kw">round</span>(sd2,<span class="dv">13</span>))</span></code></pre></div>
@@ -507,7 +507,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##       0       0       0</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">system.time</span>(cv2 &lt;-<span class="st"> </span><span class="kw">apply</span>(dat1,<span class="dv">1</span>,sd)<span class="op">/</span><span class="kw">rowMeans</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.07    0.00    0.08</code></pre>
+##    0.08    0.00    0.08</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># typically the calculation using rowCVs is much faster</span></span>
 <span id="cb20-2"><a href="#cb20-2"></a><span class="kw">head</span>(cv1)</span></code></pre></div>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -538,7 +538,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="co"># The CV :</span></span>
 <span id="cb32-2"><a href="#cb32-2"></a><span class="kw">system.time</span>(cv1Gr &lt;-<span class="st"> </span><span class="kw">rowGrpCV</span>(dat1,grp1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##       0       0       0</code></pre>
+##    0.01    0.00    0.02</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw">head</span>(cv1Gr)</span></code></pre></div>
 <pre><code>##                A          B          C
 ## [1,] 0.194279471 0.19545033 0.17625186
@@ -1787,11 +1787,11 @@ The function <em>elimCloseCoord()</em> aims to do reduce a bivariate data-set to
 <span id="cb254-3"><a href="#cb254-3"></a>datAll &lt;-<span class="st"> </span><span class="kw">readCsvBatch</span>(fiNa,path1)</span></code></pre></div>
 <pre><code>##  -&gt; readCsvBatch :  ready to start reading 4 files;  expecting header : TRUE</code></pre>
 <pre><code>##  -&gt; readCsvBatch :  csv-format used &#39;Europe&#39;  with 96 lines &amp; 3 cols</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpWEcajM/Rinst61cc500d3125/wrMisc/extdata/pl01_1.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpslvfKb/Rinst23881a0a63b1/wrMisc/extdata/pl01_1.csv</code></pre>
 <pre><code>## -&gt; readCsvBatch -&gt; .removeEmptyCol :  columns no 1, 2 were considered empty and removed</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpWEcajM/Rinst61cc500d3125/wrMisc/extdata/pl01_2.csv</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpWEcajM/Rinst61cc500d3125/wrMisc/extdata/pl02_1.csv</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpWEcajM/Rinst61cc500d3125/wrMisc/extdata/pl02_2.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpslvfKb/Rinst23881a0a63b1/wrMisc/extdata/pl01_2.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpslvfKb/Rinst23881a0a63b1/wrMisc/extdata/pl02_1.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpslvfKb/Rinst23881a0a63b1/wrMisc/extdata/pl02_2.csv</code></pre>
 <div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="#cb262-1"></a><span class="kw">str</span>(datAll)</span></code></pre></div>
 <pre><code>##  num [1:96, 1:4, 1] 158808 174272 183176 175752 49272 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 3
@@ -2091,7 +2091,7 @@ The function <em>elimCloseCoord()</em> aims to do reduce a bivariate data-set to
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.44.3 wrMisc_1.2.4
+## [1] limma_3.44.3 wrMisc_1.3.0
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] compiler_4.0.2  magrittr_1.5    htmltools_0.5.0 tools_4.0.2    

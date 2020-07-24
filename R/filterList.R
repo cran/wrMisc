@@ -1,19 +1,20 @@
 #' Filter for unique elements
 #' 
-#' This function aims to identify and remove duplicated elements in a list and maintain the list-structure in the output. 
-#' \code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length. 
-#' In addition, the min- and max- character length may be filtered, too. Eg, in proteomics this helps removing peptide sequences which would not be measured/detected any way.
-#'
+#' This function aims to apply a given filter-citerium, a matrix or vector of \code{FALSE/TRUE} which is typically combined with a second layer   
+#' which filters for a min content of filer-passing values per line for the first/main criterium.
+#' Then all lines concerned will be removed. This will be done for all list-elements (of appropriate size) of the input-list  
+#' (while maintaining the list-structure in the output) not matching the filtering criteria.
+#' 
 #' @param lst (list) main input, each vector, matrix or data.frame in this list will be filtered if its length or number of lines fits to \code{filt}
 #' @param filt (logical) vector of \code{FALSE/TRUE} to use for filtering. If this a matrix is given, the value of \code{minLineRatio} will be applied as threshod of min content of \code{TRUE} for each line of \code{filt} 
 #' @param minLineRatio (numeric) in case \code{filt} is a matrix of \code{FALSE/TRUE}, this value will be used as threshold of min content of \code{TRUE} for each line of \code{filt} 
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return list of filtered input
+#' @return filtered list 
 #' @seealso \code{\link{correctToUnique}}, \code{\link[base]{unique}}, \code{\link[base]{duplicated}}, \code{\link{extrColsDeX}} 
 #' @examples
 #' set.seed(2020); dat1 <- round(runif(80),2)
-#' list1 <- list(m1=matrix(dat1[1:40],ncol=8),m2=matrix(dat1[41:80],ncol=8),other=letters[1:8])
+#' list1 <- list(m1=matrix(dat1[1:40],ncol=8), m2=matrix(dat1[41:80],ncol=8), other=letters[1:8])
 #' rownames(list1$m1) <- rownames(list1$m2) <- paste0("line",1:5)
 #' filterList(list1, list1$m1[,1] >0.4) 
 #' filterList(list1, list1$m1 >0.4) 
@@ -41,8 +42,9 @@ filterList <- function(lst,filt,minLineRatio=0.5,silent=FALSE,callFrom=NULL) {
     msg <- c(" element '","' : "," not suitable for filter")
     ## filter all matrix & data.frames
     if(any(chLst)) {
-      for(i in which(chLst)) if(nrow(lst[[i]]) ==nFilt) { lst[[i]] <- if(length(filt) >1 & is.matrix(lst[[i]])) lst[[i]][filt,] else {
-         matrix(lst[[i]][filt,],ncol=ncol(lst[[i]]),dimnames=list(rownames(lst[[i]])[filt],colnames(lst[[i]]))) }
+      for(i in which(chLst)) if(nrow(lst[[i]]) ==nFilt) { 
+        lst[[i]] <- if(length(filt) >1 & length(dim(lst[[i]])) >1) lst[[i]][filt,] else {
+          matrix(lst[[i]][filt,],ncol=ncol(lst[[i]]),dimnames=list(rownames(lst[[i]])[filt],colnames(lst[[i]]))) }
       } else {
         if(!silent) message(fxNa,msg[1],names(lst)[i],msg[2],"number of lines",msg[3]) }}
     ## filter all vectors    

@@ -20,7 +20,7 @@ asSepList(
 
 \item{minLen}{(integer) (currently use of this argument not implemeneted!) min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2}
 
-\item{fxArg}{(character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data, used in wrGraph::vioplot2)}
+\item{fxArg}{(character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)}
 
 \item{silent}{(logical) suppress messages}
 
