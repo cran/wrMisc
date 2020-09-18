@@ -19,7 +19,7 @@
 extrColsDeX <- function(x,extrCol,doExtractCols=FALSE,callFrom=NULL,silent=FALSE) {
   ## flexible extraction of columns from x
   ## remove any NA
-  fxNa <- .composeCallName(callFrom,newNa="extrColsDeX")
+  fxNa <- .composeCallName(callFrom, newNa="extrColsDeX")
   nameX <- deparse(substitute(x))
   nameCol <- deparse(substitute(extrCol))
   if(length(dim(x)) <2) stop("argument ",nameX," should be matrix or data.frame")
@@ -27,17 +27,17 @@ extrColsDeX <- function(x,extrCol,doExtractCols=FALSE,callFrom=NULL,silent=FALSE
   chNa <- is.na(extrCol)
   if(any(chNa)) extrCol <- extrCol[which(!chNa)]
   ## check if use as integer (or match)
-  chExtrCol <- sub("^[[:digit:]]+","",extrCol)
+  chExtrCol <- sub("^[[:digit:]]+", "", extrCol)
   chExtrCol <- nchar(chExtrCol) >0
   if(length(chExtrCol) <1) stop("nothing to do")
   if(all(!chExtrCol)) extrCol <- as.integer(extrCol) else {  ## try to find text in colnames
     if(is.null(colnames(x))) stop(" Problem: ",nameX,"  has no colnames !")
     if(!is.list(extrCol)) {
       ## single choice for each column to extract
-      extrCo2 <- match(extrCol,colnames(x))
+      extrCo2 <- match(extrCol, colnames(x))
     } else  {
       ## try to locate first of multi-choices
-      extrCo2 <- unlist(lapply(extrCol,function(z) naOmit(match(z,colnames(x)))[1]))      
+      extrCo2 <- unlist(lapply(extrCol, function(z) naOmit(match(z,colnames(x)))[1]))      
     }  
     ## check for NA due to match
     chNa <- is.na(extrCo2)

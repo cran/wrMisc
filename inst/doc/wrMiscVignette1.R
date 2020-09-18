@@ -2,15 +2,16 @@
 suppressPackageStartupMessages({
     library(wrMisc)
 })
-#start_vignette("wrMiscVignette1")
 
 ## ----install, eval=FALSE------------------------------------------------------
-#  # If not already installed, we have to install the package it first.
+#  # If not already installed, you'll have to install the package first.
 #  install.packages("wrMisc")
+#  # Now you cat start this vignette by
+#  browseVignettes("wrMisc")    # and the select the html output
 
 ## ----setup1-------------------------------------------------------------------
 library("wrMisc")
-# This is version no:
+# This is version number :
 packageVersion("wrMisc")
 
 ## ----basicVariability, echo=TRUE----------------------------------------------

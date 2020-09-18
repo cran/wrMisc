@@ -26,17 +26,18 @@ To get started, we need to load the package "[wrMisc](https://CRAN.R-project.org
 suppressPackageStartupMessages({
     library(wrMisc)
 })
-#start_vignette("wrMiscVignette1")
 ```
 
 ```{r install, eval=FALSE}
-# If not already installed, we have to install the package it first.
+# If not already installed, you'll have to install the package first.
 install.packages("wrMisc")
+# Now you cat start this vignette by
+browseVignettes("wrMisc")    # and the select the html output
 ```
 
 ```{r setup1}
 library("wrMisc")
-# This is version no:
+# This is version number :
 packageVersion("wrMisc")
 ```
 
@@ -80,7 +81,7 @@ Note, there is a minor issue with rounding :
 table(round(sd1,13)==round(sd2,13))
 ```
 
-Similarly we can easily calculate the CV (coefficient of variance) for every row :
+Similarly we can easily calculate the CV (coefficient of variance) for every row using `rowCVs` :
 
 ```{r calculateRowCV, echo=TRUE}
 system.time(cv1 <- rowCVs(dat1))
@@ -94,7 +95,7 @@ head(cv2)
 Note, these calculations will be very efficient as long as the number of rows is much higher (>>) than the number of columns.
 
 Now, let's assume our data is contains 3 initial samples measured as several replicates (already defined in _grp1_).
-Similarly, we can also calculate the sd or CV for each line while splitting into groups of replicates: 
+Similarly, we can also calculate the sd or CV for each line while splitting into groups of replicates (`rowGrpSds` and `rowGrpCV`): 
 
 ```{r sdOrCVbyGrp, echo=TRUE}
 # we already defined the grouping :
@@ -115,7 +116,7 @@ head(cv1Gr)
 ### Fast NA-omit for very large objects
 The function _na.omit()_ from the package [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/) also keeps a trace of all omitted instances. 
 This can be penalizing in terms of memory usage when handeling very large vectors with a high content of NAs (eg >10000 NAs). 
-If you don't need to document precisely which elements got eliminated, the function _naOmit()_ may offer 
+If you don't need to document precisely which elements got eliminated, the function `naOmit()` may offer 
 smoother functioning for such very large objects. 
 
 ```{r naOmit, echo=TRUE}
@@ -129,7 +130,7 @@ str(na.omit(aA))
 
   
 ### Minimum distance/difference between values
-If you need to find the closest neighbour(s) of a numeric vector, the function _minDiff()_ will tell you the 
+If you need to find the closest neighbour(s) of a numeric vector, the function `minDiff()` will tell you the 
 distance ("dif","ppm" or "ratio") and index ("best") of the closest neighbour. 
 In case of multiple shortest distaces the index if the first one is reported, and the column "nbest" will display a value of >1.
 
@@ -151,7 +152,7 @@ This is why column _nbest_ for line 15 (_value_ =6.0) inidicates that it appears
 
 ### Partial unlist
 When input from different places gets collected and combined into a list, this may give a collection of different types of data.
-The function _partUnlist()_ will to preserve multi-column elements as they are (and just bring down one level):
+The function `partUnlist()` will to preserve multi-column elements as they are (and just bring down one level):
 ```{r partUnlist_1, echo=TRUE}
 bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,ncol=2),li=list(li1=11:14,li2=data.frame(41:44)))
 partUnlist(lapply(bb,.asDF2))
@@ -162,7 +163,7 @@ This won't be possible using _unlist()_.
 head(unlist(bb,recursive=FALSE))
 ```
 
-To uniform such data to obtain a list with one column only for each list-element, the function _asSepList()_ provides help : 
+To uniform such data to obtain a list with one column only for each list-element, the function `asSepList()` provides help : 
 ```{r asSepList, echo=TRUE}
 bb <- list(fa=gl(2,2),c=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=data.frame(41:44)))
 asSepList(bb)
@@ -171,7 +172,7 @@ asSepList(bb)
 
 ### rbind on lists
 
-When a matrix (or data.frame) gets split into a list, like in the example using _by()_, as a reverse-function such lists can get joined using lrbind in an _rbind_-like fashion.
+When a matrix (or data.frame) gets split into a list, like in the example using _by()_, as a reverse-function such lists can get joined using `lrbind` in an _rbind_-like fashion.
 
 ```{r lrbind, echo=TRUE}
 dat2 <- matrix(11:34, ncol=3, dimnames=list(letters[1:8],colnames=LETTERS[1:3]))
@@ -186,7 +187,7 @@ lrbind(lst2)
 ### Fuse content of list-elements with redundant (duplicated) names
 
 When list-elements have the same name, their content (of named numeric or character vectors) 
-may get fused using _fuseCommonListElem()_ according to the names of the list-elements :
+may get fused using `fuseCommonListElem()` according to the names of the list-elements :
 ```{r fuseCommonListElem, echo=TRUE}
 val1 <- 10 +1:26
 names(val1) <- letters
@@ -202,7 +203,7 @@ fuseCommonListElem(lst1)
 
 ### Replacements in list
 
-The function _listBatchReplace()_ works similar to _sub()_ and allows to search & replace exact matches to a character string along all elements of a list. 
+The function `listBatchReplace()` works similar to _sub()_ and allows to search & replace exact matches to a character string along all elements of a list. 
 ```{r listBatchReplace, echo=TRUE}
 (lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge") ,cc=c("abdc","efg","efgh")))
 
@@ -227,7 +228,7 @@ listGroupsByNames((1:10)/5)
 ### Batch-filter list-elements
 In the view of object-oriented progamming several methods produce results integrated into lists or S3-objects (eg 
 [limma](https://bioconductor.org/packages/release/bioc/html/limma.html)).
-The function _filterList()_ aims facilitating the filtering of all elements of lists or S3-objects. List-elements with inapropriate number of lines will be ignored.
+The function `filterList()` aims facilitating the filtering of all elements of lists or S3-objects. List-elements with inapropriate number of lines will be ignored.
 
 ```{r filterList, echo=TRUE}
 set.seed(2020); dat1 <- round(runif(80),2)
@@ -257,7 +258,7 @@ Let's get stared with a little toy-array:
 ```
 
 ### CV (coefficient of variance) with arrays
-Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an _apply_ alon the 3rd dimension):
+Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an _apply_ alon the 3rd dimension) using `arrayCV`:
 ```{r arrayCV1, echo=TRUE}
 arrayCV(arr1)
 
@@ -272,12 +273,12 @@ arrayCV(arr1, byDim=2)
 
 ### Slice 3-dim array in list of matrixes (or arrays)
 This procedure is similar to (re-)organizing an intial array into clusters, here we split along a user-defined factor/vector.
-If a clustering-algorithm produces the cluster assignments, this function can be used to organize the input data accordingly.
+If a clustering-algorithm produces the cluster assignments, this function can be used to organize the input data accordingly using `cutArrayInCluLike`.
 ```{r cutArrayInCluLike, echo=TRUE}
 cutArrayInCluLike(arr1, cluOrg=c(2,1,2,1))
 ```
 
-Let's cut by filtering along the 3rd dimension for all lines where column 'col2' is >7, and then display only the content of columns 'col1' and 'col2' :
+Let's cut by filtering along the 3rd dimension for all lines where column 'col2' is >7, and then display only the content of columns 'col1' and 'col2' (using `filt3dimArr`):
 ```{r filt3dimArr, echo=TRUE}
 filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=">")
 ```
@@ -716,7 +717,7 @@ that may not be well exploited anyway. Therefore many times one tries to filter 
 Of course, if there is a column (sample) with an extremely high content of NAs, one should also investigate what might be particular 
 with this column (sample), to see if one might be better of to eliminate the entire column.
 
-The function _presenceFilt()_ allows to eliminate lines containing too many _NA_-values.
+The function `presenceFilt()` allows to eliminate lines containing too many _NA_-values.
 
 ```{r presenceFilt, echo=TRUE}
 dat1 <- matrix(1:56,ncol=7)
@@ -741,7 +742,7 @@ During high-throughput experiments thousands of (independent) elements are measu
 Note, that some experiments may produce a considerable amount of missing data (NAs) which require special attention (dedicated developments exist in other R-packages eg in [wrProteo](https://CRAN.R-project.org/package=wrProteo)).
  
 My general advice is to first carefully look where such missing data is observed and to pay attention to replicate measurements 
-where a given element once was measured with a real numeric value and once a missing information. 
+where a given element once was measured with a real numeric value and once as missing information (NA). 
 Of course, graphical representations ([PCA](https://en.wikipedia.org/wiki/Principal_component_analysis), [MA-plots](https://en.wikipedia.org/wiki/MA_plot), etc) are frequently extremely important to identifying abnormalities and potential problems. 
 The package [wrGraph](https://CRAN.R-project.org/package=wrGraph) offers also complementary options useful in the context of normalization.
 
@@ -796,7 +797,7 @@ boxplot(no4,main="slope normalization",las=1)
 ### Moderated pair-wise t-test from limma
 
 If you are not familiar with the way data is handled in the Bioconductor package [limma](https://bioconductor.org/packages/release/bioc/html/limma.html) 
-and you would like to use some of the tools for running moderated t-tests therein, this will provide easy access :
+and you would like to use some of the tools for running moderated t-tests therein, this will provide easy access using `moderTest2grp` :
 ```{r moderTest2grp, echo=TRUE}
 set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2),ncol=8,
   dimnames=list(paste("l",1:200),c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
@@ -812,7 +813,7 @@ topTable(fit4in,coef=1,n=5)
 ```
 
 ### Multiple moderated pair-wise t-tests from limma
-If you want to make multiple pair-wise comparisons :
+If you want to make multiple pair-wise comparisons using `moderTestXgrp` :
 ```{r moderTestXgrp, echo=TRUE}
 grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
 set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2),ncol=8,
@@ -830,6 +831,7 @@ head(test8$p.value,n=8)
 
 ### Transform p-values to local false dicovery rate (lfdr)
 To get an introduction into local false dicovery rate estimations you may read [Strimmer 2008](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-303).  An overview of R packages in this context was prepared by the [strimmerlab](http://www.strimmerlab.org/notes/fdr.html).
+A convenient way to get lfdr values is preseneted in `pVal2lfdr`.
 Note, that the toy-example used below is too small for estimating really meaningful lfdr values.
 For this reason the function _fdrtool()_ from package [fdrtool](https://CRAN.R-project.org/package=fdrtool) may issue warnings.
 
@@ -874,7 +876,7 @@ countSameStartEnd(frag1)
 ## Support for graphical output
 
 ### Convenient paste-collapse
-This function allows adding quotes and separating the last element by specific text (eg 'and').
+The function `pasteC` allows adding quotes and separating the last element by specific text (eg 'and').
 ```{r pasteC, echo=TRUE}
 pasteC(1:4)
 ```
@@ -892,7 +894,8 @@ plot(1:9,pch=3)
 points(1:9,1:9,col=transpGraySca(st=0,en=0.8,nSt=9,trans=0.3),cex=42,pch=16)
 ```
 
-### Assign new transparency to given colors
+### Assign new transparency to given colors 
+For this purpose you may use `convColorToTransp`.
 ```{r convColorToTransp, fig.height=6, fig.width=3, echo=TRUE}
 col0 <- c("#998FCC","#5AC3BA","#CBD34E","#FF7D73")
 col1 <- convColorToTransp(col0,alph=0.7)
@@ -902,9 +905,9 @@ pie(rep(1,length(col1)), col=col1, main="new transparency")
 ```
 
 ### Print matrix-content as plot
-There are many ways of creating reports. If you are simply combining a few plots into a pdf, that the function _xx_ 
-may be helpful to add a small table (eg overview of points/samples used in following plots), 
-which can be printed directly into the current pdf-device.
+There are many ways of creating reports. If you want simply to combine a few plots into a pdf, the function `tableToPlot` 
+may be helpful to add a small table (eg overview of points/samples/files used in other plots of the same pdf). 
+This function prints tables in the current graphical output/window (which may by a pdf-device).
 
 
 ## Session-Info

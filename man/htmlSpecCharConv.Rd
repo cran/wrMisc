@@ -4,22 +4,24 @@
 \alias{htmlSpecCharConv}
 \title{Html special character conversion}
 \usage{
-htmlSpecCharConv(txt)
+htmlSpecCharConv(txt, callFrom = NULL)
 }
 \arguments{
 \item{txt}{character vector inclusing special characters}
+
+\item{callFrom}{(character) allow easier tracking of message produced}
 }
 \value{
 corrected character vector adopted to html display
 }
 \description{
-Converts 'txt' so that special characters (like 'beta','micro','square' etc) will be displayed correctly whe used for display in html (eg at mouse-over).
-Note : uses package \href{https://CRAN.R-project.org/package=stringi}{stringi}
+Converts 'txt' so that (the most common) special characters (like 'beta','micro','square' etc) will be displayed correctly whe used for display in html (eg at mouse-over).
+Note : The package \href{https://CRAN.R-project.org/package=stringi}{stringi} is required for the conversions (the input will get returned if \code{stringi} is not available).
 }
 \examples{
 (x <- stringi::stri_unescape_unicode("\\\\u00b5\\\\u003d\\\\u0061\\\\u0062"))
 htmlSpecCharConv(x)
 }
 \seealso{
-tables on \url{http://www.htmlhelp.com/reference/html40/entities/latin1.html},  \url{http://www.degraeve.com/reference/specialcharacters.php},  \url{http://www.ascii.cl/htmlcodes.htm}
+tables on \url{https://www.htmlhelp.com/reference/html40/entities/latin1.html},  \url{https://www.degraeve.com/reference/specialcharacters.php},  \url{https://ascii.cl/htmlcodes.htm}
 }

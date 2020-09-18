@@ -38,9 +38,20 @@ Filter abundance/expression data for min number and/or ratio of non-\code{NA} va
 This type of procedure is common in proteomics and tanscriptomics, where a \code{NA} can many times be assocoaued with quantitation below detetction limit.
 }
 \examples{
-dat1 <- matrix(1:56,ncol=7)
+mat <- matrix(rep(8,150), ncol=15, dimnames=list(NULL,
+  paste0(rep(LETTERS[4:2],each=6),1:6)[c(1:5,7:16)]))
+mat[lower.tri(mat)] <- NA
+mat[,15] <- NA
+mat[c(2:3,9),14:15] <- NA
+mat[c(1,10),13:15] <- NA
+mat
+wrMisc::presenceFilt(mat ,rep(LETTERS[4:2], c(5,6,4)))
+presenceFilt(mat, rep(1:2,c(9,6)))
+
+# one more example 
+dat1 <- matrix(1:56, ncol=7)
 dat1[c(2,3,4,5,6,10,12,18,19,20,22,23,26,27,28,30,31,34,38,39,50,54)] <- NA
-dat1; presenceFilt(dat1,gr=gl(3,3)[-(3:4)],maxGr=0)
-presenceFilt(dat1,gr=gl(2,4)[-1],maxGr=1,ratM=0.1)
-presenceFilt(dat1,gr=gl(2,4)[-1],maxGr=2,rat=0.5)
+dat1; presenceFilt(dat1,gr=gl(3,3)[-(3:4)], maxGr=0)
+presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=1, ratM=0.1)
+presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=2, rat=0.5)
 }
