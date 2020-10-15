@@ -11,13 +11,13 @@
 #' @seealso \code{\link[stats]{lm}}
 #' @examples
 #' # Let's create a matrix with ranks (equal ranks do occur)
-#' ma0 <- matrix(rep(1:3,each=6),ncol=6,dimnames=list(
-#'   c("li1","li2","ref"),letters[1:6]))
+#' ma0 <- matrix(rep(1:3,each=6), ncol=6, dimnames=list(
+#'   c("li1","li2","ref"), letters[1:6]))
 #' ma0[1,6] <- 1                       # create item not matching correctly
 #' ma0[2,] <- c(3:1,2,1,3)             # create items not matching correctly
 #' gr0 <- gl(3,2)                      # the expected ranking (as duplicates)
 #' (count0 <- rankToContigTab(ma0,gr0))
-#' cTab <- t(apply(count0,c(1,3),sum))
+#' cTab <- t(apply(count0, c(1,3) ,sum))
 #' # Now we can compare the ranking of line1 to ref ...
 #' fisher.test(cTab[,c(3,1)])          # test li1 against ref
 #' fisher.test(cTab[,c(3,2)])          # test li2 against ref

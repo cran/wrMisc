@@ -39,8 +39,8 @@ The limma contrast-matrix has to be read by column, the lines in the contrast-ma
 }
 \examples{
 grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
-set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2),ncol=8,
-  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""),paste(grp,c(1:2,1:3,1:3),sep="")))
+set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
+  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
 t8[3:6,1:2] <- t8[3:6,1:2] +3                    # augment lines 3:6 (c-f) 
 t8[5:8,c(1:2,6:8)] <- t8[5:8,c(1:2,6:8)] -1.5    # lower lines 
 t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines 

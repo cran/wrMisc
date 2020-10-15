@@ -17,11 +17,11 @@ colorAccording2(
 \arguments{
 \item{x}{(character) color input}
 
-\item{gradTy}{(character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'cm.colors', 'grey.colors', 'gray.colorsW' or 'logGray'}
+\item{gradTy}{(character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'topo.colors', 'cm.colors', 'hcl.colors', 'grey.colors', 'gray.colorsW' or 'logGray'}
 
-\item{nStartOmit}{(integer)  omit n steps from beginnin of gradient range}
+\item{nStartOmit}{(integer) omit n steps from begining of gradient range}
 
-\item{nEndOmit}{(integer)  omit n steps from end of gradient range}
+\item{nEndOmit}{(integer or "sep") omit n steps from end of gradient range, if \code{nEndOmit="sep"} 20 percent of initial grades will be removed to obtain 'separate' ie non-closing color-circles/gradients eg with \code{rainbow}}
 
 \item{revCol}{(logical) reverse order}
 
@@ -34,6 +34,7 @@ character vector (of same length as x) with color encoding
 }
 \description{
 This function helps making color-gradients for plotting a numerical variable.
+Note : RColorBrewer palettes were not integrated here, since they are not continuous.
 }
 \examples{
 set.seed(2015); dat1 <- round(runif(15),2)

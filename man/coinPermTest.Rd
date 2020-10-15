@@ -24,7 +24,7 @@ coinPermTest(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 "MCp" class numeric output with p-values
@@ -34,7 +34,7 @@ Run coin-flipping like permutation tests (to compare difference of 2 means: 'x1'
 Uses the package \href{https://CRAN.R-project.org/package=coin}{coin}.
 }
 \examples{
-coinPermTest(2,3)
+coinPermTest(2, 3, nPerm=500)
 }
 \seealso{
 \code{oneway_test} in \code{\link[coin]{LocationTests}}

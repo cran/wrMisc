@@ -1,16 +1,21 @@
-## ----setup, include=FALSE,echo=FALSE, messages=FALSE, warnings=FALSE----------
+## ----setup, include=FALSE, echo=FALSE, messages=FALSE, warnings=FALSE---------
 suppressPackageStartupMessages({
     library(wrMisc)
 })
 
-## ----install, eval=FALSE------------------------------------------------------
+## ----install, echo=TRUE, eval=FALSE-------------------------------------------
 #  # If not already installed, you'll have to install the package first.
 #  install.packages("wrMisc")
+#  
+#  # To look which vignettes are available for this package :
+#  vignette(topic, package="wrMisc"
+#  
 #  # Now you cat start this vignette by
 #  browseVignettes("wrMisc")    # and the select the html output
 
 ## ----setup1-------------------------------------------------------------------
 library("wrMisc")
+
 # This is version number :
 packageVersion("wrMisc")
 
@@ -395,10 +400,10 @@ mat3 <- matrix(c(19,20,30, 18,19,28, 16,14,35),ncol=3)
 cleanReplicates(mat3,nOutl=1)
 
 ## ----normalizeThis0, echo=TRUE------------------------------------------------
-set.seed(2015); rand1 <- round(runif(300)+rnorm(300,0,2),3)
-dat1 <- cbind(ser1=round(100:1+rand1[1:100]),ser2=round(1.2*(100:1+rand1[101:200])-2),
+set.seed(2015); rand1 <- round(runif(300) +rnorm(300,0,2),3)
+dat1 <- cbind(ser1=round(100:1+rand1[1:100]), ser2=round(1.2*(100:1+rand1[101:200])-2),
   ser3=round((100:1+rand1[201:300])^1.2-3))
-dat1 <- cbind(dat1,ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
+dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
 dat1[dat1 <1] <- NA
 ## Let's get a quick overview of the data
 summary(dat1)
@@ -453,6 +458,10 @@ set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2),ncol=8,dimnames=list(let
 t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
 head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
+
+## ----pairWiseConc1, echo=TRUE-------------------------------------------------
+mat1 <- matrix(1:8, nrow=2, dimnames=list(NULL, paste0(1:4,"-",6:9)))
+numPairDeColNames(mat1)
 
 ## ----contribToContigPerFrag, echo=TRUE----------------------------------------
 path1 <- matrix(c(17,19,18,17, 4,4,2,3),ncol=2,

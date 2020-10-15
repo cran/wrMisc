@@ -1,5 +1,5 @@
 Package: wrMisc
-Version: 1.3.1
+Version: 1.4.0
 Title: Analyze Experimental High-Throughput (Omics) Data
 Authors@R: person("Wolfgang", "Raffelsberger", email = "w.raffelsberger@unistra.fr", role = c("aut", "cre"))
 Author: Wolfgang Raffelsberger [aut, cre]
@@ -17,12 +17,12 @@ Depends: R (>= 3.1.0)
 Imports: grDevices, graphics, MASS, stats
 Suggests: BBmisc, boot, coin, data.tree, fdrtool, flexclust, knitr,
         limma, mixdist, NbClust, preprocessCore, RColorBrewer,
-        rmarkdown, som, stringi, utils, VGAM, vsn, xlsx
+        rmarkdown, som, stringi, utils, VGAM, vsn, wrGraph, xlsx
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-09-18 13:07:30 UTC; wraff
+Packaged: 2020-10-15 11:31:37 UTC; wraff
 Repository: CRAN
-Date/Publication: 2020-09-18 14:30:02 UTC
+Date/Publication: 2020-10-15 15:30:03 UTC

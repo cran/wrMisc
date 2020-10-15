@@ -1,15 +1,17 @@
 #' Transform numeric values to color-gradient
 #'
-#' This function helps making color-gradients for plotting a numerical variable.  
+#' This function helps making color-gradients for plotting a numerical variable.
+#' Note : RColorBrewer palettes were not integrated here, since they are not continuous.
+#'
 #' @param x (character) color input
-#' @param gradTy (character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'cm.colors', 'grey.colors', 'gray.colorsW' or 'logGray'
-#' @param nStartOmit (integer)  omit n steps from beginnin of gradient range
-#' @param nEndOmit (integer)  omit n steps from end of gradient range
+#' @param gradTy (character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'topo.colors', 'cm.colors', 'hcl.colors', 'grey.colors', 'gray.colorsW' or 'logGray'
+#' @param nStartOmit (integer) omit n steps from begining of gradient range
+#' @param nEndOmit (integer or "sep") omit n steps from end of gradient range, if \code{nEndOmit="sep"} 20 percent of initial grades will be removed to obtain 'separate' ie non-closing color-circles/gradients eg with \code{rainbow}
 #' @param revCol (logical) reverse order
 #' @param alpha (numeric) optional transparency value (1 for no transparency, 0 for complete opaqueness)
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return character vector (of same length as x) with color encoding
-#' @seealso \code{\link[base]{cut}}
+#' @seealso \code{\link[base]{cut}} 
 #' @examples
 #' set.seed(2015); dat1 <- round(runif(15),2)
 #' plot(1:15,dat1,pch=16,cex=2,col=colorAccording2(dat1))
@@ -17,29 +19,32 @@
 #' plot(1:9,pch=3)
 #' points(1:9,1:9,col=transpGraySca(st=0,en=0.8,nSt=9,trans=0.3),cex=42,pch=16)
 #' @export
-colorAccording2 <- function(x,gradTy="rainbow",nStartOmit=NULL,nEndOmit=NULL,revCol=FALSE,alpha=1,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="colorAccording2")
-  x <- convToNum(x,remove=NULL,sciIncl=TRUE,callFrom=fxNa)
+colorAccording2 <- function(x, gradTy="rainbow", nStartOmit=NULL, nEndOmit=NULL, revCol=FALSE,alpha=1,callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="colorAccording2")
+  x <- convToNum(x, remove=NULL, sciIncl=TRUE, callFrom=fxNa)
   if(revCol) x <- -1*x
-  ind <- round(1+(.scale01(x)*(sum(!is.na(x))-1)) )
-  stFro <- if(is.null(nStartOmit)) 1 else nStartOmit+1        # + test/convert as integer
+  ind <- round(1 +(.scale01(x) *(sum(!is.na(x)) -1)) )
+  stFro <- if(is.null(nStartOmit)) 1 else nStartOmit +1        # + test/convert as integer
+  if(identical(nEndOmit,"sep")) nEndOmit <- floor(length(x) *0.2)
   upTo <- sum(!is.na(x)) +stFro -1
   nCol <- sum(!is.na(x)) +stFro-1 +if(is.null(nEndOmit)) 0 else nEndOmit   # + test/convert as integer
   switch(gradTy,
-    rainbow=grDevices::rainbow(nCol,alpha)[stFro:upTo][ind],
-    heat.colors=grDevices::heat.colors(nCol,alpha)[stFro:upTo][ind],
-    terrain.colors=grDevices::terrain.colors(nCol,alpha)[stFro:upTo][ind],
-    cm.colors=grDevices::cm.colors(nCol,alpha)[stFro:upTo][ind],
-    gray.colors=grDevices::grey.colors(nCol,start=0.2,end=0.9,alpha=alpha)[stFro:upTo][ind],
-    gray.colorsW=transpGraySca(startGray=0.9,endGrey=0.2,nSteps=5,transp=alpha) [stFro:upTo][ind],
-    logGray=transpGraySca(0,1,nSteps=sum(!is.na(x)),transp=alpha)[stFro:upTo][ind]
+    rainbow=grDevices::rainbow(nCol, alpha=alpha)[stFro:upTo][ind],
+    heat.colors=grDevices::heat.colors(nCol, alpha=alpha)[stFro:upTo][ind],
+    terrain.colors=grDevices::terrain.colors(nCol, alpha=alpha)[stFro:upTo][ind],
+    topo.colors=grDevices::topo.colors(nCol, alpha=alpha)[stFro:upTo][ind],
+    cm.colors=grDevices::cm.colors(nCol, alpha=alpha)[stFro:upTo][ind],
+    hcl.colors=grDevices::hcl.colors(nCol, alpha=alpha)[stFro:upTo][ind],
+    gray.colors=grDevices::grey.colors(nCol, start=0.2, end=0.9, alpha=alpha)[stFro:upTo][ind],
+    gray.colorsW=transpGraySca(startGray=0.9, endGrey=0.2, nSteps=5, transp=alpha) [stFro:upTo][ind],
+    logGray=transpGraySca(0, 1, nSteps=sum(!is.na(x)), transp=alpha)[stFro:upTo][ind]
     ) }
     
 #' @export
-.chooseGrpCol <- function(nGrp,paired=FALSE,alph=0.2) {
+.chooseGrpCol <- function(nGrp, paired=FALSE, alph=0.2) {
   ## automatic choice of colors: if single-> grey, if few -> RColorBrewer, if many : gradient green -> grey/red
   ## if max groups =8 (or max 2x6 paired groups) choose contrasting colors from RColorBrewer
-  ## require(RColorBrewer)
+  ## requires (RColorBrewer)
   finCol <- grDevices::rgb(0.2,0.2,0.2,alpha=alph)                                  # dark grey
   if(nGrp >1 & nGrp < (9+4*paired)) {
     if(paired) { chPa <- try(find.package("RColorBrewer"), silent=TRUE)

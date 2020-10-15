@@ -18,31 +18,36 @@ vignette: >
 ## Introduction
 This package contains a collection of various low-level tools which may be of interest for general re-use. 
 These functions were accumulated over a number of years when treating hight-throughput data from biomedical applications.
-Besides, these functions are used/integrated in more specialized functions dedicated to specific applications in other packages (eg [wrProteo](https://CRAN.R-project.org/package=wrProteo) or [wrGraph](https://CRAN.R-project.org/package=wrGraph)).
-To get started, we need to load the package "[wrMisc](https://CRAN.R-project.org/package=wrMisc)" available from [CRAN](https://cran.r-project.org/).
+Besides, these functions are used/integrated in more specialized functions dedicated to specific applications in other packages (eg [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag)).
+To get started, we need to install (if not yet installed) and load the package "[wrMisc](https://CRAN.R-project.org/package=wrMisc)" available from [CRAN](https://cran.r-project.org/).
 
 
-```{r setup, include=FALSE,echo=FALSE, messages=FALSE, warnings=FALSE}
+```{r setup, include=FALSE, echo=FALSE, messages=FALSE, warnings=FALSE}
 suppressPackageStartupMessages({
     library(wrMisc)
 })
 ```
 
-```{r install, eval=FALSE}
+```{r install, echo=TRUE, eval=FALSE}
 # If not already installed, you'll have to install the package first.
 install.packages("wrMisc")
+
+# To look which vignettes are available for this package :
+vignette(topic, package="wrMisc"
+
 # Now you cat start this vignette by
 browseVignettes("wrMisc")    # and the select the html output
 ```
 
 ```{r setup1}
 library("wrMisc")
+
 # This is version number :
 packageVersion("wrMisc")
 ```
 
 
-## Speed optimized functions in the package wrMisc
+## Speed Optimized Functions in the Package wrMisc
 
 In hight-throughput experiments in biology (like transcriptomics, proteomics etc...) many different features get measured a number if times (different samples like patients or evolution of a disease). The resulting data typically conatain many (independent) rows (eg >1000 different genes or proteins who's abundance was measured) and much fewer columns that may get further organized in groups of replicates. 
 As R is a versatile language, multiple options exist for assessing the global characteristics of such data, some are more efficient on a computational point of view.
@@ -74,7 +79,7 @@ system.time(sd1 <- rowSds(dat1))
 system.time(sd2 <- apply(dat1,1,sd))
 ```
 
-On most systems the equivalent calculation using apply() will run much slower.
+On most systems the equivalent calculation using *apply()* will run much slower.
 
 Note, there is a minor issue with rounding :
 ```{r usingApply, echo=TRUE}
@@ -117,7 +122,7 @@ head(cv1Gr)
 The function _na.omit()_ from the package [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/) also keeps a trace of all omitted instances. 
 This can be penalizing in terms of memory usage when handeling very large vectors with a high content of NAs (eg >10000 NAs). 
 If you don't need to document precisely which elements got eliminated, the function `naOmit()` may offer 
-smoother functioning for such very large objects. 
+smoother functioning for very large objects. 
 
 ```{r naOmit, echo=TRUE}
 aA <- c(11:13,NA,10,NA)
@@ -148,7 +153,7 @@ This is why column _nbest_ for line 15 (_value_ =6.0) inidicates that it appears
 
 
 
-## Working with lists (and lists of lists)
+## Working With Lists (and lists of lists)
 
 ### Partial unlist
 When input from different places gets collected and combined into a list, this may give a collection of different types of data.
@@ -249,7 +254,7 @@ str(matr2list(mat1))
 
 
 
-## Working with arrays
+## Working With Arrays
 
 Let's get stared with a little toy-array:
 ```{r array0, echo=TRUE}
@@ -284,7 +289,8 @@ filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=
 ```
 
 
-## Working with redundant data
+
+## Working With Redundant Data
 
 _Semantics_ : Please note, that there are two ways of interpreting the term 'unique' :
 
@@ -295,7 +301,9 @@ _Semantics_ : Please note, that there are two ways of interpreting the term 'uni
 In some applications (eg proteomics) initial identifyers (IDs) may occur multiple times in the data and we frequently need to isolate events/values that occur only once, as the first meaning of '_unique_'. 
 This package provides functions to easily distinguish values occuring just once (ie _unique_) from those occuring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
 
+
 ### Identify what is repeated (and where repeated do occur)
+
 ```{r repeated1, echo=TRUE}
 ## some text toy data
 tr <- c("li0","n",NA,NA,rep(c("li2","li3"),2),rep("n",4))
@@ -555,7 +563,7 @@ combineByEitherFactor(cbind(mm,pp),1,2, con=FALSE, nBy=TRUE)
 ```
 
 
-## Search for similar (numeric) values
+## Search For Similar (Numeric) Values
 
 ```{r checkSimValueInSer, echo=TRUE}
 va1 <- c(4:7,7,7,7,7,8:10)+(1:11)/28600
@@ -564,6 +572,7 @@ cbind(va=va1, simil=checkSimValueInSer(va1))
 ```
 
 ### Find similar numeric values of two columns of a matrix
+
 The search for similar values may be preformed as absolute distance or as 'ppm' (as it is eg usual in proteomics when comparing measured and theoretically expected mass).
 
 ```{r findCloseMatch1, echo=TRUE}
@@ -736,7 +745,9 @@ cleanReplicates(mat3,nOutl=1)
 Please note, that imputing _NA_-values represents another option instead of filtering, multiple other packages address this in detail. 
 All decisions of which approach to use should be data-driven.
 
-### normalizeThis
+
+### The Function normalizeThis()
+
 In biological high-throughput data columns typically represent different samples, which may be organized as replicates. 
 During high-throughput experiments thousands of (independent) elements are measured (eg abundance of gene-products), they are represented by rows.
 Note, that some experiments may produce a considerable amount of missing data (NAs) which require special attention (dedicated developments exist in other R-packages eg in [wrProteo](https://CRAN.R-project.org/package=wrProteo)).
@@ -748,10 +759,10 @@ The package [wrGraph](https://CRAN.R-project.org/package=wrGraph) offers also co
 
 
 ```{r normalizeThis0, echo=TRUE}
-set.seed(2015); rand1 <- round(runif(300)+rnorm(300,0,2),3)
-dat1 <- cbind(ser1=round(100:1+rand1[1:100]),ser2=round(1.2*(100:1+rand1[101:200])-2),
+set.seed(2015); rand1 <- round(runif(300) +rnorm(300,0,2),3)
+dat1 <- cbind(ser1=round(100:1+rand1[1:100]), ser2=round(1.2*(100:1+rand1[101:200])-2),
   ser3=round((100:1+rand1[201:300])^1.2-3))
-dat1 <- cbind(dat1,ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
+dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
 dat1[dat1 <1] <- NA
 ## Let's get a quick overview of the data
 summary(dat1)
@@ -792,7 +803,7 @@ boxplot(no4,main="slope normalization",las=1)
 ```
 
 
-## Statistical testing
+## Statistical Testing
 
 ### Moderated pair-wise t-test from limma
 
@@ -813,6 +824,7 @@ topTable(fit4in,coef=1,n=5)
 ```
 
 ### Multiple moderated pair-wise t-tests from limma
+
 If you want to make multiple pair-wise comparisons using `moderTestXgrp` :
 ```{r moderTestXgrp, echo=TRUE}
 grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
@@ -830,10 +842,12 @@ head(test8$p.value,n=8)
 
 
 ### Transform p-values to local false dicovery rate (lfdr)
+
 To get an introduction into local false dicovery rate estimations you may read [Strimmer 2008](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-303).  An overview of R packages in this context was prepared by the [strimmerlab](http://www.strimmerlab.org/notes/fdr.html).
-A convenient way to get lfdr values is preseneted in `pVal2lfdr`.
+A convenient way to get lfdr values is available suing the function `pVal2lfdr`.
+
 Note, that the toy-example used below is too small for estimating really meaningful lfdr values.
-For this reason the function _fdrtool()_ from package [fdrtool](https://CRAN.R-project.org/package=fdrtool) may issue warnings.
+For this reason the function _fdrtool()_ from package [fdrtool](https://CRAN.R-project.org/package=fdrtool) will issue warnings.
 
 ```{r pVal2lfdr, echo=TRUE}
 set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2),ncol=8,dimnames=list(letters[1:20],
@@ -844,7 +858,22 @@ head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
 ```
 
 
-## Tree-like structures
+
+### Extract Numeric Part of Column-Names
+
+When running multiple pairwise tests (using *moderTestXgrp()*) the results will be in adcent columns and the group-names reflected in the column-names.
+In the case measurements from multiple levels of a given variavle are compared it is useful to extract the numeric part, the function `numPairDeColNames()` provides support to do so. 
+When extracting just the numeric part, unit names will get lost, though. Note, if units used are not constant (eg seconds and miliseconds mixed) the extracted numeric values do not relflect the real quantitative context any more.
+
+```{r pairWiseConc1, echo=TRUE}
+mat1 <- matrix(1:8, nrow=2, dimnames=list(NULL, paste0(1:4,"-",6:9)))
+numPairDeColNames(mat1)
+```
+
+
+
+
+## Tree-Like Structures
 
 
 ### Characterize individual contribution of single edges in tree-structures
@@ -873,7 +902,7 @@ countSameStartEnd(frag1)
 ```
 
 
-## Support for graphical output
+## Support for Fraphical Output
 
 ### Convenient paste-collapse
 The function `pasteC` allows adding quotes and separating the last element by specific text (eg 'and').
