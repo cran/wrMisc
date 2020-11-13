@@ -56,10 +56,10 @@ dat1[dat1 <1] <- NA
   summary(dat1)
   head( .normalize(dat1,"mean",list()))
   dat1[c(1:5,50:54,95:100),]
-no1 <- normalizeThis(dat1,refGrp=1:3,meth="mean")
-no2 <- normalizeThis(dat1,refGrp=1:3,meth="trimMean",trim=0.4)
-no3 <- normalizeThis(dat1,refGrp=1:3,meth="median")
-no4 <- normalizeThis(dat1,refGrp=1:3,meth="slope",quantFa=c(0.2,0.8))
+no1 <- normalizeThis(dat1, refGrp=1:3, meth="mean")
+no2 <- normalizeThis(dat1, refGrp=1:3, meth="trimMean", trim=0.4)
+no3 <- normalizeThis(dat1, refGrp=1:3, meth="median")
+no4 <- normalizeThis(dat1, refGrp=1:3, meth="slope", quantFa=c(0.2,0.8))
 dat1[c(1:10,91:100),]
 cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE),use="complete.obs")             # high
 cor(dat1[,4],rowMeans(dat1[,1:2],na.rm=TRUE),use="complete.obs")             # bad

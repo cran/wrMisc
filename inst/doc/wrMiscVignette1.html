@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2020-10-15" />
+<meta name="date" content="2020-11-13" />
 
 <title>Getting started with wrMisc</title>
 
@@ -440,7 +440,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2020-10-15</h4>
+<h4 class="date">2020-11-13</h4>
 
 
 <div id="TOC">
@@ -462,19 +462,19 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><a href="#batch-filter-list-elements">Batch-filter list-elements</a></li>
 <li><a href="#transform-columns-of-matrix-to-list-of-vectors">Transform columns of matrix to list of vectors</a></li>
 </ul></li>
-<li><a href="#working-with-arrays">Working With Arrays</a>
+<li><a href="#working-with-arrays">Working with Arrays</a>
 <ul>
 <li><a href="#cv-coefficient-of-variance-with-arrays">CV (coefficient of variance) with arrays</a></li>
 <li><a href="#slice-3-dim-array-in-list-of-matrixes-or-arrays">Slice 3-dim array in list of matrixes (or arrays)</a></li>
 </ul></li>
-<li><a href="#working-with-redundant-data">Working With Redundant Data</a>
+<li><a href="#working-with-redundant-data">Working with Redundant Data</a>
 <ul>
 <li><a href="#identify-what-is-repeated-and-where-repeated-do-occur">Identify what is repeated (and where repeated do occur)</a></li>
 <li><a href="#correct-vector-to-unique-while-maintaining-the-original-vector-length">Correct vector to unique (while maintaining the original vector length)</a></li>
 <li><a href="#mark-any-duplicated-ie-ambiguous-elements-by-changing-their-names-and-separate-from-unqiue">Mark any duplicated (ie ambiguous) elements by changing their names (and separate from unqiue)</a></li>
 <li><a href="#combine-multiple-matrixes-where-some-column-names-are-the-same">Combine multiple matrixes where some column-names are the same</a></li>
 <li><a href="#filter-matrix-to-keep-only-first-of-repeated-lines">Filter matrix to keep only first of repeated lines</a></li>
-<li><a href="#filter-to-make-unique-based-on-one-column-and-based-concatenate-to-other-user-specified-columns">Filter to make unique based on one column and based concatenate to other user-specified column(s)</a></li>
+<li><a href="#filter-to-unique-column-content-of-matrix-add-counter-and-concatenated-information">Filter to unique column-content of matrix, add counter and concatenated information</a></li>
 <li><a href="#get-first-of-repeated-by-column">Get first of repeated by column</a></li>
 <li><a href="#transform-matrix-to-non-ambiguous-matrix-in-respect-to-given-column">Transform matrix to non-ambiguous matrix (in respect to given column)</a></li>
 <li><a href="#combine-replicates-from-list-to-matrix">Combine replicates from list to matrix</a></li>
@@ -536,13 +536,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb1-4"><a href="#cb1-4"></a><span class="co"># To look which vignettes are available for this package :</span></span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="kw">vignette</span>(topic, <span class="dt">package=</span><span class="st">&quot;wrMisc&quot;</span></span>
 <span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Now you cat start this vignette by</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Now you can start this vignette by</span></span>
 <span id="cb1-8"><a href="#cb1-8"></a><span class="kw">browseVignettes</span>(<span class="st">&quot;wrMisc&quot;</span>)    <span class="co"># and the select the html output</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(<span class="st">&quot;wrMisc&quot;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="co"># This is version number :</span></span>
 <span id="cb2-4"><a href="#cb2-4"></a><span class="kw">packageVersion</span>(<span class="st">&quot;wrMisc&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &#39;1.4.0&#39;</code></pre>
+<pre><code>## [1] &#39;1.4.1&#39;</code></pre>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
 <h2>Speed Optimized Functions in the Package wrMisc</h2>
@@ -573,7 +573,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##       0       0       0</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">system.time</span>(sd2 &lt;-<span class="st"> </span><span class="kw">apply</span>(dat1,<span class="dv">1</span>,sd))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.09    0.00    0.09</code></pre>
+##    0.11    0.03    0.14</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em> will run much slower.</p>
 <p>Note, there is a minor issue with rounding :</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">table</span>(<span class="kw">round</span>(sd1,<span class="dv">13</span>)<span class="op">==</span><span class="kw">round</span>(sd2,<span class="dv">13</span>))</span></code></pre></div>
@@ -583,10 +583,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Similarly we can easily calculate the CV (coefficient of variance) for every row using <code>rowCVs</code> :</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">system.time</span>(cv1 &lt;-<span class="st"> </span><span class="kw">rowCVs</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.00    0.01    0.02</code></pre>
+##       0       0       0</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">system.time</span>(cv2 &lt;-<span class="st"> </span><span class="kw">apply</span>(dat1,<span class="dv">1</span>,sd)<span class="op">/</span><span class="kw">rowMeans</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.08    0.00    0.07</code></pre>
+##    0.11    0.00    0.11</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># typically the calculation using rowCVs is much faster</span></span>
 <span id="cb20-2"><a href="#cb20-2"></a><span class="kw">head</span>(cv1)</span></code></pre></div>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -600,7 +600,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <pre><code>##  [1] &quot;A&quot; &quot;A&quot; &quot;A&quot; &quot;B&quot; &quot;B&quot; &quot;B&quot; &quot;B&quot; &quot;C&quot; &quot;C&quot; &quot;C&quot;</code></pre>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">system.time</span>(sd1Gr &lt;-<span class="st"> </span><span class="kw">rowGrpSds</span>(dat1,grp1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.02    0.00    0.02</code></pre>
+##    0.00    0.01    0.01</code></pre>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="co"># will give us a matrix with the sd for each group &amp; line </span></span>
 <span id="cb28-2"><a href="#cb28-2"></a><span class="kw">head</span>(sd1Gr)</span></code></pre></div>
 <pre><code>##                A          B         C
@@ -617,7 +617,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="co"># The CV :</span></span>
 <span id="cb32-2"><a href="#cb32-2"></a><span class="kw">system.time</span>(cv1Gr &lt;-<span class="st"> </span><span class="kw">rowGrpCV</span>(dat1,grp1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.02    0.00    0.02</code></pre>
+##       0       0       0</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw">head</span>(cv1Gr)</span></code></pre></div>
 <pre><code>##                A          B          C
 ## [1,] 0.194279471 0.19545033 0.17625186
@@ -941,7 +941,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 </div>
 <div id="working-with-arrays" class="section level2">
-<h2>Working With Arrays</h2>
+<h2>Working with Arrays</h2>
 <p>Let’s get stared with a little toy-array:</p>
 <div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a>(arr1 &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="kw">c</span>(<span class="dv">6</span><span class="op">:</span><span class="dv">4</span>,<span class="dv">4</span><span class="op">:</span><span class="dv">24</span>), <span class="dt">dim=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>), <span class="dt">dimnames=</span><span class="kw">list</span>(<span class="kw">c</span>(LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]),</span>
 <span id="cb77-2"><a href="#cb77-2"></a>  <span class="kw">paste</span>(<span class="st">&quot;col&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>),<span class="kw">c</span>(<span class="st">&quot;ch1&quot;</span>,<span class="st">&quot;ch2&quot;</span>))))</span></code></pre></div>
@@ -962,7 +962,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## D   16   20   24</code></pre>
 <div id="cv-coefficient-of-variance-with-arrays" class="section level3">
 <h3>CV (coefficient of variance) with arrays</h3>
-<p>Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an <em>apply</em> alon the 3rd dimension) using <code>arrayCV</code>:</p>
+<p>Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an <em>apply</em> along the 3rd dimension) using <code>arrayCV</code>:</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="kw">arrayCV</span>(arr1)</span></code></pre></div>
 <pre><code>##         ch1       ch2
 ## A 0.3122499 0.2352941
@@ -1029,7 +1029,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 </div>
 <div id="working-with-redundant-data" class="section level2">
-<h2>Working With Redundant Data</h2>
+<h2>Working with Redundant Data</h2>
 <p><em>Semantics</em> : Please note, that there are two ways of interpreting the term ‘unique’ :</p>
 <ul>
 <li><p>In regular understanding one describes this way an event which occurs only once, and thus does not occur/happen anywhere else.</p></li>
@@ -1137,7 +1137,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="filter-matrix-to-keep-only-first-of-repeated-lines" class="section level3">
 <h3>Filter matrix to keep only first of repeated lines</h3>
-<p>This ressembles to the functioning of unique(), but applies to a user-specified column of the matrix.</p>
+<p>This ressembles to the functioning of <em>unique()</em>, but applies to a user-specified column of the matrix.</p>
 <div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1"></a>(mat1 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>,<span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)), <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">dimnames=</span><span class="kw">list</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>],LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])))</span></code></pre></div>
 <pre><code>##   A B
 ## a 1 1
@@ -1146,6 +1146,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## d 4 3
 ## e 5 3
 ## f 6 3</code></pre>
+<p>The function <code>firstLineOfDat</code> allows to access/extract the first line of repeated instances.</p>
 <div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1"></a><span class="kw">firstLineOfDat</span>(mat1, <span class="dt">refCol=</span><span class="dv">2</span>)</span></code></pre></div>
 <pre><code>##   A B
 ## a 1 1
@@ -1160,9 +1161,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb130-2"><a href="#cb130-2"></a><span class="kw">firstOfRepLines</span>(mat2)</span></code></pre></div>
 <pre><code>## [1]  1  2  3  5 10</code></pre>
 </div>
-<div id="filter-to-make-unique-based-on-one-column-and-based-concatenate-to-other-user-specified-columns" class="section level3">
-<h3>Filter to make unique based on one column and based concatenate to other user-specified column(s)</h3>
-<p>This function also includes a counter of redundant instances encountered (for 1st column specified)</p>
+<div id="filter-to-unique-column-content-of-matrix-add-counter-and-concatenated-information" class="section level3">
+<h3>Filter to unique column-content of matrix, add counter and concatenated information</h3>
 <div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1"></a>(df1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">cbind</span>(<span class="dt">xA=</span>letters[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>],<span class="dt">xB=</span><span class="kw">c</span>(<span class="st">&quot;h&quot;</span>,<span class="st">&quot;h&quot;</span>,<span class="st">&quot;f&quot;</span>,<span class="st">&quot;e&quot;</span>,<span class="st">&quot;f&quot;</span>),<span class="dt">xC=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])))</span></code></pre></div>
 <pre><code>##   xA xB xC
 ## 1  a  h  A
@@ -1170,6 +1170,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## 3  c  f  C
 ## 4  d  e  D
 ## 5  e  f  E</code></pre>
+<p>The function <code>nonredDataFrame</code> offers to include a counter of redundant instances encountered (for 1st column specified) :</p>
 <div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1"></a><span class="kw">nonredDataFrame</span>(df1, <span class="dt">useCol=</span><span class="kw">c</span>(<span class="st">&quot;xB&quot;</span>,<span class="st">&quot;xC&quot;</span>)) </span></code></pre></div>
 <pre><code>##   xA xB xC nSamePep concID
 ## 1  a  h  A        2   C//E
@@ -1517,7 +1518,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="regrouping-simultaneaously-by-two-factors" class="section level3">
 <h3>Regrouping simultaneaously by two factors</h3>
-<p>For example, if you whish to create group-labels considering the eye- and hair-color of a small group students (supposed a sort of controlled vocabulary was used), the function <em>combineByEitherFactor()</em> will help. So basically, this is an empric segmentation-approach for two categorical variables. Please note, that with large data-sets and very disperse data this approach will not provide great results. In the example below we’ll attempt to ‘cluster’ according to columns <em>nn</em> and <em>qq</em>, the resultant cluster number can be found in column <em>grp</em>.</p>
+<p>For example, if you whish to create group-labels considering the eye- and hair-color of a small group students (supposed a sort of controlled vocabulary was used), the function <code>combineByEitherFactor()</code> will help. So basically, this is an empric segmentation-approach for two categorical variables. Please note, that with large data-sets and very disperse data this approach will not provide great results. In the example below we’ll attempt to ‘cluster’ according to columns <em>nn</em> and <em>qq</em>, the resultant cluster number can be found in column <em>grp</em>.</p>
 <div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1"></a>nn &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;e&quot;</span>,<span class="st">&quot;b&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;d&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;f&quot;</span>),<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>))</span>
 <span id="cb195-2"><a href="#cb195-2"></a>qq &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;m&quot;</span>,<span class="st">&quot;n&quot;</span>,<span class="st">&quot;p&quot;</span>,<span class="st">&quot;o&quot;</span>,<span class="st">&quot;q&quot;</span>),<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">4</span>))</span>
 <span id="cb195-3"><a href="#cb195-3"></a>nq &lt;-<span class="st"> </span><span class="kw">cbind</span>(nn,qq)[<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">9</span>,<span class="dv">11</span>,<span class="dv">6</span>,<span class="dv">10</span>,<span class="dv">7</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">1</span>,<span class="dv">12</span>,<span class="dv">8</span>),]</span>
@@ -1591,6 +1592,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="search-for-similar-numeric-values" class="section level2">
 <h2>Search For Similar (Numeric) Values</h2>
+<p>This section addresses values that are not truly <em>identical</em> but may differ only in the very last digit(s) and thus may be in a pragmatic view get considered and treated as ‘about the same’. The simplest approach would be to round values and then look for identical values. The functions presented here (like <code>checkSimValueInSer</code>) offer this type of search in a convenient way.</p>
 <div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="#cb204-1"></a>va1 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span><span class="op">:</span><span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">8</span><span class="op">:</span><span class="dv">10</span>)<span class="op">+</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>)<span class="op">/</span><span class="dv">28600</span></span>
 <span id="cb204-2"><a href="#cb204-2"></a><span class="kw">checkSimValueInSer</span>(va1)</span></code></pre></div>
 <pre><code>##  [1] FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE</code></pre>
@@ -1627,7 +1629,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## $x6
 ##   y1   y5   y7 
 ##  0.2 -0.1 -0.3</code></pre>
-<p>The result of <em>findCloseMatch()</em> is a list organized by each ‘x’, telling all instances of ‘y’ found within the distance tolerance given by <em>lim</em>. Using <em>closeMatchMatrix()</em> the result obtained above, can be presented in a more convient format for the human eye.</p>
+<p>The result of <em>findCloseMatch()</em> is a list organized by each ‘x’, telling all instances of ‘y’ found within the distance tolerance given by <em>lim</em>. Using <code>closeMatchMatrix()</code> the result obtained above, can be presented in a more convient format for the human eye.</p>
 <div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="#cb210-1"></a><span class="co"># all matches (of 2d arg) to/within limit for each of 1st arg (&#39;x&#39;); &#39;y&#39; ..to 2nd arg = cC</span></span>
 <span id="cb210-2"><a href="#cb210-2"></a><span class="co"># first let&#39;s display only one single closest/best hit</span></span>
 <span id="cb210-3"><a href="#cb210-3"></a>(maAa &lt;-<span class="st"> </span><span class="kw">closeMatchMatrix</span>(cloMa, aA, cC, <span class="dt">lim=</span><span class="ot">TRUE</span>))  <span class="co">#</span></span></code></pre></div>
@@ -1729,6 +1731,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="find-similar-numeric-values-from-two-vectorsmatrixes" class="section level3">
 <h3>Find similar numeric values from two vectors/matrixes</h3>
+<p>For comparing two sets of data one may use <code>findSimilarFrom2sets</code>.</p>
 <div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="#cb230-1"></a>aA &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">11</span><span class="op">:</span><span class="dv">17</span>); bB &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">12.001</span>,<span class="fl">13.999</span>); cC &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">16.2</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="fl">12.5</span>,<span class="fl">12.6</span>,<span class="fl">15.9</span>,<span class="fl">14.1</span>)</span>
 <span id="cb230-2"><a href="#cb230-2"></a>aZ &lt;-<span class="st">  </span><span class="kw">matrix</span>(<span class="kw">c</span>(aA,aA<span class="op">+</span><span class="dv">20</span>), <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">dimnames=</span><span class="kw">list</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(aA)],<span class="kw">c</span>(<span class="st">&quot;aaA&quot;</span>,<span class="st">&quot;aZ&quot;</span>)))</span>
 <span id="cb230-3"><a href="#cb230-3"></a>cZ &lt;-<span class="st">  </span><span class="kw">matrix</span>(<span class="kw">c</span>(cC,cC<span class="op">+</span><span class="dv">20</span>), <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">dimnames=</span><span class="kw">list</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(cC)],<span class="kw">c</span>(<span class="st">&quot;ccC&quot;</span>,<span class="st">&quot;cZ&quot;</span>)))</span>
@@ -1819,7 +1822,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="fuse-previously-identified-pairs-to-clusters" class="section level3">
 <h3>Fuse previously identified pairs to ‘clusters’</h3>
-<p>When you have already identified the closest neighbour of a set of values, you may want to re-organize/fuse such pairs to a given number of total clusters.</p>
+<p>When you have already identified the closest neighbour of a set of values, you may want to re-organize/fuse such pairs to a given number of total clusters (using <code>fusePairs</code>).</p>
 <div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="#cb245-1"></a>(daPa &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">9</span>), <span class="dt">ncol=</span><span class="dv">2</span>))</span></code></pre></div>
 <pre><code>##      [,1] [,2]
 ## [1,]    1    2
@@ -1835,7 +1838,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="eliminate-close-overlapping-points-in-bivariate-x-y-space" class="section level3">
 <h3>Eliminate close (overlapping) points (in bivariate x &amp; y space)</h3>
 <p>When visualizing larger data-sets in an x&amp;y space one may find many points overlapping when their values are almost the same.<br />
-The function <em>elimCloseCoord()</em> aims to do reduce a bivariate data-set to ‘non-overlapping’ points, somehow similar to human perception.</p>
+The function <code>elimCloseCoord()</code> aims to do reduce a bivariate data-set to ‘non-overlapping’ points, somehow similar to human perception.</p>
 <div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="#cb249-1"></a>da1 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">4</span>,<span class="dv">5</span>),<span class="fl">0.01</span>,<span class="fl">1.1</span>,<span class="fl">2.04</span>,<span class="fl">3.07</span>,<span class="fl">4.5</span>),<span class="dt">ncol=</span><span class="dv">2</span>); da1[,<span class="dv">1</span>] &lt;-<span class="st"> </span>da1[,<span class="dv">1</span>]<span class="op">*</span><span class="dv">99</span>; <span class="kw">head</span>(da1)</span></code></pre></div>
 <pre><code>##      [,1] [,2]
 ## [1,]    0    0
@@ -1860,17 +1863,17 @@ The function <em>elimCloseCoord()</em> aims to do reduce a bivariate data-set to
 <h2>Import/Export</h2>
 <div id="batch-reading-of-csv-files" class="section level3">
 <h3>Batch-reading of csv files</h3>
-<p>Some programs produce a series of csv files, where a large experiment/data-set was split in multiple files. The function <em>readCsvBatch()</em> was designed for reading multiple csv files of exactely the same layout and to join their content. As output a list with the content of each file can be produced (one matrix per file), or the data may be fused into an array, as shown below.</p>
+<p>Some programs produce a series of csv files, where a large experiment/data-set was split in multiple files. The function <code>readCsvBatch()</code> was designed for reading multiple csv files of exactely the same layout and to join their content. As output a list with the content of each file can be produced (one matrix per file), or the data may be fused into an array, as shown below.</p>
 <div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="#cb254-1"></a>path1 &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>,<span class="dt">package=</span><span class="st">&quot;wrMisc&quot;</span>)</span>
 <span id="cb254-2"><a href="#cb254-2"></a>fiNa &lt;-<span class="st">  </span><span class="kw">c</span>(<span class="st">&quot;pl01_1.csv&quot;</span>,<span class="st">&quot;pl01_2.csv&quot;</span>,<span class="st">&quot;pl02_1.csv&quot;</span>,<span class="st">&quot;pl02_2.csv&quot;</span>)</span>
 <span id="cb254-3"><a href="#cb254-3"></a>datAll &lt;-<span class="st"> </span><span class="kw">readCsvBatch</span>(fiNa,path1)</span></code></pre></div>
 <pre><code>##  -&gt; readCsvBatch :  ready to start reading 4 files;  expecting header : TRUE</code></pre>
 <pre><code>##  -&gt; readCsvBatch :  csv-format used &#39;Europe&#39;  with 96 lines &amp; 3 cols</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpMRbGB0/Rinst56c46a38593a/wrMisc/extdata/pl01_1.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpuEdkn4/Rinst6247ca018c6/wrMisc/extdata/pl01_1.csv</code></pre>
 <pre><code>## -&gt; readCsvBatch -&gt; .removeEmptyCol :  columns no 1, 2 were considered empty and removed</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpMRbGB0/Rinst56c46a38593a/wrMisc/extdata/pl01_2.csv</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpMRbGB0/Rinst56c46a38593a/wrMisc/extdata/pl02_1.csv</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpMRbGB0/Rinst56c46a38593a/wrMisc/extdata/pl02_2.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpuEdkn4/Rinst6247ca018c6/wrMisc/extdata/pl01_2.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpuEdkn4/Rinst6247ca018c6/wrMisc/extdata/pl02_1.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpuEdkn4/Rinst6247ca018c6/wrMisc/extdata/pl02_2.csv</code></pre>
 <div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="#cb262-1"></a><span class="kw">str</span>(datAll)</span></code></pre></div>
 <pre><code>##  num [1:96, 1:4, 1] 158808 174272 183176 175752 49272 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 3
@@ -1884,7 +1887,7 @@ The function <em>elimCloseCoord()</em> aims to do reduce a bivariate data-set to
 <div id="reading-incomplete-tables" class="section level3">
 <h3>Reading incomplete tables</h3>
 <p>Sometimes were may get confronted with data which look like ‘incomplete’ tables. In such cases some rows do not conatain as many elements/columns as other columns. Files with this type of data pose a problem for <em>read.table()</em> (from the <em>utils</em> package). The function <em>readVarColumns()</em> (from this package) was designed to provide help in such cases. Basically each line is read an parsed separetely, the user should check the proper separator is used.</p>
-<p>The example below lists people’s names in different locations, some locations have more persons … Sometimes exporting such data will gererate shorter lines in locations with fewer elements (here ‘London’) and no additonal separators will get added (to mark all empty fields) towards the end. The function <em>readVarColumns()</em> (from this package) provides help to read such data, if the content (and separtors) of the last columns are missing.</p>
+<p>The example below lists people’s names in different locations, some locations have more persons … Sometimes exporting such data will gererate shorter lines in locations with fewer elements (here ‘London’) and no additonal separators will get added (to mark all empty fields) towards the end. The function <code>readVarColumns()</code> (from this package) provides help to read such data, if the content (and separtors) of the last columns are missing.</p>
 <div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="#cb265-1"></a>path1 &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>,<span class="dt">package=</span><span class="st">&quot;wrMisc&quot;</span>)</span>
 <span id="cb265-2"><a href="#cb265-2"></a>fiNa &lt;-<span class="st"> &quot;Names1.tsv&quot;</span></span>
 <span id="cb265-3"><a href="#cb265-3"></a>datAll &lt;-<span class="st"> </span><span class="kw">readVarColumns</span>(<span class="dt">fiName=</span><span class="kw">file.path</span>(path1,fiNa), <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</span></code></pre></div>
@@ -2184,7 +2187,7 @@ The function <em>elimCloseCoord()</em> aims to do reduce a bivariate data-set to
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.44.3 wrMisc_1.4.0
+## [1] limma_3.44.3 wrMisc_1.4.1
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] compiler_4.0.3  magrittr_1.5    htmltools_0.5.0 tools_4.0.3    

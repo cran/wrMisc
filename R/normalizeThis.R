@@ -27,10 +27,10 @@
 #'   summary(dat1)
 #'   head( .normalize(dat1,"mean",list()))
 #'   dat1[c(1:5,50:54,95:100),]
-#' no1 <- normalizeThis(dat1,refGrp=1:3,meth="mean")
-#' no2 <- normalizeThis(dat1,refGrp=1:3,meth="trimMean",trim=0.4)
-#' no3 <- normalizeThis(dat1,refGrp=1:3,meth="median")
-#' no4 <- normalizeThis(dat1,refGrp=1:3,meth="slope",quantFa=c(0.2,0.8))
+#' no1 <- normalizeThis(dat1, refGrp=1:3, meth="mean")
+#' no2 <- normalizeThis(dat1, refGrp=1:3, meth="trimMean", trim=0.4)
+#' no3 <- normalizeThis(dat1, refGrp=1:3, meth="median")
+#' no4 <- normalizeThis(dat1, refGrp=1:3, meth="slope", quantFa=c(0.2,0.8))
 #' dat1[c(1:10,91:100),]
 #' cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE),use="complete.obs")             # high
 #' cor(dat1[,4],rowMeans(dat1[,1:2],na.rm=TRUE),use="complete.obs")             # bad
@@ -45,7 +45,7 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   method <- if(any(chMe)) naOmit(method)[1] else method[1] 
   if(length(dim(dat)) !=2) stop(" expecting matrix or data.frame with >= 2 rows as 'dat' !")
   if(!is.matrix(dat)) dat <- as.matrix(dat)
-  if(!is.null(refLines)) if(identical(refLines,1:nrow(dat))) {refLines <- NULL; message(fxNa," omit redundant 'refLines'")}
+  if(!is.null(refLines)) if(identical(refLines,1:nrow(dat))) {refLines <- NULL; if(!silent) message(fxNa," omit redundant 'refLines'")}
   ## assemble parameters
   params <- list(refLines=refLines,trimFa=trimFa,useQ=quantFa,useExp=expFa)
   ## method specific elements
@@ -89,14 +89,15 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
     if(nrow(if(asRefL) datRef else dat) <42) message(callFrom," PROBLEM : Too few lines of data to run 'vsn' ! ")}
   switch(meth,
     none=dat,  
-    mean= sum(dat,na.rm=TRUE)*dat/(matrix(rep(colMeans(if(asRefL) datRef else dat,na.rm=TRUE),
-      each=nrow(dat)),nrow=nrow(dat))*sum(!is.na(dat))),
-    trimMean=mean(dat,trim=param$trimFa,na.rm=TRUE)* dat/matrix(rep(apply(
-      if(asRefL) datRef else dat,2,mean,trim=param$trimFa,na.rm=TRUE),each=nrow(dat)),nrow=nrow(dat)),
-    median=stats::median(dat,na.rm=TRUE)*dat/matrix(rep(apply(if(asRefL) datRef else dat,2,stats::median,na.rm=TRUE),each=nrow(dat)),nrow=nrow(dat)),
-    slope=.normConstSlope(mat=dat,useQuant=param$useQ,refLines=param$refLines,diagPlot=FALSE),
-    exponent=try(exponNormalize(dat,useExpon=param$useExp,refLines=param$refLines)$datNor),
-    slope2Sections=try(adjBy2ptReg(dat,lims=param$useQ,refLines=param$refLines)),
+    mean= sum(if(asRefL) datRef else dat,na.rm=TRUE) * dat / (matrix(rep(colMeans(if(asRefL) datRef else dat,na.rm=TRUE),
+      each=nrow(dat)), nrow=nrow(dat))*sum(!is.na(dat))),
+    trimMean=mean(if(asRefL) datRef else dat, trim=param$trimFa,na.rm=TRUE) * dat / matrix(rep(apply(
+      if(asRefL) datRef else dat, 2, mean, trim=param$trimFa,na.rm=TRUE), each=nrow(dat)), nrow=nrow(dat)),
+    median=stats::median(if(asRefL) datRef else dat,na.rm=TRUE) * dat / matrix(rep(apply(
+      if(asRefL) datRef else dat, 2, stats::median,na.rm=TRUE), each=nrow(dat)), nrow=nrow(dat)),
+    slope=.normConstSlope(mat=dat, useQuant=param$useQ, refLines=param$refLines, diagPlot=FALSE),
+    exponent=try(exponNormalize(dat, useExpon=param$useExp, refLines=param$refLines)$datNor),
+    slope2Sections=try(adjBy2ptReg(dat, lims=param$useQ, refLines=param$refLines)),
     vsn=try(vsn::justvsn(dat)) ) 
   }
 

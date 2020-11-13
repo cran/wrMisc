@@ -35,7 +35,7 @@ install.packages("wrMisc")
 # To look which vignettes are available for this package :
 vignette(topic, package="wrMisc"
 
-# Now you cat start this vignette by
+# Now you can start this vignette by
 browseVignettes("wrMisc")    # and the select the html output
 ```
 
@@ -254,7 +254,7 @@ str(matr2list(mat1))
 
 
 
-## Working With Arrays
+## Working with Arrays
 
 Let's get stared with a little toy-array:
 ```{r array0, echo=TRUE}
@@ -263,7 +263,7 @@ Let's get stared with a little toy-array:
 ```
 
 ### CV (coefficient of variance) with arrays
-Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an _apply_ alon the 3rd dimension) using `arrayCV`:
+Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an _apply_ along the 3rd dimension) using `arrayCV`:
 ```{r arrayCV1, echo=TRUE}
 arrayCV(arr1)
 
@@ -290,7 +290,7 @@ filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=
 
 
 
-## Working With Redundant Data
+## Working with Redundant Data
 
 _Semantics_ : Please note, that there are two ways of interpreting the term 'unique' :
 
@@ -373,10 +373,15 @@ Common column-names are interpreted that theur respective information should be 
 cbindNR(ma1, ma2, summarizeAs="mean")       # average of both columns 'C'
 ```
 
+
 ### Filter matrix to keep only first of repeated lines
-This ressembles to the functioning of unique(), but applies to a user-specified column of the matrix.
+This ressembles to the functioning of _unique()_, but applies to a user-specified column of the matrix.
 ```{r firstLineOfDat, echo=TRUE}
 (mat1 <- matrix(c(1:6,rep(1:3,1:3)), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2])))
+```
+The function `firstLineOfDat` allows to access/extract the first line of repeated instances.
+
+```{r firstLineOfDat2, echo=TRUE}
 firstLineOfDat(mat1, refCol=2)
 ```
 
@@ -391,10 +396,12 @@ firstOfRepLines(mat2)
 ```
 
 
-### Filter to make unique based on one column and based concatenate to other user-specified column(s)
-This function also includes a counter of redundant instances encountered (for 1st column specified)
+### Filter to unique column-content of matrix, add counter and concatenated information
 ```{r nonredDataFrame, echo=TRUE}
 (df1 <- data.frame(cbind(xA=letters[1:5],xB=c("h","h","f","e","f"),xC=LETTERS[1:5])))
+```
+The function `nonredDataFrame` offers to include a counter of redundant instances encountered (for 1st column specified) :
+```{r nonredDataFrame2, echo=TRUE}
 
 nonredDataFrame(df1, useCol=c("xB","xC")) 
 
@@ -534,7 +541,7 @@ cbind(ini=dat,firstOfRep=getValuesByUnique(dat, datUniq),
 ### Regrouping simultaneaously by two factors
 
 For example, if you whish to create group-labels considering the eye- and hair-color of a small group students (supposed a sort of controlled vocabulary was used),
-the function _combineByEitherFactor()_ will help. So basically, this is an empric segmentation-approach for two categorical variables.
+the function `combineByEitherFactor()` will help. So basically, this is an empric segmentation-approach for two categorical variables.
 Please note, that with large data-sets and very disperse data this approach will not provide great results.
 In the example below we'll attempt to 'cluster' according to columns _nn_ and _qq_, the resultant cluster number can be found in column _grp_.
 
@@ -565,6 +572,11 @@ combineByEitherFactor(cbind(mm,pp),1,2, con=FALSE, nBy=TRUE)
 
 ## Search For Similar (Numeric) Values
 
+This section addresses values that are not truly _identical_ but may differ only in the very last digit(s) 
+and thus may be in a pragmatic view get considered and treated as 'about the same'.
+The simplest approach would be to round values and then look for identical values. 
+The functions presented here (like `checkSimValueInSer`) offer this type of search in a convenient way.
+
 ```{r checkSimValueInSer, echo=TRUE}
 va1 <- c(4:7,7,7,7,7,8:10)+(1:11)/28600
 checkSimValueInSer(va1)
@@ -580,7 +592,7 @@ aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.
 (cloMa <- findCloseMatch(x=aA, y=cC, com="diff", lim=0.5, sor=FALSE))       
 ```
 The result of _findCloseMatch()_ is a list organized by each 'x', telling all instances of 'y' found within the distance tolerance given by _lim_.
-Using _closeMatchMatrix()_ the result obtained above, can be presented in a more convient format for the human eye.
+Using `closeMatchMatrix()` the result obtained above, can be presented in a more convient format for the human eye.
 
 ```{r closeMatchMatrix1, echo=TRUE}
 # all matches (of 2d arg) to/within limit for each of 1st arg ('x'); 'y' ..to 2nd arg = cC
@@ -605,7 +617,9 @@ a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10
 ```
 
 
-### Find similar numeric values from two vectors/matrixes
+### Find similar numeric values from two vectors/matrixes    
+
+For comparing two sets of data one may use `findSimilarFrom2sets`.
 
 ```{r findSimilFrom2sets, echo=TRUE}
 aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,12.6,15.9,14.1)
@@ -625,7 +639,7 @@ findSimilFrom2sets(aA,cC,comp="ppm",lim=9e4,bestO=TRUE)
 ### Fuse previously identified pairs to 'clusters' 
 
 When you have already identified the closest neighbour of a set of values, you may want to 
-re-organize/fuse such pairs to a given number of total clusters.
+re-organize/fuse such pairs to a given number of total clusters (using `fusePairs`).
 ```{r fusePairs, echo=TRUE}
 (daPa <- matrix(c(1:5,8,2:6,9), ncol=2))
 fusePairs(daPa, maxFuse=4)
@@ -634,7 +648,7 @@ fusePairs(daPa, maxFuse=4)
 ### Eliminate close (overlapping) points (in bivariate x & y space)
 
 When visualizing larger data-sets in an x&y space one may find many points overlapping when their values are almost the same.  
-The function _elimCloseCoord()_ aims to do reduce a bivariate data-set to 'non-overlapping' points, somehow similar to human perception.
+The function `elimCloseCoord()` aims to do reduce a bivariate data-set to 'non-overlapping' points, somehow similar to human perception.
 
 ```{r elimCloseCoord, echo=TRUE}
 da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*99; head(da1)
@@ -647,7 +661,7 @@ elimCloseCoord(da1)
 ### Batch-reading of csv files
 
 Some programs produce a series of csv files, where a large experiment/data-set was split in multiple files.
-The function _readCsvBatch()_ was designed for reading multiple csv files of exactely the same layout and to join their content.
+The function `readCsvBatch()` was designed for reading multiple csv files of exactely the same layout and to join their content.
 As output a list with the content of each file can be produced (one matrix per file), or the data may be fused into an array, as shown below.  
 
 
@@ -674,7 +688,7 @@ Basically each line is read an parsed separetely, the user should check the prop
 
 The example below lists people's names in different locations, some locations have more persons ... 
 Sometimes exporting such data will gererate shorter lines in locations with fewer elements (here 'London') and no additonal separators will get added (to mark all empty fields) towards the end.
-The function _readVarColumns()_ (from this package) provides help to read such data, if the content (and separtors) of the last columns are missing.
+The function `readVarColumns()` (from this package) provides help to read such data, if the content (and separtors) of the last columns are missing.
 
 ```{r readVarColumns, echo=TRUE}
 path1 <- system.file("extdata",package="wrMisc")

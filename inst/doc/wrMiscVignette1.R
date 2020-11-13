@@ -10,7 +10,7 @@ suppressPackageStartupMessages({
 #  # To look which vignettes are available for this package :
 #  vignette(topic, package="wrMisc"
 #  
-#  # Now you cat start this vignette by
+#  # Now you can start this vignette by
 #  browseVignettes("wrMisc")    # and the select the html output
 
 ## ----setup1-------------------------------------------------------------------
@@ -191,6 +191,8 @@ cbindNR(ma1, ma2, summarizeAs="mean")       # average of both columns 'C'
 
 ## ----firstLineOfDat, echo=TRUE------------------------------------------------
 (mat1 <- matrix(c(1:6,rep(1:3,1:3)), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2])))
+
+## ----firstLineOfDat2, echo=TRUE-----------------------------------------------
 firstLineOfDat(mat1, refCol=2)
 
 ## ----firstOfRepLines, echo=TRUE-----------------------------------------------
@@ -203,6 +205,8 @@ firstOfRepLines(mat2)
 
 ## ----nonredDataFrame, echo=TRUE-----------------------------------------------
 (df1 <- data.frame(cbind(xA=letters[1:5],xB=c("h","h","f","e","f"),xC=LETTERS[1:5])))
+
+## ----nonredDataFrame2, echo=TRUE----------------------------------------------
 
 nonredDataFrame(df1, useCol=c("xB","xC")) 
 

@@ -31,29 +31,29 @@
 #' @export
 readXlsxBatch <- function(fileNames=NULL,path=".",fileExtension="xlsx",excludeFiles=NULL,sheetInd=1,checkFormat=TRUE,
   returnArray=TRUE,columns=c("Plate","Well","StainA"),simpleNames=3,silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="readXlsxBatch")  
-  chPa <- try(find.package("xlsx"),silent=TRUE)
+  fxNa <- .composeCallName(callFrom, newNa="readXlsxBatch")  
+  chPa <- try(find.package("xlsx"), silent=TRUE)
   if("try-error" %in% class(chPa)) stop("package 'xlsx' not found ! Please install first")   
   if(is.null(path)) path <- "."
   chPath <- file.exists(path)
   if(!chPath) {message(fxNa," Cannot find path '",path,"' !  ... Setting to default='.'")}
   if(is.null(fileNames)) {
     ## automatic reading of all files in directory
-    fileNames <- dir(path=path,pattern=paste(fileExtension,"$",sep=""))
+    fileNames <- dir(path=path,pattern=paste0(fileExtension,"$"))
     if(length(fileNames) <1) message(fxNa," Could not find ANY suitable files !!") else {
       if(!silent) message(fxNa," found ",length(fileNames)," files to extract (eg ",pasteC(utils::head(fileNames,3),quoteC="'"),")")}
     useFi <- file.path(path,fileNames)  
   } else {
     ## reading of specfied files in directory
     douPath <- grep(path,fileNames)
-    useFi <- if(length(douPath) <1) file.path(path,fileNames) else fileNames
+    useFi <- if(length(douPath) <1) file.path(path, fileNames) else fileNames
     checkFi <- file.exists(useFi)
     if(sum(!checkFi) >0) { 
       if(!silent) message(fxNa," could not find ",sum(!checkFi)," files out of ",length(useFi),
         "  (eg ",pasteC(utils::head(fileNames[which(!checkFi)],3),quoteC="'"),")")
       useFi <- fileNames[which(checkFi)] 
       fileNames <- fileNames[which(checkFi)] }}
-  checkFi <- if(!is.null(excludeFiles)) grep(excludeFiles,fileNames) else NULL
+  checkFi <- if(!is.null(excludeFiles)) grep(excludeFiles, fileNames) else NULL
   if(length(checkFi) >0) {
     if(!silent) message(fxNa," based on 'excludeFiles': excluding ",length(checkFi)," files (out of ",length(fileNames),")")
     useFi <- useFi[-1*checkFi]
@@ -61,7 +61,7 @@ readXlsxBatch <- function(fileNames=NULL,path=".",fileExtension="xlsx",excludeFi
   outL <- list()
   if(length(useFi) >0) {
     for(i in 1:length(useFi)) {
-      tmp <- try(xlsx::read.xlsx(file=useFi[i],sheetIndex=sheetInd))
+      tmp <- try(xlsx::read.xlsx(file=useFi[i], sheetIndex=sheetInd))
       if("try-error" %in% class(tmp)) message(fxNa," unable to read '",fileNames[i],"''",
         if(i==1) "\n   Check if xlsx package is installed !?!")
       if(checkFormat) {

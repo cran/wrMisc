@@ -22,7 +22,7 @@ correctToUnique(
 
 \item{maxIter}{(numeric) max number of iterations}
 
-\item{NAenum}{(logical) if TRUE NAs will be enumerated (NA_1,NA_2,...)}
+\item{NAenum}{(logical) if \code{TRUE} all \code{NA}s will be enumerated (NA_1,NA_2,...)}
 
 \item{callFrom}{(character) for better tracking of use of functions}
 }

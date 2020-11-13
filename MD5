@@ -1,4 +1,4 @@
-906bddf0bb95c37408ceae867f184bf9 *DESCRIPTION
+39c464da3b98cad27929f949cb36d52c *DESCRIPTION
 64b6d69415ff127b4c0163bcd3a198ca *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
@@ -31,7 +31,7 @@ e109283bd022590c8628d1a6edb3ef3d *R/completeArrLst.R
 ec5fe93688985364dfe0660e0d398795 *R/convColorToTransp.R
 f3956ec5d042d15bbe8ac6251c71b1ea *R/convMatr2df.R
 0fb859bd4317c664461957d9559df98a *R/convToNum.R
-b3f8ef078df21d664d87f66e3e61abf2 *R/correctToUnique.R
+ee7513ff93415e7d9d74030c053a64e1 *R/correctToUnique.R
 3ce3a5c5f089dca6dec19fb4fe303f0e *R/correctWinPath.R
 47cd947e8d218dad7df09fbe4ec3055f *R/countCloseToLimits.R
 8a1d600d1411e27e1a3e7c1217197299 *R/countSameStartEnd.R
@@ -87,7 +87,7 @@ b8c366f2c610bafa6c811afdb08f900c *R/naOmit.R
 e9d9137fe97acdf6c59a46177fe11172 *R/nonAmbiguousNum.R
 599950b1c44535064a5967b9e2ad0e8a *R/nonRedundLines.R
 289837d20c644b45baae912d09d381fe *R/nonredDataFrame.R
-56b1d5c35efff114d932842befb7d477 *R/normalizeThis.R
+12d5ed691b9b471d77fc593c4ac4b871 *R/normalizeThis.R
 1fcb295eeddc2279d54dcb483b0c69fa *R/numPairDeColNames.R
 478d71d376f12ed74697e3ec04552a9e *R/organizeAsListOfRepl.R
 6c75d55c05e71825c74163ee2190c0cb *R/pVal2lfdr.R
@@ -101,7 +101,7 @@ a87df016fdc6d4606b0c36c62c844945 *R/randIndFx.R
 7822390bcb644f99bc02941f6af6a482 *R/ratioToPpm.R
 6bf4983f73a5aa4433c817fd978f0667 *R/readCsvBatch.R
 803bf1010190eded710650c63c367d67 *R/readVarColumns.R
-9fa385d0767cc6de8bba267efe8ad7ba *R/readXlsxBatch.R
+483af48482d028dc3d2494ee62d85a76 *R/readXlsxBatch.R
 c9eae15f382026d1593ed3ab9c6813fb *R/reduceTable.R
 f55539046d3bd352d959f5529ee178eb *R/regrBy1or2point.R
 d66240cdd8db6e38abe6f682e5cc604e *R/regrMultBy1or2point.R
@@ -136,9 +136,9 @@ fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 460d0e7abae2166c2a08f86e741cc656 *R/writeCsv.R
 8ad64f901a38c2c63cbb92a4909d37d4 *build/vignette.rds
-cb6fafd95cc50b4e6e41451b3458c032 *inst/doc/wrMiscVignette1.R
-f279fc7e43d41aab8f0b7f8f3456476a *inst/doc/wrMiscVignette1.Rmd
-0b561b4101a63009469418805f9643a9 *inst/doc/wrMiscVignette1.html
+cb0fe53b99fa696bcae1d81534687d99 *inst/doc/wrMiscVignette1.R
+7c71605310fde8c4e6a62b9726366ab8 *inst/doc/wrMiscVignette1.Rmd
+9a923ce56145d4f627b51e5f33057e5a *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 13e7d1c6add7b3142aa228d1956d25d4 *inst/extdata/pl01_1.csv
 ca180004fbfdabc6c9b9eac0d89c7bcb *inst/extdata/pl01_1.xlsx
@@ -179,7 +179,7 @@ e68d9b50cd639a2514660737f81da37e *man/contribToContigPerFrag.Rd
 f6b76f1097156ed054ec4265cad450da *man/convColorToTransp.Rd
 9a2672ebd0c35c97f8057f91c5773085 *man/convMatr2df.Rd
 4af5c5a09d4a67bffaf0922ef22ffd94 *man/convToNum.Rd
-c3c8c509b254240983dd78c0c2ecb1ae *man/correctToUnique.Rd
+139112c70763acd1317075a7b5de5373 *man/correctToUnique.Rd
 d7855b8433db15a7b03d3047a09f6140 *man/correctWinPath.Rd
 a2ef9f9d09a4d0ad327fccfb15c87c87 *man/countCloseToLimits.Rd
 4512d110f12c7ead41dfc7160b728a38 *man/countSameStartEnd.Rd
@@ -237,7 +237,7 @@ cb350f5c12fee960900af4919d6b58b3 *man/naOmit.Rd
 bd3e4561f5ff139443d87cc68b689f1a *man/nonAmbiguousNum.Rd
 3d7aba38a74fe76b02500d4c2d9b82d0 *man/nonRedundLines.Rd
 59e3abe23e1d9b6568c4053f1f314057 *man/nonredDataFrame.Rd
-0949f3d43c570b857576c1c7a62f075f *man/normalizeThis.Rd
+811aa7044823b8f4192a605367dda6ab *man/normalizeThis.Rd
 18067938e41dc41a02fa541c00f9b198 *man/numPairDeColNames.Rd
 159e3eecbb64f5d9d7d62dfd89f24a38 *man/organizeAsListOfRepl.Rd
 48133ff04e462dc3b294e95a7b0f55f6 *man/pVal2lfdr.Rd
@@ -285,4 +285,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 a72aacf31ebde1055dbf6b9974acb1a4 *man/writeCsv.Rd
-f279fc7e43d41aab8f0b7f8f3456476a *vignettes/wrMiscVignette1.Rmd
+7c71605310fde8c4e6a62b9726366ab8 *vignettes/wrMiscVignette1.Rmd
