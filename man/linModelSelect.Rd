@@ -12,6 +12,7 @@ linModelSelect(
   startLev = NULL,
   liNa = c(raw = "raw", annot = "annot", datImp = "datImp"),
   plotGraph = TRUE,
+  tit = NULL,
   yLab = NULL,
   cexLeg = 0.95,
   cexSub = 0.85,
@@ -31,12 +32,14 @@ linModelSelect(
 
 \item{logExpect}{(logical) toggle to \code{TRUE} if the main data are logarithmic}
 
-\item{startLev}{(integer) specify all starting levels to test for omitting here}
+\item{startLev}{(integer) specify all starting levels to test for omitting here (multiple start sites for modelling linear regression may be specified to finally pick the best model)}
 
 \item{liNa}{(character) in case \code{cat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
 $datImp (the main quantitation data to use) and $annot for displaying the corresponding value from the "Accession"-column.}
 
 \item{plotGraph}{(logical) display figure}
+
+\item{tit}{(character) optional custom title}
 
 \item{yLab}{(character) custom y-axis label}
 

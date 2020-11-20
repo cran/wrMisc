@@ -8,7 +8,7 @@ suppressPackageStartupMessages({
 #  install.packages("wrMisc")
 #  
 #  # To look which vignettes are available for this package :
-#  vignette(topic, package="wrMisc"
+#  vignette(topic, package="wrMisc")
 #  
 #  # Now you can start this vignette by
 #  browseVignettes("wrMisc")    # and the select the html output
@@ -16,14 +16,14 @@ suppressPackageStartupMessages({
 ## ----setup1-------------------------------------------------------------------
 library("wrMisc")
 
-# This is version number :
+# This is 'wrMisc' version number :
 packageVersion("wrMisc")
 
 ## ----basicVariability, echo=TRUE----------------------------------------------
-grp1 <- rep(LETTERS[1:3],c(3,4,3))
-sampNa1 <- paste0(grp1,c(1:3,1:4,1:3))
-set.seed(2016); dat1 <- matrix(round(c(runif(50000)+rep(1:1000,50)),3),ncol=10,
-  dimnames=list(NULL,sampNa1))
+grp1 <- rep(LETTERS[1:3], c(3,4,3))
+sampNa1 <- paste0(grp1, c(1:3,1:4,1:3))
+set.seed(2016); dat1 <- matrix(round(c(runif(50000) +rep(1:1000,50)),3), 
+  ncol=10, dimnames=list(NULL,sampNa1))
 dim(dat1)
 head(dat1)
 
@@ -47,15 +47,15 @@ head(cv2)
 # we already defined the grouping :
 grp1
 
-system.time(sd1Gr <- rowGrpSds(dat1,grp1))
+system.time(sd1Gr <- rowGrpSds(dat1, grp1))
 # will give us a matrix with the sd for each group & line 
 head(sd1Gr)
 
 # Let's check the results of the first line :
-sd1Gr[1,] == c(sd(dat1[1,1:3]),sd(dat1[1,4:7]),sd(dat1[1,8:10]))
+sd1Gr[1,] == c(sd(dat1[1,1:3]), sd(dat1[1,4:7]), sd(dat1[1,8:10]))
 
 # The CV :
-system.time(cv1Gr <- rowGrpCV(dat1,grp1))
+system.time(cv1Gr <- rowGrpCV(dat1, grp1))
 head(cv1Gr)
 
 ## ----naOmit, echo=TRUE--------------------------------------------------------
@@ -67,7 +67,7 @@ str(naOmit(aA))
 str(na.omit(aA))
 
 ## ----minDiff, echo=TRUE-------------------------------------------------------
-set.seed(2017); aa <- 10*c(0.1+round(runif(20),2),0.53,0.53)
+set.seed(2017); aa <- 10*c(0.1 +round(runif(20),2), 0.53, 0.53)
 head(aa)
 
 minDiff(aa,ppm=FALSE)

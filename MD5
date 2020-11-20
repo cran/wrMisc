@@ -1,4 +1,4 @@
-39c464da3b98cad27929f949cb36d52c *DESCRIPTION
+3c07317be0fc6bbfb4f8183d25413e03 *DESCRIPTION
 64b6d69415ff127b4c0163bcd3a198ca *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
@@ -65,7 +65,7 @@ b12f0b33e01eec889982232d7ae5ad9a *R/fuseCommonListElem.R
 eeafe3ddbf062eb1897b84c7491d716b *R/get1stOfRepeatedByCol.R
 53adc8a1a20498c15f8656019d517392 *R/getValuesByUnique.R
 25be96f113ec353abb9543cb88077a9f *R/htmlSpecCharConv.R
-8ffd1bc52681cc67ff748700f1c4ebd9 *R/linModelSelect.R
+261b0b8f9e34061ed704b68d6cbff4d2 *R/linModelSelect.R
 99de733d760fb6b29b422cfa82db45db *R/linRegrParamAndPVal.R
 6ac310a9973d6b9ce0546f3adde75760 *R/listBatchReplace.R
 9b2106f70c23b2a4db002006cb2e4167 *R/listGroupsByNames.R
@@ -136,9 +136,9 @@ fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 460d0e7abae2166c2a08f86e741cc656 *R/writeCsv.R
 8ad64f901a38c2c63cbb92a4909d37d4 *build/vignette.rds
-cb0fe53b99fa696bcae1d81534687d99 *inst/doc/wrMiscVignette1.R
-7c71605310fde8c4e6a62b9726366ab8 *inst/doc/wrMiscVignette1.Rmd
-9a923ce56145d4f627b51e5f33057e5a *inst/doc/wrMiscVignette1.html
+c37cc12c09375da7d3ae7e1511fc772e *inst/doc/wrMiscVignette1.R
+ffa8c846610dd4d1e9d046cd7424f707 *inst/doc/wrMiscVignette1.Rmd
+9dfba4e69b095da2015c801bd35a744e *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 13e7d1c6add7b3142aa228d1956d25d4 *inst/extdata/pl01_1.csv
 ca180004fbfdabc6c9b9eac0d89c7bcb *inst/extdata/pl01_1.xlsx
@@ -213,7 +213,7 @@ dfb053c721bc9c391e1581c65165bc7d *man/fusePairs.Rd
 1f7a0892833dd9586b425a3145f0a2cd *man/get1stOfRepeatedByCol.Rd
 a843832c8c42db411f1f460ae706862c *man/getValuesByUnique.Rd
 c554b5fa7064b8eda8826cbf8787b155 *man/htmlSpecCharConv.Rd
-eafa31b18610b841e94784bc2c6ef024 *man/linModelSelect.Rd
+3a21eb029831b5043f888843d98027f5 *man/linModelSelect.Rd
 0237c86ab337c84b33179544b1605992 *man/linRegrParamAndPVal.Rd
 74b41939462e2ed21f0e95de9b1d92b7 *man/listBatchReplace.Rd
 13959924b00acb04f881ce3063bbab93 *man/listGroupsByNames.Rd
@@ -285,4 +285,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 a72aacf31ebde1055dbf6b9974acb1a4 *man/writeCsv.Rd
-7c71605310fde8c4e6a62b9726366ab8 *vignettes/wrMiscVignette1.Rmd
+ffa8c846610dd4d1e9d046cd7424f707 *vignettes/wrMiscVignette1.Rmd

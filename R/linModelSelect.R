@@ -1,3 +1,4 @@
+
 #' Selecte best levels and plot linear regression model  
 #'
 #' The aim of this function is to select the data suiting est to a linear regression model. 
@@ -13,11 +14,11 @@
 #' @param dat (matrix, list or MArrayLM-object from limma) main input of which columns should get re-ordered, may be output from \code{\link{moderTestXgrp}} or \code{\link{moderTest2grp}}.
 #' @param expect (numeric of character) the expected levels; if character, constant unit-characters will be stripped away to extact the numeric content
 #' @param logExpect (logical) toggle to \code{TRUE} if the main data are logarithmic
-#' @param startLev (integer) specify all starting levels to test for omitting here 
+#' @param startLev (integer) specify all starting levels to test for omitting here (multiple start sites for modelling linear regression may be specified to finally pick the best model)
 #' @param liNa (character) in case \code{cat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
 #'   $datImp (the main quantitation data to use) and $annot for displaying the corresponding value from the "Accession"-column.	
 #' @param plotGraph (logical) display figure
-#' @param silent (logical) suppress messages
+#' @param tit (character) optional custom title
 #' @param yLab (character) custom y-axis label
 #' @param cexLeg (character) size of text in legend
 #' @param cexSub (character) size of subtitle (giving regression details of best linear model)
@@ -50,21 +51,10 @@
 #' linModelSelect("P1", dat4, expect=exp4, log=TRUE)
 #' @export
 linModelSelect <- function(protNa, dat, expect, logExpect=FALSE, startLev=NULL, liNa=c(raw="raw",annot="annot",datImp="datImp"), plotGraph=TRUE, 
-  yLab=NULL, cexLeg=0.95, cexSub=0.85, cexYAxis=0.9, cexXAxis=0.85, cexLab=1.1, silent=FALSE, callFrom=NULL)  {
+  tit=NULL, yLab=NULL, cexLeg=0.95, cexSub=0.85, cexYAxis=0.9, cexXAxis=0.85, cexLab=1.1, silent=FALSE, callFrom=NULL)  {
   ##  test for linear models with option to start form multiple later levels (ie omitting some of the early levels)
-  ## protNa (character,length=1) name to be extracted from 'dat'
-  ## dat (matrix or list) if list, the first 4 elements from 'liNa' will be used for accessing information
-  ## expect ()
-  ## startLev (integer) sometimes the lowest level measures are not yet in the linear range; multiple start sites for modelling linear regression may be specified to finally pick the best model
-  ## liNa (character, min length=4, should have names) if 'dat' is list, this contains the names of the elements that will be used for accessing information
-  ## plotGraph (logical)
-  ## cexLeg (numeric) size of text in legend
-  ## cexSub (numeric) size of text in sutitle/line giving regression details
-  ## cexYAxis (numeric) size of text in y axis
-  ## cexXAxis (numeric) size of text in x axis
-  ## cexLab (numeric) size of text in x & y axis legend 
-   
   fxNa <- .composeCallName(callFrom, newNa="linModelSelect")
+  argNa <- c(deparse(substitute(protNa)),deparse(substitute(dat)),deparse(substitute(expect)))
   quantCol <- c("grey","green","blue")       # 1st for NA/imputed, 2nd for not-used, 3rd for used for regression
   pch <- 1
   if(length(protNa) >1) { message(fxNa," 'protNa' should have length of 1 (but is ",length(protNa),"), truncating ...")
@@ -82,7 +72,7 @@ linModelSelect <- function(protNa, dat, expect, logExpect=FALSE, startLev=NULL, 
       linNo <- as.integer(protNa)
       protNa <- dat[[liNa["annot"]]][protNa,"Accession"]
     } else {
-      linNo <- if(hasAnn) which(dat[[liNa["annot"]]][,"Accession"] == protNa) else which(rownames(dat[[liNa[1]]]) ==protNa)  # dat[[liNa["annot"]]]
+      linNo <- if(hasAnn) which(dat[[liNa["annot"]]][,"Accession"] == protNa) else which(rownames(dat[[liNa[1]]]) ==protNa)  
       if(length(linNo) >1) { if(!silent) message(fxNa," name specified in argument 'liNa' not unique, using first")
       linNo <- linNo[1] } 
       }
@@ -114,7 +104,8 @@ linModelSelect <- function(protNa, dat, expect, logExpect=FALSE, startLev=NULL, 
 
   bestReg <- which.min(slopeAndP[2,])
   if(!silent) message(fxNa," best slope pVal starting at level no ",bestReg)
-  ## plot
+  
+  ## PLOT
   if(plotGraph) {
     levExp <- sort(unique(expect))
     plotLi2 <- which(expect >= levExp[bestReg])
@@ -124,14 +115,13 @@ linModelSelect <- function(protNa, dat, expect, logExpect=FALSE, startLev=NULL, 
       chNa <- is.na(dat[[liNa["raw"]]][linNo,])
       if(any(chNa)) useCol[which(chNa)] <- quantCol[1]
     }
-    tiPN <- if(hasAnn) dat[[liNa["annot"]]][linNo,"ProteinName"] else NA
-    tit <- if(is.na(tiPN)) protNa else paste(protNa," , ",tiPN)
+    if(length(tit) <1) {tit <- if(hasAnn) dat[[liNa["annot"]]][linNo,"ProteinName"] else paste0(protNa," (from ",argNa[2],")")}
     if(length(yLab) <1) yLab <- "measured"
     yLab <- paste0(if(length(yLab) <1) "measured" else yLab[1], if(logExpect) " (log2)")
-    
+    ## main plot
     graphics::plot(quant ~ conc, data=dat1, col=useCol, main=tit,ylab=yLab, xlab="expected concentration", las=1, cex.lab=cexLab, col.axis="white", cex.axis=0.3,tck=0)   
     graphics::mtext(paste0("best regr starting at level ",bestReg," (ie ",sort(unique(expect))[bestReg],"),  slope=",signif(slopeAndP[1,bestReg],3),
-      ",  p.slo=",signif(slopeAndP[2,bestReg],2)),cex=cexSub, col=quantCol[3])
+      ",  p.slo=",signif(slopeAndP[2,bestReg],2)), cex=cexSub, col=quantCol[3])
     ## use crt= for rotating text on bottom ? ... crt works only for text()
     graphics::mtext(at=(unique(dat1[,1])), signif(if(logExpect) 2^(unique(dat1[,1])) else unique(dat1[,1]),3), side=1, las=1,col=1,cex=cexXAxis)    # set las to vertical ?
     graphics::abline(lm0[[bestReg]], lty=2, col=quantCol[3])

@@ -17,7 +17,7 @@ vignette: >
 
 ## Introduction
 This package contains a collection of various low-level tools which may be of interest for general re-use. 
-These functions were accumulated over a number of years when treating hight-throughput data from biomedical applications.
+These functions were accumulated over a number of years when treating high-throughput data from biomedical applications.
 Besides, these functions are used/integrated in more specialized functions dedicated to specific applications in other packages (eg [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag)).
 To get started, we need to install (if not yet installed) and load the package "[wrMisc](https://CRAN.R-project.org/package=wrMisc)" available from [CRAN](https://cran.r-project.org/).
 
@@ -33,23 +33,25 @@ suppressPackageStartupMessages({
 install.packages("wrMisc")
 
 # To look which vignettes are available for this package :
-vignette(topic, package="wrMisc"
+vignette(topic, package="wrMisc")
 
 # Now you can start this vignette by
 browseVignettes("wrMisc")    # and the select the html output
 ```
 
+Before using, we actually need to load the package first :
+
 ```{r setup1}
 library("wrMisc")
 
-# This is version number :
+# This is 'wrMisc' version number :
 packageVersion("wrMisc")
 ```
 
 
 ## Speed Optimized Functions in the Package wrMisc
 
-In hight-throughput experiments in biology (like transcriptomics, proteomics etc...) many different features get measured a number if times (different samples like patients or evolution of a disease). The resulting data typically conatain many (independent) rows (eg >1000 different genes or proteins who's abundance was measured) and much fewer columns that may get further organized in groups of replicates. 
+In high-throughput experiments in biology (like transcriptomics, proteomics etc...) many different features get measured a number if times (different samples like patients or evolution of a disease). The resulting data typically contain many (independent) rows (eg >1000 different genes or proteins who's abundance was measured) and much fewer columns that may get further organized in groups of replicates. 
 As R is a versatile language, multiple options exist for assessing the global characteristics of such data, some are more efficient on a computational point of view.
 In order to allow fast treatment of very large data-sets some tools have been re-designed for optimal performance.
 
@@ -64,10 +66,10 @@ In several cases the interpretation of the resulting numbers should consider the
 
 Let's make a simple matrix as toy data:
 ```{r basicVariability, echo=TRUE}
-grp1 <- rep(LETTERS[1:3],c(3,4,3))
-sampNa1 <- paste0(grp1,c(1:3,1:4,1:3))
-set.seed(2016); dat1 <- matrix(round(c(runif(50000)+rep(1:1000,50)),3),ncol=10,
-  dimnames=list(NULL,sampNa1))
+grp1 <- rep(LETTERS[1:3], c(3,4,3))
+sampNa1 <- paste0(grp1, c(1:3,1:4,1:3))
+set.seed(2016); dat1 <- matrix(round(c(runif(50000) +rep(1:1000,50)),3), 
+  ncol=10, dimnames=list(NULL,sampNa1))
 dim(dat1)
 head(dat1)
 ```
@@ -100,27 +102,27 @@ head(cv2)
 Note, these calculations will be very efficient as long as the number of rows is much higher (>>) than the number of columns.
 
 Now, let's assume our data is contains 3 initial samples measured as several replicates (already defined in _grp1_).
-Similarly, we can also calculate the sd or CV for each line while splitting into groups of replicates (`rowGrpSds` and `rowGrpCV`): 
+Similarly, we can also calculate the sd or CV for each line while splitting into groups of replicates (functions `rowGrpSds` and `rowGrpCV`): 
 
 ```{r sdOrCVbyGrp, echo=TRUE}
 # we already defined the grouping :
 grp1
 
-system.time(sd1Gr <- rowGrpSds(dat1,grp1))
+system.time(sd1Gr <- rowGrpSds(dat1, grp1))
 # will give us a matrix with the sd for each group & line 
 head(sd1Gr)
 
 # Let's check the results of the first line :
-sd1Gr[1,] == c(sd(dat1[1,1:3]),sd(dat1[1,4:7]),sd(dat1[1,8:10]))
+sd1Gr[1,] == c(sd(dat1[1,1:3]), sd(dat1[1,4:7]), sd(dat1[1,8:10]))
 
 # The CV :
-system.time(cv1Gr <- rowGrpCV(dat1,grp1))
+system.time(cv1Gr <- rowGrpCV(dat1, grp1))
 head(cv1Gr)
 ```
 
 ### Fast NA-omit for very large objects
 The function _na.omit()_ from the package [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/) also keeps a trace of all omitted instances. 
-This can be penalizing in terms of memory usage when handeling very large vectors with a high content of NAs (eg >10000 NAs). 
+This can be penalizing in terms of memory usage when handling very large vectors with a high content of NAs (eg >10000 NAs). 
 If you don't need to document precisely which elements got eliminated, the function `naOmit()` may offer 
 smoother functioning for very large objects. 
 
@@ -137,10 +139,10 @@ str(na.omit(aA))
 ### Minimum distance/difference between values
 If you need to find the closest neighbour(s) of a numeric vector, the function `minDiff()` will tell you the 
 distance ("dif","ppm" or "ratio") and index ("best") of the closest neighbour. 
-In case of multiple shortest distaces the index if the first one is reported, and the column "nbest" will display a value of >1.
+In case of multiple shortest distances the index if the first one is reported, and the column "nbest" will display a value of >1.
 
 ```{r minDiff, echo=TRUE}
-set.seed(2017); aa <- 10*c(0.1+round(runif(20),2),0.53,0.53)
+set.seed(2017); aa <- 10*c(0.1 +round(runif(20),2), 0.53, 0.53)
 head(aa)
 
 minDiff(aa,ppm=FALSE)
@@ -148,8 +150,8 @@ minDiff(aa,ppm=FALSE)
 When you look at the first line, the value of 10.2 has one single closest value which is 10.4,
 which is located in line number 19 (the column 'best' gives the index of the best).
 Line number 19 points back to line number 1. 
-You can see, that some elements (like 5.7) occur multiple times (line no 3 and 9), multiple occurances are counted in the column _ncur_.
-This is why column _nbest_ for line 15 (_value_ =6.0) inidicates that it appears twice as closest value _nbest_.
+You can see, that some elements (like 5.7) occure multiple times (line no 3 and 9), multiple occurences are counted in the column _ncur_.
+This is why column _nbest_ for line 15 (_value_ =6.0) indicates that it appears twice as closest value _nbest_.
 
 
 
@@ -219,7 +221,7 @@ listBatchReplace(lst1,search="efg",repl="EFG",silent=FALSE)
 
 Named numeric or character vectors can be organized into lists using _listGroupsByNames()_, 
 based on their names (only the part before any extensions starting with a point gets considered).
-Of course, other separators may be defined using the argument sep. 
+Of course, other separators may be defined using the argument _sep_. 
 ```{r listGroupsByNames, echo=TRUE}
 ser1 <- 1:7; names(ser1) <- c("AA","BB","AA.1","CC","AA.b","BB.e","A")
 
@@ -231,9 +233,9 @@ listGroupsByNames((1:10)/5)
 ```
 
 ### Batch-filter list-elements
-In the view of object-oriented progamming several methods produce results integrated into lists or S3-objects (eg 
+In the view of object-oriented programming several methods produce results integrated into lists or S3-objects (eg 
 [limma](https://bioconductor.org/packages/release/bioc/html/limma.html)).
-The function `filterList()` aims facilitating the filtering of all elements of lists or S3-objects. List-elements with inapropriate number of lines will be ignored.
+The function `filterList()` aims facilitating the filtering of all elements of lists or S3-objects. List-elements with inappropriate number of lines will be ignored.
 
 ```{r filterList, echo=TRUE}
 set.seed(2020); dat1 <- round(runif(80),2)
@@ -277,7 +279,7 @@ arrayCV(arr1, byDim=2)
 ```
 
 ### Slice 3-dim array in list of matrixes (or arrays)
-This procedure is similar to (re-)organizing an intial array into clusters, here we split along a user-defined factor/vector.
+This procedure is similar to (re-)organizing an initial array into clusters, here we split along a user-defined factor/vector.
 If a clustering-algorithm produces the cluster assignments, this function can be used to organize the input data accordingly using `cutArrayInCluLike`.
 ```{r cutArrayInCluLike, echo=TRUE}
 cutArrayInCluLike(arr1, cluOrg=c(2,1,2,1))
@@ -298,8 +300,8 @@ _Semantics_ : Please note, that there are two ways of interpreting the term 'uni
 
 * The command `unique()` makes a vector with some redundant entries 'unique', ie in the resultant vector all values/content (values) occur only once. However, initially repeated values will still be present. Also, you cannot tell any more which ones were not unique initially ! Thus, the result of _unique()_ does not tell which values were '_unique_' in the first place.
 
-In some applications (eg proteomics) initial identifyers (IDs) may occur multiple times in the data and we frequently need to isolate events/values that occur only once, as the first meaning of '_unique_'. 
-This package provides functions to easily distinguish values occuring just once (ie _unique_) from those occuring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
+In some applications (eg proteomics) initial identifiers (IDs) may occur multiple times in the data and we frequently need to isolate events/values that occur only once, as the first meaning of '_unique_'. 
+This package provides functions to easily distinguish values occurring just once (ie _unique_) from those occurring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
 
 
 ### Identify what is repeated (and where repeated do occur)
@@ -309,7 +311,7 @@ This package provides functions to easily distinguish values occuring just once 
 tr <- c("li0","n",NA,NA,rep(c("li2","li3"),2),rep("n",4))
 ```
 The function _table()_ (from the package -base_) is very useful get some insights when working with smaller objects, but may be slow to handle very large objects.
-As mentioned, _unique()_ will make everything unqiue, and afterwards you won't know any more who was unique in the first place !
+As mentioned, _unique()_ will make everything unique, and afterwards you won't know any more who was unique in the first place !
 The function `duplicated()` (also from package base) helps us getting the information who is repeated.
 ```{r repeated2, echo=TRUE}
 table(tr)
@@ -323,7 +325,7 @@ names(aa) <- letters[1:length(aa)]
 aa
 ```
 
-`findRepeated()` (from this package) will return the position/index (and content/value) of repeated elements. However, the output in form of a ist is not very convenient to the human eye.
+`findRepeated()` (from this package) will return the position/index (and content/value) of repeated elements. However, the output in form of a list is not very convenient to the human eye.
 ```{r findRepeated, echo=TRUE}
 findRepeated(aa) 
 ```
@@ -342,7 +344,7 @@ unique(aa)                               # unique() does not return any names !
 ### Correct vector to unique (while maintaining the original vector length)
 If necessary a counter will be added to non-unique entries, thus no individual values get eliminated and the length and order of the resultant object maintains the same.
 
-This is of importance when assigning rownames to a data.frame : Assingning redundant values/text as rownames of a data.frame will result in an error !
+This is of importance when assigning rownames to a data.frame : Assigning redundant values/text as rownames of a data.frame will result in an error !
 
 ```{r correctToUnique1, echo=TRUE}
 correctToUnique(aa)
@@ -363,7 +365,7 @@ nonAmbiguousNum(aa, uniq=FALSE, asLi=TRUE)    # separate in list unique and repe
 
 ### Combine multiple matrixes where some column-names are the same
 Here, it is supposed that you want to join 2 or more matrixes describing different properties of the same collection of individuals (as rows).
-Common column-names are interpreted that theur respective information should be combined (either as average or as sum). 
+Common column-names are interpreted that their respective information should be combined (either as average or as sum). 
 ```{r cbindNR, echo=TRUE}
 ## First we'll make soe toy data :
 (ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1])))
@@ -540,8 +542,8 @@ cbind(ini=dat,firstOfRep=getValuesByUnique(dat, datUniq),
 
 ### Regrouping simultaneaously by two factors
 
-For example, if you whish to create group-labels considering the eye- and hair-color of a small group students (supposed a sort of controlled vocabulary was used),
-the function `combineByEitherFactor()` will help. So basically, this is an empric segmentation-approach for two categorical variables.
+For example, if you wish to create group-labels considering the eye- and hair-color of a small group students (supposed a sort of controlled vocabulary was used),
+the function `combineByEitherFactor()` will help. So basically, this is an empiric segmentation-approach for two categorical variables.
 Please note, that with large data-sets and very disperse data this approach will not provide great results.
 In the example below we'll attempt to 'cluster' according to columns _nn_ and _qq_, the resultant cluster number can be found in column _grp_.
 
@@ -592,7 +594,7 @@ aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.
 (cloMa <- findCloseMatch(x=aA, y=cC, com="diff", lim=0.5, sor=FALSE))       
 ```
 The result of _findCloseMatch()_ is a list organized by each 'x', telling all instances of 'y' found within the distance tolerance given by _lim_.
-Using `closeMatchMatrix()` the result obtained above, can be presented in a more convient format for the human eye.
+Using `closeMatchMatrix()` the result obtained above, can be presented in a more convenient format for the human eye.
 
 ```{r closeMatchMatrix1, echo=TRUE}
 # all matches (of 2d arg) to/within limit for each of 1st arg ('x'); 'y' ..to 2nd arg = cC
@@ -661,7 +663,7 @@ elimCloseCoord(da1)
 ### Batch-reading of csv files
 
 Some programs produce a series of csv files, where a large experiment/data-set was split in multiple files.
-The function `readCsvBatch()` was designed for reading multiple csv files of exactely the same layout and to join their content.
+The function `readCsvBatch()` was designed for reading multiple csv files of exactly the same layout and to join their content.
 As output a list with the content of each file can be produced (one matrix per file), or the data may be fused into an array, as shown below.  
 
 
@@ -681,14 +683,14 @@ datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
 ### Reading incomplete tables
 
 Sometimes were may get confronted with data which look like 'incomplete' tables. 
-In such cases some rows do not conatain as many elements/columns as other columns. 
+In such cases some rows do not contain as many elements/columns as other columns. 
 Files with this type of data pose a problem for _read.table()_ (from the _utils_ package).
 The function _readVarColumns()_ (from this package) was designed to provide help in such cases.
-Basically each line is read an parsed separetely, the user should check the proper separator is used.
+Basically each line is read and parsed separately, the user should check the proper separator is used.
 
 The example below lists people's names in different locations, some locations have more persons ... 
-Sometimes exporting such data will gererate shorter lines in locations with fewer elements (here 'London') and no additonal separators will get added (to mark all empty fields) towards the end.
-The function `readVarColumns()` (from this package) provides help to read such data, if the content (and separtors) of the last columns are missing.
+Sometimes exporting such data will generate shorter lines in locations with fewer elements (here 'London') and no additional separators will get added (to mark all empty fields) towards the end.
+The function `readVarColumns()` (from this package) provides help to read such data, if the content (and separators) of the last columns are missing.
 
 ```{r readVarColumns, echo=TRUE}
 path1 <- system.file("extdata",package="wrMisc")
@@ -700,32 +702,29 @@ str(datAll)
 
 ## Normalization
 
-The main reason of normalization is to remove variability in the data which is not directly linked to the (original/biological) concept of a given experiment.
-High throuput data from real world measurements may easily contain various deformations due to technical reasons, eg slight temperature variations, electromagnetic interferance, instability of reagents etc.
-In paticular, transferring constant amounts of liquids/reagents in highly repeated steps over large experiments is ofter also very challenging, 
-small variations of the amounts of liquid (or similar) are typically adressed by normalization.
-However, applying aggressive normalization to the data also brings considerable risk of starting to loose some of the effects one intended to study.
-At some point it may rather be better to eliminate a few samples or branches of an experiment to avoid too invasive intervention.
-This shows that quality control can be tighly linked to decisions about data-normalization.
-In conclusion, normalization may be far more challenging than simply running some algorithms. 
+The main reason of normalization is to remove variability in the data which is not directly linked to the (original/biological) concept of a given experiment. 
+High throughput data from real world measurements may easily contain various deformations due to technical reasons, eg slight temperature variations, electromagnetic interference, instability of reagents etc. 
+In particular, transferring constant amounts of liquids/reagents in highly repeated steps over large experiments is often also very challenging, small variations of the amounts of liquid (or similar) are typically addressed by normalization. However, applying aggressive normalization to the data also brings considerable risk of starting to loose some of the effects one intended to study.
+At some point it may rather be better to eliminate a few samples or branches of an experiment to avoid too invasive intervention. This shows that quality control can be tightly linked to decisions about data-normalization. 
+In conclusion, normalization may be far more challenging than simply running some algorithms.. 
 
 In general the use has to assume/define some hypothesis to justify intervention.
-Sometimes specific elements of an experiment are known to be not affected and can therefor be used to normalize the rest.
+Sometimes specific elements of an experiment are known to be not affected and can therefore be used to normalize the rest.
 Eg, if you observe growth of trees in a forest, big blocks of rock on the floor are assumed no to change their location. 
 So one could use them as alignment-marks to superpose pictures taken at slightly different positions.
 
 The hypothesis of no global changes is very common : During the course of many biological experiments (eg change of nutrient) one 
 assumes that only a small portion of the elements measured (eg the abundance of all different gene-products) do change,
-since many processes of a living cell like growth, replication and interacion with neighbour-cells are assumed not to be affected.
+since many processes of a living cell like growth, replication and interaction with neighbour-cells are assumed not to be affected.
 So, if one assumes that there are no global changes one normalizes the input-data in a way that the average or median across each experiment will give the same value.
 In analogy, if one takes photographs on a partially cloudy day, most cameras will adjust light settings (sun r clouds) so that global luminosity stays the same. 
-However, if too many of the mesured alements are affected, this normalization approach will lead to (additional) loss of information.
+However, if too many of the measured elements are affected, this normalization approach will lead to (additional) loss of information.
 
 I suggest the user also to include graphical representation(s) of the data helping to visualize variability in various samples along a given experiment and 
 how different normalization procedures affect these outcomes. 
 
 Before jumping into normalization it may be quite useful to _filter_ the data first.
-The overal idea is, that most high-throughput experiments do produce some non-meaningful data (artefacts) and it may be wise to remove such 'bad' data
+The overall idea is, that most high-throughput experiments do produce some non-meaningful data (artefacts) and it may be wise to remove such 'bad' data
 first as they may effect normalization (in particular extreme values). 
 A special case of such problematic data concerns _NA_-values.
 
@@ -733,7 +732,7 @@ A special case of such problematic data concerns _NA_-values.
 ### Filter lines of matrix to reduce content of NAs 
 
 Frequent _NA_-values may represent another potential issue. With NA-values there is no general optimal advice.
-To get started, you should try to investigate how and why NA-values occured to check if there is a special 'meaning' to them.
+To get started, you should try to investigate how and why NA-values occurred to check if there is a special 'meaning' to them.
 For example, on some measurement systems values below detection limit may be simply reported as NAs.
 If the lines of your data represent different features quantified (eg proteins), than lines with mostly NA-values represent features
 that may not be well exploited anyway. Therefore many times one tries to filter away lines of 'bad' data. 
@@ -784,11 +783,11 @@ summary(dat1)
 dat1[c(1:5,50:54,95:100),]
 ```
 
-Our toy dat may be normalized by a number of different criteria. 
+Our toy data may be normalized by a number of different criteria. 
 In real applications the nature of the data and the type of deformation detected/expected will largely help 
 deciding which normalization might be the 'best' choice. Here we'll try first normalizing by the mean,
 ie all columns will be forced to end up with the same column-mean. 
-The trimmed mean does not consider values at extremes (as outlyers are frequently artefacts and display extreme values).
+The trimmed mean does not consider values at extremes (as outliers are frequently artefacts and display extreme values).
 When restricting even stronger which values to consider one will eventually end up with the median (3rd method used below).
 
 ```{r normalizeThis1, echo=TRUE}
@@ -806,7 +805,7 @@ boxplot(dat1,main="raw data")
 ```
 
 You can see clearly, that the 4th data-set has a problem of range. So we'll see if some proportional normalization
-may help to kake it more comparable to the other ones.
+may help to make it more comparable to the other ones.
  
 ```{r normalizeThis_plot2, echo=FALSE,eval=TRUE}
 layout(matrix(1:4,ncol=2))
@@ -857,7 +856,7 @@ head(test8$p.value,n=8)
 
 ### Transform p-values to local false dicovery rate (lfdr)
 
-To get an introduction into local false dicovery rate estimations you may read [Strimmer 2008](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-303).  An overview of R packages in this context was prepared by the [strimmerlab](http://www.strimmerlab.org/notes/fdr.html).
+To get an introduction into local false discovery rate estimations you may read [Strimmer 2008](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-303).  An overview of R packages in this context was prepared by the [strimmerlab](http://www.strimmerlab.org/notes/fdr.html).
 A convenient way to get lfdr values is available suing the function `pVal2lfdr`.
 
 Note, that the toy-example used below is too small for estimating really meaningful lfdr values.
@@ -875,9 +874,9 @@ head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
 
 ### Extract Numeric Part of Column-Names
 
-When running multiple pairwise tests (using *moderTestXgrp()*) the results will be in adcent columns and the group-names reflected in the column-names.
-In the case measurements from multiple levels of a given variavle are compared it is useful to extract the numeric part, the function `numPairDeColNames()` provides support to do so. 
-When extracting just the numeric part, unit names will get lost, though. Note, if units used are not constant (eg seconds and miliseconds mixed) the extracted numeric values do not relflect the real quantitative context any more.
+When running multiple pairwise tests (using *moderTestXgrp()*) the results will be in adjacent columns and the group-names reflected in the column-names.
+In the case measurements from multiple levels of a given variable are compared it is useful to extract the numeric part, the function `numPairDeColNames()` provides support to do so. 
+When extracting just the numeric part, unit names will get lost, though. Note, if units used are not constant (eg seconds and milliseconds mixed) the extracted numeric values do not reflect the real quantitative context any more.
 
 ```{r pairWiseConc1, echo=TRUE}
 mat1 <- matrix(1:8, nrow=2, dimnames=list(NULL, paste0(1:4,"-",6:9)))
@@ -902,7 +901,7 @@ contribToContigPerFrag(path1)
 ### Count same start- and end- sites of edges (or fragments)
 
 If you have a set of fragments from a common ancestor and the fragment's start- and end-sites 
-are marked by index-positions (integers), you can make a simple grapgical display :
+are marked by index-positions (integers), you can make a simple graphical display :
 
 ```{r simpleFragFig, echo=TRUE}
 frag1 <- cbind(beg=c(2,3,7,13,13,15,7,9,7, 3,3,5), end=c(6,12,8,18,20,20,19,12,12, 4,5,7))
