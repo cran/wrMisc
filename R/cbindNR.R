@@ -23,10 +23,9 @@
 cbindNR <- function(...,convertDFtoMatr=TRUE,sortOutput=TRUE,summarizeAs="sum",silent=FALSE,callFrom=NULL){
   fxNa <- .composeCallName(callFrom,newNa="cbindNR")
   inpL <- list(...)
-  fxNa <- .composeCallName(callFrom,newNa="cbindNR")
-  isDatafr <- sapply(inpL,is.data.frame)
+  isDatafr <- sapply(inpL, is.data.frame)
   if(convertDFtoMatr & any(isDatafr) >0) {
-    inpL[isDatafr] <- lapply(inpL[isDatafr],as.matrix)     
+    inpL[isDatafr] <- lapply(inpL[isDatafr], as.matrix)     
     }
   isMatr <- sapply(inpL,is.matrix)
   if(any(!isMatr) & !silent) {

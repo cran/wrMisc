@@ -62,7 +62,6 @@ extrSpcText <- function(txt,cutFrom=" GN=",cutTo=" PE=",missingAs=NA,exclFromTag
       sapply(nchar(exclLiNa[2]):2,function(z) substr(exclLiNa[2],1,z)))
     te <- which(names(y) %in% exclLiNa2)
     if(length(naOmit(te)) > 0) y <- y[-1*which(names(y) %in% exclLiNa2)]
-    #cat(" new y ");cat(str(y))
     if(sum(sapply(y,length) >0)) {
       x <- c(x,unlist(y)) }
     if(!silent) message(fxNa," initial no of characters  ",paste(nchar(x),collapse=" "))

@@ -31,14 +31,6 @@ checkStrictOrder <- function(dat,invertCount=TRUE){
   if(positionOnly) minPos else x[minPos] }
 
 #' @export
-.scale01 <- function(x){low <- min(x,na.rm=TRUE); (x - low)/(max(x,na.rm=TRUE) - low)}     ## adjust values to range form 0 to 1
-
-#' @export
-.scaleXY <- function(x,minim=2,maxim=3) {       ## adjust values to range form min to max
-  y <- .scale01(x)
-  y*(maxim-minim) +minim}
-
-#' @export
 .medianSpecGrp <- function(x,grpNum,grpVal,sumMeth="median",callFrom=NULL){
   ## rescale data 'x' so that specific group 'grpNum' gets normalized to predefined value 'grpVal'
   ## in normal case x will be multiplied by 'grpVal' and devided by value obtained from 'grpNum'

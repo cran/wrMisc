@@ -36,14 +36,14 @@ If the input is a data.frame containing factors, they will be converted to chara
 Note: for simpler version (only text to numeric) see from this package \code{.convertMatrToNum} .
 }
 \examples{
-dat1 <- matrix(1:10,ncol=2)
+dat1 <- matrix(1:10, ncol=2)
 rownames(dat1) <- letters[c(1:3,2,5)]
 ## as.data.frame(dat1)  ...  would result in an error
 convMatr2df(dat1)
-convMatr2df(data.frame(a=as.character((1:3)/2),b=LETTERS[1:3],c=1:3))
-tmp <- data.frame(a=as.character((1:3)/2),b=LETTERS[1:3],c=1:3,stringsAsFactors=FALSE)
+convMatr2df(data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3))
+tmp <- data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3,stringsAsFactors=FALSE)
 convMatr2df(tmp)
-tmp <- data.frame(a=as.character((1:3)/2),b=1:3,stringsAsFactors=FALSE)
+tmp <- data.frame(a=as.character((1:3)/2), b=1:3, stringsAsFactors=FALSE)
 convMatr2df(tmp) 
 }
 \seealso{

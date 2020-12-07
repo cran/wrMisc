@@ -28,8 +28,8 @@ pasteC <- function(...,collapse=", ",lastCol=" and ",quoteC=""){
   if(length(unlist(inp)) >1) {
     out <- if(length(inp) >1) paste(unlist(inp[-length(inp)]),collapse=collapse) else NULL
     tmp <- inp[[length(inp)]]
-    tmp <- list(tmp[-length(tmp)],tmp[length(tmp)])
-    out <- paste(paste(c(out,tmp[[1]]),collapse=collapse),lastCol,tmp[[2]],sep="")
+    tmp <- list(tmp[-length(tmp)], tmp[length(tmp)])
+    out <- paste0(paste(c(out,tmp[[1]]),collapse=collapse),lastCol,tmp[[2]])
   } else out <- as.character(unlist(inp))
   out }
   
@@ -38,7 +38,7 @@ pasteC <- function(...,collapse=", ",lastCol=" and ",quoteC=""){
   ## sequential cutting of character string (length=1 !!) starting from position 'startFr'
   ## use eg for variants of argument calling with lazy evaluation
   nCh <- nchar(txt)
-  out <- if(startFr > nCh) NULL else sapply(startFr:nCh,function(x) substr(txt,1,x))
+  out <- if(startFr > nCh) NULL else sapply(startFr:nCh, function(x) substr(txt,1,x))
   if(reverse & length(out) >1) out <- rev(out)
   out }
    

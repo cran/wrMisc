@@ -28,5 +28,5 @@ set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
 head(arrayCV(dat1,byDim=2))
 }
 \seealso{
-\code{\link[wrMisc]{rowCVs}}, \code{\link[wrMisc]{rowGrpCV}}, \code{\link[wrMisc]{replPlateCV}}
+\code{\link{rowCVs}}, \code{\link{rowGrpCV}}, \code{\link{replPlateCV}}
 }

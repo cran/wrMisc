@@ -2,7 +2,7 @@
 % Please edit documentation in R/linModelSelect.R
 \name{linModelSelect}
 \alias{linModelSelect}
-\title{Selecte best levels and plot linear regression model}
+\title{Test multiple starting levels for linear regression model, select best and plot}
 \usage{
 linModelSelect(
   protNa,
@@ -61,7 +61,7 @@ $datImp (the main quantitation data to use) and $annot for displaying the corres
 list with $coef (coefficients), $name (as/from input \code{protNa}), $startLev the best starting level)
 }
 \description{
-The aim of this function is to select the data suiting est to a linear regression model. 
+The aim of this function is to select the data suiting set of levels of the main input data to construct a linear regression model. 
 In real world measurements one may be confronted to the case of very low level analytes below the detection limit (LOD) and resulting read-outs fluctuate around around a common baseline (instead of \code{NA}). 
 With such data it may be preferable to omit the read-outs for the lowest concentrations/levels of analytes if they are spread around a base-line value.
 This function allows trying to omit all starting levels designed in \code{startLev}, then the resulting p-values for the linear regression slopes will be checked and the best p-value chosen. 

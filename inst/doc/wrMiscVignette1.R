@@ -375,6 +375,43 @@ fusePairs(daPa, maxFuse=4)
 da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*99; head(da1)
 elimCloseCoord(da1)
 
+## ----linModelSelect1, echo=TRUE-----------------------------------------------
+li1 <- rep(c(4,3,3:6),each=3) + round(runif(18)/5,2)
+names(li1) <- paste0(rep(letters[1:5], each=3), rep(1:3,6))
+li2 <- rep(c(6,3:7), each=3) + round(runif(18)/5, 2)
+dat2 <- rbind(P1=li1, P2=li2)
+exp2 <- rep(c(11:16), each=3)
+exp4 <- rep(c(3,10,30,100,300,1000), each=3)
+
+## Check & plot for linear model 
+linModelSelect("P1", dat2, expect=exp2)
+linModelSelect("P2", dat2, expect=exp2)
+
+## ----plotLinModelCoef1, echo=TRUE---------------------------------------------
+set.seed(2020)
+x1 <- matrix(rep(c(2,2:5),each=20) + runif(100) +rep(c(0,0.5,2:3,5),20), byrow=F, ncol=10, dimnames=list(LETTERS[1:10],NULL))
+## just the 1st regression :
+   summary(lm(b~a,data=data.frame(b=x1[,1],a=rep(1:5,each=2))))
+## all regressions
+x1.lmSum <- t(sapply(lapply(rownames(x1), linModelSelect, dat=x1, expect=rep(1:5,each=2),silent=TRUE,plotGraph=FALSE), function(x) c(x$coef[2,c(4,1)], startFr=x$startLev)))
+x1.lmSum <- cbind(x1.lmSum, medQuantity=apply(x1,1,median))
+x1.lmSum[,1] <- log10(x1.lmSum[,1])
+head(x1.lmSum)
+
+## ----plotLinModelCoef2, echo=TRUE---------------------------------------------
+wrGraphOK <- requireNamespace("wrGraph", quietly=TRUE)      # check if package is available
+if(wrGraphOK) wrGraph::plotW2Leg(x1.lmSum, useCol=c("Pr(>|t|)","Estimate","medQuantity","startFr"), legendloc="topleft", txtLegend="start at")
+
+## ----ratioAllComb0, echo=TRUE-------------------------------------------------
+set.seed(2014); ra1 <- c(rnorm(9,2,1),runif(8,1,2))
+
+## ----ratioAllComb1, echo=TRUE-------------------------------------------------
+median(ra1[1:9])/median(ra1[10:17])
+
+## ----ratioAllComb2, echo=TRUE-------------------------------------------------
+summary( ratioAllComb(ra1[1:9],ra1[10:17]))
+boxplot(list(norm=ra1[1:9],unif=ra1[10:17],rat=ratioAllComb(ra1[1:9],ra1[10:17])))
+
 ## ----readCsvBatch, echo=TRUE--------------------------------------------------
 path1 <- system.file("extdata",package="wrMisc")
 fiNa <-  c("pl01_1.csv","pl01_2.csv","pl02_1.csv","pl02_2.csv")
@@ -466,6 +503,53 @@ head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
 ## ----pairWiseConc1, echo=TRUE-------------------------------------------------
 mat1 <- matrix(1:8, nrow=2, dimnames=list(NULL, paste0(1:4,"-",6:9)))
 numPairDeColNames(mat1)
+
+## ----std1, echo=TRUE----------------------------------------------------------
+dat <- matrix(2*round(runif(100),2), ncol=4)
+mean(dat); sd(dat)
+
+datS <- scale(dat)
+apply(datS, 2, sd)
+# each column was teated separately
+mean(datS); sd(datS); range(datS)
+# the mean is almost 0.0 and the sd almost 1.0
+
+datB <- scale(dat, center=TRUE, scale=FALSE)
+mean(datB); sd(datB); range(datB)              # mean is almost 0
+
+## ----std2, echo=TRUE----------------------------------------------------------
+datS2 <- standardW(dat)
+apply(datS2, 2, sd)
+summary(datS2)
+mean(datS2); sd(datS2)
+
+datS3 <- standardW(dat, byColumn=TRUE)
+apply(datS3, 2, sd)
+summary(datS3)
+mean(datS3); sd(datS3)
+
+## ----scale1, echo=TRUE--------------------------------------------------------
+datR2 <- apply(dat, 2, scaleXY, 1, 100)
+summary(datR2); sd(datR2)
+
+## ----clu01, echo=TRUE---------------------------------------------------------
+nGr <- 3
+irKm <- stats::kmeans(iris[,1:4], nGr, nstart=nGr*4)             # no need to standardize
+   table(irKm$cluster, iris$Species)
+   #wrGraph::plotPCAw(t(as.matrix(iris[,1:4])), sampleGrp=irKm,colBase=irKm$cluster,useSymb=as.numeric(as.factor(iris$Species)))
+
+## ----clu02, echo=TRUE---------------------------------------------------------
+## sort results by cluster number
+head(reorgByCluNo(iris[,-5],irKm$cluster))
+tail(reorgByCluNo(iris[,-5],irKm$cluster))
+
+## ----clu03, echo=TRUE---------------------------------------------------------
+## median an CV
+ir2 <- reorgByCluNo(iris[,-5],irKm$cluster,retList=TRUE)
+
+sapply(ir2, function(x) apply(x,2,median))
+
+sapply(ir2, colSds)
 
 ## ----contribToContigPerFrag, echo=TRUE----------------------------------------
 path1 <- matrix(c(17,19,18,17, 4,4,2,3),ncol=2,
