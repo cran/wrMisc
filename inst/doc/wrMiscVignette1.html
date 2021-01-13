@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2020-12-07" />
+<meta name="date" content="2021-01-13" />
 
 <title>Getting started with wrMisc</title>
 
@@ -417,12 +417,16 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2020-12-07</h4>
+<h4 class="date">2021-01-13</h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">Introduction</a></li>
+<li><a href="#introduction">Introduction</a>
+<ul>
+<li><a href="#dependencies-and-compilation">Dependencies and Compilation</a></li>
+<li><a href="#installation">Installation</a></li>
+</ul></li>
 <li><a href="#speed-optimized-functions-in-the-package-wrmisc">Speed Optimized Functions in the Package wrMisc</a>
 <ul>
 <li><a href="#assessing-basic-information-about-variability-for-matrix">Assessing basic information about variability (for matrix)</a></li>
@@ -519,7 +523,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This package contains a collection of various low-level tools which may be of interest for general re-use. These functions were accumulated over a number of years when treating high-throughput data from biomedical applications. Besides, these functions are used/integrated in more specialized functions dedicated to specific applications in other packages (eg <a href="https://CRAN.R-project.org/package=wrProteo">wrProteo</a>, <a href="https://CRAN.R-project.org/package=wrGraph">wrGraph</a> or <a href="https://CRAN.R-project.org/package=wrTopDownFrag">wrTopDownFrag</a>). To get started, we need to install (if not yet installed) and load the package “<a href="https://CRAN.R-project.org/package=wrMisc">wrMisc</a>” available from <a href="https://cran.r-project.org/">CRAN</a>.</p>
+<p>This package contains a collection of various low-level tools which may be of interest for general re-use. These functions were accumulated over a number of years when treating high-throughput data from biomedical applications. Besides, these functions are used/integrated in more specialized functions dedicated to specific applications in other packages (eg <a href="https://CRAN.R-project.org/package=wrProteo">wrProteo</a>, <a href="https://CRAN.R-project.org/package=wrGraph">wrGraph</a> or <a href="https://CRAN.R-project.org/package=wrTopDownFrag">wrTopDownFrag</a>).</p>
+<div id="dependencies-and-compilation" class="section level3">
+<h3>Dependencies and Compilation</h3>
+<p>One of the aims of this package was to make it fairly easy and robust for installation and in prespect to system requirements. All code is written in pure R and does not need any special compilers. The number of dependencies was kept to a minumum (only packages coming already with a new installation of R). This helps to reduce potential problems at installation when dependencies which fail to get installed themselves.</p>
+<p>Most of additional packages used at some point in this package were declared as ‘suggested’ (ie not obligatory) to allow installation of wrMisc even if some these additional packages can’t be compiled by the user’s instance. This means that, when a feature of one of the ‘suggested’ packages is about to be used, its presence/installation will be checked and, only if found as missing, the user will be propmted a message inviting to install specific package(s) before using these specific functions.</p>
+</div>
+<div id="installation" class="section level3">
+<h3>Installation</h3>
+<p>To get started, we need to install (if not yet installed) and load the package “<a href="https://CRAN.R-project.org/package=wrMisc">wrMisc</a>” available from <a href="https://cran.r-project.org/">CRAN</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># If not already installed, you&#39;ll have to install the package first.</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="kw">install.packages</span>(<span class="st">&quot;wrMisc&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -533,7 +545,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-2"><a href="#cb2-2"></a></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="co"># This is &#39;wrMisc&#39; version number :</span></span>
 <span id="cb2-4"><a href="#cb2-4"></a><span class="kw">packageVersion</span>(<span class="st">&quot;wrMisc&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &#39;1.5.0&#39;</code></pre>
+<pre><code>## [1] &#39;1.5.1&#39;</code></pre>
+</div>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
 <h2>Speed Optimized Functions in the Package wrMisc</h2>
@@ -561,10 +574,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <pre><code>## [1] 0.2583693 0.2426026 0.2477899 0.3089102 0.2307722 0.3124493</code></pre>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">system.time</span>(sd1 &lt;-<span class="st"> </span><span class="kw">rowSds</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##       0       0       0</code></pre>
+##    0.01    0.00    0.02</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">system.time</span>(sd2 &lt;-<span class="st"> </span><span class="kw">apply</span>(dat1,<span class="dv">1</span>,sd))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.10    0.00    0.09</code></pre>
+##    0.15    0.00    0.16</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em> will run much slower.</p>
 <p>Note, there is a minor issue with rounding :</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">table</span>(<span class="kw">round</span>(sd1,<span class="dv">13</span>)<span class="op">==</span><span class="kw">round</span>(sd2,<span class="dv">13</span>))</span></code></pre></div>
@@ -577,7 +590,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##       0       0       0</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">system.time</span>(cv2 &lt;-<span class="st"> </span><span class="kw">apply</span>(dat1,<span class="dv">1</span>,sd)<span class="op">/</span><span class="kw">rowMeans</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.09    0.00    0.09</code></pre>
+##    0.11    0.00    0.11</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># typically the calculation using rowCVs is much faster</span></span>
 <span id="cb20-2"><a href="#cb20-2"></a><span class="kw">head</span>(cv1)</span></code></pre></div>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -608,7 +621,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="co"># The CV :</span></span>
 <span id="cb32-2"><a href="#cb32-2"></a><span class="kw">system.time</span>(cv1Gr &lt;-<span class="st"> </span><span class="kw">rowGrpCV</span>(dat1, grp1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##       0       0       0</code></pre>
+##    0.01    0.00    0.02</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw">head</span>(cv1Gr)</span></code></pre></div>
 <pre><code>##                A          B          C
 ## [1,] 0.194279471 0.19545033 0.17625186
@@ -1960,11 +1973,11 @@ The function <code>elimCloseCoord()</code> aims to do reduce a bivariate data-se
 <span id="cb271-3"><a href="#cb271-3"></a>datAll &lt;-<span class="st"> </span><span class="kw">readCsvBatch</span>(fiNa,path1)</span></code></pre></div>
 <pre><code>##  -&gt; readCsvBatch :  ready to start reading 4 files;  expecting header : TRUE</code></pre>
 <pre><code>##  -&gt; readCsvBatch :  csv-format used &#39;Europe&#39;  with 96 lines &amp; 3 cols</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpAZrWXk/Rinst39c86c041e74/wrMisc/extdata/pl01_1.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpwHpVbs/Rinst33e82dac43cf/wrMisc/extdata/pl01_1.csv</code></pre>
 <pre><code>## -&gt; readCsvBatch -&gt; .removeEmptyCol :  columns no 1, 2 were considered empty and removed</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpAZrWXk/Rinst39c86c041e74/wrMisc/extdata/pl01_2.csv</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpAZrWXk/Rinst39c86c041e74/wrMisc/extdata/pl02_1.csv</code></pre>
-<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpAZrWXk/Rinst39c86c041e74/wrMisc/extdata/pl02_2.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpwHpVbs/Rinst33e82dac43cf/wrMisc/extdata/pl01_2.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpwHpVbs/Rinst33e82dac43cf/wrMisc/extdata/pl02_1.csv</code></pre>
+<pre><code>##  -&gt; readCsvBatch :  ..reading file C:/Users/wraff/AppData/Local/Temp/RtmpwHpVbs/Rinst33e82dac43cf/wrMisc/extdata/pl02_2.csv</code></pre>
 <div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="#cb279-1"></a><span class="kw">str</span>(datAll)</span></code></pre></div>
 <pre><code>##  num [1:96, 1:4, 1] 158808 174272 183176 175752 49272 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 3
@@ -2383,7 +2396,7 @@ The function <code>elimCloseCoord()</code> aims to do reduce a bivariate data-se
 <h2>Session-Info</h2>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 18363)
+## Running under: Windows 10 x64 (build 19042)
 ## 
 ## Matrix products: default
 ## 
@@ -2396,7 +2409,7 @@ The function <code>elimCloseCoord()</code> aims to do reduce a bivariate data-se
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.44.3 wrMisc_1.5.0
+## [1] limma_3.44.3 wrMisc_1.5.1
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] compiler_4.0.3  magrittr_2.0.1  htmltools_0.5.0 tools_4.0.3    

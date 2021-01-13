@@ -21,7 +21,8 @@ moderTestXgrp(
 
 \item{limmaOutput}{(logical) return full (or extended) MArrayLM-object from limma or 'FAlSE' for only the (uncorrected) p.values}
 
-\item{addResults}{(character) types of results to add besides basic limma-output (eg "lfdr" using fdrtool-package,"FDR" for BY-FDR,"Mval" (assumes that data are log2 !),"means" or "nonMod" for non-moderated test)}
+\item{addResults}{(character) types of results to add besides basic limma-output, data are assumed to be log2 ! (eg "lfdr" using fdrtool-package, "FDR" or "BH" for BH-FDR, "BY" for BY-FDR, 
+"bonferroni" for Bonferroni-correction, "qValue" for lfdr by qvalue, "Mval", "means" or "nonMod" for non-moderated test and he equivaent all (other) multiple testing corrections chosen here)}
 
 \item{testOrientation}{(character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2}
 
@@ -47,8 +48,8 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 ## expect to find C/A in c,d,g, (h)
 ## expect to find C/D in c,d,e,f
 ## expect to find A/D in f,g,(h)  
-test8 <- moderTestXgrp(t8,grp) 
-head(test8$p.value,n=8)
+test8 <- moderTestXgrp(t8, grp) 
+head(test8$p.value, n=8)
 }
 \seealso{
 \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}

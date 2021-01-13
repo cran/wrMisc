@@ -55,7 +55,8 @@ To prevent this, if necessary, the 1st column-name will be changed from 'ID' to 
 writes file to disk and returns \code{NULL} unless \code{returnOut=TRUE}
 }
 \description{
-This functions allows to write data into csv-files (and/or tabulated txt files) from given vector or read from file 'input' and (re-)write using specified conversions. 
+This functions is absed on \code{write.csv} allows for more options when writing data into csv-files.
+The main input may be gven as R-object or read from file 'input'. Then, one can (re-)write using specified conversions. 
 An optional filter to select columns (column-name specified via 'filterCol') is available. 
 The output may be simultaneaously written to multiple formats, as specified in 'expTy', 
 tabulation characters may be converted to avoid accidentally split/shift text to multiple columns. 

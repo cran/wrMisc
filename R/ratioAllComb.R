@@ -5,6 +5,7 @@
 #' @param x (numeric) vector, numerator for constructing rations
 #' @param y (numeric) vector, denominator for constructing rations
 #' @param maxLim (integer) allows reducing complexity by drawing for very long x or y
+#' @param isLog (logical) adjust ratio calculation to log-data
 #' @param silent (logical) suppress (less important) messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return (numeric) vector with all ratios
@@ -13,10 +14,14 @@
 #' ratioAllComb(ra1[1:9],ra1[10:17])
 #' boxplot(list(norm=ra1[1:9],unif=ra1[10:17],rat=ratioAllComb(ra1[1:9],ra1[10:17])))
 #' @export
-ratioAllComb <- function(x,y,maxLim=1e4,silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="ratioAllComb")
-  if(!is.numeric(x)) x <- if(is.factor(x)) as.numeric(as.character(x)) else as.numeric(x)
-  if(!is.numeric(y)) y <- if(is.factor(y)) as.numeric(as.character(y)) else as.numeric(y)
+ratioAllComb <- function(x, y, maxLim=1e4, isLog=FALSE, silent=FALSE,callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="ratioAllComb")
+  namesXY <- c(deparse(substitute(x)), deparse(substitute(y)))
+  if(!is.numeric(x)) x <- try(if(is.factor(x)) as.numeric(as.character(x)) else as.numeric(x))
+  if(!is.numeric(y)) y <- try(if(is.factor(y)) as.numeric(as.character(y)) else as.numeric(y))
+  msg <- " 'x' and 'y' must be numeric and length >0. Can't convert !"
+  if("try-error" %in% class(x)) stop(fxNa,msg,namesXY[1]," to numeric")
+  if("try-error" %in% class(y)) stop(fxNa,msg,namesXY[2]," to numeric")
   if(length(x) > maxLim){
     if(!silent) message(fxNa," reducing x from to ",length(x)," to user-selectend length ",maxLim)
     x <- sample(x,size=maxLim,replace=FALSE) }
@@ -25,7 +30,7 @@ ratioAllComb <- function(x,y,maxLim=1e4,silent=FALSE,callFrom=NULL){
     y <- sample(y,size=maxLim,replace=FALSE) }
   if(!silent) {nMax <- prod(length(x),length(y))
     if(nMax > 1e8) message(fxNa," calculations may take long time ! (",signif(nMax,4)," combinations !)")}
-  rat <- rep(x,each=length(y))/rep(y,length(x))
+  rat <- if(isLog) rep(x,each=length(y)) -rep(y,length(x)) else rep(x,each=length(y))/rep(y,length(x))
   rat }
 
 #' @export

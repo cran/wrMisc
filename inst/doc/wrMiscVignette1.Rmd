@@ -19,6 +19,19 @@ vignette: >
 This package contains a collection of various low-level tools which may be of interest for general re-use. 
 These functions were accumulated over a number of years when treating high-throughput data from biomedical applications.
 Besides, these functions are used/integrated in more specialized functions dedicated to specific applications in other packages (eg [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag)).
+
+
+### Dependencies and Compilation
+One of the aims of this package was to make it fairly easy and robust for installation and in prespect to system requirements. 
+All code is written in pure R and does not need any special compilers.
+The number of dependencies was kept to a minumum (only packages coming already with a new installation of R). This helps to reduce potential problems at installation when dependencies which fail to get installed themselves.
+
+Most of additional packages used at some point in this package were declared as 'suggested' (ie not obligatory) to allow installation of wrMisc even if some these additional packages can't be compiled by the user's instance.
+This means that, when a feature of one of the 'suggested' packages is about to be used, its presence/installation will be checked and, 
+only if found as missing, the user will be propmted a message inviting to install specific package(s) before using these specific functions.    
+
+
+### Installation
 To get started, we need to install (if not yet installed) and load the package "[wrMisc](https://CRAN.R-project.org/package=wrMisc)" available from [CRAN](https://cran.r-project.org/).
 
 

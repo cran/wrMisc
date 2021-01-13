@@ -21,7 +21,8 @@ moderTest2grp(
 
 \item{limmaOutput}{(logical) return full (or extended) MArrayLM-object from limma or 'FALSE' for only the (uncorrected) p.values}
 
-\item{addResults}{(character) types of results to add besides basic limma-output (eg "lfdr" using the fdrtool-package,"FDR" for BY-FDR,"Mval" (assumes that data are log2 !),"means" or "nonMod" for non-moderated test)}
+\item{addResults}{(character) types of results to add besides basic limma-output, data are assumed to be log2 ! (eg "lfdr" using fdrtool-package, "FDR" or "BH" for BH-FDR, "BY" for BY-FDR, 
+"bonferroni" for Bonferroni-correction, "qValue" for lfdr by qvalue, "Mval", "means" or "nonMod" for non-moderated test and he equivaent all (other) multiple testing corrections chosen here)}
 
 \item{testOrientation}{(character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2}
 
@@ -50,5 +51,5 @@ fit4in <- moderTest2grp(t4,gl(2,2),testO="<")
 limma::topTable(fit4in,coef=1,n=5)
 }
 \seealso{
-\code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
+\code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}, \code{\link[stats]{p.adjust}}
 }

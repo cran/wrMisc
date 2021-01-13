@@ -6,7 +6,8 @@
 \usage{
 stableMode(
   x,
-  histLike = FALSE,
+  method = "binning",
+  histLike = NULL,
   rangeSign = 1:6,
   nCl = 50,
   callFrom = NULL,
@@ -16,11 +17,14 @@ stableMode(
 \arguments{
 \item{x}{numeric vector}
 
-\item{histLike}{(logical) if TRUE, will search context dependent, ie like most frequent class of histogram. Using this mode the search will be refined if either 80 percent of values in single class or >50 percent in single}
+\item{method}{(character) There are 3 options : 'BBmisc', 'binning' and 'density';
+If 'binning' the function will search context dependent, ie like most frequent class of histogram. Using this mode the search will be refined if either 80 percent of values in single class or >50 percent in single}
 
-\item{rangeSign}{(integer) range of numbers used as number of significant values}
+\item{histLike}{(logical) depreciated, please use argument \code{method} instead}
 
-\item{nCl}{(integer) defines the number of classes used (if 'histLike'=TRUE), very 'critical' parameter, may change results in strong way !! Note: higher values for 'nCl' will finally loose advantage of histLike-type search of mode !}
+\item{rangeSign}{(integer) only used when \code{method='binning'}: range of numbers used as number of significant values}
+
+\item{nCl}{(integer) only used when \code{method='binning'}: defines the number of classes used, very 'critical' parameter, may change results in strong way !! Note: higher values for 'nCl' will finally loose advantage of histLike-type search of mode !}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 
@@ -30,8 +34,10 @@ stableMode(
 mode value (numeric)
 }
 \description{
-Estimate mode (most frequent value); rounding to range of numbers used as number of significant values ('rangeSign') to better estimate continuous data.
-This function uses the package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc}.
+Estimate mode (ie most frequent value). The argument \code{method} allows to choos among the so far 3 different methods available.
+If 'denisty' is chosen, the most dense region of sqrt(n) values will be chosen; 
+if 'binning', the data will be binned (like in histograms) via rounding to a user-defined number of significant values ('rangeSign').
+If \code{method} is set to 'BBmisc', this function will use \code{computeMode()} from package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc}.
 }
 \examples{
 set.seed(2012); dat <- round(c(rnorm(50),runif(100)),3)

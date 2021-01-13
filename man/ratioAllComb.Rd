@@ -4,7 +4,14 @@
 \alias{ratioAllComb}
 \title{Calculate all ratios between x and y}
 \usage{
-ratioAllComb(x, y, maxLim = 10000, silent = FALSE, callFrom = NULL)
+ratioAllComb(
+  x,
+  y,
+  maxLim = 10000,
+  isLog = FALSE,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(numeric) vector, numerator for constructing rations}
@@ -12,6 +19,8 @@ ratioAllComb(x, y, maxLim = 10000, silent = FALSE, callFrom = NULL)
 \item{y}{(numeric) vector, denominator for constructing rations}
 
 \item{maxLim}{(integer) allows reducing complexity by drawing for very long x or y}
+
+\item{isLog}{(logical) adjust ratio calculation to log-data}
 
 \item{silent}{(logical) suppress (less important) messages}
 

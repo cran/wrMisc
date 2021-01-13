@@ -1,6 +1,7 @@
 #' Write (and convert) csv files
 #'
-#' This functions allows to write data into csv-files (and/or tabulated txt files) from given vector or read from file 'input' and (re-)write using specified conversions. 
+#' This functions is absed on \code{write.csv} allows for more options when writing data into csv-files.
+#' The main input may be gven as R-object or read from file 'input'. Then, one can (re-)write using specified conversions. 
 #' An optional filter to select columns (column-name specified via 'filterCol') is available. 
 #' The output may be simultaneaously written to multiple formats, as specified in 'expTy', 
 #' tabulation characters may be converted to avoid accidentally split/shift text to multiple columns. 
@@ -120,10 +121,10 @@ writeCsv <- function(input,inPutFi=NULL,expTy=c("Eur","US"),imporTy="Eur",filena
     names(filename) <- expTy }
   if(debug) {cat("..xxWriteC4\n")}
   if(!silent & any(file.exists(filename))) message(fxNa,"file(s) ",pasteC(filename[which(file.exists(filename))],quo="'")," will be overwritten !")
-  if( "US" %in% expTy) tryW <- try(utils::write.csv(as.matrix(format(if(length(datExp)>0) datExp$US else dat,digits=digits)), filename["US"],row.names=FALSE,quote=quote),silent=silent)
-  if("txt" %in% expTy) tryW <- try(utils::write.table(as.matrix(format(if(length(datExp)>0) datExp$txt else dat,digits=digits)), filename["txt"],row.names=FALSE,quote=quote),silent=silent)
+  if( "US" %in% expTy) tryW <- try(utils::write.csv(as.matrix(format(if(length(datExp)>0) datExp$US else dat,digits=digits)), filename["US"], row.names=FALSE, quote=quote),silent=silent)
+  if("txt" %in% expTy) tryW <- try(utils::write.table(as.matrix(format(if(length(datExp)>0) datExp$txt else dat,digits=digits)), filename["txt"], row.names=FALSE, quote=quote),silent=silent)
   ## idea (relaed to problem when input is fused numeric&text): in case of Eur test all cols if factor/text and then (optional?) convert '.' to ','
-  if("Eur" %in% expTy) tryW <- try(utils::write.csv2(as.matrix(format(if(length(datExp)>0) datExp$Eur else dat,digits=digits)), filename[1],row.names=FALSE,quote=quote),silent=silent)
+  if("Eur" %in% expTy) tryW <- try(utils::write.csv2(as.matrix(format(if(length(datExp)>0) datExp$Eur else dat,digits=digits)), filename[1], row.names=FALSE, quote=quote),silent=silent)
   ## possibility to return values :
   if(returnOut) {if(length(expTy) <2) dat else datExp} }
        
