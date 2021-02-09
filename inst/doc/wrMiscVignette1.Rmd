@@ -16,9 +16,9 @@ vignette: >
 ---
 
 ## Introduction
-This package contains a collection of various low-level tools which may be of interest for general re-use. 
+This package contains a collection of various (low-level) tools which may be of general interest. 
 These functions were accumulated over a number of years when treating high-throughput data from biomedical applications.
-Besides, these functions are used/integrated in more specialized functions dedicated to specific applications in other packages (eg [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag)).
+Besides, these functions are further used/integrated in more specialized functions dedicated to specific applications in the packages [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag). All these packages are available on CRAN.
 
 
 ### Dependencies and Compilation
@@ -114,13 +114,21 @@ head(cv2)
 
 Note, these calculations will be very efficient as long as the number of rows is much higher (>>) than the number of columns.
 
-Now, let's assume our data is contains 3 initial samples measured as several replicates (already defined in _grp1_).
-Similarly, we can also calculate the sd or CV for each line while splitting into groups of replicates (functions `rowGrpSds` and `rowGrpCV`): 
+### Data organized in (sub-)groups as sets of columns
 
-```{r sdOrCVbyGrp, echo=TRUE}
+Now, let's assume our data is contains 3 initial samples measured as several replicates (already defined in _grp1_).
+Similarly, we can also calculate the sd or CV for each line while splitting into groups of replicates (functions `rowGrpMeans`, `rowGrpSds` and `rowGrpCV`): 
+
+```{r rowGrpMeans1, echo=TRUE}
 # we already defined the grouping :
 grp1
 
+## the mean for each group and row
+system.time(mean1Gr <- rowGrpMeans(dat1, grp1))
+```
+
+```{r sdOrCVbyGrp, echo=TRUE}
+## Now the sd for each row and group
 system.time(sd1Gr <- rowGrpSds(dat1, grp1))
 # will give us a matrix with the sd for each group & line 
 head(sd1Gr)
@@ -133,7 +141,30 @@ system.time(cv1Gr <- rowGrpCV(dat1, grp1))
 head(cv1Gr)
 ```
 
+#### Counting number of NAs per row and group of columns
+
+Some data, like with quantitative proteomics measures, may contain an elevated number of _NAs_ (see also the package [wrProteo](https://CRAN.R-project.org/package=wrProteo) for further options for dealing with such data).
+Similar as above there is an easy way to count the number of _NAs_ to get an overview how NAs are distributed. 
+
+Let's assume we have measures from 3 groups/samples with 4 replicates each :
+```{r rowGrpNA1, echo=TRUE}
+mat2 <- c(22.2, 22.5, 22.2, 22.2, 21.5, 22.0, 22.1, 21.7, 21.5, 22, 22.2, 22.7,
+   NA, NA, NA, NA, NA, NA, NA, 21.2,   NA, NA, NA, NA,
+   NA, 22.6, 23.2, 23.2,  22.4, 22.8, 22.8, NA,  23.3, 23.2, NA, 23.7,
+   NA, 23.0, 23.1, 23.0,  23.2, 23.2, NA, 23.3,  NA, NA, 23.3, 23.8)
+mat2 <- matrix(mat2, ncol=12, byrow=TRUE)
+## The definition of the groups (ie replicates)
+gr4 <- gl(3, 4, labels=LETTERS[1:3])
+```
+
+Now we can easily count the number of NAs per row and set of replicates.
+```{r rowGrpNA2, echo=TRUE}
+rowGrpNA(mat2,gr4)
+```
+
+
 ### Fast NA-omit for very large objects
+
 The function _na.omit()_ from the package [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/) also keeps a trace of all omitted instances. 
 This can be penalizing in terms of memory usage when handling very large vectors with a high content of NAs (eg >10000 NAs). 
 If you don't need to document precisely which elements got eliminated, the function `naOmit()` may offer 
@@ -670,14 +701,40 @@ da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*9
 elimCloseCoord(da1)
 ```
 
+### Mode of (continuous) data
+
+Looking for the mode is rather easy with counting data. Looking at the result of _table()_ will get you there quickly.
+However, with continuous data what people intuitively consider the mode is rather a result of a density estimation and may be more tricky to identify.
+The most frequent value may be quite distant to the most dense region of data.
+The function  `stableMode()` presented here has different modes of operation, at tis point there are no clear rules which mode may perform most satisfactory on different data.
+
+```{r stableMode, echo=TRUE}
+set.seed(2012); dat <- round(c(rnorm(120,0,1.2), rnorm(80,0.8,0.6), rnorm(25,-0.6,0.05), runif(200)),3)
+dat <- dat[which(dat > -2 & dat <2)]
+stableMode(dat)
+```
+
+Now we can try to show on a plot :
+```{r stableMode2, echo=TRUE}
+layout(1:2)
+plot(1:length(dat), sort(dat), type="l", main="sorted values")
+abline(h=stableMode(dat), lty=2,col=2)
+
+plot(density(dat, kernel="gaussian", adjust=0.7))
+abline(v=stableMode(dat,method="dens"), lty=2, col="red", lwd=2)
+abline(v=stableMode(dat,method="binning"), lty=2, col="green")
+abline(v=stableMode(dat,method="BBmisc"), lty=2, col="blue")  
+```
+
+
 ## Working with Regressions 
 
-### Testing Start Point For Linear Regressions
+### Best Starting Point For Linear Regressions
 
 In many types of measurments the very low level measures are delicate.
 Especially when the readout starts with a baseline signal before increasing amounts of the analyte start producing a linear relationship.
 In such cases some of the very lowest levels of the analyte are masked by the (random) baseline signal.
-The function presented here allows omitting some of the lowest analyte measures to focus on the linear part of the dose-response relationship.
+The function `linModelSelect()` presented here allows omitting some of the lowest analyte measures to focus on the linear part of the dose-response relationship.
 
 ```{r linModelSelect1, echo=TRUE}
 li1 <- rep(c(4,3,3:6),each=3) + round(runif(18)/5,2)
@@ -709,6 +766,7 @@ x1.lmSum <- cbind(x1.lmSum, medQuantity=apply(x1,1,median))
 x1.lmSum[,1] <- log10(x1.lmSum[,1])
 head(x1.lmSum)
 ```
+Now we can try to plot
 ```{r plotLinModelCoef2, echo=TRUE}
 wrGraphOK <- requireNamespace("wrGraph", quietly=TRUE)      # check if package is available
 if(wrGraphOK) wrGraph::plotW2Leg(x1.lmSum, useCol=c("Pr(>|t|)","Estimate","medQuantity","startFr"), legendloc="topleft", txtLegend="start at")
@@ -929,8 +987,8 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 ## expect to find C/A in c,d,g, (h)
 ## expect to find C/D in c,d,e,f
 ## expect to find A/D in f,g,(h)  
-test8 <- moderTestXgrp(t8,grp) 
-head(test8$p.value,n=8)
+test8 <- moderTestXgrp(t8, grp) 
+head(test8$p.value, n=8)
 ```
 
 
@@ -951,6 +1009,15 @@ head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
 ```
 
 
+### Extract Groups of Replicates from Pair-wise Column-Names
+
+When running multiple pairwise tests (using *moderTestXgrp()*) the column-names are concatenated group-names. 
+To get the index of which group has been used in which pair-wise set you may use the function `matchSampToPairw()`, as shown below.
+
+```{r matchSampToPairw, echo=TRUE}
+matchSampToPairw(unique(grp), colnames(test8$FDR)) 
+```
+
 
 ### Extract Numeric Part of Column-Names
 
@@ -970,12 +1037,13 @@ Multiple concepts for clustering have been deeveloped, most of them allow extrac
 Here some functions helping to work with the output of such clustering results are presented.
 
 
-### Prior Clustering
+### Prepare data for clustering
 
-Many clustering algorithms are available in R (eg see also [CRAN Task View: Cluster Analysis & Finite Mixture Models]
-(https://CRAN.R-project.org/view=Cluster)), many of them require the input data to be standardized.
+The way how to prepare data for clustering may be as important as the choice of the actual clustering-algorithm ...
+
+Many clustering algorithms are available in R (eg see also [CRAN Task View: Cluster Analysis & Finite Mixture Models](https://CRAN.R-project.org/view=Cluster)), many of them require the input data to be standardized.
 The regular way of standardizing sets all elements to mean=0 and sd=1.
-To do so, the function scale() may be used. 
+To do so, the function `scale()` may be used. 
 
 ```{r std1, echo=TRUE}
 dat <- matrix(2*round(runif(100),2), ncol=4)
@@ -991,7 +1059,7 @@ datB <- scale(dat, center=TRUE, scale=FALSE)
 mean(datB); sd(datB); range(datB)              # mean is almost 0
 ```
 
-However, if you want the entire data-set and not each column sparately, you may use standardW.
+However, if you want the entire data-set and not each column sparately, you may use `standardW()`.
 Thus, relative differences visible within a line will be conserved.
 Furthermore, in case of 3-dim arrays, this function returns also the same dimensions as the input.
 
@@ -1015,6 +1083,8 @@ datR2 <- apply(dat, 2, scaleXY, 1, 100)
 summary(datR2); sd(datR2)
 ```
 
+### Characterize clustering results
+
 Here very basic clustering example...
 
 ```{r clu01, echo=TRUE}
@@ -1024,7 +1094,7 @@ irKm <- stats::kmeans(iris[,1:4], nGr, nstart=nGr*4)             # no need to st
    #wrGraph::plotPCAw(t(as.matrix(iris[,1:4])), sampleGrp=irKm,colBase=irKm$cluster,useSymb=as.numeric(as.factor(iris$Species)))
 ```
 
-Using the function reorgByCluNo() we can now 'apply' the clustering result to the initial data to obtain other information.
+Using the function `reorgByCluNo()` we can now 'apply' the clustering result to the initial data to obtain other information.
 
 ```{r clu02, echo=TRUE}
 ## sort results by cluster number
@@ -1043,7 +1113,7 @@ sapply(ir2, function(x) apply(x,2,median))
 sapply(ir2, colSds)
 ```
 
-Besides, we have alreaady seen in section 'Working with Arrays' the function cutArrayInCluLike().
+Besides, we have alreaady seen in section 'Working with Arrays' the function `cutArrayInCluLike()`.
 
 
 

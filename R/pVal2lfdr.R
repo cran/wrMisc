@@ -19,7 +19,7 @@
 #' head(pVal2lfdr(apply(t8, 1, function(x) t.test(x[1:4], x[5:8])$p.value)))
 #' @export
 pVal2lfdr <- function(x,silent=TRUE,callFrom=NULL) {    ## take vector of p-values and return vector of lfdr-values
-  fxNa <- .composeCallName(callFrom,newNa="pVal2lfdr")
+  fxNa <- .composeCallName(callFrom, newNa="pVal2lfdr")
   chPa <- try(find.package("fdrtool"), silent=TRUE)
   if("try-error" %in% class(chPa)) {
     warning("package 'fdrtool' not found ! Please install from CRAN  ... (returning NULL)")

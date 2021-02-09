@@ -5,15 +5,16 @@
 \title{Test multiple starting levels for linear regression model, select best and plot}
 \usage{
 linModelSelect(
-  protNa,
+  rowNa,
   dat,
   expect,
   logExpect = FALSE,
   startLev = NULL,
-  liNa = c(raw = "raw", annot = "annot", datImp = "datImp"),
+  lisNa = c(raw = "raw", annot = "annot", datImp = "datImp"),
   plotGraph = TRUE,
   tit = NULL,
   yLab = NULL,
+  pch = c(1, 3),
   cexLeg = 0.95,
   cexSub = 0.85,
   cexYAxis = 0.9,
@@ -24,7 +25,7 @@ linModelSelect(
 )
 }
 \arguments{
-\item{protNa}{(character, length=1) rowname for line to be extracted from \code{dat}}
+\item{rowNa}{(character, length=1) rowname for line to be extracted from \code{dat}}
 
 \item{dat}{(matrix, list or MArrayLM-object from limma) main input of which columns should get re-ordered, may be output from \code{\link{moderTestXgrp}} or \code{\link{moderTest2grp}}.}
 
@@ -34,7 +35,7 @@ linModelSelect(
 
 \item{startLev}{(integer) specify all starting levels to test for omitting here (multiple start sites for modelling linear regression may be specified to finally pick the best model)}
 
-\item{liNa}{(character) in case \code{cat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
+\item{lisNa}{(character) in case \code{cat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
 $datImp (the main quantitation data to use) and $annot for displaying the corresponding value from the "Accession"-column.}
 
 \item{plotGraph}{(logical) display figure}
@@ -42,6 +43,8 @@ $datImp (the main quantitation data to use) and $annot for displaying the corres
 \item{tit}{(character) optional custom title}
 
 \item{yLab}{(character) custom y-axis label}
+
+\item{pch}{(integer) symbols to use n optional plot; 1st for regular values, 2nd for initial NAs that were imputed}
 
 \item{cexLeg}{(character) size of text in legend}
 
@@ -58,7 +61,7 @@ $datImp (the main quantitation data to use) and $annot for displaying the corres
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-list with $coef (coefficients), $name (as/from input \code{protNa}), $startLev the best starting level)
+list with $coef (coefficients), $name (as/from input \code{rowNa}), $startLev the best starting level)
 }
 \description{
 The aim of this function is to select the data suiting set of levels of the main input data to construct a linear regression model. 
@@ -67,7 +70,7 @@ With such data it may be preferable to omit the read-outs for the lowest concent
 This function allows trying to omit all starting levels designed in \code{startLev}, then the resulting p-values for the linear regression slopes will be checked and the best p-value chosen. 
 The input may also be a MArrayLM-type object from package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} or from \code{\link{moderTestXgrp}} or \code{\link{moderTest2grp}}.
 In the graphical representation all points assocoated to levels omitted are shown in light green.
-For the graphical display additional information can be used : If the  \code{dat} is list or MArrayLM-type object, the list-elements $raw (according to argument \code{liNa} will be used to display points initially given as NA ad imputed lateron in grey.
+For the graphical display additional information can be used : If the  \code{dat} is list or MArrayLM-type object, the list-elements $raw (according to argument \code{lisNa} will be used to display points initially given as NA ad imputed lateron in grey.
 Logarithmic (ie log-linear) data can be treated by settting argument \code{logExpect=TRUE}. Then the levels will be taken as exponent of 2 for the regression, while the original values will be displayed in the figure.
 }
 \examples{

@@ -43,10 +43,15 @@ head(cv1)
 # results from the 'conventional' way
 head(cv2)
 
-## ----sdOrCVbyGrp, echo=TRUE---------------------------------------------------
+## ----rowGrpMeans1, echo=TRUE--------------------------------------------------
 # we already defined the grouping :
 grp1
 
+## the mean for each group and row
+system.time(mean1Gr <- rowGrpMeans(dat1, grp1))
+
+## ----sdOrCVbyGrp, echo=TRUE---------------------------------------------------
+## Now the sd for each row and group
 system.time(sd1Gr <- rowGrpSds(dat1, grp1))
 # will give us a matrix with the sd for each group & line 
 head(sd1Gr)
@@ -57,6 +62,18 @@ sd1Gr[1,] == c(sd(dat1[1,1:3]), sd(dat1[1,4:7]), sd(dat1[1,8:10]))
 # The CV :
 system.time(cv1Gr <- rowGrpCV(dat1, grp1))
 head(cv1Gr)
+
+## ----rowGrpNA1, echo=TRUE-----------------------------------------------------
+mat2 <- c(22.2, 22.5, 22.2, 22.2, 21.5, 22.0, 22.1, 21.7, 21.5, 22, 22.2, 22.7,
+   NA, NA, NA, NA, NA, NA, NA, 21.2,   NA, NA, NA, NA,
+   NA, 22.6, 23.2, 23.2,  22.4, 22.8, 22.8, NA,  23.3, 23.2, NA, 23.7,
+   NA, 23.0, 23.1, 23.0,  23.2, 23.2, NA, 23.3,  NA, NA, 23.3, 23.8)
+mat2 <- matrix(mat2, ncol=12, byrow=TRUE)
+## The definition of the groups (ie replicates)
+gr4 <- gl(3, 4, labels=LETTERS[1:3])
+
+## ----rowGrpNA2, echo=TRUE-----------------------------------------------------
+rowGrpNA(mat2,gr4)
 
 ## ----naOmit, echo=TRUE--------------------------------------------------------
 aA <- c(11:13,NA,10,NA)
@@ -375,6 +392,21 @@ fusePairs(daPa, maxFuse=4)
 da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*99; head(da1)
 elimCloseCoord(da1)
 
+## ----stableMode, echo=TRUE----------------------------------------------------
+set.seed(2012); dat <- round(c(rnorm(120,0,1.2), rnorm(80,0.8,0.6), rnorm(25,-0.6,0.05), runif(200)),3)
+dat <- dat[which(dat > -2 & dat <2)]
+stableMode(dat)
+
+## ----stableMode2, echo=TRUE---------------------------------------------------
+layout(1:2)
+plot(1:length(dat), sort(dat), type="l", main="sorted values")
+abline(h=stableMode(dat), lty=2,col=2)
+
+plot(density(dat, kernel="gaussian", adjust=0.7))
+abline(v=stableMode(dat,method="dens"), lty=2, col="red", lwd=2)
+abline(v=stableMode(dat,method="binning"), lty=2, col="green")
+abline(v=stableMode(dat,method="BBmisc"), lty=2, col="blue")  
+
 ## ----linModelSelect1, echo=TRUE-----------------------------------------------
 li1 <- rep(c(4,3,3:6),each=3) + round(runif(18)/5,2)
 names(li1) <- paste0(rep(letters[1:5], each=3), rep(1:3,6))
@@ -490,8 +522,8 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 ## expect to find C/A in c,d,g, (h)
 ## expect to find C/D in c,d,e,f
 ## expect to find A/D in f,g,(h)  
-test8 <- moderTestXgrp(t8,grp) 
-head(test8$p.value,n=8)
+test8 <- moderTestXgrp(t8, grp) 
+head(test8$p.value, n=8)
 
 ## ----pVal2lfdr, echo=TRUE-----------------------------------------------------
 set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2),ncol=8,dimnames=list(letters[1:20],
@@ -499,6 +531,9 @@ set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2),ncol=8,dimnames=list(let
 t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
 head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
+
+## ----matchSampToPairw, echo=TRUE----------------------------------------------
+matchSampToPairw(unique(grp), colnames(test8$FDR)) 
 
 ## ----pairWiseConc1, echo=TRUE-------------------------------------------------
 mat1 <- matrix(1:8, nrow=2, dimnames=list(NULL, paste0(1:4,"-",6:9)))

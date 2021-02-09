@@ -6,43 +6,47 @@
 \usage{
 stableMode(
   x,
-  method = "binning",
-  histLike = NULL,
+  method = "density",
+  bandw = NULL,
   rangeSign = 1:6,
-  nCl = 50,
+  nCl = NULL,
+  histLike = NULL,
   callFrom = NULL,
   silent = FALSE
 )
 }
 \arguments{
-\item{x}{numeric vector}
+\item{x}{(numeric) data to treat}
 
-\item{method}{(character) There are 3 options : 'BBmisc', 'binning' and 'density';
-If 'binning' the function will search context dependent, ie like most frequent class of histogram. Using this mode the search will be refined if either 80 percent of values in single class or >50 percent in single}
+\item{method}{(character) There are 3 options : BBmisc, binning and density (default). If "binning" the function will search context dependent, ie like most frequent class of histogram.
+Using "binning" mode the search will be refined if either 80 percent of values in single class or >50 percent in single class.}
+
+\item{bandw}{(integer) only used when \code{method="binning"} or  \code{method="density"} : defines the number of points to look for density or number of classes used; 
+very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" one will finally loose advantage of histLike-type search of mode !}
+
+\item{rangeSign}{(integer) only used when \code{method="binning"}: range of numbers used as number of significant values}
+
+\item{nCl}{(integer) depreciated argument, please use \code{bandw} instead}
 
 \item{histLike}{(logical) depreciated, please use argument \code{method} instead}
 
-\item{rangeSign}{(integer) only used when \code{method='binning'}: range of numbers used as number of significant values}
-
-\item{nCl}{(integer) only used when \code{method='binning'}: defines the number of classes used, very 'critical' parameter, may change results in strong way !! Note: higher values for 'nCl' will finally loose advantage of histLike-type search of mode !}
-
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of message(s) produced}
 
 \item{silent}{(logical) suppress messages}
 }
 \value{
-mode value (numeric)
+MA-plot only
 }
 \description{
-Estimate mode (ie most frequent value). The argument \code{method} allows to choos among the so far 3 different methods available.
-If 'denisty' is chosen, the most dense region of sqrt(n) values will be chosen; 
-if 'binning', the data will be binned (like in histograms) via rounding to a user-defined number of significant values ('rangeSign').
-If \code{method} is set to 'BBmisc', this function will use \code{computeMode()} from package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc}.
+Estimate mode, ie most frequent value. The argument \code{method} allows to choose among (so far) 3 different methods available.
+If "density" is chosen, the most dense region of sqrt(n) values will be chosen; 
+if "binning", the data will be binned (like in histograms) via rounding to a user-defined number of significant values ("rangeSign").
+If \code{method} is set to "BBmisc", the function \code{computeMode()} from package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc} will be used.
 }
 \examples{
-set.seed(2012); dat <- round(c(rnorm(50),runif(100)),3)
+set.seed(2012); dat <- round(c(rnorm(50), runif(100)),3)
 stableMode(dat)
 }
 \seealso{
-\code{\link[base]{cut}}, \code{\link[graphics]{hist}}
+\code{computeMode()} in package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc}
 }
