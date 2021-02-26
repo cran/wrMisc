@@ -4,12 +4,14 @@
 \alias{matchSampToPairw}
 \title{Match names to concatenated pairs of names}
 \usage{
-matchSampToPairw(grpNa, pairwNa, silent = FALSE, callFrom = NULL)
+matchSampToPairw(grpNa, pairwNa, sep = NULL, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{grpNa}{(character) the names of the groups of replicates (ie conditions) used to test}
 
 \item{pairwNa}{(character) the names of pairwise-testing (ie 'concatenated' \code{sampNa}}
+
+\item{sep}{(character) if not \code{NULL} the characters given will be used via \code{stringsplit}}
 
 \item{silent}{(logical) suppress messages}
 
@@ -23,19 +25,24 @@ The column-names of multiple pairwise testing contain the names of the initial g
 Thus function allows to map back which groups/conditions were used by returning the index of the respective groups used in pair-wise sets.
 }
 \details{
-The names of initial groups/conditions (\code{grpNa}) will be tested for exact pattern matching either at beginning or at end of pair-wise names (\code{pairwNa}).
-If there is no 'perfect' fit, the names concerned will not get matched.
-Thus, it is not necessary to know what character(s) were used as separator when constructing the concatenated pair-wise names.
+There are two modes of operation : 1) Argument \code{sep} is set to \code{NULL} :  The names of initial groups/conditions (\code{grpNa}) 
+will be tested for exact pattern matching either at beginning or at end of pair-wise names (\code{pairwNa}).
+This approach has the advantage that it does not need to be known what character(s) were used as separator (or they may change), 
+but the disadvantage that in case the perfect \code{grpNa} was not given, the longest best match of \code{grpNa} will be returned.
+
+2) The separator \code{sep} is given and exact matches at both sides will be searched.
+However, if the character(s) from \code{sep} do appear inside \code{grpNa} no matches will be found.
+
 If some \code{grpNa} are not found in \code{pairwNa} this will be marked as NA.
 }
 \examples{
 pairwNa1 <- c("abc-efg","abc-hij","efg-hij")
-grpNa1 <- c("hij","abc","efg","klm")
+grpNa1 <- c("hij","abc","abcc","efg","klm")
 matchSampToPairw(grpNa1, pairwNa1) 
 
-pairwNa2 <- c("abc-efg","abc-hij","zz-zz","efg-hij")
+pairwNa2 <- c("abc-efg","abcc-hij","abc-hij","abc-hijj","zz-zz","efg-hij")
 matchSampToPairw(grpNa1, pairwNa2) 
 }
 \seealso{
-(for running multiple pair-wise test) \code{\link{moderTestXgrp}}
+(for running multiple pair-wise test) \code{\link{moderTestXgrp}}, \code{\link[base]{grep}}, \code{\link[base]{strsplit}}
 }

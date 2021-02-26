@@ -1,4 +1,4 @@
-361a02ce15f3fe9168fb1eef961be68f *DESCRIPTION
+355926e952577445adfa0b4b53885a64 *DESCRIPTION
 c6fc76d84953f742fa4c2eab3807299a *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
@@ -74,7 +74,7 @@ d2a6d2eab02fe93890e8bf228fbd0a82 *R/lrbind.R
 77ed828106c3f73b4c806a21b9551d27 *R/makeMAList.R
 e913d614e6e175c8a0c4fd28585a2876 *R/makeNRedMatr.R
 51a1d74a87378bf1943a4ed2404f1749 *R/matchNamesWithReverseParts.R
-c18d6b888693487d9dec075890a1007b *R/matchSampToPairw.R
+3833836db9b37e9503aeafd2974a4394 *R/matchSampToPairw.R
 37564451716bfb1d0f89c7fe9a79eab3 *R/matr2list.R
 59e77a344b85d54ed6c94f51420ecc36 *R/mergeSelCol.R
 2b485379ef1a270dd19f0c324eed4b86 *R/mergeVectors.R
@@ -144,7 +144,7 @@ d7a859810c48c6bb90a7ce2af6272cff *R/writeCsv.R
 8ad64f901a38c2c63cbb92a4909d37d4 *build/vignette.rds
 55eb76018602d52e8d634ec956ea7d2b *inst/doc/wrMiscVignette1.R
 4014f426a69337d11f0432ab9132015f *inst/doc/wrMiscVignette1.Rmd
-3f4f8226a71910436ed10dbafd64b68a *inst/doc/wrMiscVignette1.html
+0486ff560209066a553cff75259b3e7c *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 13e7d1c6add7b3142aa228d1956d25d4 *inst/extdata/pl01_1.csv
 ca180004fbfdabc6c9b9eac0d89c7bcb *inst/extdata/pl01_1.xlsx
@@ -228,7 +228,7 @@ f122eeb11d9ba1dea15048454a53a44e *man/lrbind.Rd
 3e65281c9b0f8d5a10136f1b3b105e9e *man/makeMAList.Rd
 a00147e3d9926c35a85c30e666409cd8 *man/makeNRedMatr.Rd
 83148b4eb4c6a81f05a87323ede8a5ca *man/matchNamesWithReverseParts.Rd
-e79ee3eb1bfc8ab8519c3a031acb3276 *man/matchSampToPairw.Rd
+50c05c09285fdab9cf8a8d3ace87e980 *man/matchSampToPairw.Rd
 313ee32a1a8c0eec317bf08eb4a2cf24 *man/matr2list.Rd
 0381384b5ee03ab3b006f12060f5d3bb *man/mergeSelCol.Rd
 d575560f9d4e2b8553820794f66f04d7 *man/mergeSelCol3.Rd
