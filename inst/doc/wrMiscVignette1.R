@@ -7,11 +7,8 @@ suppressPackageStartupMessages({
 #  # If not already installed, you'll have to install the package first.
 #  install.packages("wrMisc")
 #  
-#  # To look which vignettes are available for this package :
-#  vignette(topic, package="wrMisc")
-#  
-#  # Now you can start this vignette by
-#  browseVignettes("wrMisc")    # and the select the html output
+#  # If needed, now you can open this package out of R:
+#  vignette("wrMiscVignette1", package="wrMisc")
 
 ## ----setup1-------------------------------------------------------------------
 library("wrMisc")
@@ -388,7 +385,7 @@ findSimilFrom2sets(aA,cC,comp="ppm",lim=9e4,bestO=TRUE)
 (daPa <- matrix(c(1:5,8,2:6,9), ncol=2))
 fusePairs(daPa, maxFuse=4)
 
-## ----elimCloseCoord, echo=TRUE------------------------------------------------
+## ----elimCloseCoord1, echo=TRUE-----------------------------------------------
 da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*99; head(da1)
 elimCloseCoord(da1)
 
@@ -498,6 +495,12 @@ boxplot(no1,main="mean normalization",las=1)
 boxplot(no2,main="trimMean normalization",las=1)
 boxplot(no3,main="median normalization",las=1)
 boxplot(no4,main="slope normalization",las=1)
+
+## ----coordOfFilt1, echo=FALSE,eval=TRUE---------------------------------------
+set.seed(2021); ma1 <- matrix(sample.int(n=40,size=27,replace=TRUE), ncol=9)
+## let's test which values are >37
+which(ma1 >37)      # doesn't tell which row & col
+coordOfFilt(ma1, ma1 >37)
 
 ## ----moderTest2grp, echo=TRUE-------------------------------------------------
 set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2),ncol=8,

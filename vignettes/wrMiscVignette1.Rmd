@@ -18,7 +18,12 @@ vignette: >
 ## Introduction
 This package contains a collection of various (low-level) tools which may be of general interest. 
 These functions were accumulated over a number of years when treating high-throughput data from biomedical applications.
-Besides, these functions are further used/integrated in more specialized functions dedicated to specific applications in the packages [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag). All these packages are available on CRAN.
+Besides, these functions are further used/integrated in more specialized functions dedicated to specific applications in the packages [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag). 
+All these packages are available on [CRAN](https://cran.r-project.org/).
+
+If you are not familiar with [R](https://www.r-project.org/) you may find many introductory documents on the official R-site 
+in [contributed documents](https://cran.r-project.org/other-docs.html) or under [Documentation/Manuals](https://cran.r-project.org/manuals.html).
+Of course, numerous other documents/sites with tutorials exit.
 
 
 ### Dependencies and Compilation
@@ -31,7 +36,7 @@ This means that, when a feature of one of the 'suggested' packages is about to b
 only if found as missing, the user will be propmted a message inviting to install specific package(s) before using these specific functions.    
 
 
-### Installation
+### Installation and Loading
 To get started, we need to install (if not yet installed) and load the package "[wrMisc](https://CRAN.R-project.org/package=wrMisc)" available from [CRAN](https://cran.r-project.org/).
 
 
@@ -45,11 +50,8 @@ suppressPackageStartupMessages({
 # If not already installed, you'll have to install the package first.
 install.packages("wrMisc")
 
-# To look which vignettes are available for this package :
-vignette(topic, package="wrMisc")
-
-# Now you can start this vignette by
-browseVignettes("wrMisc")    # and the select the html output
+# If needed, now you can open this package out of R:
+vignette("wrMiscVignette1", package="wrMisc")
 ```
 
 Before using, we actually need to load the package first :
@@ -696,7 +698,7 @@ fusePairs(daPa, maxFuse=4)
 When visualizing larger data-sets in an x&y space one may find many points overlapping when their values are almost the same.  
 The function `elimCloseCoord()` aims to do reduce a bivariate data-set to 'non-overlapping' points, somehow similar to human perception.
 
-```{r elimCloseCoord, echo=TRUE}
+```{r elimCloseCoord1, echo=TRUE}
 da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*99; head(da1)
 elimCloseCoord(da1)
 ```
@@ -897,7 +899,7 @@ Please note, that imputing _NA_-values represents another option instead of filt
 All decisions of which approach to use should be data-driven.
 
 
-### The Function normalizeThis()
+### The function normalizeThis()
 
 In biological high-throughput data columns typically represent different samples, which may be organized as replicates. 
 During high-throughput experiments thousands of (independent) elements are measured (eg abundance of gene-products), they are represented by rows.
@@ -953,6 +955,19 @@ boxplot(no3,main="median normalization",las=1)
 boxplot(no4,main="slope normalization",las=1)
 ```
 
+### Matrix coordinates of values/points according to filtering  
+
+Sometimes one need to get the coordinates of values/points of a matrix according to a given filtering condition.
+The standard approach using _which()_ gives only a _linearized_ index but not row/column, which is sufficient for replacing indexed values.
+If you need to know the true row/column indexes, you may use _coordOfFilt()_.
+
+
+```{r coordOfFilt1, echo=FALSE,eval=TRUE}
+set.seed(2021); ma1 <- matrix(sample.int(n=40,size=27,replace=TRUE), ncol=9)
+## let's test which values are >37
+which(ma1 >37)      # doesn't tell which row & col
+coordOfFilt(ma1, ma1 >37)
+```
 
 ## Statistical Testing
 

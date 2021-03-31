@@ -12,19 +12,21 @@
 #' @param rowNa (character, length=1) rowname for line to be extracted from \code{dat}
 #' @param dat (matrix, list or MArrayLM-object from limma) main input of which columns should get re-ordered, may be output from \code{\link{moderTestXgrp}} or \code{\link{moderTest2grp}}.
 #' @param expect (numeric of character) the expected levels; if character, constant unit-characters will be stripped away to extact the numeric content
-#' @param logExpect (logical) toggle to \code{TRUE} if the main data are logarithmic
+#' @param logExpect (logical) toggle to \code{TRUE} if the main data are logarithmic but \code{expect} is linear
 #' @param startLev (integer) specify all starting levels to test for omitting here (multiple start sites for modelling linear regression may be specified to finally pick the best model)
-#' @param lisNa (character) in case \code{cat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
+#' @param lisNa (character) in case \code{dat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
 #'   $datImp (the main quantitation data to use) and $annot for displaying the corresponding value from the "Accession"-column.	
 #' @param plotGraph (logical) display figure
 #' @param tit (character) optional custom title
+#' @param pch (integer) symbols to use n optional plot; 1st for regular values, 2nd for values not used in regression
+#' @param cexLeg (numeric) size of text in legend
+#' @param cexSub (numeric) text-size for line (as subtitle) giving regression details of best linear model)
+#' @param xLab (character) custom x-axis label
 #' @param yLab (character) custom y-axis label
-#' @param pch (integer) symbols to use n optional plot; 1st for regular values, 2nd for initial NAs that were imputed
-#' @param cexLeg (character) size of text in legend
-#' @param cexSub (character) size of subtitle (giving regression details of best linear model)
-#' @param cexYAxis (character) size of text for y-axis labels
-#' @param cexXAxis (character) size of text for x-axis labels
-#' @param cexLab (character)  text in x & y axis legend (will be passed to \code{cex.lab} in \code{plot()})
+#' @param cexXAxis (character) \code{cex}-type for size of text for x-axis labels
+#' @param cexYAxis (character) \code{cex}-type for size of text for y-axis labels
+#' @param xLabLas (integer) \code{las}-type orientation of x-axis labels (set to 2 for vertical axix-labels)
+#' @param cexLab (numeric) \code{cex}-type for size of text in x & y axis labels (will be passed to \code{cex.lab} in \code{plot()})
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return list with $coef (coefficients), $name (as/from input \code{rowNa}), $startLev the best starting level) 
@@ -36,27 +38,24 @@
 #' li2 <- rep(c(6,3:7), each=3) + round(runif(18)/5, 2)
 #' dat2 <- rbind(P1=li1, P2=li2)
 #' exp2 <- rep(c(11:16), each=3)
-#' exp4 <- rep(c(3,10,30,100,300,1000), each=3)
 #' 
 #' ## Check & plot for linear model 
-#' linModelSelect("P1", dat2, expect=exp2)
 #' linModelSelect("P2", dat2, expect=exp2)
 #'
 #' ## Log-Linear data
-#' dat4 <- rbind(P1=2^li1, P2=2^li2)
-#' linModelSelect("P1", dat4, expect=exp2, log=TRUE)
+#' ## Suppose dat2 is result of measures in log2, but exp4 is not
+#' exp4 <- rep(c(3,10,30,100,300,1000), each=3)
+#' linModelSelect("P2", dat2, expect=exp4, logE=FALSE)    # bad
+#' linModelSelect("P2", dat2, expect=exp4, logE=TRUE)
 #' 
-#' linModelSelect("P1", dat4, expect=log2(exp2), log=FALSE)
-#' 
-#' linModelSelect("P1", dat4, expect=exp4, log=TRUE)
 #' @export
 linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, lisNa=c(raw="raw",annot="annot",datImp="datImp"), plotGraph=TRUE, 
-  tit=NULL, yLab=NULL, pch=c(1,3), cexLeg=0.95, cexSub=0.85, cexYAxis=0.9, cexXAxis=0.85, cexLab=1.1, silent=FALSE, callFrom=NULL)  {
+  tit=NULL, pch=c(1,3), cexLeg=0.95, cexSub=0.85, xLab=NULL, yLab=NULL, cexXAxis=0.85, cexYAxis=0.9, xLabLas=1, cexLab=1.1, silent=FALSE, callFrom=NULL)  {
   ##  test for linear models with option to start form multiple later levels (ie omitting some of the early levels)
   fxNa <- wrMisc::.composeCallName(callFrom, newNa="linModelSelect")
   argNa <- c(deparse(substitute(rowNa)),deparse(substitute(dat)),deparse(substitute(expect)))
-  quantCol <- c("grey","blue","tan2")       # figure: 1st for not used in regression, 2nd for used, 3rd for NA/imputed
-  legLab <- c("NA/imputed","valid quantification","used for regresssion","not used")  # for figure legend ..
+  quantCol <- c("blue","tan2","grey")       # figure: 1st for 'used in regression', 2nd for 'not-used', 3rd for 'NA/imputed'
+  legLab <- c("used in regresssion","not used","NA/imputed,used","NA/imputed,not used")  # for figure legend ..
   annoColNa <- c("Accession","GeneName")
   if(length(rowNa) >1) { message(fxNa," 'rowNa' should have length of 1 (but is ",length(rowNa),"), truncating ...")
     rowNa <- rowNa[1] }
@@ -77,7 +76,7 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
       if(length(linNo) >1) { if(!silent) message(fxNa," name specified in argument 'lisNa' not unique, using first")
       linNo <- linNo[1] } 
       }
-    dat1 <- dat[[lisNa[3]]][linNo,]            # get imputed data
+    dat1 <- dat[[lisNa[3]]][linNo,]                       # get imputed data
   } else { 
     ## simple matrix data
     linNo <- which(rownames(dat) %in% rowNa)
@@ -102,33 +101,35 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
   dat1 <- data.frame(conc=if(logExpect) log2(expect) else expect, quant=dat1, concL=expect)            # omics quantitation data is already log2
   lm0 <- lapply(startLev, function(x) { lmX <- stats::lm(quant ~ conc, data=dat1[which(expect >= sort(unique(expect))[x]),]); lmX })
   slopeAndP <- sapply(lm0, function(x)  z <- stats::coef(summary(x))[2,c("Estimate","Pr(>|t|)")])
-
   bestReg <- which.min(slopeAndP[2,])
   if(!silent) message(fxNa," best slope pVal starting at level no ",bestReg)
   
   ## PLOT
   if(plotGraph) {
     levExp <- sort(unique(expect))
-    plotLi2 <- which(expect >= levExp[bestReg])
-    useCol <- rep(quantCol[3], nrow(dat1))                # initialize as not-used
-    if(length(plotLi2) >0) useCol[plotLi2] <- quantCol[2]     # assign color used for regression 
-    pch1 <- rep(pch[1], nrow(dat1))                       # initialize as valid quantif
+    usedP <- expect >= levExp[bestReg] 
+    useCol <- rep(quantCol[1], nrow(dat1))                    # initialize as used
+    pch1 <- rep(pch[1], nrow(dat1))                           # initialize as used
+    if(any(!usedP)) { useCol[which(!usedP)] <- quantCol[2]    # color used for not-used  
+      pch1[which(!usedP)] <- pch[2] }                         # symbol used for not-used  
+    
     chNa <- is.list(dat) & lisNa[1] %in% names(dat)
     if(any(chNa)) chNa <- is.na(dat[[lisNa[1]]][linNo,])
     hasNa <- any(chNa)
-    if(hasNa) {
-      pch1[which(chNa)] <- pch[2]
-    } else legLab <- legLab[-1*(1:2)]
+    legCol <- quantCol[if(hasNa) c(1:3,3) else 1:2]
+    legPch <- pch[if(hasNa) c(1,2,1,2) else 1:2]
+    if(hasNa) {useCol[which(chNa)] <- quantCol[3]} else {legLab <- legLab[1:2]}
     if(length(tit) <1) {tit <- if(hasAnn) dat[[lisNa[2]]][linNo,annoColNa[2]] else paste0(rowNa," (from ",argNa[2],")")}
     if(length(yLab) <1) yLab <- "measured"
-    yLab <- paste0(if(length(yLab) <1) "measured" else yLab[1], if(logExpect) " (log2)")
+    if(length(xLab) <1) xLab <- "expected"
+    if(logExpect) xLab <- paste0(xLab," (log-scale)")
     ## main plot
-    graphics::plot(quant ~ conc, data=dat1, col=useCol, main=tit,ylab=yLab, xlab="expected concentration", las=1, pch=pch1, cex.lab=cexLab, col.axis="white", cex.axis=0.3,tck=0)   
+    graphics::plot(quant ~ conc, data=dat1, col=useCol, main=tit,ylab=yLab, xlab=xLab, las=1, pch=pch1, cex.lab=cexLab, col.axis="white", cex.axis=0.3,tck=0)   
     graphics::mtext(paste0("best regr starting at level ",bestReg," (ie ",sort(unique(expect))[bestReg],"),  slope=",signif(slopeAndP[1,bestReg],3),
-      ",  p.slo=",signif(slopeAndP[2,bestReg],2)), cex=cexSub, col=quantCol[2])
+      ",  p=",signif(slopeAndP[2,bestReg],2)), cex=cexSub, col=quantCol[1])
     ## use crt= for rotating text on bottom ? ... crt works only for text()
-    graphics::mtext(at=(unique(dat1[,1])), signif(if(logExpect) 2^(unique(dat1[,1])) else unique(dat1[,1]),3), side=1, las=1,col=1,cex=cexXAxis)    # set las to vertical ?
-    graphics::abline(lm0[[bestReg]], lty=2, col=quantCol[2])
+    graphics::mtext(at=(unique(dat1[,1])), signif(if(logExpect) 2^(unique(dat1[,1])) else unique(dat1[,1]),3), side=1, las=xLabLas,col=1,cex=cexXAxis)    # set las to vertical ?
+    graphics::abline(lm0[[bestReg]], lty=2, col=quantCol[1])
     graphics::axis(side=2, las=1, col=1, tick=TRUE, cex.axis=cexYAxis)                                         # left axis
     ptBg <- quantCol
     chPch <- pch %in% c(21:25)
@@ -137,8 +138,6 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
     if(!chPa) { message(fxNa,": package 'wrGraph' not installed for searching optimal placement of legend")
       legLoc <- "bottomright"
     } else legLoc <- wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc 
-    legCol <- c(if(hasNa) quantCol[c(1,1)], quantCol[2:3])
-    legPch <- if(hasNa) pch[c(2,1, NA,NA)] else pch[c(1,1)]    
     graphics::legend(legLoc, legLab, pch=legPch, col=legCol, text.col=legCol, pt.bg=ptBg, cex=cexLeg, xjust=0.5,yjust=0.5)        # as points
   }
   list(coef=stats::coef(summary(lm0[[bestReg]])), name=rowNa, startLev=bestReg) }

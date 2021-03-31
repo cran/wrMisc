@@ -1,5 +1,5 @@
-355926e952577445adfa0b4b53885a64 *DESCRIPTION
-c6fc76d84953f742fa4c2eab3807299a *NAMESPACE
+19f049bfd3d70b61e2cca0dbb84fa7f4 *DESCRIPTION
+a067ca2339bd1b8bb4f3fa2614b5a771 *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
 564c0a274b79e761c0962159350967f4 *R/adjBy2ptReg.R
@@ -31,6 +31,7 @@ e109283bd022590c8628d1a6edb3ef3d *R/completeArrLst.R
 ec5fe93688985364dfe0660e0d398795 *R/convColorToTransp.R
 96540dc91f5e5c9d0f5071717ff51526 *R/convMatr2df.R
 0fb859bd4317c664461957d9559df98a *R/convToNum.R
+ffac9a80e6871c4cea15b445cc6d4c50 *R/coordOfFilt.R
 ee7513ff93415e7d9d74030c053a64e1 *R/correctToUnique.R
 3ce3a5c5f089dca6dec19fb4fe303f0e *R/correctWinPath.R
 47cd947e8d218dad7df09fbe4ec3055f *R/countCloseToLimits.R
@@ -65,7 +66,7 @@ b12f0b33e01eec889982232d7ae5ad9a *R/fuseCommonListElem.R
 eeafe3ddbf062eb1897b84c7491d716b *R/get1stOfRepeatedByCol.R
 53adc8a1a20498c15f8656019d517392 *R/getValuesByUnique.R
 25be96f113ec353abb9543cb88077a9f *R/htmlSpecCharConv.R
-95a75bb1539370bad56f50a94421df14 *R/linModelSelect.R
+5927777365e09eb6a6c2a893d337a8f5 *R/linModelSelect.R
 99de733d760fb6b29b422cfa82db45db *R/linRegrParamAndPVal.R
 6ac310a9973d6b9ce0546f3adde75760 *R/listBatchReplace.R
 9b2106f70c23b2a4db002006cb2e4167 *R/listGroupsByNames.R
@@ -81,7 +82,7 @@ e913d614e6e175c8a0c4fd28585a2876 *R/makeNRedMatr.R
 da2886146aaeaba638d2379fb883eca7 *R/mergeW2.R
 fdf1ce4d1dfb7e80cd4ff12be590b384 *R/minDiff.R
 6b6ea3f86072fe230b965a43be30c47d *R/moderTest2grp.R
-8c1c7a250d900121df14f908ff533c37 *R/moderTestXgrp.R
+b96a43d07aa90f202eb16e625dbd613f *R/moderTestXgrp.R
 edaf7608b3164dce1062cb0d282b8d38 *R/nFragments.R
 9317ffed37da8deeb85a27c085612148 *R/nNonNumChar.R
 b8c366f2c610bafa6c811afdb08f900c *R/naOmit.R
@@ -141,10 +142,10 @@ c821c2277d4c0236ae36b55dd061fee8 *R/triCoord.R
 fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 d7a859810c48c6bb90a7ce2af6272cff *R/writeCsv.R
-8ad64f901a38c2c63cbb92a4909d37d4 *build/vignette.rds
-55eb76018602d52e8d634ec956ea7d2b *inst/doc/wrMiscVignette1.R
-4014f426a69337d11f0432ab9132015f *inst/doc/wrMiscVignette1.Rmd
-0486ff560209066a553cff75259b3e7c *inst/doc/wrMiscVignette1.html
+8c8727bc8e1f013da87cad84a2a036b8 *build/vignette.rds
+1269fae46c992f1b8bea2f096fe1b580 *inst/doc/wrMiscVignette1.R
+17ed4d70576de821e8cb898944e282b3 *inst/doc/wrMiscVignette1.Rmd
+96e7794642d14bc7d75ef125897a74ff *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 13e7d1c6add7b3142aa228d1956d25d4 *inst/extdata/pl01_1.csv
 ca180004fbfdabc6c9b9eac0d89c7bcb *inst/extdata/pl01_1.xlsx
@@ -185,6 +186,7 @@ e68d9b50cd639a2514660737f81da37e *man/contribToContigPerFrag.Rd
 f6b76f1097156ed054ec4265cad450da *man/convColorToTransp.Rd
 c3fc8542857764ec81b5bdac99092ac2 *man/convMatr2df.Rd
 4af5c5a09d4a67bffaf0922ef22ffd94 *man/convToNum.Rd
+ab331546f0acabde62cc0f31160bee5a *man/coordOfFilt.Rd
 139112c70763acd1317075a7b5de5373 *man/correctToUnique.Rd
 d7855b8433db15a7b03d3047a09f6140 *man/correctWinPath.Rd
 a2ef9f9d09a4d0ad327fccfb15c87c87 *man/countCloseToLimits.Rd
@@ -219,7 +221,7 @@ dfb053c721bc9c391e1581c65165bc7d *man/fusePairs.Rd
 1f7a0892833dd9586b425a3145f0a2cd *man/get1stOfRepeatedByCol.Rd
 a843832c8c42db411f1f460ae706862c *man/getValuesByUnique.Rd
 c554b5fa7064b8eda8826cbf8787b155 *man/htmlSpecCharConv.Rd
-96690b155c57231da07a750a758ae7b7 *man/linModelSelect.Rd
+4be5b941e2c6fdaf235c2873a195181e *man/linModelSelect.Rd
 0237c86ab337c84b33179544b1605992 *man/linRegrParamAndPVal.Rd
 74b41939462e2ed21f0e95de9b1d92b7 *man/listBatchReplace.Rd
 13959924b00acb04f881ce3063bbab93 *man/listGroupsByNames.Rd
@@ -297,4 +299,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 d9d9e7dca759b7f8cb532007b5069537 *man/writeCsv.Rd
-4014f426a69337d11f0432ab9132015f *vignettes/wrMiscVignette1.Rmd
+17ed4d70576de821e8cb898944e282b3 *vignettes/wrMiscVignette1.Rmd

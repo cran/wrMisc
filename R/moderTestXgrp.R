@@ -58,6 +58,8 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
   for(j in 1:nrow(comp)) contr.matr[comp[j,],j] <- c(1,-1)
   ## see eg   https://support.bioconductor.org/p/57268/; https://www.biostars.org/p/157068/
   globFilt <- 1:nrow(dat)                                       # so far apply testing to all lines
+  
+  ## main
   fit0 <- try(limma::lmFit(dat[globFilt,], datDesign))          # testing part 1
   if("try-error" %in% class(fit0)) message(fxNa," Problem running lmFit(),  check if package 'limma' is installed !?!")
   fit1 <- limma::eBayes(limma::contrasts.fit(fit0, contrasts=contr.matr))  # variant to run all contrasts at same time

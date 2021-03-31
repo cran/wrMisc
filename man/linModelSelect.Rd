@@ -13,12 +13,14 @@ linModelSelect(
   lisNa = c(raw = "raw", annot = "annot", datImp = "datImp"),
   plotGraph = TRUE,
   tit = NULL,
-  yLab = NULL,
   pch = c(1, 3),
   cexLeg = 0.95,
   cexSub = 0.85,
-  cexYAxis = 0.9,
+  xLab = NULL,
+  yLab = NULL,
   cexXAxis = 0.85,
+  cexYAxis = 0.9,
+  xLabLas = 1,
   cexLab = 1.1,
   silent = FALSE,
   callFrom = NULL
@@ -31,30 +33,34 @@ linModelSelect(
 
 \item{expect}{(numeric of character) the expected levels; if character, constant unit-characters will be stripped away to extact the numeric content}
 
-\item{logExpect}{(logical) toggle to \code{TRUE} if the main data are logarithmic}
+\item{logExpect}{(logical) toggle to \code{TRUE} if the main data are logarithmic but \code{expect} is linear}
 
 \item{startLev}{(integer) specify all starting levels to test for omitting here (multiple start sites for modelling linear regression may be specified to finally pick the best model)}
 
-\item{lisNa}{(character) in case \code{cat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
+\item{lisNa}{(character) in case \code{dat} is list or MArrayLM-type object, the list-elements with these names will be used as $raw (for indicating initial \code{NA}-values,
 $datImp (the main quantitation data to use) and $annot for displaying the corresponding value from the "Accession"-column.}
 
 \item{plotGraph}{(logical) display figure}
 
 \item{tit}{(character) optional custom title}
 
+\item{pch}{(integer) symbols to use n optional plot; 1st for regular values, 2nd for values not used in regression}
+
+\item{cexLeg}{(numeric) size of text in legend}
+
+\item{cexSub}{(numeric) text-size for line (as subtitle) giving regression details of best linear model)}
+
+\item{xLab}{(character) custom x-axis label}
+
 \item{yLab}{(character) custom y-axis label}
 
-\item{pch}{(integer) symbols to use n optional plot; 1st for regular values, 2nd for initial NAs that were imputed}
+\item{cexXAxis}{(character) \code{cex}-type for size of text for x-axis labels}
 
-\item{cexLeg}{(character) size of text in legend}
+\item{cexYAxis}{(character) \code{cex}-type for size of text for y-axis labels}
 
-\item{cexSub}{(character) size of subtitle (giving regression details of best linear model)}
+\item{xLabLas}{(integer) \code{las}-type orientation of x-axis labels (set to 2 for vertical axix-labels)}
 
-\item{cexYAxis}{(character) size of text for y-axis labels}
-
-\item{cexXAxis}{(character) size of text for x-axis labels}
-
-\item{cexLab}{(character)  text in x & y axis legend (will be passed to \code{cex.lab} in \code{plot()})}
+\item{cexLab}{(numeric) \code{cex}-type for size of text in x & y axis labels (will be passed to \code{cex.lab} in \code{plot()})}
 
 \item{silent}{(logical) suppress messages}
 
@@ -80,19 +86,16 @@ names(li1) <- paste0(rep(letters[1:5], each=3), rep(1:3,6))
 li2 <- rep(c(6,3:7), each=3) + round(runif(18)/5, 2)
 dat2 <- rbind(P1=li1, P2=li2)
 exp2 <- rep(c(11:16), each=3)
-exp4 <- rep(c(3,10,30,100,300,1000), each=3)
 
 ## Check & plot for linear model 
-linModelSelect("P1", dat2, expect=exp2)
 linModelSelect("P2", dat2, expect=exp2)
 
 ## Log-Linear data
-dat4 <- rbind(P1=2^li1, P2=2^li2)
-linModelSelect("P1", dat4, expect=exp2, log=TRUE)
+## Suppose dat2 is result of measures in log2, but exp4 is not
+exp4 <- rep(c(3,10,30,100,300,1000), each=3)
+linModelSelect("P2", dat2, expect=exp4, logE=FALSE)    # bad
+linModelSelect("P2", dat2, expect=exp4, logE=TRUE)
 
-linModelSelect("P1", dat4, expect=log2(exp2), log=FALSE)
-
-linModelSelect("P1", dat4, expect=exp4, log=TRUE)
 }
 \seealso{
 \code{\link{moderTestXgrp}} for single comparisons, \code{\link[base]{order}}
