@@ -617,6 +617,43 @@ pp <- rep(c("m","n","o","p","q"),c(2,2,2,2,5))
 combineByEitherFactor(cbind(mm,pp),1,2, con=FALSE, nBy=TRUE)
 ```
 
+### Batch replacing of values or character-strings
+
+The function `multiCharReplace()` facilitates multiple replacements in a vector, matrix or data.frame.
+
+```{r multiCharReplace1, echo=TRUE}
+# replace character content
+x1 <- c("ab","bc","cd","efg","ghj")
+multiCharReplace(x1, cbind(old=c("bc","efg"), new=c("BBCC","EF")))
+
+# works also on matrix and/or to replace numeric content : 
+x3 <- matrix(11:16, ncol=2)
+multiCharReplace(x3, cbind(12:13,112:113))
+```
+
+Sometimes data get imported using different encoding for what should be interpreted as FALSE and TRUE :
+
+```{r multiCharReplace2, echo=TRUE}
+# replace and return logical vactor
+x2 <- c("High","n/a","High","High","Low")
+multiCharReplace(x2,cbind(old=c("n/a","Low","High"), new=c(NA,FALSE,TRUE)), convTo="logical")
+```
+
+### Multi-to-multi matching of (concatenated) terms
+
+The function allows to split (if necessary, using _strsplit()_) two vectors and compare each isolated tag (eg identifyer) from the 1st vector/object against each isolated tag from the second vector/object. This runs like a loop of one to many comparisons. The basic output is a list with indexes of which element of the 1st vector/object has matches in the 2nd vector/object. Since this is not convenient to the human reader, tabular output can be created, too.
+
+```{r multiMatch1, echo=TRUE}
+aa <- c("m","k","j; aa","m; aa; bb; o","n; dd","aa","cc")
+bb <- c("aa","dd","aa; bb; q","p; cc") 
+## result as list of indexes
+(bOnA <- multiMatch(aa, bb, method="asIndex"))   # match bb on aa
+## more convenient to the human reader
+(bOnA <- multiMatch(aa, bb))                     # match bb on aa
+(bOnA <- multiMatch(aa, bb, method="matchedL"))  # match bb on aa
+```
+
+
 
 ## Search For Similar (Numeric) Values
 
@@ -957,9 +994,9 @@ boxplot(no4,main="slope normalization",las=1)
 
 ### Matrix coordinates of values/points according to filtering  
 
-Sometimes one need to get the coordinates of values/points of a matrix according to a given filtering condition.
+Sometimes one needs to obtain the coordinates of values/points of a matrix according to a given filtering condition.
 The standard approach using _which()_ gives only a _linearized_ index but not row/column, which is sufficient for replacing indexed values.
-If you need to know the true row/column indexes, you may use _coordOfFilt()_.
+If you need to know the true row/column indexes, you may use `coordOfFilt()`.
 
 
 ```{r coordOfFilt1, echo=FALSE,eval=TRUE}
@@ -969,7 +1006,36 @@ which(ma1 >37)      # doesn't tell which row & col
 coordOfFilt(ma1, ma1 >37)
 ```
 
+
 ## Statistical Testing
+
+### Normal random number generation with close fit to expected mean and sd
+
+When creating random values to an expected _mean_ and _sd_, the standard function _rnorm()_ may deviate somehow from the
+expected mean and sd, in particular with low _n_. To still produce random values fitting closely to the expected mean and sd you may
+use the function `rnormW()`. 
+
+```{r rnormW1, echo=TRUE}
+## some sample data :
+x1 <- (11:16)[-5]
+mean(x1); sd(x1)
+```
+
+```{r rnormW2, echo=TRUE}
+## the standard way for gerenating normal random values
+ra1 <- rnorm(n=length(x1), mean=mean(x1), sd=sd(x1))
+## In particular with low n, the random values deviate somehow from expected mean and sd :
+mean(ra1) -mean(x1) 
+sd(ra1) -sd(x1)
+```
+
+```{r rnormW3, echo=TRUE}
+## random numbers with close fit to expected mean and sd :
+ra2 <- rnormW(length(x1), mean(x1), sd(x1))
+mean(ra2) -mean(x1) 
+sd(ra2) -sd(x1)   # much closer to expected value
+```
+
 
 ### Moderated pair-wise t-test from limma
 
@@ -1203,3 +1269,5 @@ This function prints tables in the current graphical output/window (which may by
 ```{r sessionInfo, echo=FALSE}
 sessionInfo()
 ```
+
+

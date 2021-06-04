@@ -53,8 +53,8 @@ readCsvBatch <- function(fileNames=NULL,path=".",fileFormat="Eur",checkFormat=TR
     fileNames <- fileNames[-1*checkFi]}
   ## prepare : check if European or US csv
   if(!silent) message(fxNa," ready to start reading ",length(fileNames)," files;  expecting header : ", HeaderInData)
-  tmp1 <- if(fileFormat !="Eur") try(utils::read.csv(fileNames[1],header=HeaderInData,stringsAsFactors=FALSE)) else NULL
-  tmp2 <- if(fileFormat !="US") try(utils::read.csv2(fileNames[1],header=HeaderInData,stringsAsFactors=FALSE)) else NULL
+  tmp1 <- if(fileFormat !="Eur") try(utils::read.csv(fileNames[1], header=HeaderInData, stringsAsFactors=FALSE)) else NULL
+  tmp2 <- if(fileFormat !="US") try(utils::read.csv2(fileNames[1], header=HeaderInData, stringsAsFactors=FALSE)) else NULL
   cheF <- "try-error" %in% c(class(tmp1),class(tmp2)) 
   if(cheF) stop(fxNa,"\n Problem with file format, can't read either as European or US type CSV !!")
   datDim  <- if(prod(dim(tmp1)) > prod(dim(tmp2))) dim(tmp1) else dim(tmp2)
@@ -65,11 +65,11 @@ readCsvBatch <- function(fileNames=NULL,path=".",fileFormat="Eur",checkFormat=TR
     if(!silent) message(fxNa," ..reading file ",fileNames[i])
     curFileNa <- fileNames[i]
     tmp <- if(prod(dim(tmp1)) > prod(dim(tmp2))) {
-      utils::read.csv(curFileNa,header=HeaderInData,stringsAsFactors=FALSE)
-    } else utils::read.csv2(curFileNa,header=HeaderInData,stringsAsFactors=FALSE) 
+      utils::read.csv(curFileNa, header=HeaderInData, stringsAsFactors=FALSE)
+    } else utils::read.csv2(curFileNa, header=HeaderInData, stringsAsFactors=FALSE) 
     if(checkFormat) {
-      tmp <- .inspectHeader(tmp,headNames=columns,silent=i !=1 | silent,callFrom=fxNa)
-      tmp <- .removeEmptyCol(tmp,fromBackOnly=FALSE,silent=i !=1 | silent,callFrom=fxNa)
+      tmp <- .inspectHeader(tmp, headNames=columns,silent=i !=1 | silent,callFrom=fxNa)
+      tmp <- .removeEmptyCol(tmp, fromBackOnly=FALSE,silent=i !=1 | silent,callFrom=fxNa)
     }
     if(i ==1) {                         # (re)define new format based on 1st file after format-checking (ie remove empty cols, extract col of well-names,...)
       datDim <- dim(tmp)
@@ -84,11 +84,11 @@ readCsvBatch <- function(fileNames=NULL,path=".",fileFormat="Eur",checkFormat=TR
     arrNames <- substr(fileNames[i],1,nchar(fileNames[i])-4)}
   if(returnArray) {
     dimnames(dat) <- list(rownames(tmp), arrNames, colnames(tmp))
-    #dimnames(dat) <- list(rownames(tmp),if(simpleNames) arrNames else .trimFromStart(arrNames,minNchar=minNamesLe), colnames(tmp))
+    #dimnames(dat) <- list(rownames(tmp),if(simpleNames) arrNames else .trimFromStart(arrNames, minNchar=minNamesLe), colnames(tmp))
   } else { dat <- datL
     if(length(fileNames) !=length(dat)) message(fxNa," Problem ?  Got ",length(fileNames)," fileNames  BUT ",length(dat)," list-elements !")
     names(dat) <- substr(fileNames,1,nchar(fileNames)-4)
-    if(simpleNames) names(dat) <- .trimFromStart(names(dat),minNchar=minNamesLe) }
+    if(simpleNames) names(dat) <- .trimFromStart(names(dat), minNchar=minNamesLe) }
   dat }
 
 

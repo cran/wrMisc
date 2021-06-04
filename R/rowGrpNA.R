@@ -23,6 +23,7 @@ rowGrpNA <- function(mat, grp) {
   ## get number of NAs per line & group of replicates
   if(any(length(dim(mat)) !=2, dim(mat) < 1)) stop("Invalid argument 'mat'; must be matrix (or data.frame) with min 1 line and 1 column")
   if(length(grp) != ncol(mat)) stop("Length of 'grp' and number of columns of 'mat' do not match !")
+  if(is.data.frame(mat)) mat <- as.matrix(mat)
   gr1 <- wrMisc::naOmit(unique(grp))
   nNA <- matrix(nrow=nrow(mat), ncol=length(gr1), dimnames=list(NULL, gr1))
   for(i in 1:length(gr1)) {

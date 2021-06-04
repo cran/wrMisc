@@ -342,6 +342,29 @@ mm <- rep(c("a","b","c","d","e"),c(3,4,2,3,1))
 pp <- rep(c("m","n","o","p","q"),c(2,2,2,2,5))
 combineByEitherFactor(cbind(mm,pp),1,2, con=FALSE, nBy=TRUE)
 
+## ----multiCharReplace1, echo=TRUE---------------------------------------------
+# replace character content
+x1 <- c("ab","bc","cd","efg","ghj")
+multiCharReplace(x1, cbind(old=c("bc","efg"), new=c("BBCC","EF")))
+
+# works also on matrix and/or to replace numeric content : 
+x3 <- matrix(11:16, ncol=2)
+multiCharReplace(x3, cbind(12:13,112:113))
+
+## ----multiCharReplace2, echo=TRUE---------------------------------------------
+# replace and return logical vactor
+x2 <- c("High","n/a","High","High","Low")
+multiCharReplace(x2,cbind(old=c("n/a","Low","High"), new=c(NA,FALSE,TRUE)), convTo="logical")
+
+## ----multiMatch1, echo=TRUE---------------------------------------------------
+aa <- c("m","k","j; aa","m; aa; bb; o","n; dd","aa","cc")
+bb <- c("aa","dd","aa; bb; q","p; cc") 
+## result as list of indexes
+(bOnA <- multiMatch(aa, bb, method="asIndex"))   # match bb on aa
+## more convenient to the human reader
+(bOnA <- multiMatch(aa, bb))                     # match bb on aa
+(bOnA <- multiMatch(aa, bb, method="matchedL"))  # match bb on aa
+
 ## ----checkSimValueInSer, echo=TRUE--------------------------------------------
 va1 <- c(4:7,7,7,7,7,8:10)+(1:11)/28600
 checkSimValueInSer(va1)
@@ -501,6 +524,24 @@ set.seed(2021); ma1 <- matrix(sample.int(n=40,size=27,replace=TRUE), ncol=9)
 ## let's test which values are >37
 which(ma1 >37)      # doesn't tell which row & col
 coordOfFilt(ma1, ma1 >37)
+
+## ----rnormW1, echo=TRUE-------------------------------------------------------
+## some sample data :
+x1 <- (11:16)[-5]
+mean(x1); sd(x1)
+
+## ----rnormW2, echo=TRUE-------------------------------------------------------
+## the standard way for gerenating normal random values
+ra1 <- rnorm(n=length(x1), mean=mean(x1), sd=sd(x1))
+## In particular with low n, the random values deviate somehow from expected mean and sd :
+mean(ra1) -mean(x1) 
+sd(ra1) -sd(x1)
+
+## ----rnormW3, echo=TRUE-------------------------------------------------------
+## random numbers with close fit to expected mean and sd :
+ra2 <- rnormW(length(x1), mean(x1), sd(x1))
+mean(ra2) -mean(x1) 
+sd(ra2) -sd(x1)   # much closer to expected value
 
 ## ----moderTest2grp, echo=TRUE-------------------------------------------------
 set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2),ncol=8,

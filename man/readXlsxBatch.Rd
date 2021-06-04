@@ -23,11 +23,11 @@ readXlsxBatch(
 
 \item{path}{(character) there may be a different path for each file}
 
-\item{fileExtension}{(character) extension of files (default='xlsx')}
+\item{fileExtension}{(character) extension of files (default='\code{xlsx}')}
 
 \item{excludeFiles}{(character) names of files to exclude (only used when reading all files of given directory)}
 
-\item{sheetInd}{(integer) specify which sheet to extract (must be number, eg \code{sheetInd=2} will extract always the 2nd sheet (no matter the name)}
+\item{sheetInd}{(character or integer) specify which sheet to extract (as exact name of sheed or sheet-number, eg \code{sheetInd=2} will extract always the 2nd sheet (no matter the name); if given as sheet-name but nor present in file an empty list-elements wil be returned}
 
 \item{checkFormat}{(logical) if \code{TRUE}: check header, remove empty columns, if rownames are increasing integeres it will searh for fisrt column with different entries to use as rownames}
 
@@ -46,21 +46,22 @@ list
 }
 \description{
 \code{readXlsxBatch} reads data out of multiple xlsx files, the sheet indicated by 'sheetInd' will be considered. 
-All files must have a very similar organization of data, as this is typically the case when high-throughput measurments are automatically saved while the screen progresses.
-The file-names will be used to structure the data read.
-By default all columns with text-content may be eliminated to extract the numeric part only, which may then get organized to a 3-dim array. 
-NOTE : requires package \href{https://CRAN.R-project.org/package=xlsx}{xlsx} being installed !  Uses a considerable amount of RAM ! Reading multiple xlsx files does take some time.
+All files must have the same organization of data, as this is typically the case when high-throughput measurements are automatically saved while experiments progress.
+In particular, the first file read is used to structure the output.
+By default all columns with text-content may be eliminated to keep the numeric part only, which may then get organized to a 3-dim numeric array 
+ (where the additional files will be used as 2nd dimension and multiple columns per file shown as 3rd dimension). 
+NOTE : (starting from version wrMisc-1.5.5) requires package \href{https://CRAN.R-project.org/package=readxl}{readxl} being installed ! 
+(This allows much faster and memory efficient processing than previous use of package '\code{xlsx}')
 }
 \examples{
-\donttest{
-path1 <- system.file("extdata",package="wrMisc")
+path1 <- system.file("extdata", package="wrMisc")
 fiNa <- c("pl01_1.xlsx","pl01_2.xlsx","pl02_1.xlsx","pl02_2.xlsx")
-datAll <- readXlsxBatch(fiNa,path1)
+datAll <- readXlsxBatch(fiNa, path1)
 str(datAll)
-datAll2 <- readXlsxBatch(path=path1,silent=TRUE)
-identical(datAll,datAll2)
-}
+## Now let's read all xlsx files of directory
+datAll2 <- readXlsxBatch(path=path1, silent=TRUE)
+identical(datAll, datAll2)
 }
 \seealso{
-\code{\link[xlsx]{read.xlsx}}, for simple reading of xls-files under 32-bit R see also package \href{https://CRAN.R-project.org/package=RODBC}{RODBC}
+\code{\link[readxl]{read_excel}}; for simple reading of (older) xls-files under 32-bit R one may also see the package \href{https://CRAN.R-project.org/package=RODBC}{RODBC}
 }
