@@ -9,7 +9,7 @@ multiMatch(
   y,
   sep = "; ",
   sep2 = NULL,
-  method = "matched",
+  method = "byX",
   silent = FALSE,
   callFrom = NULL
 )
@@ -30,7 +30,7 @@ multiMatch(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-list or data.frame (depending on \code{method} chosed)
+matrix, data.frame or list with matching results depending on \code{method} chosen
 }
 \description{
 This function allows convenient matching of multi-to-multi relationships between two objects/vectors. 
@@ -38,22 +38,32 @@ It was designed for finding common elements in multiple to multiple matching sit
 ie to find 'bb' as matching between both objects).
 }
 \details{
-\code{method='asIndex'} .. returns list (length matches x) where values indicate index of which y is matched by which elment of x (after split). Most concise, but not human reader friendly output.
+\code{method='byX'} .. returns data.frame with view oriented towards entries of \code{x}: character column \code{x} for entire content of \code{x}; integer column \code{x.Ind} for index of \code{x}; 
+ character column \code{TagBest} for most frequent matching isolated tag/ID; integer column \code{y.IndBest} index of most frequent matching \code{y};
+ character column \code{y.IndAll} index for all \code{y} matching any of the tags;
+ character column \code{y.Match} for entire content of best matching \code{y}; 
+ character column \code{y.Adj} for \code{y} adjusted to best matching \code{y} for easier subsequent perfect matching.
                                                                                                                                                       
-\code{method='matchedL'} .. returns list with IDs (from split of 'x') from x that have been matched to y, names indicate in which y they have been found.
+\code{method=c("byX","filter")} .. combinded argument to keep only lines with any matches 
                                                                                                                                                       
-\code{method='matched'} .. returns data.frame for all matches in \code{x} with columns:  \code{$matchItem} (not necessarily unique),  \code{$x.ind} (index of x where item has been found),  \code{$x} (value of x), \code{$y.firInd} (first index of y with matched item), \code{y.allInd} (all indexes of y with matched item), \code{y.fir} (full content of first y matched to item).
+\code{method='byTag'} .. returns matrix (of integers) from view of isolated tags from \code{x} (a separate line for each tag from  \code{x} matching to \code{y});
+
+\code{method=c("byTag","filter")} ..if combined as arguments, this will return a data.frame for all unique tags with any matches between \code{x} and \code{y}, with 
+  additional colunms \code{x.AllInd} for all matching \code{x}-indexes,  \code{y.IndBest} best matching \code{y} index; \code{x.n} for number of different \code{x} conatining this tag;
+\code{y.AllInd} for all matching \code{y}-indexes 
+
+\code{method='adjustXtoY'} .. returns vector with \code{x} adjusted to \code{y}, ie those elements of \code{x} matching are replace by the exact corresponding term of \code{y}.
                                                                                                                                                       
-\code{method='adjustXtoY'} .. returns vector with \code{x} adjusted to \code{y}, ie those elements of  \code{x} matching are replace by the exact corresponding term of  \code{y}.
-                                                                                                                                                      
-If no term matching the terms shown above is given, another version of 'asIndex' is returned, but indexes to \code{y} _after_ spliting by \code{sep}.
+\code{method=NULL} .. If no term matching the options shown above is given, another version of 'asIndex' is returned, but indexes to \code{y} _after_ spliting by \code{sep}. 
+Again, this method can be filtered by using \code{method="filter"} to focus on the best matches to \code{x}.
 }
 \examples{
-aa <- c("m","k","j; aa","m; aa; bb; o","n; dd","aa","cc")
-bb <- c("aa","dd; r","aa; bb; q","p; cc") 
-(aOnB <- multiMatch(aa, bb))                        # match aa on bb
-(aOnB <- multiMatch(aa, bb, method="matchedL"))     # match aa on bb
-(aOnB <- multiMatch(aa, bb, method="asIndex"))      # match aa on bb
+aa <- c("m","k", "j; aa", "m; aa; bb; o; ee", "n; dd; cc", "aa", "cc")
+bb <- c("dd; r", "aa", "ee; bb; q; cc", "p; cc")
+(match1 <- multiMatch(aa, bb, method=NULL))      # match bb to aa
+(match2 <- multiMatch(aa, bb, method="byX"))     # match bb to aa
+(match3 <- multiMatch(aa, bb, method="byTag"))   # match bb to aa
+(match4 <- multiMatch(aa, bb, method=c("byTag","filter")))   # match bb to aa
 
 }
 \seealso{

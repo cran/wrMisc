@@ -23,7 +23,7 @@ filterList <- function(lst,filt,minLineRatio=0.5,silent=FALSE,callFrom=NULL) {
   ##  adjust all elements of lst to filtering
   ## minLineRatio (numeric) min ratio of columns where 
   ## assumes that all elements of lst are in correct order !
-  fxNa <- .composeCallName(callFrom,newNa="filterList")
+  fxNa <- .composeCallName(callFrom, newNa="filterList")
   if(length(filt) <1) stop(" 'filt' seems to empty")
   if(length(dim(filt)) >1) { 
     if(length(minLineRatio) <1 | !is.numeric(minLineRatio)) { minLineRatio <- 0.5
@@ -37,7 +37,7 @@ filterList <- function(lst,filt,minLineRatio=0.5,silent=FALSE,callFrom=NULL) {
   if(any(!filt)) {
     nFilt <- length(filt)
     filt <- which(filt)
-    lstDim <- lapply(lst,dim)
+    lstDim <- lapply(lst, dim)
     chLst <- sapply(lstDim,length) ==2
     msg <- c(" element '","' : "," not suitable for filter")
     ## filter all matrix & data.frames

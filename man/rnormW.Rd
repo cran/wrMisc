@@ -4,10 +4,18 @@
 \alias{rnormW}
 \title{Normal random number generation with close fit to expected mean and sd}
 \usage{
-rnormW(n, mean = 0, sd = 1, seed = NULL, callFrom = NULL, silent = FALSE)
+rnormW(
+  n,
+  mean = 0,
+  sd = 1,
+  seed = NULL,
+  digits = 8,
+  silent = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
-\item{n}{(integer)  number of observations. If \code{length(n) > 1}, the length is taken to be the number required.}
+\item{n}{(integer, length=1)  number of observations. If \code{length(n) > 1}, the length is taken to be the number required.}
 
 \item{mean}{(numeric, length=1) expected mean}
 
@@ -15,20 +23,23 @@ rnormW(n, mean = 0, sd = 1, seed = NULL, callFrom = NULL, silent = FALSE)
 
 \item{seed}{(integer, length=1) seed for generating random numbers}
 
-\item{callFrom}{(character) allow easier tracking of message produced}
+\item{digits}{(integer, length=1 or \code{NULL}) number of significant digits for output, set to \code{NULL} to get all digits}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allow easier tracking of message produced}
 }
 \value{
 numeric vector of random values
 }
 \description{
-This function allows creating a vector of random values similar to \code{\link[stats]{rnorm}}, but resulting value get recorrected to fit to expected mean and sd.
-When the number of random values to generate is low, the mean and sd of the resultant values may deviate from the expected mean and sd when using the standard \code{rnorm} function
+This function allows creating a vector of random values similar to \code{rnorm}, but resulting value get recorrected to fit to expected mean and sd.
+When the number of random values to generate is low, the mean and sd of the resultant values may deviate from the expected mean and sd when using the standard \code{rnorm} function.
 In such cases the function \code{rnormW} helps getting much closer to the expected mean and sd.
 }
 \details{
 For making result reproducible, a seed for generating random numbers can be set via the argument \code{seed}.
+However, with \code{n=2} the resulting values are 'fixed' since no random component is possible at n <3.
 }
 \examples{
 x1 <- (11:16)[-5]

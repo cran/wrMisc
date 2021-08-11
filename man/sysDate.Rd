@@ -4,16 +4,42 @@
 \alias{sysDate}
 \title{System-data (compressed format)}
 \usage{
-sysDate(style = "wr")
+sysDate(style = "univ1")
 }
 \arguments{
-\item{style}{(character) choose style (if \code{wr} the month will be abbreviated to fisrt 3 letters and last two digits of year will be shown}
+\item{style}{(character) choose style (default 'univ1' for very compact style)}
 }
 \value{
 character vector with formatted date
 }
 \description{
-This function returns current date (based on Sys.Date) as day/month/year, where month is abbrev to 3 leters and only the mast two dgits of the year are shown.
+This function returns current date (based on Sys.Date) in different format options.
+}
+\details{
+Multiple options for fromatting exist :
+'univ1' ... (default) compact sytle using day, first 3 letters of English name of month and last 2 letters of year as ddmmmyy, eg 14jun21 
+
+'univ2' ... as ddMmmyy, eg 14Jun21
+
+'univ3' ... as ddmonthyy, eg 14june21
+
+'univ4' ... as ddMonthyy, eg 14June21
+
+'univ5' ... as yyyy-mm-dd (output of \code{Sys.Date()}), eg 2021-06-14
+
+'univ6' ... as yyyy-number of day (in year), eg 2021-165
+
+'local1' ... compact sytle using day, first 3 letters of current locale name of month (not necessarily unique !) and last 2 letters of year as ddmmmyy, eg 14jui21 
+
+'local2' ... as ddMmmyy, month based on current locale (not necessarily unique !), eg 14Jui21
+
+'local3' ... as ddmonthyy, month based on current locale , eg 14juin21
+
+'local4' ... as ddmonthyyyy, month based on current locale , eg 14juin2021
+
+'local5' ... as dd-month-yyyy, month based on current locale , eg 14-juin-2021
+
+'local6' ... as yyyymonthddd, month based on current locale , eg 2021juin14
 }
 \examples{
 sysDate() 

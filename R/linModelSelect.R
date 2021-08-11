@@ -74,7 +74,7 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
     } else {
       linNo <- if(hasAnn) which(dat[[lisNa[2]]][,annoColNa[1]] == rowNa) else which(rownames(dat[[lisNa[1]]]) ==rowNa)  
       if(length(linNo) >1) { if(!silent) message(fxNa," name specified in argument 'lisNa' not unique, using first")
-      linNo <- linNo[1] } 
+        linNo <- linNo[1] } 
       }
     dat1 <- dat[[lisNa[3]]][linNo,]                       # get imputed data
   } else { 
@@ -89,8 +89,8 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
   expect0 <- expect
   if(!is.numeric(expect)) {
     subPat <- "[[:alpha:]]*[[:punct:]]*[[:alpha:]]*"
-    subPat <- paste0(c("^",""), subPat,c("","$"))   
-    expect <- try(as.numeric( sub(subPat[2],"",sub(subPat[1],"",as.character(expect))))) }  
+    subPat <- paste0(c("^",""),subPat,c("","$"))   
+    expect <- try(as.numeric( sub(subPat[2], "", sub(subPat[1], "", as.character(expect))))) }  
   if("try-error" %in% class(expect)) stop(fxNa," Problem extracting the numeric content of 'expect': ",wrMisc::pasteC(expect0,quoteC="'"))
   if(!is.numeric(expect)) {
     expect <- as.numeric(as.factor(as.character(expect)))
@@ -99,7 +99,7 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
 
   ## MAIN MODEL
   dat1 <- data.frame(conc=if(logExpect) log2(expect) else expect, quant=dat1, concL=expect)            # omics quantitation data is already log2
-  lm0 <- lapply(startLev, function(x) { lmX <- stats::lm(quant ~ conc, data=dat1[which(expect >= sort(unique(expect))[x]),]); lmX })
+  lm0 <- lapply(startLev, function(x) { lmX <- try(stats::lm(quant ~ conc, data=dat1[which(expect >= sort(unique(expect))[x]),])); lmX })
   slopeAndP <- sapply(lm0, function(x)  z <- stats::coef(summary(x))[2,c("Estimate","Pr(>|t|)")])
   bestReg <- which.min(slopeAndP[2,])
   if(!silent) message(fxNa," best slope pVal starting at level no ",bestReg)
@@ -119,7 +119,7 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
     legCol <- quantCol[if(hasNa) c(1:3,3) else 1:2]
     legPch <- pch[if(hasNa) c(1,2,1,2) else 1:2]
     if(hasNa) {useCol[which(chNa)] <- quantCol[3]} else {legLab <- legLab[1:2]}
-    if(length(tit) <1) {tit <- if(hasAnn) dat[[lisNa[2]]][linNo,annoColNa[2]] else paste0(rowNa," (from ",argNa[2],")")}
+    if(length(tit) <1) {tit <- if(hasAnn) dat[[lisNa[2]]][linNo, annoColNa[2]] else paste0(rowNa," (from ",argNa[2],")")}
     if(length(yLab) <1) yLab <- "measured"
     if(length(xLab) <1) xLab <- "expected"
     if(logExpect) xLab <- paste0(xLab," (log-scale)")
@@ -137,8 +137,11 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
     chPa <- requireNamespace("wrGraph", quietly=TRUE)
     if(!chPa) { message(fxNa,": package 'wrGraph' not installed for searching optimal placement of legend")
       legLoc <- "bottomright"
-    } else legLoc <- wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc 
-    graphics::legend(legLoc, legLab, pch=legPch, col=legCol, text.col=legCol, pt.bg=ptBg, cex=cexLeg, xjust=0.5,yjust=0.5)        # as points
+    } else legLoc <- try(wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc, silent=TRUE)
+    if("try-error" %in% class(legLoc)) { legLoc <- "bottomright"
+      message(fxNa,"Did not succeed in determining optimal legend location")}
+    tmp <- try(graphics::legend(legLoc, legLab, pch=legPch, col=legCol, text.col=legCol, pt.bg=ptBg, cex=cexLeg, xjust=0.5,yjust=0.5), silent=TRUE)        # as points
+    if("try-error" %in% class(tmp)) message(fxNa,"NOTE : Unable to add legend !  ",as.character(tmp))
   }
   list(coef=stats::coef(summary(lm0[[bestReg]])), name=rowNa, startLev=bestReg) }
   

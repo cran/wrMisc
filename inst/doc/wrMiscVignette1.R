@@ -116,9 +116,13 @@ names(lst1)
 ## now, let's fuse all 'a' and 'c'
 fuseCommonListElem(lst1)
 
-## ----listBatchReplace, echo=TRUE----------------------------------------------
-(lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge") ,cc=c("abdc","efg","efgh")))
+## ----listBatchReplace1, echo=TRUE---------------------------------------------
+lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34, m3=matrix(c(21:23,NA,25:27,NA),ncol=2))
+filterLiColDeList(lst1, useLines=2:3)
+filterLiColDeList(lst1, useLines="allNA", ref=3)
 
+## ----replInList1, echo=TRUE---------------------------------------------------
+(lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge") ,cc=c("abdc","efg","efgh")))
 listBatchReplace(lst1,search="efg",repl="EFG",silent=FALSE)
 
 ## ----listGroupsByNames, echo=TRUE---------------------------------------------
@@ -661,6 +665,20 @@ col1 <- convColorToTransp(col0,alph=0.7)
 layout(1:2)
 pie(rep(1,length(col0)), col=col0, main="no transparency")
 pie(rep(1,length(col1)), col=col1, main="new transparency")
+
+## ----sysDate1, echo=TRUE------------------------------------------------------
+## To get started
+Sys.Date()
+
+## Compact English names, no matter what your local settings are :
+sysDate() 
+sysDate(style="univ2")
+
+## based on your local language settings (not everybody may understand easily)
+format(Sys.Date(), "%a %b %d %Y")      # base package of R
+sysDate(style="local5") 
+## In some language settings this may give ambiguous results :
+sysDate(style="local1") 
 
 ## ----sessionInfo, echo=FALSE--------------------------------------------------
 sessionInfo()

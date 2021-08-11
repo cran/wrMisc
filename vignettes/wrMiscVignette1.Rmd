@@ -17,19 +17,19 @@ vignette: >
 
 ## Introduction
 This package contains a collection of various (low-level) tools which may be of general interest. 
-These functions were accumulated over a number of years when treating high-throughput data from biomedical applications.
+These functions were accumulated over a number of years of data-wrangling when treating high-throughput data from biomedical applications.
 Besides, these functions are further used/integrated in more specialized functions dedicated to specific applications in the packages [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag). 
 All these packages are available on [CRAN](https://cran.r-project.org/).
 
 If you are not familiar with [R](https://www.r-project.org/) you may find many introductory documents on the official R-site 
 in [contributed documents](https://cran.r-project.org/other-docs.html) or under [Documentation/Manuals](https://cran.r-project.org/manuals.html).
-Of course, numerous other documents/sites with tutorials exit.
+Of course, numerous other documents/sites with tutorials and courses exist, too.
 
 
 ### Dependencies and Compilation
-One of the aims of this package was to make it fairly easy and robust for installation and in prespect to system requirements. 
+One of the aims was to write a robust package easy to install (in prespect to system requirements).  
 All code is written in pure R and does not need any special compilers.
-The number of dependencies was kept to a minumum (only packages coming already with a new installation of R). This helps to reduce potential problems at installation when dependencies which fail to get installed themselves.
+The number of obligatory dependencies was kept to a minumum. This helps to reduce potential problems at installation with dependencies which fail to get installed themselves.
 
 Most of additional packages used at some point in this package were declared as 'suggested' (ie not obligatory) to allow installation of wrMisc even if some these additional packages can't be compiled by the user's instance.
 This means that, when a feature of one of the 'suggested' packages is about to be used, its presence/installation will be checked and, 
@@ -254,20 +254,39 @@ fuseCommonListElem(lst1)
 ```
 
 
+### Filtering lines and/or columns for all list-elements of same size
+
+In a numerb of cases the information stared in various list-elements is somehow related.
+Eg, in S3-objects produced by [limma](https://bioconductor.org/packages/release/bioc/html/limma.html), or data produced using [wrProteo](https://CRAN.R-project.org/package=wrProteo) several instances of matrix or data.frame are related. 
+Some matrixes may conatain abundance data while a matrix or data.frame may contain the annotation realated to each line of the abundance data.
+So one wants to filter, ie remove some lines in from one of these elements, one should do the same with the other list-elements to maintain conventient 1:1 matching of lines.
+
+The function `filterLiColDeList()` searches if other list-elements have suitable dimensions and will then run the same filtering as in the 'target' list-element.
+In consequence this can be used with the output of wrProteo to remove simultaneously the same lines and/or columns.
+
+```{r listBatchReplace1, echo=TRUE}
+lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34, m3=matrix(c(21:23,NA,25:27,NA),ncol=2))
+filterLiColDeList(lst1, useLines=2:3)
+filterLiColDeList(lst1, useLines="allNA", ref=3)
+```
+
+
 ### Replacements in list
 
 The function `listBatchReplace()` works similar to _sub()_ and allows to search & replace exact matches to a character string along all elements of a list. 
-```{r listBatchReplace, echo=TRUE}
-(lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge") ,cc=c("abdc","efg","efgh")))
 
+```{r replInList1, echo=TRUE}
+(lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge") ,cc=c("abdc","efg","efgh")))
 listBatchReplace(lst1,search="efg",repl="EFG",silent=FALSE)
 ```
+
 
 ### Organize values into list and sort by names 
 
 Named numeric or character vectors can be organized into lists using _listGroupsByNames()_, 
 based on their names (only the part before any extensions starting with a point gets considered).
 Of course, other separators may be defined using the argument _sep_. 
+
 ```{r listGroupsByNames, echo=TRUE}
 ser1 <- 1:7; names(ser1) <- c("AA","BB","AA.1","CC","AA.b","BB.e","A")
 
@@ -1012,8 +1031,10 @@ coordOfFilt(ma1, ma1 >37)
 ### Normal random number generation with close fit to expected mean and sd
 
 When creating random values to an expected _mean_ and _sd_, the standard function _rnorm()_ may deviate somehow from the
-expected mean and sd, in particular with low _n_. To still produce random values fitting closely to the expected mean and sd you may
-use the function `rnormW()`. 
+expected mean and sd, in particular with low _n_. 
+To still produce random values fitting closely to the expected mean and sd you may use the function `rnormW()`. 
+In case of _n=2_, there is only one possible result, thus there is no random-component in the vector of 2 values. 
+Otherwise, the random component can be fixed usin the argument _seed_.
 
 ```{r rnormW1, echo=TRUE}
 ## some sample data :
@@ -1075,7 +1096,8 @@ head(test8$p.value, n=8)
 
 ### Transform p-values to local false dicovery rate (lfdr)
 
-To get an introduction into local false discovery rate estimations you may read [Strimmer 2008](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-303).  An overview of R packages in this context was prepared by the [strimmerlab](http://www.strimmerlab.org/notes/fdr.html).
+To get an introduction into local false discovery rate estimations you may read [Strimmer 2008](https://doi.org/10.1093/bioinformatics/btn209). 
+An overview of R packages in this context was prepared by the [strimmerlab](http://www.strimmerlab.org/notes/fdr.html).
 A convenient way to get lfdr values is available suing the function `pVal2lfdr`.
 
 Note, that the toy-example used below is too small for estimating really meaningful lfdr values.
@@ -1264,10 +1286,42 @@ may be helpful to add a small table (eg overview of points/samples/files used in
 This function prints tables in the current graphical output/window (which may by a pdf-device).
 
 
+## Other Convenience Functions
+
+### Writing compact dates (more options ...)
+
+Many times it may be useful to add the date to filenames when saving data or plots as files.
+The built-in functions _date()_, _Sys.Date()_ and _Sys.Time()_ are a good way to start.
+
+Generally I like to use abbreviated month-names since the order of writing the month is different in Europe compared to the USA, 
+so this may help avoiding mis-interpreting dates insetad of writing the number of the Month.
+For example, 2021-03-05 means in Europe March 5th while in other places it means May 3rd.
+
+The R-functions mentioned above use local language settings, so I finally made the function `sysDate` to 
+produce compact versions of current the date, independent to local language settings (or not -if you prefer), ie locale-specific, 
+(yes, in some languages like French the first 3 letters of the month do give ambiguous results !) 
+and to avoid white space ' ' (which I prefer to avoid in file-names).
+Please look at the help-page for all available options.
+
+```{r sysDate1, echo=TRUE}
+## To get started
+Sys.Date()
+
+## Compact English names, no matter what your local settings are :
+sysDate() 
+sysDate(style="univ2")
+
+## based on your local language settings (not everybody may understand easily)
+format(Sys.Date(), "%a %b %d %Y")      # base package of R
+sysDate(style="local5") 
+## In some language settings this may give ambiguous results :
+sysDate(style="local1") 
+```
+
+
 ## Session-Info
 
 ```{r sessionInfo, echo=FALSE}
 sessionInfo()
 ```
-
 

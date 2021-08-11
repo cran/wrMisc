@@ -31,10 +31,10 @@ coinPermTest(
 }
 \description{
 Run coin-flipping like permutation tests (to compare difference of 2 means: 'x1' and 'x2') without any distribution-assumptions.
-Uses the package \href{https://CRAN.R-project.org/package=coin}{coin}.
+This function uses the package \href{https://CRAN.R-project.org/package=coin}{coin}, if not installed, the function will return NULL and give a warning.
 }
 \examples{
-coinPermTest(2, 3, nPerm=500)
+coinPermTest(2, 3, nPerm=200)
 }
 \seealso{
 \code{oneway_test} in \code{\link[coin]{LocationTests}}
