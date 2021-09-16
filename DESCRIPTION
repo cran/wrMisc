@@ -1,5 +1,5 @@
 Package: wrMisc
-Version: 1.6.1
+Version: 1.6.2
 Title: Analyze Experimental High-Throughput (Omics) Data
 Authors@R: person("Wolfgang", "Raffelsberger", email = "w.raffelsberger@gmail.com", role = c("aut", "cre"))
 Author: Wolfgang Raffelsberger [aut, cre]
@@ -14,14 +14,15 @@ Description: The efficient treatment and convenient analysis of experimental hig
   Convenient data normalization is supported in various different modes, parameter estimation via permutations or boot-strap as well as flexible testing of multiple pair-wise combinations using the framework of 'limma' is provided, too.
 VignetteBuilder: knitr
 Depends: R (>= 3.1.0)
-Imports: grDevices, graphics, MASS, stats
+Imports: grDevices, graphics, MASS, stats, utils
 Suggests: BBmisc, boot, coin, data.tree, fdrtool, flexclust, knitr,
-        limma, mixdist, NbClust, preprocessCore, qvalue, RColorBrewer,
-        readxl, rmarkdown, som, stringi, utils, VGAM, vsn, wrGraph
+        limma, mixdist, NbClust, preprocessCore, qvalue, Rcpp,
+        RColorBrewer, readxl, rmarkdown, som, stringi, VGAM, vsn,
+        wrGraph
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-08-11 14:53:08 UTC; wraff
+Packaged: 2021-09-16 14:44:10 UTC; wraff
 Repository: CRAN
-Date/Publication: 2021-08-11 16:20:02 UTC
+Date/Publication: 2021-09-16 15:30:02 UTC

@@ -19,13 +19,13 @@ readCsvBatch(
 )
 }
 \arguments{
-\item{fileNames}{(character) names of files to be read, if NULL all files fitting 'fileFormat'}
+\item{fileNames}{(character) names of files to be read, if \code{NULL} all files fitting 'fileFormat'}
 
 \item{path}{(character) where files should be read (folders should be written in R-style)}
 
-\item{fileFormat}{(character) may be NULL (both US and European formats will be tried), 'Eur' or 'US'}
+\item{fileFormat}{(character) may be \code{NULL} (both US and European formats will be tried), 'Eur' or 'US'}
 
-\item{checkFormat}{(logical) if TRUE: check header, remove empty columns, 1st line if all empmty, set output format for each file to matrix, if rownames are increasing integeres try to use 2nd of 'columns' as rownames}
+\item{checkFormat}{(logical) if \code{TRUE}: check header, remove empty columns, 1st line if all empmty, set output format for each file to matrix, if rownames are increasing integeres try to use 2nd of 'columns' as rownames}
 
 \item{returnArray}{(logical) allows switching from array to list-output}
 
@@ -42,7 +42,7 @@ readCsvBatch(
 \item{callFrom}{(character) allows easier tracking of message(s) produced}
 }
 \value{
-array (or list if 'returnArray'=FALSE) of all numeric data read (numerical columns only) from individual files
+array (or list if \code{returnArray=FALSE}) of all numeric data read (numerical columns only) from individual files
 }
 \description{
 This function was designed to read screening data split in parts (with common structure) and saved to multiple files,  

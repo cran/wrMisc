@@ -8,9 +8,11 @@ asSepList(
   y,
   asNumeric = TRUE,
   minLen = 4,
+  exclElem = NULL,
   fxArg = NULL,
   silent = FALSE,
-  callFrom = NULL
+  callFrom = NULL,
+  debug = FALSE
 )
 }
 \arguments{
@@ -20,11 +22,15 @@ asSepList(
 
 \item{minLen}{(integer) (currently use of this argument not implemeneted!) min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2}
 
-\item{fxArg}{(character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)}
+\item{exclElem}{(character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)}
+
+\item{fxArg}{depreciated, replaced by \code{exclElem}}
 
 \item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
+
+\item{debug}{(logical) display additional messages for debugging}
 }
 \value{
 list, partially unlisted to vectors
@@ -35,10 +41,15 @@ list, partially unlisted to vectors
 This function may be helpful for reorganizing data for plots.
 }
 \examples{
-bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:24,nc=2),li=list(li1=11:14,li2=data.frame(41:44)))
+bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,nc=2),li=list(li1=11:14,li2=data.frame(41:44)))
 asSepList(bb)
-lapply(bb,.asDF2)
-partUnlist(lapply(bb,.asDF2))
+## multi data-frame examples
+ca <- data.frame(a=11:15,b=21:25,c=31:35)
+cb <- data.frame(a=51:53,b=61:63)
+cc <- list(gl(3,2),ca, cb, 91:94, short=81:82, letters[1:5])
+asSepList(cc)
+cd <- list(e1=gl(3,2),e2=ca, e3=cb, e4=91:94,short=81:82, e6=letters[1:5])
+asSepList(cd)
 }
 \seealso{
 \code{\link[wrMisc]{partUnlist}}, \code{\link[base]{unlist}}

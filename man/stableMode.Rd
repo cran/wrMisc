@@ -16,7 +16,7 @@ stableMode(
 )
 }
 \arguments{
-\item{x}{(numeric) data to treat}
+\item{x}{(numeric, or character if 'method='mode') data to find/estimate most frequent value}
 
 \item{method}{(character) There are 3 options : BBmisc, binning and density (default). If "binning" the function will search context dependent, ie like most frequent class of histogram.
 Using "binning" mode the search will be refined if either 80 percent of values in single class or >50 percent in single class.}
@@ -38,10 +38,16 @@ very "critical" parameter, may change results in strong way. Note: with \code{me
 MA-plot only
 }
 \description{
-Estimate mode, ie most frequent value. The argument \code{method} allows to choose among (so far) 3 different methods available.
+Estimate mode, ie most frequent value. In case of continuous numeric data, the most frequent values may not be the most frequently repeated exact term.
+This function offers various approches to estimate the mode of a numeric vector. 
+Besides, it can also be used to identify the most frequentexact term (in this case also from character vectors).
+}
+\details{
+The argument \code{method} allows to choose among (so far) 4 different methods available.
 If "density" is chosen, the most dense region of sqrt(n) values will be chosen; 
 if "binning", the data will be binned (like in histograms) via rounding to a user-defined number of significant values ("rangeSign").
 If \code{method} is set to "BBmisc", the function \code{computeMode()} from package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc} will be used.
+If "mode" is chosen, the first most frequently occuring (exact) value will be returned, if "allModes", all ties will be returned. This last mode also works with character input.
 }
 \examples{
 set.seed(2012); dat <- round(c(rnorm(50), runif(100)),3)

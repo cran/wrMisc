@@ -42,7 +42,7 @@ rnormW <- function(n, mean=0, sd=1, seed=NULL, digits=8, silent=FALSE, callFrom=
     if(!is.numeric(sd)) sd <- try(as.numeric(sd))
     ## main
     if(n==1) {out <- mean
-      if(!silent & is.finite(sd)) message(fxNa,"Ignoring 'sd' since n=1") 
+      if(isFALSE(silent) & is.finite(sd)) message(fxNa,"Ignoring 'sd' since n=1") 
     } else if(length(sd) != 1 | "try-error" %in% class(sd)) stop(msg[1],"sd",msg[2])
     if(n==2) out <- mean + c(-1,1)*sd/sqrt(2) 
     if(n >2) {

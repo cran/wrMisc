@@ -4,16 +4,32 @@ suppressPackageStartupMessages({
 })
 
 ## ----install, echo=TRUE, eval=FALSE-------------------------------------------
-#  # If not already installed, you'll have to install the package first.
+#  ## If not already installed, you'll have to install the package first.
+#  ## This is the basic installation commande in R
 #  install.packages("wrMisc")
+
+## ----install2, echo=TRUE, eval=FALSE------------------------------------------
+#  packages <- c("knitr", "rmarkdown", "kableExtra", "RColorBrewer", "boot","data.tree", "fdrtool",
+#    "wrMisc", "wrGraph", "wrProteo", "BiocManager")
+#  checkInstallPkg <- function(pkg) {
+#    if(!requireNamespace(pkg, quietly=TRUE)) install.packages(pkg) }
 #  
-#  # If needed, now you can open this package out of R:
+#  ## install if not yet present
+#  sapply(packages, checkInstallPkg)
+
+## ----install3, echo=TRUE, eval=FALSE------------------------------------------
+#  ## Installation of limma
+#  BiocManager::install("limma")
+
+## ----install4, echo=TRUE, eval=FALSE------------------------------------------
+#  ## Now you can open this vignette out of R:
 #  vignette("wrMiscVignette1", package="wrMisc")
 
 ## ----setup1-------------------------------------------------------------------
 library("wrMisc")
+library("knitr")
 
-# This is 'wrMisc' version number :
+## This is 'wrMisc' version number :
 packageVersion("wrMisc")
 
 ## ----basicVariability, echo=TRUE----------------------------------------------
@@ -87,14 +103,15 @@ head(aa)
 minDiff(aa,ppm=FALSE)
 
 ## ----partUnlist_1, echo=TRUE--------------------------------------------------
-bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,ncol=2),li=list(li1=11:14,li2=data.frame(41:44)))
+bb <- list(fa=gl(2,2), ve=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=data.frame(41:44)))
+partUnlist(bb)
 partUnlist(lapply(bb,.asDF2))
 
 ## ----unlist_1, echo=TRUE------------------------------------------------------
-head(unlist(bb,recursive=FALSE))
+head(unlist(bb, recursive=FALSE))
 
 ## ----asSepList, echo=TRUE-----------------------------------------------------
-bb <- list(fa=gl(2,2),c=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=data.frame(41:44)))
+bb <- list(fa=gl(2,2), ve=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=data.frame(41:44)))
 asSepList(bb)
 
 ## ----lrbind, echo=TRUE--------------------------------------------------------
@@ -222,7 +239,7 @@ firstOfRepLines(mat2, out="conc")
 firstOfRepLines(mat2)
 
 ## ----nonredDataFrame, echo=TRUE-----------------------------------------------
-(df1 <- data.frame(cbind(xA=letters[1:5],xB=c("h","h","f","e","f"),xC=LETTERS[1:5])))
+(df1 <- data.frame(cbind(xA=letters[1:5], xB=c("h","h","f","e","f"), xC=LETTERS[1:5])))
 
 ## ----nonredDataFrame2, echo=TRUE----------------------------------------------
 
@@ -249,26 +266,26 @@ mat2[which(duplicated(mat2[,2],fromLast=FALSE)),]
 nonAmbiguousMat(mat1,by=2)
 
 ## ----nonAmbiguousMat2, echo=TRUE----------------------------------------------
-set.seed(2017); mat3 <- matrix(c(1:100,round(rnorm(200),2)),ncol=3,
+set.seed(2017); mat3 <- matrix(c(1:100,round(rnorm(200),2)), ncol=3,
   dimnames=list(1:100,LETTERS[1:3]));
 head(mat3U <- nonAmbiguousMat(mat3, by="B", na="_", uniqO=FALSE), n=15)
 head(get1stOfRepeatedByCol(mat3, sortB="B", sortS="B"))
 
 ## ----combineReplFromListToMatr, echo=TRUE-------------------------------------
-lst2 <- list(aa_1x=matrix(1:12,nrow=4,byrow=TRUE),ab_2x=matrix(24:13,nrow=4,byrow=TRUE))
+lst2 <- list(aa_1x=matrix(1:12, nrow=4, byrow=TRUE), ab_2x=matrix(24:13, nrow=4, byrow=TRUE))
 combineReplFromListToMatr(lst2)
 
 ## ----nonRedundLines, echo=TRUE------------------------------------------------
-mat4 <- matrix(rep(c(1,1:3,3,1),2),ncol=2,dimnames=list(letters[1:6],LETTERS[1:2]))
+mat4 <- matrix(rep(c(1,1:3,3,1),2), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2]))
 nonRedundLines(mat4)
 
 ## ----filtSizeUniq, echo=TRUE--------------------------------------------------
 # input: c and dd are repeated  :
-filtSizeUniq(list(A="a",B=c("b","bb","c"),D=c("dd","d","ddd","c")),filtUn=TRUE,minSi=NULL)
+filtSizeUniq(list(A="a", B=c("b","bb","c"), D=c("dd","d","ddd","c")), filtUn=TRUE, minSi=NULL)
 
 # here a,b,c and dd are repeated  :
-filtSizeUniq(list(A="a",B=c("b","bb","c"),D=c("dd","d","ddd","c")),ref=c(letters[c(1:26,1:3)],
-  "dd","dd","bb","ddd"),filtUn=TRUE,minSi=NULL)   
+filtSizeUniq(list(A="a", B=c("b","bb","c"), D=c("dd","d","ddd","c")), ref=c(letters[c(1:26,1:3)],
+  "dd","dd","bb","ddd"), filtUn=TRUE, minSi=NULL)   
 
 ## ----makeNRedMatr, echo=TRUE--------------------------------------------------
 t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],
@@ -292,7 +309,7 @@ dat1 <- matrix(1:10,ncol=2)
 rownames(dat1) <- letters[c(1:3,2,5)]
 ## as.data.frame(dat1)  ...  would result in an error
 convMatr2df(dat1)
-convMatr2df(data.frame(a=as.character((1:3)/2), b=LETTERS[1:3],c=1:3))
+convMatr2df(data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3))
 tmp <- data.frame(a=as.character((1:3)/2), b=LETTERS[1:3],c=1:3, stringsAsFactors=FALSE)
 convMatr2df(tmp)
 tmp <- data.frame(a=as.character((1:3)/2), b=1:3, stringsAsFactors=FALSE)
@@ -387,7 +404,7 @@ aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.
 (maAa <- closeMatchMatrix(cloMa,aA, cC, lim=FALSE,origN=TRUE))  #
 (maAa <- closeMatchMatrix(cloMa, cbind(valA=81:87,aA), cbind(valC=91:99,cC), colM=2,
   colP=2,lim=FALSE))
-(maAa <- closeMatchMatrix(cloMa, cbind(aA,valA=81:87),cC, lim=FALSE, deb=TRUE))  #
+(maAa <- closeMatchMatrix(cloMa, cbind(aA,valA=81:87), cC, lim=FALSE, deb=TRUE))  #
 a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10+1:length(c2)]
 (cloM2 <- findCloseMatch(x=a2, y=c2, com="diff", lim=0.5, sor=FALSE)) 
 (maA2 <- closeMatchMatrix(cloM2, predM=cbind(valA=81:87,a2), 
@@ -421,15 +438,22 @@ set.seed(2012); dat <- round(c(rnorm(120,0,1.2), rnorm(80,0.8,0.6), rnorm(25,-0.
 dat <- dat[which(dat > -2 & dat <2)]
 stableMode(dat)
 
-## ----stableMode2, echo=TRUE---------------------------------------------------
+## ----stableMode2, fig.height=8, fig.width=9, fig.align="center",  echo=TRUE----
 layout(1:2)
-plot(1:length(dat), sort(dat), type="l", main="sorted values")
+plot(1:length(dat), sort(dat), type="l", main="sorted values", las=1)
 abline(h=stableMode(dat), lty=2,col=2)
 
 plot(density(dat, kernel="gaussian", adjust=0.7))
-abline(v=stableMode(dat,method="dens"), lty=2, col="red", lwd=2)
-abline(v=stableMode(dat,method="binning"), lty=2, col="green")
-abline(v=stableMode(dat,method="BBmisc"), lty=2, col="blue")  
+abline(v=stableMode(dat, method="dens"), lty=2, col="red", lwd=2)
+abline(v=stableMode(dat, method="binning"), lty=2, col="green")
+abline(v=stableMode(dat, method="BBmisc"), lty=2, col="blue")  
+abline(v=stableMode(dat, method="allModes"), lty=2, col="grey55")  
+
+## ----stableMode3, echo=TRUE---------------------------------------------------
+set.seed(2021)
+x <- sample(letters, 50000, replace=TRUE)
+stableMode(dat, method="mode")
+stableMode(dat, method="allModes")
 
 ## ----linModelSelect1, echo=TRUE-----------------------------------------------
 li1 <- rep(c(4,3,3:6),each=3) + round(runif(18)/5,2)
@@ -445,11 +469,12 @@ linModelSelect("P2", dat2, expect=exp2)
 
 ## ----plotLinModelCoef1, echo=TRUE---------------------------------------------
 set.seed(2020)
-x1 <- matrix(rep(c(2,2:5),each=20) + runif(100) +rep(c(0,0.5,2:3,5),20), byrow=F, ncol=10, dimnames=list(LETTERS[1:10],NULL))
+x1 <- matrix(rep(c(2,2:5),each=20) + runif(100) +rep(c(0,0.5,2:3,5),20), byrow=FALSE, ncol=10, dimnames=list(LETTERS[1:10],NULL))
 ## just the 1st regression :
    summary(lm(b~a,data=data.frame(b=x1[,1],a=rep(1:5,each=2))))
 ## all regressions
-x1.lmSum <- t(sapply(lapply(rownames(x1), linModelSelect, dat=x1, expect=rep(1:5,each=2),silent=TRUE,plotGraph=FALSE), function(x) c(x$coef[2,c(4,1)], startFr=x$startLev)))
+x1.lmSum <- t(sapply(lapply(rownames(x1), linModelSelect, dat=x1, expect=rep(1:5,each=2), silent=TRUE, plotGraph=FALSE), 
+  function(x) c(x$coef[2,c(4,1)], startFr=x$startLev)))
 x1.lmSum <- cbind(x1.lmSum, medQuantity=apply(x1,1,median))
 x1.lmSum[,1] <- log10(x1.lmSum[,1])
 head(x1.lmSum)
@@ -479,7 +504,7 @@ str(datAll)
 datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
 
 ## ----readVarColumns, echo=TRUE------------------------------------------------
-path1 <- system.file("extdata",package="wrMisc")
+path1 <- system.file("extdata", package="wrMisc")
 fiNa <- "Names1.tsv"
 datAll <- readVarColumns(fiName=file.path(path1,fiNa), sep="\t")
 str(datAll)
@@ -487,9 +512,9 @@ str(datAll)
 ## ----presenceFilt, echo=TRUE--------------------------------------------------
 dat1 <- matrix(1:56,ncol=7)
 dat1[c(2,3,4,5,6,10,12,18,19,20,22,23,26,27,28,30,31,34,38,39,50,54)] <- NA
-dat1; presenceFilt(dat1,gr=gl(3,3)[-(3:4)],maxGr=0)
-presenceFilt(dat1,gr=gl(2,4)[-1],maxGr=1,ratM=0.1)
-presenceFilt(dat1,gr=gl(2,4)[-1],maxGr=2,rat=0.5)
+dat1; presenceFilt(dat1, gr=gl(3,3)[-(3:4)], maxGr=0)
+presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=1, ratM=0.1)
+presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=2, rat=0.5)
 
 ## ----cleanReplicates, echo=TRUE-----------------------------------------------
 
@@ -514,14 +539,14 @@ no3 <- normalizeThis(dat1, refGrp=1:3, meth="median")
 no4 <- normalizeThis(dat1, refGrp=1:3, meth="slope", quantFa=c(0.2,0.8))
 
 ## ----normalizeThis_plot1, echo=FALSE,eval=TRUE--------------------------------
-boxplot(dat1,main="raw data")
+boxplot(dat1, main="raw data", las=1)
 
 ## ----normalizeThis_plot2, echo=FALSE,eval=TRUE--------------------------------
 layout(matrix(1:4,ncol=2))
-boxplot(no1,main="mean normalization",las=1)
-boxplot(no2,main="trimMean normalization",las=1)
-boxplot(no3,main="median normalization",las=1)
-boxplot(no4,main="slope normalization",las=1)
+boxplot(no1, main="mean normalization", las=1)
+boxplot(no2, main="trimMean normalization", las=1)
+boxplot(no3, main="median normalization", las=1)
+boxplot(no4, main="slope normalization", las=1)
 
 ## ----coordOfFilt1, echo=FALSE,eval=TRUE---------------------------------------
 set.seed(2021); ma1 <- matrix(sample.int(n=40,size=27,replace=TRUE), ncol=9)
@@ -548,8 +573,8 @@ mean(ra2) -mean(x1)
 sd(ra2) -sd(x1)   # much closer to expected value
 
 ## ----moderTest2grp, echo=TRUE-------------------------------------------------
-set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2),ncol=8,
-  dimnames=list(paste("l",1:200),c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
+set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2), ncol=8,
+  dimnames=list(paste("l",1:200), c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
 t8[3:6,1:2] <- t8[3:6,1:2]+3     # augment lines 3:6 for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3     # augment lines 5:8 for AA2&BB2 (c,d,g,h should be found)
 t4 <- log2(t8[,1:4]/t8[,5:8])
@@ -562,8 +587,8 @@ topTable(fit4in,coef=1,n=5)
 
 ## ----moderTestXgrp, echo=TRUE-------------------------------------------------
 grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
-set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2),ncol=8,
-  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""),paste(grp,c(1:2,1:3,1:3),sep="")))
+set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
+  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
 t8[3:6,1:2] <- t8[3:6,1:2] +3                    # augment lines 3:6 (c-f) 
 t8[5:8,c(1:2,6:8)] <- t8[5:8,c(1:2,6:8)] -1.5    # lower lines 
 t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines 
@@ -574,7 +599,7 @@ test8 <- moderTestXgrp(t8, grp)
 head(test8$p.value, n=8)
 
 ## ----pVal2lfdr, echo=TRUE-----------------------------------------------------
-set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2),ncol=8,dimnames=list(letters[1:20],
+set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2), ncol=8, dimnames=list(letters[1:20],
   c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
 t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
@@ -623,8 +648,8 @@ irKm <- stats::kmeans(iris[,1:4], nGr, nstart=nGr*4)             # no need to st
 
 ## ----clu02, echo=TRUE---------------------------------------------------------
 ## sort results by cluster number
-head(reorgByCluNo(iris[,-5],irKm$cluster))
-tail(reorgByCluNo(iris[,-5],irKm$cluster))
+head(reorgByCluNo(iris[,-5], irKm$cluster))
+tail(reorgByCluNo(iris[,-5], irKm$cluster))
 
 ## ----clu03, echo=TRUE---------------------------------------------------------
 ## median an CV
@@ -635,8 +660,8 @@ sapply(ir2, function(x) apply(x,2,median))
 sapply(ir2, colSds)
 
 ## ----contribToContigPerFrag, echo=TRUE----------------------------------------
-path1 <- matrix(c(17,19,18,17, 4,4,2,3),ncol=2,
-  dimnames=list(c("A/B/C/D","A/B/G/D","A/H","A/H/I"),c("sumLen","n")))
+path1 <- matrix(c(17,19,18,17, 4,4,2,3), ncol=2,
+  dimnames=list(c("A/B/C/D","A/B/G/D","A/H","A/H/I"), c("sumLen","n")))
 contribToContigPerFrag(path1)
 
 ## ----simpleFragFig, echo=TRUE-------------------------------------------------
@@ -652,12 +677,14 @@ pasteC(1:4)
 
 ## ----color-gradient1, echo=TRUE-----------------------------------------------
 set.seed(2015); dat1 <- round(runif(15),2)
-plot(1:15,dat1,pch=16,cex=2,col=colorAccording2(dat1),main="Color gradient according to value in y")
+plot(1:15, dat1, pch=16, cex=2, las=1, col=colorAccording2(dat1),
+  main="Color gradient according to value in y")
 # Here we modify the span of the color gradient
-plot(1:15,dat1,pch=16,cex=2,col=colorAccording2(dat1,nStartO=0,nEndO=4,revCol=TRUE),main="blue to red")
+plot(1:15, dat1, pch=16, cex=2, las=1, 
+  col=colorAccording2(dat1,nStartO=0,nEndO=4,revCol=TRUE), main="blue to red")
 # It is also possible to work with scales of transparency
-plot(1:9,pch=3)
-points(1:9,1:9,col=transpGraySca(st=0,en=0.8,nSt=9,trans=0.3),cex=42,pch=16)
+plot(1:9, pch=3, las=1)
+points(1:9,1:9,col=transpGraySca(st=0,en=0.8,nSt=9,trans=0.3), cex=42, pch=16)
 
 ## ----convColorToTransp, fig.height=6, fig.width=3, echo=TRUE------------------
 col0 <- c("#998FCC","#5AC3BA","#CBD34E","#FF7D73")
@@ -672,13 +699,13 @@ Sys.Date()
 
 ## Compact English names, no matter what your local settings are :
 sysDate() 
-sysDate(style="univ2")
 
-## based on your local language settings (not everybody may understand easily)
-format(Sys.Date(), "%a %b %d %Y")      # base package of R
-sysDate(style="local5") 
-## In some language settings this may give ambiguous results :
-sysDate(style="local1") 
+## ----DateTab, echo=TRUE-------------------------------------------------------
+tabD <- cbind(paste0("univ",1:6), c(sysDate(style="univ1"), sysDate(style="univ2"), sysDate(style="univ3"), 
+  sysDate(style="univ4"), as.character(sysDate(style="univ5")), sysDate(style="univ6")),
+  paste0("   local",1:6), c(sysDate(style="local1"), sysDate(style="local2"), sysDate(style="local3"), 
+  sysDate(style="local4"), sysDate(style="local5"), sysDate(style="local6")))   
+kable(tabD, caption="Various ways of writing current date")
 
 ## ----sessionInfo, echo=FALSE--------------------------------------------------
 sessionInfo()

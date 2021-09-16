@@ -11,12 +11,12 @@
 #' @return integer-vector (if\code{doExtractCols=FALSE} return depending on input \code{matrix} or \code{data.frame})  
 #' @seealso \code{\link[utils]{read.table}}, \code{\link{filterList}}
 #' @examples
-#' dFr <- data.frame(a=11:14,b=24:21,cc=LETTERS[1:4],dd=rep(c(TRUE,FALSE),2)) 
+#' dFr <- data.frame(a=11:14, b=24:21, cc=LETTERS[1:4], dd=rep(c(TRUE,FALSE),2)) 
 #' extrColsDeX(dFr,c("b","cc","notThere")) 
-#' extrColsDeX(dFr,c("b","cc","notThere"),doExtractCols=TRUE) 
-#' extrColsDeX(dFr,list(c("nn","b","a"),c("cc","a"),"notThere")) 
+#' extrColsDeX(dFr,c("b","cc","notThere"), doExtractCols=TRUE) 
+#' extrColsDeX(dFr, list(c("nn","b","a"), c("cc","a"),"notThere")) 
 #' @export
-extrColsDeX <- function(x,extrCol,doExtractCols=FALSE,callFrom=NULL,silent=FALSE) {
+extrColsDeX <- function(x, extrCol, doExtractCols=FALSE, callFrom=NULL, silent=FALSE) {
   ## flexible extraction of columns from x
   ## remove any NA
   fxNa <- .composeCallName(callFrom, newNa="extrColsDeX")
@@ -43,9 +43,12 @@ extrColsDeX <- function(x,extrCol,doExtractCols=FALSE,callFrom=NULL,silent=FALSE
     chNa <- is.na(extrCo2)
     if(any(chNa)) { 
       if(all(chNa)) stop(fxNa," Did not find ANY of the names given in ",nameCol," for extracting !")
-      if(!silent) message(fxNa," Can't find column(s) ",pasteC(extrCol[which(chNa)],quote="'")," in ",nameCol)
+      if(isFALSE(silent)) message(fxNa," Can't find column(s) ",pasteC(extrCol[which(chNa)],quote="'")," in ",nameCol)
       extrCo2 <- extrCo2[which(!chNa)] }
     extrCol <- extrCo2   
     }
-  if(doExtractCols) x[,extrCol] else extrCol }   
+  if(isTRUE(doExtractCols)) {
+    if(length(extrCol) >1  | is.data.frame(x)) x[,extrCol] else if(length(extrCol)==1) {
+      matrix(x[,extrCol], ncol=1, dimnames=list(rownames(x), colnames(x)[extrCol]))} else NULL
+  } else extrCol } 
    

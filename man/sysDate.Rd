@@ -2,7 +2,7 @@
 % Please edit documentation in R/sysDate.R
 \name{sysDate}
 \alias{sysDate}
-\title{System-data (compressed format)}
+\title{System-date (compressed format)}
 \usage{
 sysDate(style = "univ1")
 }
@@ -16,14 +16,14 @@ character vector with formatted date
 This function returns current date (based on Sys.Date) in different format options.
 }
 \details{
-Multiple options for fromatting exist :
-'univ1' ... (default) compact sytle using day, first 3 letters of English name of month and last 2 letters of year as ddmmmyy, eg 14jun21 
+Multiple options for formatting exist :
+'univ1' or 'wr' ... (default) compact sytle using day, first 3 letters of English name of month (lowercaps) and last 2 letters of year as ddmmmyy, eg 14jun21 
 
 'univ2' ... as ddMmmyy, eg 14Jun21
 
-'univ3' ... as ddmonthyy, eg 14june21
+'univ3' ... as ddMonthyyyy, eg 14June2021
 
-'univ4' ... as ddMonthyy, eg 14June21
+'univ4' ... as ddmonthyyyy, eg 14june2021
 
 'univ5' ... as yyyy-mm-dd (output of \code{Sys.Date()}), eg 2021-06-14
 
@@ -33,7 +33,7 @@ Multiple options for fromatting exist :
 
 'local2' ... as ddMmmyy, month based on current locale (not necessarily unique !), eg 14Jui21
 
-'local3' ... as ddmonthyy, month based on current locale , eg 14juin21
+'local3' ... as ddMonthyyyy, month based on current locale , eg 14Juin2021
 
 'local4' ... as ddmonthyyyy, month based on current locale , eg 14juin2021
 

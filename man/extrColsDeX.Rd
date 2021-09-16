@@ -25,10 +25,10 @@ This function provides flexible checking if a set of columns may be extracted fr
 If argument \code{extrCol} is list of character vectors, this allows to search among given options, the first matching name for each vector will be identified.
 }
 \examples{
-dFr <- data.frame(a=11:14,b=24:21,cc=LETTERS[1:4],dd=rep(c(TRUE,FALSE),2)) 
+dFr <- data.frame(a=11:14, b=24:21, cc=LETTERS[1:4], dd=rep(c(TRUE,FALSE),2)) 
 extrColsDeX(dFr,c("b","cc","notThere")) 
-extrColsDeX(dFr,c("b","cc","notThere"),doExtractCols=TRUE) 
-extrColsDeX(dFr,list(c("nn","b","a"),c("cc","a"),"notThere")) 
+extrColsDeX(dFr,c("b","cc","notThere"), doExtractCols=TRUE) 
+extrColsDeX(dFr, list(c("nn","b","a"), c("cc","a"),"notThere")) 
 }
 \seealso{
 \code{\link[utils]{read.table}}, \code{\link{filterList}}

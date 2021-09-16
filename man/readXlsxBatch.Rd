@@ -48,9 +48,13 @@ list
 \code{readXlsxBatch} reads data out of multiple xlsx files, the sheet indicated by 'sheetInd' will be considered. 
 All files must have the same organization of data, as this is typically the case when high-throughput measurements are automatically saved while experiments progress.
 In particular, the first file read is used to structure the output.
+}
+\details{
 By default all columns with text-content may be eliminated to keep the numeric part only, which may then get organized to a 3-dim numeric array 
  (where the additional files will be used as 2nd dimension and multiple columns per file shown as 3rd dimension). 
-NOTE : (starting from version wrMisc-1.5.5) requires package \href{https://CRAN.R-project.org/package=readxl}{readxl} being installed ! 
+
+NOTE : (starting from version wrMisc-1.5.5) requires packages \href{https://CRAN.R-project.org/package=readxl}{readxl} and 
+\href{https://CRAN.R-project.org/package=Rcpp}{Rcpp} being installed ! 
 (This allows much faster and memory efficient processing than previous use of package '\code{xlsx}')
 }
 \examples{

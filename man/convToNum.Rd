@@ -2,10 +2,11 @@
 % Please edit documentation in R/convToNum.R
 \name{convToNum}
 \alias{convToNum}
-\title{Convert to numeric}
+\title{Convert vector to numeric}
 \usage{
 convToNum(
   x,
+  autoConv = TRUE,
   spaceRemove = TRUE,
   convert = c(NA, "sparseChar"),
   remove = NULL,
@@ -18,11 +19,13 @@ convToNum(
 \arguments{
 \item{x}{vector to be converted}
 
+\item{autoConv}{(logical) simple automatic conversion based on \code{as.numeric}; if \code{TRUE} all other arguments exept  \code{spaceRemove} will not be considered}
+
 \item{spaceRemove}{(logical) to remove all heading and trailing (white) space (until first non-space character)}
 
 \item{convert}{(character) define which type of non-conform entries to convert to NAs. Note, if \code{remove} is selected to eliminate character-entries they cannot be converted any more. Use 'allChar' for all character-entries; 'sparseChar' sparse (ie rare) character entries; \code{NA} for converting 'Na' or 'na' to \code{NA}; if 'none' or \code{NULL} no conversions at all.}
 
-\item{remove}{(character) define which type of non-conform entries to remove, removed items cannot converted to \code{NA} any more. Use 'allChar' for removing all character entries; \code{NA} for removing all instances of \code{NA} (execept thise created by converting text); all elements will be kept if 'none' or \code{NULL}.}
+\item{remove}{(character) define which type of non-conform entries to remove, removed items cannot be converted to \code{NA} any more. Use 'allChar' for removing all character entries; \code{NA} for removing all instances of \code{NA} (execept thise created by converting text); all elements will be kept if 'none' or \code{NULL}.}
 
 \item{euroStyle}{(logical) if \code{TRUE} will convert all ',' (eg used as European decimal-separator) to '.' (as internally used by R as decimal-separator), thus allowing converting the European decimal format.}
 
@@ -39,18 +42,25 @@ numeric vector (or matrix (if 'x' is matrix))
 \code{convToNum} checks if input vector/character string contains numbers (with or without comma) and attempts converting to numeric.
 This functions was designed for extracting the numeric part of character-vectors (or matrix) containing both numbers and character-elements.
 Depending on the parameters \code{convert} and \code{remove} text-entries can be converted to NA (in resulting numeric objects) or removed (the number of elements/lines gets reduced, in consequece). 
-Note: if 'x' is a matrix, its matrix-dimensions & -names will be preseved.
+Note: if 'x' is a matrix, its matrix-dimensions & -names will be preserved.
 Note: so far Inf  and -Inf do not get recognized as numeric.
+}
+\details{
+This function may be used in two modes, depening if argument \code{autoConv} is \code{TRUE} or \code{FALSE}.
+The first options allows accessing an automatic mode based on \code{as.numeric}, 
+while the second options investigates all characters if they may belong to numeric expressions and allows removing specific text-elements.
 }
 \examples{
 x1 <- c("+4"," + 5","6","bb","Na","-7") 
-convToNum(x1,convert=c("allChar"))
-convToNum(x1)        # too many non-numeric instances for 'sparseChar'
+convToNum(x1) 
+convToNum(x1, autoConv=FALSE, convert=c("allChar"))
+convToNum(x1, autoConv=FALSE)      # too many non-numeric instances for 'sparseChar'
 
 x2 <- c("+4"," + 5","6","-7"," - 8","1e6","+ 2.3e4","-3E4","- 4E5") 
-convToNum(x2,convert=NA,remove=c("allChar",NA))
-convToNum(x2,convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
+convToNum(x2) 
+convToNum(x2, autoConv=FALSE, convert=NA,remove=c("allChar",NA))
+convToNum(x2, autoConv=FALSE, convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
 }
 \seealso{
-\code{\link[base]{numeric}}
+\code{\link[base]{numeric}} and \code{as.numeric} (on same help-page)
 }
