@@ -35,21 +35,25 @@
 #' identical(datAll, datAll2)
 #' @export
 readXlsxBatch <- function(fileNames=NULL, path=".", fileExtension="xlsx", excludeFiles=NULL, sheetInd=1, checkFormat=TRUE,
-  returnArray=TRUE, columns=c("Plate","Well","StainA"), simpleNames=3, silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom, newNa="readXlsxBatch")  
-  chPa <- c(class(try(find.package("readxl"), silent=TRUE)), class(try(find.package("Rcpp"), silent=TRUE)))
-  if(any("try-error" %in% chPa)) { out <- NULL
-    warning(fxNa,"package 'readxl' and/or 'Rcpp' not found ! Please install first")
+  returnArray=TRUE, columns=c("Plate","Well","StainA"), simpleNames=3, silent=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="readXlsxBatch")
+  packages <- c("readxl", "Rcpp")
+  checkPkg <- function(pkg) requireNamespace(pkg, quietly=TRUE)
+  checkPkgs <- sapply(packages, checkPkg)
+  if(!isTRUE(silent)) silent <- FALSE 
+  if(!isFALSE(returnArray)) returnArray <- TRUE 
+  if(any(!checkPkgs)) { out <- NULL
+    warning(fxNa,"package 'readxl' and/or 'Rcpp' not found ! Please install first from CRAN")
   } else {
     ## prepare
     if(is.null(path)) path <- "."
     chPath <- file.exists(path)
-    if(!chPath) {message(fxNa," Cannot find path '",path,"' !  ... Setting to default='.'")}
+    if(!chPath) {message(fxNa,"Cannot find path '",path,"' !  ... Setting to default='.'")}
     if(is.null(fileNames)) {
       ## automatic reading of all files in directory
       fileNames <- dir(path=path,pattern=paste0(fileExtension,"$"))
-      if(length(fileNames) <1) message(fxNa," Could not find ANY suitable files !!") else {
-        if(isFALSE(silent)) message(fxNa," found ",length(fileNames)," files to extract (eg ",pasteC(utils::head(fileNames,3),quoteC="'"),")")}
+      if(length(fileNames) <1) message(fxNa,"Could not find ANY suitable files !!") else {
+        if(silent) message(fxNa," found ",length(fileNames)," files to extract (eg ",pasteC(utils::head(fileNames,3),quoteC="'"),")")}
       useFi <- file.path(path,fileNames)  
     } else {
       ## reading of specfied files in directory
@@ -57,33 +61,33 @@ readXlsxBatch <- function(fileNames=NULL, path=".", fileExtension="xlsx", exclud
       useFi <- if(length(douPath) <1) file.path(path, fileNames) else fileNames
       checkFi <- file.exists(useFi)
       if(sum(!checkFi) >0) { 
-        if(isFALSE(silent)) message(fxNa," could not find ",sum(!checkFi)," files out of ",length(useFi),
+        if(silent) message(fxNa,"Could not find ",sum(!checkFi)," files out of ",length(useFi),
           "  (eg ",pasteC(utils::head(fileNames[which(!checkFi)],3),quoteC="'"),")")
         useFi <- fileNames[which(checkFi)] 
         fileNames <- fileNames[which(checkFi)] }}
     ## files to omit from reading, ie exclude
     checkFi <- if(!is.null(excludeFiles)) grep(excludeFiles, fileNames) else NULL
+    if(!any("try-error" %in% checkFi)) useFi <- NULL
     if(length(checkFi) >0) {
-      if(isFALSE(silent)) message(fxNa," based on 'excludeFiles': excluding ",length(checkFi)," files (out of ",length(fileNames),")")
+      if(silent) message(fxNa,"Based on 'excludeFiles': excluding ",length(checkFi)," files (out of ",length(fileNames),")")
       useFi <- useFi[-1*checkFi]
-      fileNames <- fileNames[-1*checkFi]}
-    if(!any("try-error" %in% chPa)) useFi <- NULL
+      fileNames <- fileNames[-1*checkFi] }
     ## main reading
     outL <- list()
     if(length(useFi) >0) {
       for(i in 1:length(useFi)) {
         sheets <- try(readxl::excel_sheets(useFi[i]))
         if("try-error" %in% class(sheets)) { sheetInd <- NULL
-          message(fxNa," unable to read '",fileNames[i],"' Check if you have sufficient rights to open the file !?!")
+          warning(fxNa,"Unable to read '",fileNames[i],"' Check if you have sufficient rights to open the file !?!")
         } else {
           ## inspect for sheet to load
           if(is.numeric(sheetInd)) { sheetInd <- as.integer(sheetInd)
             if(length(sheets) < sheetInd | sheetInd <1) {  sheetInd <- NULL
           }} else sheetInd <- naOmit(match(sheetInd,sheets))
-          if(isFALSE(silent) & length(sheetInd) <1) message(fxNa," unable to read '",fileNames[i],"', the sheet '",sheetInd,
+          if(silent & length(sheetInd) <1) message(fxNa,"Unable to read '",fileNames[i],"', the sheet '",sheetInd,
             "' was not found (existing: ",pasteC(sheets,quoteC="'"),")")
         }  
-        if(isFALSE(silent) & length(sheetInd) >1) message(fxNa," only '",sheets[sheetInd],"', ie first match of 'sheetInd' will be read !")
+        if(silent & length(sheetInd) >1) message(fxNa,"Only '",sheets[sheetInd],"', ie first match of 'sheetInd' will be read !")
         ## read xls and xlsx
         tmp <- if(length(sheetInd)==1) readxl::read_excel(useFi[i], sheet=sheets[sheetInd]) else NULL   # may also use readxl::read_xlsx    
         if(length(tmp) >0) {
@@ -97,10 +101,10 @@ readXlsxBatch <- function(fileNames=NULL, path=".", fileExtension="xlsx", exclud
           ## for case array-output : define object out with dimensions based on 1st file
           if(i ==1) {                         # (re)define new format based on 1st file after format-checking (ie remove empty cols, extract col of well-names,...)
             outDim <- dim(outL[[i]])       
-            out <- if(isTRUE(returnArray)) array(NA, dim=c(outDim[1],length(fileNames),outDim[2]), 
+            out <- if(returnArray) array(NA, dim=c(outDim[1],length(fileNames),outDim[2]), 
               dimnames=list(rownames(outL[[i]]), basename(fileNames),colnames(outL[[i]]))) else NULL }
           ## for case array-output : fill directly into object out
-          if(isFALSE(returnArray)) outL[[i]] <- as.matrix(outL[[i]]) else {
+          if(returnArray) outL[[i]] <- as.matrix(outL[[i]]) else {
             if(identical(dim(outL[[i]]),outDim)) out[,i,] <- as.matrix(outL[[i]]) else {
               message(fxNa," Omit ",i,"th file ''",fileNames[i],"': format (",dim(outL[[i]])[1]," rows & ",dim(outL[[i]])[2]," cols) NOT consistent with previous files - omitting")
           } }
@@ -110,7 +114,7 @@ readXlsxBatch <- function(fileNames=NULL, path=".", fileExtension="xlsx", exclud
       if(returnArray) {
         ## refine column-names in array
         chColNa <- length(unique(colnames(out)))==1
-        arrNames <- if(chColNa) paste(colnames(out),sub("\\.xlsx$","",if(length(simpleNames) >1) .trimFromStart(fileNames,minNchar=simpleNames, callFrom=fxNa) else fileNames),sep=".") else colnames(out)
+        arrNames <- if(chColNa) paste(colnames(out),sub("\\.xlsx$","",if(length(simpleNames) >1) .trimFromStart(fileNames, minNchar=simpleNames, callFrom=fxNa) else fileNames),sep=".") else colnames(out)
       } else { out <- outL
         ## refine names in list-output
         if(length(fileNames) !=length(out)) message(fxNa," Problem ?  Got ",length(fileNames)," fileNames  BUT ",length(out)," list-elements !")

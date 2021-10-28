@@ -27,11 +27,11 @@ Of course, numerous other documents/sites with tutorials and courses exist, too.
 
 
 ### Dependencies and Compilation
-One of the aims was to write a robust package easy to install (in prespect to system requirements).  
+One of the aims was to write a robust package easy to install (in respect to low system requirements).  
 All code is written in pure R and does not need any special compilers.
 The number of obligatory dependencies was kept to a minumum. This helps to reduce potential problems at installation with dependencies which fail to get installed themselves.
 
-Most of additional packages used at some point in this package were declared as 'suggested' (ie not obligatory) to allow installation of wrMisc even if some these additional packages can't be compiled by the user's instance.
+Most of additional packages used here at some point were declared as 'suggested' (ie not obligatory), to allow installation of _wrMisc_ even if some these additional packages can't be installed/compiled by the user's instance.
 This means that, when a feature of one of the 'suggested' packages is about to be used, its presence/installation will be checked and, 
 only if found as missing, the user will be propmted a message inviting to install specific package(s) before using these specific functions.    
 
@@ -55,9 +55,9 @@ install.packages("wrMisc")
 Since the functions in this vignette require a few more optional packages,
 let's check if they are installed and add them (via a small function), if not yet installed.
 ```{r install2, echo=TRUE, eval=FALSE}
-packages <- c("knitr", "rmarkdown", "kableExtra", "RColorBrewer", "boot","data.tree", "fdrtool",
-  "wrMisc", "wrGraph", "wrProteo", "BiocManager")
-checkInstallPkg <- function(pkg) {
+packages <- c("knitr", "rmarkdown", "BiocManager", "kableExtra", "boot", "data.tree", "data.table", "fdrtool",
+  "RColorBrewer", "Rcpp", "wrMisc", "wrGraph", "wrProteo")
+checkInstallPkg <- function(pkg) {       # install function
   if(!requireNamespace(pkg, quietly=TRUE)) install.packages(pkg) }
 
 ## install if not yet present
@@ -191,7 +191,7 @@ rowGrpNA(mat2,gr4)
 
 ### Fast NA-omit for very large objects
 
-The function _na.omit()_ from the package [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/) also keeps a trace of all omitted instances. 
+The function _na.omit()_ from the package _stats_ also keeps a trace of all omitted instances. 
 This can be penalizing in terms of memory usage when handling very large vectors with a high content of NAs (eg >10000 NAs). 
 If you don't need to document precisely which elements got eliminated, the function `naOmit()` may offer 
 smoother functioning for very large objects. 
@@ -207,6 +207,7 @@ str(na.omit(aA))
 
   
 ### Minimum distance/difference between values
+
 If you need to find the closest neighbour(s) of a numeric vector, the function `minDiff()` will tell you the 
 distance ("dif","ppm" or "ratio") and index ("best") of the closest neighbour. 
 In case of multiple shortest distances the index if the first one is reported, and the column "nbest" will display a value of >1.
@@ -217,6 +218,7 @@ head(aa)
 
 minDiff(aa,ppm=FALSE)
 ```
+
 When you look at the first line, the value of 10.2 has one single closest value which is 10.4,
 which is located in line number 19 (the column 'best' gives the index of the best).
 Line number 19 points back to line number 1. 
@@ -394,7 +396,7 @@ In some applications (eg proteomics) initial identifiers (IDs) may occur multipl
 This package provides functions to easily distinguish values occurring just once (ie _unique_) from those occurring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
 
 
-### Identify what is repeated (and where repeated do occur)
+### Identify What is Repeated (and Where Repeated do Occur)
 
 ```{r repeated1, echo=TRUE}
 ## some text toy data
@@ -431,7 +433,7 @@ aa[firstOfRepeated(aa)$indUniq]          # only unique with their names
 unique(aa)                               # unique() does not return any names !
 ```
 
-### Correct vector to unique (while maintaining the original vector length)
+### Correct Vector to Unique (While Maintaining the Original Vector Length)
 If necessary a counter will be added to non-unique entries, thus no individual values get eliminated and the length and order of the resultant object maintains the same.
 
 This is of importance when assigning rownames to a data.frame : Assigning redundant values/text as rownames of a data.frame will result in an error !
@@ -442,7 +444,7 @@ correctToUnique(aa)
 correctToUnique(aa, sep=".", NAenu=FALSE)       # keep NAs (ie without transforming to character)
 ```
 
-### Mark any duplicated (ie ambiguous) elements by changing their names (and separate from unqiue)
+### Mark any Duplicated (ie Ambiguous) Elements by Changing Their Names (and Separate from Unqiue)
 First, the truly unique values are reported and then the first occurance of repeated elements is given, NA instances get ignored.
 
 ```{r nonAmbiguousNum, echo=TRUE}
@@ -488,7 +490,7 @@ firstOfRepLines(mat2)
 ```
 
 
-### Filter to unique column-content of matrix, add counter and concatenated information
+### Filter to Unique Column-content of matrix, Add Counter and Concatenated Information
 ```{r nonredDataFrame, echo=TRUE}
 (df1 <- data.frame(cbind(xA=letters[1:5], xB=c("h","h","f","e","f"), xC=LETTERS[1:5])))
 ```
@@ -505,7 +507,7 @@ df1[firstOfRepLines(df1,useCol=2),]
 
 
 
-### Get first of repeated by column
+### Get First of Repeated by Column
 
 ```{r get1stOfRepeatedByCol, echo=TRUE}
 mat2 <- cbind(no=as.character(1:20), seq=sample(LETTERS[1:15], 20, repl=TRUE),
@@ -520,7 +522,7 @@ table(mat2uniq[,"seq"])
 mat2[which(duplicated(mat2[,2],fromLast=FALSE)),]
 ```
 
-### Transform matrix to non-ambiguous matrix (in respect to given column)
+### Transform Matrix to Non-ambiguous Matrix (in Respect to Given Column)
 ```{r nonAmbiguousMat, echo=TRUE}
 nonAmbiguousMat(mat1,by=2)
 ```
@@ -532,7 +534,7 @@ head(mat3U <- nonAmbiguousMat(mat3, by="B", na="_", uniqO=FALSE), n=15)
 head(get1stOfRepeatedByCol(mat3, sortB="B", sortS="B"))
 ```
 
-### Combine replicates from list to matrix
+### Combine Replicates from list to matrix
 
 ```{r combineReplFromListToMatr, echo=TRUE}
 lst2 <- list(aa_1x=matrix(1:12, nrow=4, byrow=TRUE), ab_2x=matrix(24:13, nrow=4, byrow=TRUE))
@@ -540,14 +542,14 @@ combineReplFromListToMatr(lst2)
 ```
 
 
-### Non-redundant lines of matrix
+### Non-redundant Lines of matrix
 ```{r nonRedundLines, echo=TRUE}
 mat4 <- matrix(rep(c(1,1:3,3,1),2), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2]))
 nonRedundLines(mat4)
 ```
 
 
-### Filter for unique elements /2
+### Filter for Unique Elements /2
 ```{r filtSizeUniq, echo=TRUE}
 # input: c and dd are repeated  :
 filtSizeUniq(list(A="a", B=c("b","bb","c"), D=c("dd","d","ddd","c")), filtUn=TRUE, minSi=NULL)
@@ -557,7 +559,7 @@ filtSizeUniq(list(A="a", B=c("b","bb","c"), D=c("dd","d","ddd","c")), ref=c(lett
   "dd","dd","bb","ddd"), filtUn=TRUE, minSi=NULL)   
 ```
 
-### Make non-redundant matrix 
+### Make Non-redundant Matrix 
 ```{r makeNRedMatr, echo=TRUE}
 t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],
   matrix(round(runif(30,-3,2),1),nc=2), stringsAsFactors=FALSE)
@@ -569,7 +571,7 @@ t(sapply(by(t3,t3[,1],function(x) x), summarizeCols, me="maxAbsOfRef"))
 (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxAbsOfRef")), iniID="ref"))
 ```
 
-### Combine/reduce redundant lines based on specified column
+### Combine/reduce Redundant Lines Based on Specified Column
 
 ```{r combineRedBasedOnCol, echo=TRUE}
 matr <- matrix(c(letters[1:6],"h","h","f","e",LETTERS[1:5]), ncol=3,
@@ -579,7 +581,7 @@ combineRedBasedOnCol(rbind(matr[1,],matr), colN="xB")
 ```
 
 
-### Convert matrix (eg with redundant) row-names to data.frame
+### Convert Matrix (eg with Redundant) Row-names to data.frame
 
 ```{r convMatr2df, echo=TRUE}
 x <- 1
@@ -595,7 +597,7 @@ convMatr2df(tmp)
 ```
 
 
-### Find and combine points located very close in x/y space
+### Find and Combine Points Located Very Close in x/y Space
 
 ```{r combineOverlapInfo, echo=TRUE}
 set.seed(2013)
@@ -630,7 +632,7 @@ cbind(ini=dat,firstOfRep=getValuesByUnique(dat, datUniq),
 ```
 
 
-### Regrouping simultaneaously by two factors
+### Regrouping Simultaneaously by Two Factors
 
 For example, if you wish to create group-labels considering the eye- and hair-color of a small group students (supposed a sort of controlled vocabulary was used),
 the function `combineByEitherFactor()` will help. So basically, this is an empiric segmentation-approach for two categorical variables.
@@ -661,7 +663,7 @@ pp <- rep(c("m","n","o","p","q"),c(2,2,2,2,5))
 combineByEitherFactor(cbind(mm,pp),1,2, con=FALSE, nBy=TRUE)
 ```
 
-### Batch replacing of values or character-strings
+### Batch Replacing of Values or Character-strings
 
 The function `multiCharReplace()` facilitates multiple replacements in a vector, matrix or data.frame.
 
@@ -683,7 +685,7 @@ x2 <- c("High","n/a","High","High","Low")
 multiCharReplace(x2,cbind(old=c("n/a","Low","High"), new=c(NA,FALSE,TRUE)), convTo="logical")
 ```
 
-### Multi-to-multi matching of (concatenated) terms
+### Multi-to-multi Matching of (Concatenated) Terms
 
 The function allows to split (if necessary, using _strsplit()_) two vectors and compare each isolated tag (eg identifyer) from the 1st vector/object against each isolated tag from the second vector/object. This runs like a loop of one to many comparisons. The basic output is a list with indexes of which element of the 1st vector/object has matches in the 2nd vector/object. Since this is not convenient to the human reader, tabular output can be created, too.
 
@@ -746,7 +748,7 @@ a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10
 ```
 
 
-### Find similar numeric values from two vectors/matrixes    
+### Find Similar Numeric Values from Two Vectors/Matrixes    
 
 For comparing two sets of data one may use `findSimilarFrom2sets`.
 
@@ -765,7 +767,7 @@ findSimilFrom2sets(aA,cC,comp="ppm",lim=9e4,bestO=TRUE)
 ```
 
 
-### Fuse previously identified pairs to 'clusters' 
+### Fuse Previously Identified Pairs to 'Clusters' 
 
 When you have already identified the closest neighbour of a set of values, you may want to 
 re-organize/fuse such pairs to a given number of total clusters (using `fusePairs`).
@@ -774,17 +776,17 @@ re-organize/fuse such pairs to a given number of total clusters (using `fusePair
 fusePairs(daPa, maxFuse=4)
 ```
 
-### Eliminate close (overlapping) points (in bivariate x & y space)
+### Eliminate Close (Overlapping) Points (in Bivariate x & y Space)
 
 When visualizing larger data-sets in an x&y space one may find many points overlapping when their values are almost the same.  
 The function `elimCloseCoord()` aims to do reduce a bivariate data-set to 'non-overlapping' points, somehow similar to human perception.
 
 ```{r elimCloseCoord1, echo=TRUE}
-da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*99; head(da1)
+da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5), ncol=2); da1[,1] <- da1[,1]*99; head(da1)
 elimCloseCoord(da1)
 ```
 
-### Mode of (continuous) data
+### Mode of (Continuous) Data
 
 Looking for the mode is rather easy with counting data. Looking at the result of _table()_ will get you there quickly.
 However, with continuous data what people intuitively consider the mode is rather a result of a density estimation and may be more tricky to identify.
@@ -816,7 +818,7 @@ Rather due to the rounding to 3 digits in this example the method _'allModes'_ g
 as in the example above it may give ties.
 
 
-### Most frequently occuring value  (traditional mode)
+### Most Frequently Occuring Value  (traditional mode)
 
 The function  `stableMode()` can also be used to locate the most frequently occuring exact value of numeric or character vectors.
 The argument _method="allModes"_ allows finding all ties (if any).
@@ -909,9 +911,9 @@ As output a list with the content of each file can be produced (one matrix per f
 
 
 ```{r readCsvBatch, echo=TRUE}
-path1 <- system.file("extdata",package="wrMisc")
+path1 <- system.file("extdata", package="wrMisc")
 fiNa <-  c("pl01_1.csv","pl01_2.csv","pl02_1.csv","pl02_2.csv")
-datAll <- readCsvBatch(fiNa,path1)
+datAll <- readCsvBatch(fiNa, path1)
 str(datAll)
 ```
 
@@ -921,13 +923,29 @@ When setting the first argument _fileNames_ to _NULL_, you can read all files of
 datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
 ```
 
+### Batch-Reading of Tabulated Files
+
+The function `readTabulatedBatch()` allows fast batch reading of tabulated files. 
+All files specified (or all files from a given directory) will be read into separate data.frames of a list.
+Default options are US-style comma, automatic testing for head in case the package _data.table_ is available (otheriwse : no header).
+Furthermore it is possible to design a given (numeric) column and directly filter for all lines passing a given threshold, allowing to get smaller objects.
+
+
+```{r readTabulatedBatch1, echo=TRUE}
+path1 <- system.file("extdata", package="wrMisc")
+fiNa <-  c("a1.txt","a2.txt")
+allTxt <- readTabulatedBatch(fiNa, path1)
+str(allTxt)
+```
+
 ### Reading Incomplete Tables
 
 Sometimes were may get confronted with data which look like 'incomplete' tables. 
 In such cases some rows do not contain as many elements/columns as other columns. 
 Files with this type of data pose a problem for _read.table()_ (from the _utils_ package).
-The function _readVarColumns()_ (from this package) was designed to provide help in such cases.
-Basically each line is read and parsed separately, the user should check the proper separator is used.
+In some cases using the argument _fill=TRUE_ may allow to overcome this problem.
+The function _readVarColumns()_ (from this package) was designed to provide better help in such cases.
+Basically each line is read and parsed separately, the user should check/decide on the separator to be used.
 
 The example below lists people's names in different locations, some locations have more persons ... 
 Sometimes exporting such data will generate shorter lines in locations with fewer elements (here 'London') and no additional separators will get added (to mark all empty fields) towards the end.
@@ -939,6 +957,22 @@ fiNa <- "Names1.tsv"
 datAll <- readVarColumns(fiName=file.path(path1,fiNa), sep="\t")
 str(datAll)
 ```
+
+
+### Converting url for Reading Tabulated Data from GitHub
+
+[GitHub](https://github.com/) allows sharing code and (to a lower degree) data.
+In order to properly read tabulated (txt, tsv or csv) data directly from a given url, the user should switch to the 'Raw' view.
+The function `gitDataUrl` allows to conventiently switch any url (on git) to the format from 'Raw view', suitable for directly reading the data using _read.delim()_ , _read.table()_ or _read.csv()_ etc ).
+
+```{r readGit1, echo=TRUE}
+## An example url with tabulated data :
+url1 <- "https://github.com/bigbio/proteomics-metadata-standard/blob/master/annotated-projects/PXD001819/PXD001819.sdrf.tsv"
+gitDataUrl(url1)
+dataPxd <- read.delim(gitDataUrl(url1), sep='\t', header=TRUE)
+str(dataPxd)
+```
+
 
 
 ## Normalization
@@ -970,7 +1004,7 @@ first as they may effect normalization (in particular extreme values).
 A special case of such problematic data concerns _NA_-values.
 
 
-### Filter lines of matrix to reduce content of NAs 
+### Filter Lines of Matrix to Reduce Content of NAs 
 
 Frequent _NA_-values may represent another potential issue. With NA-values there is no general optimal advice.
 To get started, you should try to investigate how and why NA-values occurred to check if there is a special 'meaning' to them.
@@ -1000,7 +1034,7 @@ Please note, that imputing _NA_-values represents another option instead of filt
 All decisions of which approach to use should be data-driven.
 
 
-### The function normalizeThis()
+### The Function normalizeThis()
 
 In biological high-throughput data columns typically represent different samples, which may be organized as replicates. 
 During high-throughput experiments thousands of (independent) elements are measured (eg abundance of gene-products), they are represented by rows.
@@ -1056,7 +1090,7 @@ boxplot(no3, main="median normalization", las=1)
 boxplot(no4, main="slope normalization", las=1)
 ```
 
-### Matrix coordinates of values/points according to filtering  
+### Matrix Coordinates of Values/points According to Filtering  
 
 Sometimes one needs to obtain the coordinates of values/points of a matrix according to a given filtering condition.
 The standard approach using _which()_ gives only a _linearized_ index but not row/column, which is sufficient for replacing indexed values.
@@ -1073,7 +1107,7 @@ coordOfFilt(ma1, ma1 >37)
 
 ## Statistical Testing
 
-### Normal random number generation with close fit to expected mean and sd
+### Normal Random Number Generation with Close Fit to Expected mean and sd
 
 When creating random values to an expected _mean_ and _sd_, the standard function _rnorm()_ may deviate somehow from the
 expected mean and sd, in particular with low _n_. 
@@ -1103,7 +1137,7 @@ sd(ra2) -sd(x1)   # much closer to expected value
 ```
 
 
-### Moderated pair-wise t-test from limma
+### Moderated Pair-wise t-Test from limma
 
 If you are not familiar with the way data is handled in the Bioconductor package [limma](https://bioconductor.org/packages/release/bioc/html/limma.html) 
 and you would like to use some of the tools for running moderated t-tests therein, this will provide easy access using `moderTest2grp` :
@@ -1113,15 +1147,16 @@ set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2), ncol=8,
 t8[3:6,1:2] <- t8[3:6,1:2]+3     # augment lines 3:6 for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3     # augment lines 5:8 for AA2&BB2 (c,d,g,h should be found)
 t4 <- log2(t8[,1:4]/t8[,5:8])
-fit4 <- moderTest2grp(t4,gl(2,2))
+fit4 <- moderTest2grp(t4, gl(2,2))
 ## now we'll use limma's topTable() function to look at the 'best' results
-library(limma)
-topTable(fit4,coef=1,n=5)                      # effect for 3,4,7,8
-fit4in <- moderTest2grp(t4,gl(2,2),testO="<")
-topTable(fit4in,coef=1,n=5)
+if("list" %in% mode(fit4)) {  # if you have limma installed we can look further
+  library(limma)
+  topTable(fit4, coef=1,n=5)                      # effect for 3,4,7,8
+  fit4in <- moderTest2grp(t4, gl(2,2), testO="<")
+  if("list" %in% mode(fit4in)) topTable(fit4in, coef=1,n=5) }
 ```
 
-### Multiple moderated pair-wise t-tests from limma
+### Multiple Moderated Pair-wise t-Tests from limma
 
 If you want to make multiple pair-wise comparisons using `moderTestXgrp` :
 ```{r moderTestXgrp, echo=TRUE}
@@ -1135,7 +1170,7 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 ## expect to find C/D in c,d,e,f
 ## expect to find A/D in f,g,(h)  
 test8 <- moderTestXgrp(t8, grp) 
-head(test8$p.value, n=8)
+head(test8$p.value, n=8) 
 ```
 
 
@@ -1153,7 +1188,7 @@ set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2), ncol=8, dimnames=list(l
   c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
 t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
-head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
+head(pVal2lfdr(apply(t8, 1, function(x) t.test(x[1:4],x[5:8])$p.value)))
 ```
 
 
@@ -1163,6 +1198,8 @@ When running multiple pairwise tests (using *moderTestXgrp()*) the column-names 
 To get the index of which group has been used in which pair-wise set you may use the function `matchSampToPairw()`, as shown below.
 
 ```{r matchSampToPairw, echo=TRUE}
+## make example if limma is not installed
+if(!requireNamespace("limma", quietly=TRUE)) test8 <- list(FDR=matrix(1,nrow=2,ncol=3,dimnames=list(NULL,c("A-C","A-D","C-D")))) 
 matchSampToPairw(unique(grp), colnames(test8$FDR)) 
 ```
 
@@ -1185,7 +1222,7 @@ Multiple concepts for clustering have been deeveloped, most of them allow extrac
 Here some functions helping to work with the output of such clustering results are presented.
 
 
-### Prepare data for clustering
+### Prepare Data for Clustering
 
 The way how to prepare data for clustering may be as important as the choice of the actual clustering-algorithm ...
 
@@ -1231,7 +1268,7 @@ datR2 <- apply(dat, 2, scaleXY, 1, 100)
 summary(datR2); sd(datR2)
 ```
 
-### Characterize clustering results
+### Characterize Clustering Results
 
 Here very basic clustering example...
 
@@ -1268,7 +1305,53 @@ Besides, we have alreaady seen in section 'Working with Arrays' the function `cu
 ## Tree-Like Structures
 
 
-### Characterize individual contribution of single edges in tree-structures
+### Filter Lists of Connected Nodes, Extension of Networks as 'Sandwich'
+
+When interogating network-databases (like String for proteins or the coexpressionDB for gene co-expression) typically a (semi-)quantitatve
+value is supplied with the connection of node 'A' to node 'B'.  
+In many cases, it may be useful to filter the initial query-output to retain only strong interactions.
+Furthermore, it may be of interest to expand such networks by nodes allowing to (further) inter-connect initial query-nodes 
+(so called 'Sandwich' nodes as they are surouded by initial nodes), for such nodes a separate (eg even more stringent) threshold can be applied.
+
+Here let's suppose nodes have 3-digit names (ie numbers). 7 nodes of an initial query gave 1 to 7 conected nodes, 
+the results are presented as list of data.frames where the 1st column is the connected node and the 2nd column the quality score of the connection (edge).
+Furthemore, let's assume that here lower scores are better.
+
+```{r filterNetw0, echo=TRUE}
+
+lst2 <- list('121'=data.frame(ID=as.character(c(141,221,228,229,449)),11:15), 
+  '131'=data.frame(ID=as.character(c(228,331,332,333,339)),11:15), 
+  '141'=data.frame(ID=as.character(c(121,151,229,339,441,442,449)),c(11:17)), 
+  '151'=data.frame(ID=as.character(c(449,141,551,552)),11:14),
+  '161'=data.frame(ID=as.character(171),11),
+  '171'=data.frame(ID=as.character(161),11),
+  '181'=data.frame(ID=as.character(881:882),11:12) )
+```
+
+Now, we'd like to keep the core network consisting of all (dirctly) interconnected nodes with scores below 20 :
+
+```{r filterNetw1, echo=TRUE}
+(nw1 <- filterNetw(lst2, limInt=20, sandwLim=NULL, remOrphans=FALSE))
+```
+
+In the resulting output the 1st column now represents the query-nodes, the 2nd column all connected nodes based on filtering scores for edges,
+and the 3rd colum the score for the edges.
+
+Let's also remove all nodes not connected to a backbone at least 3 nodes long, ie remove orphan pairs of nodes :
+
+```{r filterNetw2, echo=TRUE}
+(nw2 <- filterNetw(lst2, limInt=20, sandwLim=NULL, remOrphans=TRUE))
+```
+
+If you want to expand this network by nodes allowing to further interconnect the nodes from above, 
+we can add all 'sandwich' nodes (let's use a threshold of inferior/equal to 14 which will use only the better 'sandwich'-edges) :
+
+```{r filterNetw3, echo=TRUE}
+(nw3 <- filterNetw(lst2, limInt=20, sandwLim=14, remOrphans=TRUE))
+```
+
+
+### Characterize Individual Contribution of Single Edges in Tree-Structures
 
 ```{r contribToContigPerFrag, echo=TRUE}
 path1 <- matrix(c(17,19,18,17, 4,4,2,3), ncol=2,
@@ -1277,7 +1360,7 @@ contribToContigPerFrag(path1)
 ```
 
 
-### Count same start- and end- sites of edges (or fragments)
+### Count Same Start- and End- Sites of Edges (or Fragments)
 
 If you have a set of fragments from a common ancestor and the fragment's start- and end-sites 
 are marked by index-positions (integers), you can make a simple graphical display :
@@ -1302,7 +1385,7 @@ The function `pasteC` allows adding quotes and separating the last element by sp
 pasteC(1:4)
 ```
 
-### Transform numeric values to color-gradient
+### Transform Numeric Values to Color-Gradient
 
 By default most color-gradients end with a color very close to the beginning.
 ```{r color-gradient1, echo=TRUE}
@@ -1317,7 +1400,7 @@ plot(1:9, pch=3, las=1)
 points(1:9,1:9,col=transpGraySca(st=0,en=0.8,nSt=9,trans=0.3), cex=42, pch=16)
 ```
 
-### Assign new transparency to given colors 
+### Assign New Transparency to Given Colors 
 For this purpose you may use `convColorToTransp`.
 ```{r convColorToTransp, fig.height=6, fig.width=3, echo=TRUE}
 col0 <- c("#998FCC","#5AC3BA","#CBD34E","#FF7D73")
@@ -1327,7 +1410,7 @@ pie(rep(1,length(col0)), col=col0, main="no transparency")
 pie(rep(1,length(col1)), col=col1, main="new transparency")
 ```
 
-### Print matrix-content as plot
+### Print Matrix-Content as Plot
 There are many ways of creating reports. If you want simply to combine a few plots into a pdf, the function `tableToPlot` 
 may be helpful to add a small table (eg overview of points/samples/files used in other plots of the same pdf). 
 This function prints tables in the current graphical output/window (which may by a pdf-device).
@@ -1335,7 +1418,7 @@ This function prints tables in the current graphical output/window (which may by
 
 ## Other Convenience Functions
 
-### Writing compact dates (more options ...)
+### Writing Compact Dates (more options ...)
 
 Many times it may be useful to add the date to filenames when saving data or plots as files.
 The built-in functions _date()_, _Sys.Date()_ and _Sys.Time()_ are a good way to start.
@@ -1367,7 +1450,6 @@ tabD <- cbind(paste0("univ",1:6), c(sysDate(style="univ1"), sysDate(style="univ2
   sysDate(style="local4"), sysDate(style="local5"), sysDate(style="local6")))   
 kable(tabD, caption="Various ways of writing current date")
 ```
-
 
 
 

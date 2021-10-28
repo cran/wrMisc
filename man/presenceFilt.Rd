@@ -45,7 +45,7 @@ mat[,15] <- NA
 mat[c(2:3,9),14:15] <- NA
 mat[c(1,10),13:15] <- NA
 mat
-wrMisc::presenceFilt(mat ,rep(LETTERS[4:2], c(5,6,4)))
+presenceFilt(mat ,rep(LETTERS[4:2], c(5,6,4)))
 presenceFilt(mat, rep(1:2,c(9,6)))
 
 # one more example 

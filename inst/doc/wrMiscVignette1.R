@@ -9,9 +9,9 @@ suppressPackageStartupMessages({
 #  install.packages("wrMisc")
 
 ## ----install2, echo=TRUE, eval=FALSE------------------------------------------
-#  packages <- c("knitr", "rmarkdown", "kableExtra", "RColorBrewer", "boot","data.tree", "fdrtool",
-#    "wrMisc", "wrGraph", "wrProteo", "BiocManager")
-#  checkInstallPkg <- function(pkg) {
+#  packages <- c("knitr", "rmarkdown", "BiocManager", "kableExtra", "boot", "data.tree", "data.table", "fdrtool",
+#    "RColorBrewer", "Rcpp", "wrMisc", "wrGraph", "wrProteo")
+#  checkInstallPkg <- function(pkg) {       # install function
 #    if(!requireNamespace(pkg, quietly=TRUE)) install.packages(pkg) }
 #  
 #  ## install if not yet present
@@ -430,7 +430,7 @@ findSimilFrom2sets(aA,cC,comp="ppm",lim=9e4,bestO=TRUE)
 fusePairs(daPa, maxFuse=4)
 
 ## ----elimCloseCoord1, echo=TRUE-----------------------------------------------
-da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),ncol=2); da1[,1] <- da1[,1]*99; head(da1)
+da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5), ncol=2); da1[,1] <- da1[,1]*99; head(da1)
 elimCloseCoord(da1)
 
 ## ----stableMode, echo=TRUE----------------------------------------------------
@@ -494,20 +494,33 @@ summary( ratioAllComb(ra1[1:9],ra1[10:17]))
 boxplot(list(norm=ra1[1:9],unif=ra1[10:17],rat=ratioAllComb(ra1[1:9],ra1[10:17])))
 
 ## ----readCsvBatch, echo=TRUE--------------------------------------------------
-path1 <- system.file("extdata",package="wrMisc")
+path1 <- system.file("extdata", package="wrMisc")
 fiNa <-  c("pl01_1.csv","pl01_2.csv","pl02_1.csv","pl02_2.csv")
-datAll <- readCsvBatch(fiNa,path1)
+datAll <- readCsvBatch(fiNa, path1)
 str(datAll)
 
 ## ----readCsvBatch2, echo=TRUE-------------------------------------------------
 ## batch reading of all csv files in specified path :
 datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
 
+## ----readTabulatedBatch1, echo=TRUE-------------------------------------------
+path1 <- system.file("extdata", package="wrMisc")
+fiNa <-  c("a1.txt","a2.txt")
+allTxt <- readTabulatedBatch(fiNa, path1)
+str(allTxt)
+
 ## ----readVarColumns, echo=TRUE------------------------------------------------
 path1 <- system.file("extdata", package="wrMisc")
 fiNa <- "Names1.tsv"
 datAll <- readVarColumns(fiName=file.path(path1,fiNa), sep="\t")
 str(datAll)
+
+## ----readGit1, echo=TRUE------------------------------------------------------
+## An example url with tabulated data :
+url1 <- "https://github.com/bigbio/proteomics-metadata-standard/blob/master/annotated-projects/PXD001819/PXD001819.sdrf.tsv"
+gitDataUrl(url1)
+dataPxd <- read.delim(gitDataUrl(url1), sep='\t', header=TRUE)
+str(dataPxd)
 
 ## ----presenceFilt, echo=TRUE--------------------------------------------------
 dat1 <- matrix(1:56,ncol=7)
@@ -578,12 +591,13 @@ set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2), ncol=8,
 t8[3:6,1:2] <- t8[3:6,1:2]+3     # augment lines 3:6 for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3     # augment lines 5:8 for AA2&BB2 (c,d,g,h should be found)
 t4 <- log2(t8[,1:4]/t8[,5:8])
-fit4 <- moderTest2grp(t4,gl(2,2))
+fit4 <- moderTest2grp(t4, gl(2,2))
 ## now we'll use limma's topTable() function to look at the 'best' results
-library(limma)
-topTable(fit4,coef=1,n=5)                      # effect for 3,4,7,8
-fit4in <- moderTest2grp(t4,gl(2,2),testO="<")
-topTable(fit4in,coef=1,n=5)
+if("list" %in% mode(fit4)) {  # if you have limma installed we can look further
+  library(limma)
+  topTable(fit4, coef=1,n=5)                      # effect for 3,4,7,8
+  fit4in <- moderTest2grp(t4, gl(2,2), testO="<")
+  if("list" %in% mode(fit4in)) topTable(fit4in, coef=1,n=5) }
 
 ## ----moderTestXgrp, echo=TRUE-------------------------------------------------
 grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
@@ -596,16 +610,18 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 ## expect to find C/D in c,d,e,f
 ## expect to find A/D in f,g,(h)  
 test8 <- moderTestXgrp(t8, grp) 
-head(test8$p.value, n=8)
+head(test8$p.value, n=8) 
 
 ## ----pVal2lfdr, echo=TRUE-----------------------------------------------------
 set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2), ncol=8, dimnames=list(letters[1:20],
   c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
 t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
-head(pVal2lfdr(apply(t8,1,function(x) t.test(x[1:4],x[5:8])$p.value)))
+head(pVal2lfdr(apply(t8, 1, function(x) t.test(x[1:4],x[5:8])$p.value)))
 
 ## ----matchSampToPairw, echo=TRUE----------------------------------------------
+## make example if limma is not installed
+if(!requireNamespace("limma", quietly=TRUE)) test8 <- list(FDR=matrix(1,nrow=2,ncol=3,dimnames=list(NULL,c("A-C","A-D","C-D")))) 
 matchSampToPairw(unique(grp), colnames(test8$FDR)) 
 
 ## ----pairWiseConc1, echo=TRUE-------------------------------------------------
@@ -658,6 +674,25 @@ ir2 <- reorgByCluNo(iris[,-5],irKm$cluster,retList=TRUE)
 sapply(ir2, function(x) apply(x,2,median))
 
 sapply(ir2, colSds)
+
+## ----filterNetw0, echo=TRUE---------------------------------------------------
+
+lst2 <- list('121'=data.frame(ID=as.character(c(141,221,228,229,449)),11:15), 
+  '131'=data.frame(ID=as.character(c(228,331,332,333,339)),11:15), 
+  '141'=data.frame(ID=as.character(c(121,151,229,339,441,442,449)),c(11:17)), 
+  '151'=data.frame(ID=as.character(c(449,141,551,552)),11:14),
+  '161'=data.frame(ID=as.character(171),11),
+  '171'=data.frame(ID=as.character(161),11),
+  '181'=data.frame(ID=as.character(881:882),11:12) )
+
+## ----filterNetw1, echo=TRUE---------------------------------------------------
+(nw1 <- filterNetw(lst2, limInt=20, sandwLim=NULL, remOrphans=FALSE))
+
+## ----filterNetw2, echo=TRUE---------------------------------------------------
+(nw2 <- filterNetw(lst2, limInt=20, sandwLim=NULL, remOrphans=TRUE))
+
+## ----filterNetw3, echo=TRUE---------------------------------------------------
+(nw3 <- filterNetw(lst2, limInt=20, sandwLim=14, remOrphans=TRUE))
 
 ## ----contribToContigPerFrag, echo=TRUE----------------------------------------
 path1 <- matrix(c(17,19,18,17, 4,4,2,3), ncol=2,

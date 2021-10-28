@@ -23,10 +23,11 @@
 #' @export
 reorgByCluNo <- function(mat, cluNo, useColumn=NULL, meanCol=NULL, retList=FALSE, silent=FALSE, callFrom=NULL) {
   ## reorganize input matrix as sorted by cluster numbers (and geometric mean) according to vector with cluster names, and index for sorting per cluster and per geometric mean
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="reorgByCluNo")
+  fxNa <- .composeCallName(callFrom, newNa="reorgByCluNo")
   iniCla <- class(mat)
   chDim <- dim(mat)
   dataOK <- FALSE
+  if(!isTRUE(silent)) silent <- FALSE
   if(length(chDim) >1) if(all(chDim >1)) dataOK <- TRUE
   ## extract cluNo
   if(dataOK & length(cluNo)==1) {
@@ -44,8 +45,8 @@ reorgByCluNo <- function(mat, cluNo, useColumn=NULL, meanCol=NULL, retList=FALSE
   if(dataOK){    
     if(length(useColumn) <1) useColumn <- 1:ncol(mat)
     mat1 <- if(length(chDim) ==3) mat[,,useColumn] else mat[,useColumn]
-    if(length(dim(mat1)) <1) mat1 <- matrix(mat1,ncol=1,dimnames=list(rownames(mat1),colnames(mat)[useColumn]))
-    nClu <- length(unique(wrMisc::naOmit(cluNo)))
+    if(length(dim(mat1)) <1) mat1 <- matrix(mat1, ncol=1, dimnames=list(rownames(mat1), colnames(mat)[useColumn]))
+    nClu <- length(unique(naOmit(cluNo)))
     ## construct geometric mean for sorting (if not provided externally)
     geoMe <- if(length(meanCol)==nrow(mat)) meanCol else apply(mat1,1, function(x) prod(x,na.rm=TRUE)^(1/sum(!is.na(x))))
     if(length(dim(geoMe)) >1) geoM <- rowMeans(geoMe, na.rm=TRUE)
@@ -60,14 +61,14 @@ reorgByCluNo <- function(mat, cluNo, useColumn=NULL, meanCol=NULL, retList=FALSE
     ## sort intra
     cluL <- lapply(cluL, function(x) if(nrow(x) >1) x[order(x[,ncol(x)], decreasing=TRUE),] else x)
     ## sort inter
-    cluL <- cluL[order(sapply(cluL, function(x) stats::median(x[,ncol(x)],na.rm=TRUE)),  decreasing=TRUE)]        
+    cluL <- cluL[order(sapply(cluL, function(x) stats::median(x[,ncol(x)],na.rm=TRUE)), decreasing=TRUE)]        
     names(cluL) <- 1:length(cluL)
     nByClu  <- sapply(cluL,nrow)
-    if(retList) { out <- cluL
+    if(isTRUE(retList)) { out <- cluL
       for(i in 1:nClu) out[[i]] <- cbind(out[[i]], cluNo=1)
-       if("data.frame" %in% iniCla) out <- lapply(out,wrMisc::convMatr2df, addIniNa=FALSE, silent=silent,callFrom=fxNa) 
+       if("data.frame" %in% iniCla) out <- lapply(out, convMatr2df, addIniNa=FALSE, silent=silent, callFrom=fxNa) 
     } else {
-      out <- cbind(wrMisc::lrbind(cluL), cluNo=rep(1:nClu,nByClu)) }   # in order of input
+      out <- cbind(lrbind(cluL), cluNo=rep(1:nClu,nByClu)) }   # in order of input
   } else {out <- NULL; if(!silent) message(fxNa," invalid input, returning NULL")}
   out }
   

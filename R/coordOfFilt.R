@@ -18,7 +18,7 @@
 #' @export
 coordOfFilt <- function(mat, cond, sortByRows=FALSE, silent=FALSE, callFrom=NULL) {
   ## get coordinates of values/points in matrix according to filtering condition
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="coordOfFilt")
+  fxNa <- .composeCallName(callFrom, newNa="coordOfFilt")
   if(any(length(dim(mat)) !=2, dim(mat) < 2:1)) stop("Invalid argument 'mat'; must be matrix or data.frame with min 2 lines and 1 col")
   cond <- if(is.logical(cond)) which(cond) else as.integer(cond) 
   chNa <- is.na(cond)

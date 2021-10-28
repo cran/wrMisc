@@ -17,16 +17,16 @@
 #' # overal number of NAs per row
 #' rowSums(is.na(mat2)) 
 #' # number of NAs per row and group
-#' rowGrpNA(mat2,gr4)
+#' rowGrpNA(mat2, gr4)
 #' @export
 rowGrpNA <- function(mat, grp) {
   ## get number of NAs per line & group of replicates
   if(any(length(dim(mat)) !=2, dim(mat) < 1)) stop("Invalid argument 'mat'; must be matrix (or data.frame) with min 1 line and 1 column")
   if(length(grp) != ncol(mat)) stop("Length of 'grp' and number of columns of 'mat' do not match !")
   if(is.data.frame(mat)) mat <- as.matrix(mat)
-  gr1 <- wrMisc::naOmit(unique(grp))
+  gr1 <- naOmit(unique(grp))
   nNA <- matrix(nrow=nrow(mat), ncol=length(gr1), dimnames=list(NULL, gr1))
   for(i in 1:length(gr1)) {
-    nNA[,i] <- rowSums(is.na( matrix(mat[,which(grp==gr1[i])], nrow=nrow(mat)) )) }
+    nNA[,i] <- rowSums(is.na(matrix(mat[,which(grp==gr1[i])], nrow=nrow(mat)) )) }
   nNA }
   

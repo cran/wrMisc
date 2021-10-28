@@ -19,8 +19,8 @@ rowMedSds(dat, nBoot = 99)
 Note: requires package \href{https://CRAN.R-project.org/package=boot}{boot}
 }
 \examples{
-set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
-rowMedSds(dat1) ; plot(rowSds(dat1),rowMedSds(dat1))
+set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)), ncol=10)
+rowMedSds(dat1) ; plot(rowSds(dat1), rowMedSds(dat1))
 }
 \seealso{
 \code{\link[boot]{boot}}

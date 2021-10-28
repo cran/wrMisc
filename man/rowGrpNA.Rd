@@ -27,7 +27,7 @@ gr4 <- gl(3, 4, labels=LETTERS[1:3])
 # overal number of NAs per row
 rowSums(is.na(mat2)) 
 # number of NAs per row and group
-rowGrpNA(mat2,gr4)
+rowGrpNA(mat2, gr4)
 }
 \seealso{
 \code{\link{rowGrpMeans}}, \code{\link{rowSds}}, \code{\link[base]{colSums}}

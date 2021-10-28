@@ -20,7 +20,7 @@
 #' mat[c(2:3,9),14:15] <- NA
 #' mat[c(1,10),13:15] <- NA
 #' mat
-#' wrMisc::presenceFilt(mat ,rep(LETTERS[4:2], c(5,6,4)))
+#' presenceFilt(mat ,rep(LETTERS[4:2], c(5,6,4)))
 #' presenceFilt(mat, rep(1:2,c(9,6)))
 #' 
 #' # one more example 
@@ -30,7 +30,7 @@
 #' presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=1, ratM=0.1)
 #' presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=2, rat=0.5)
 #' @export
-presenceFilt <- function(dat,grp,maxGrpMiss=1,ratMaxNA=0.8,minVal=NULL,silent=FALSE,callFrom=NULL){           
+presenceFilt <- function(dat, grp, maxGrpMiss=1, ratMaxNA=0.8, minVal=NULL, silent=FALSE, callFrom=NULL){           
   fxNa <- .composeCallName(callFrom, newNa="presenceFilt")
   msg <- "expecting (2dim) numeric matrix or data.frame with >1 columns and >1 rows"
   if(length(dim(dat)) !=2) stop(msg)
@@ -45,13 +45,13 @@ presenceFilt <- function(dat,grp,maxGrpMiss=1,ratMaxNA=0.8,minVal=NULL,silent=FA
   ## main
   if(length(minVal)==1 & is.numeric(minVal)) dat[dat <minVal] <- NA
   nNa <- matrix(unlist(by(t(dat), grp, function(x) colSums(is.na(x)))), nrow=nrow(dat))[,order(unique(grp))]  # no of NAs per group & line
-  ch <- maxGrpMiss > round(nGrp*ratMaxNA)
+  ch <- maxGrpMiss > round(nGrp *ratMaxNA)
   if(any(ch)) {maxGrpMiss[which(ch)] <- round(nGrp*ratMaxNA)[ch]
     if(!silent) message(fxNa," correcting 'maxGrpMiss' for group(s) ",pasteC(names(nGrp)[ch]), "  due to ratMaxNA=",ratMaxNA)}
   sufVa <- nNa <= matrix(rep(maxGrpMiss, each=nrow(dat)), nrow=nrow(dat))
   combin <- triCoord(length(nGrp))
   out <- apply(combin,1,function(x) sufVa[,x[1]] | sufVa[,x[2]])
-  outNa <- matrix(names(nGrp)[as.numeric(combin)],ncol=2)  
+  outNa <- matrix(names(nGrp)[as.numeric(combin)], ncol=2)  
   colnames(out) <- paste(outNa[,1],outNa[,2],sep="-")
   out }
 

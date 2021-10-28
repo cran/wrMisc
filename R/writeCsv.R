@@ -34,97 +34,103 @@
 #'   returnOut=TRUE,filename=fiNa[2]))
 #'
 #' @export
-writeCsv <- function(input,inPutFi=NULL,expTy=c("Eur","US"),imporTy="Eur",filename=NULL,quote=FALSE,filterCol=NULL,replMatr=NULL,returnOut=FALSE,SYLKprevent=TRUE,digits=22,silent=FALSE,debug=FALSE,callFrom=NULL){
+writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", filename=NULL, quote=FALSE, filterCol=NULL, replMatr=NULL, returnOut=FALSE,SYLKprevent=TRUE,digits=22,silent=FALSE,debug=FALSE,callFrom=NULL) {
   fxNa <- .composeCallName(callFrom,newNa="saveCsv")
   argN <- deparse(substitute(input))
-  chPa <- try(find.package("utils"),silent=TRUE)
-  if("try-error" %in% class(chPa)) stop("package 'utils' not found ! Please install first") 
-  if(length(input) <1) stop(fxNa," 'input'  should be data or filename")
-  if(is.character(input)) {if(file.exists(input)) {inPutFi <- as.character(dat)[1]; dat <- NULL
-    if(!silent) message(fxNa,"trying to read  ",inPutFi,"  as format: ",imporTy)
-      dat <- if(imporTy=="Eur") utils::read.csv2(inPutFi,stringsAsFactors=FALSE) else {
-      if(imporTy=="US") utils::read.csv(inPutFi,stringsAsFactors=FALSE) else utils::read.table(inPutFi,stringsAsFactors=FALSE) }
-    } else { dat <- input
-      if(!silent) message(fxNa," 'input' is character but since no corresponding to existing filename, trying to interpret as data to be written to file")}
-  } else  dat <- input
-  if(!is.null(dat)) { if(length(inPutFi) >1) message(fxNa," ignoring content of 'inPutFi'")
-     inPutFi <- NULL; imporTy <- ""}
-  if(length(dim(dat)) <2) dat <- as.matrix(dat)     # fx created for typical case of data.frame or matrix
-  datColCl <- rep(NA,ncol(dat))
-  for(i in 1:ncol(dat)) datColCl[i] <- class(dat[,i])                            # document class for each column (won't work using apply)
-  if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"unkown format for 'expTy', setting to 'Eur'")}
-  expTy <- sort(stats::na.omit(expTy))
-  if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"unkown format for 'expTy', setting to 'Eur'")}
-  ## FILTERING  (independent to expTy)
-  ## check if 'filterCol' in dat
-  if(is.list(filterCol) & length(filterCol) >0) {
-    useCol <- sapply(filterCol,function(x) x[1])
-    useCol <- which(useCol %in% colnames(dat))
-    if(!silent & length(useCol)<1) message(fxNa," none of the columns from 'filterCol' found in ",inPutFi)
-    filtThr <- sapply(filterCol[useCol],function(x) if(length(x>1)) x[2] else NA)
-    filterCol <- sapply(filterCol[useCol],function(x) x[1])
-    }
-  if(debug) {cat("..xxWriteC0\n")}
-  if(length(filterCol) >0) {
-    for(i in 1:length(filterCol)) {                          
-      chLogi <- TRUE                                         
-      ## this may be further deveoped: check if column has usable logical content
-      chLi <- if(is.na(filtThr[i]) & chLogi) which(dat[,filterCol[i]]) else which(dat[,filterCol[i]] < filtThr[i])
-      if(length(chLi) <nrow(dat) & length(chLi) >0) dat <- dat[chLi,] else if(length(chLi) <1) {
-        message(fxNa," filtering for ",filterCol[i]," nothing left !!")
-        dat <- NULL; return(NULL) }}
-  } else if(!is.character(inPutFi)) expTy <- expTy[which(!expTy  %in% imporTy)]        # no need to re-write same file if no filtering (unless inPutFi is filename)
-  ##
-  ## treat non-conform characters (only in non-numeric cols, dependent on expTy)
-  ##  locate non-conform characters, then subtitute in non-numeric part of dat
-  datExp <- list()
-  if(!all(datColCl %in% c("numeric","integer"))){                               # nothing to substitute if only numeric data, otherwise :
-    chCols <- which(!datColCl %in% c("numeric","integer"))
-    dat0 <- as.matrix(dat[,chCols])
-    ## first try to locate numeric cols with bad separator (digit+comma+digit)
-    zz <- sub("^[[:digit:]]+,[[:digit:]]+$|^[[:digit:]]+\\.[[:digit:]]+$|^,[[:digit:]]+$|^\\.[[:digit:]]+$","",dat0)     # no need to test for digits only wo separators
-    chNA <- is.na(zz)
-    if(any(chNA)) zz[which(chNA)] <- 0
-    toNum <- colSums(nchar(zz)) <1
-    if(debug) {cat("..xxWriteC1b\n")}
-    if(any(toNum)) {
-      if(!silent) message(fxNa," adjusting ",sum(toNum)," column(s) with Euro comma-separator")
-      dat[,chCols[which(toNum)]] <- as.numeric(sub(",",".",dat[,chCols[which(toNum)]]))
-      datColCl[chCols[which(toNum)]] <- "numeric"
-      chCols <- which(!datColCl %in% c("numeric","integer")) }                   # refresh
-    ## locate & replace 'bad' characters interfering with tabular separation -> need multiple versions
-    if(debug) {cat("..xxWriteC2\n")}
-    if(length(chCols) >0) for(ty in expTy) {
-      dat0 <- as.matrix(dat[,chCols])                                             # refresh
-      replMat <- if(is.null(replMatr))  array(c(";"," ", ","," ", "\t"," "),            
-         dim=c(2,1,3),dimnames=list(c("bad","subst"),c("sep1"),c("Eur","US","txt"))) else replMatr
-      if(length(dim(replMat)) >2) {
-        chTy <- ty %in% dimnames(replMat)[[3]]                    
-        replMat <- as.matrix(if(!chTy) replMat[,,1] else replMat[,,which(ty==dimnames(replMat)[[3]])])}  # matrix with characters to test for (1st line) & 2nd line for replacing
-      locCh <- lapply(replMat[1,], grep,dat0)
-      locCh <- locCh[which(sapply(locCh,length) >0)]                                            # indexes where substitution should take place
-      if(length(locCh) >0) for(i in 1:length(locCh)) dat0[locCh[[i]]] <- gsub(replMat[1,i],replMat[2,i],dat0[locCh[[i]]])
-      if(debug) {cat("..xxWriteC3\n")}
-      if(length(expTy) >1) {datExp[[ty]] <- dat; datExp[[ty]][,chCols] <- dat0} else dat[,chCols] <- dat0 }}
-  ## idea (future) -make optional non-redundant version ? allowing to replace completely .exportFilteredCSV()
-  ##  prevent Excel trying SYLK format : replace 1st col from 'ID' to 'Id'
-  if(SYLKprevent) {if(is.list(datExp)) { chID <- grep("^ID",sapply(datExp,function(x) colnames(x)[1])) >0
-    if(any(chID)) for(i in which(chID)) colnames(datExp[[i]])[1] <- sub("^ID","Id",colnames(datExp[[i]])[1])
-  } else { chID <- grep("^ID",colnames(datExp)[1])
-    if(chID) colnames(datExp)[1] <- sub("^ID","Id",colnames(datExp)[1])}}
-  ## write to file
-  if(length(filename) <1) filename <- paste(if(is.character(inPutFi)) sub("\\.csv$","",inPutFi) else argN,".",expTy,".csv",sep="")
-  if(length(filename) < length(expTy)) {
-    if(!silent) message(fxNa," adding type to name(s) of file(s) to be written")
-    filename <- paste(sub("\\.csv$","",filename),".",expTy,".csv",sep="")
-    if("txt" %in% expTy) filename <- sub("\\.txt.\\csv$",".txt",filename)
-    names(filename) <- expTy }
-  if(debug) {cat("..xxWriteC4\n")}
-  if(!silent & any(file.exists(filename))) message(fxNa,"file(s) ",pasteC(filename[which(file.exists(filename))],quo="'")," will be overwritten !")
-  if( "US" %in% expTy) tryW <- try(utils::write.csv(as.matrix(format(if(length(datExp)>0) datExp$US else dat,digits=digits)), filename["US"], row.names=FALSE, quote=quote),silent=silent)
-  if("txt" %in% expTy) tryW <- try(utils::write.table(as.matrix(format(if(length(datExp)>0) datExp$txt else dat,digits=digits)), filename["txt"], row.names=FALSE, quote=quote),silent=silent)
-  ## idea (relaed to problem when input is fused numeric&text): in case of Eur test all cols if factor/text and then (optional?) convert '.' to ','
-  if("Eur" %in% expTy) tryW <- try(utils::write.csv2(as.matrix(format(if(length(datExp)>0) datExp$Eur else dat,digits=digits)), filename[1], row.names=FALSE, quote=quote),silent=silent)
-  ## possibility to return values :
-  if(returnOut) {if(length(expTy) <2) dat else datExp} }
+  doWrite <- TRUE
+  if(!requireNamespace("utils", quietly=TRUE)) { doWrite <- FALSE
+    warning(fxNa,"package 'utils' not found ! Please install first") 
+  }  
+  if(length(input) <1) { doWrite <- FALSE; warning(fxNa," 'input'  should be data or filename")}
+  
+  if(doWrite) {
+    if(is.character(input)) {if(file.exists(input)) {inPutFi <- as.character(dat)[1]; dat <- NULL
+      if(!silent) message(fxNa,"trying to read  ",inPutFi,"  as format: ",imporTy)
+        dat <- if(imporTy=="Eur") try(utils::read.csv2(inPutFi,stringsAsFactors=FALSE),silent=TRUE) else {
+          if(imporTy=="US") try(utils::read.csv(inPutFi, stringsAsFactors=FALSE),silent=TRUE) else try(utils::read.table(inPutFi,stringsAsFactors=FALSE),silent=TRUE) }
+        if("try-error" %in% class(dat)) {message(fxNa,"PROBLEM when trying tp open file '",inPutFi,"' - abandon"); doWrite <- FALSE }
+      } else { dat <- input
+        if(!silent) message(fxNa," 'input' is character but since no corresponding to existing filename, trying to interpret as data to be written to file")}
+    } else  dat <- input
+    if(doWrite) {
+      if(!is.null(dat)) { if(length(inPutFi) >1) message(fxNa," ignoring content of 'inPutFi'")
+         inPutFi <- NULL; imporTy <- ""}
+      if(length(dim(dat)) <2) dat <- as.matrix(dat)     # fx created for typical case of data.frame or matrix
+      datColCl <- rep(NA,ncol(dat))
+      for(i in 1:ncol(dat)) datColCl[i] <- class(dat[,i])                            # document class for each column (won't work using apply)
+      if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"unkown format for 'expTy', setting to 'Eur'")}
+      expTy <- sort(stats::na.omit(expTy))
+      if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"unkown format for 'expTy', setting to 'Eur'")}
+      ## FILTERING  (independent to expTy)
+      ## check if 'filterCol' in dat
+      if(is.list(filterCol) & length(filterCol) >0) {
+        useCol <- sapply(filterCol,function(x) x[1])
+        useCol <- which(useCol %in% colnames(dat))
+        if(!silent & length(useCol)<1) message(fxNa," none of the columns from 'filterCol' found in ",inPutFi)
+        filtThr <- sapply(filterCol[useCol],function(x) if(length(x>1)) x[2] else NA)
+        filterCol <- sapply(filterCol[useCol],function(x) x[1])
+        }
+      if(debug) {cat("..xxWriteC0\n")}
+      if(length(filterCol) >0) {
+        for(i in 1:length(filterCol)) {                          
+          chLogi <- TRUE                                         
+          ## this may be further deveoped: check if column has usable logical content
+          chLi <- if(is.na(filtThr[i]) & chLogi) which(dat[,filterCol[i]]) else which(dat[,filterCol[i]] < filtThr[i])
+          if(length(chLi) <nrow(dat) & length(chLi) >0) dat <- dat[chLi,] else if(length(chLi) <1) {
+            message(fxNa," filtering for ",filterCol[i]," nothing left !!")
+            dat <- NULL; return(NULL) }}
+      } else if(!is.character(inPutFi)) expTy <- expTy[which(!expTy  %in% imporTy)]        # no need to re-write same file if no filtering (unless inPutFi is filename)
+      ##
+      ## treat non-conform characters (only in non-numeric cols, dependent on expTy)
+      ##  locate non-conform characters, then subtitute in non-numeric part of dat
+      datExp <- list()
+      if(!all(datColCl %in% c("numeric","integer"))){                               # nothing to substitute if only numeric data, otherwise :
+        chCols <- which(!datColCl %in% c("numeric","integer"))
+        dat0 <- as.matrix(dat[,chCols])
+        ## first try to locate numeric cols with bad separator (digit+comma+digit)
+        zz <- sub("^[[:digit:]]+,[[:digit:]]+$|^[[:digit:]]+\\.[[:digit:]]+$|^,[[:digit:]]+$|^\\.[[:digit:]]+$","",dat0)     # no need to test for digits only wo separators
+        chNA <- is.na(zz)
+        if(any(chNA)) zz[which(chNA)] <- 0
+        toNum <- colSums(nchar(zz)) <1
+        if(debug) {cat("..xxWriteC1b\n")}
+        if(any(toNum)) {
+          if(!silent) message(fxNa," adjusting ",sum(toNum)," column(s) with Euro comma-separator")
+          dat[,chCols[which(toNum)]] <- as.numeric(sub(",",".",dat[,chCols[which(toNum)]]))
+          datColCl[chCols[which(toNum)]] <- "numeric"
+          chCols <- which(!datColCl %in% c("numeric","integer")) }                   # refresh
+        ## locate & replace 'bad' characters interfering with tabular separation -> need multiple versions
+        if(debug) {cat("..xxWriteC2\n")}
+        if(length(chCols) >0) for(ty in expTy) {
+          dat0 <- as.matrix(dat[,chCols])                                             # refresh
+          replMat <- if(is.null(replMatr))  array(c(";"," ", ","," ", "\t"," "),            
+             dim=c(2,1,3),dimnames=list(c("bad","subst"),c("sep1"),c("Eur","US","txt"))) else replMatr
+          if(length(dim(replMat)) >2) {
+            chTy <- ty %in% dimnames(replMat)[[3]]                    
+            replMat <- as.matrix(if(!chTy) replMat[,,1] else replMat[,,which(ty==dimnames(replMat)[[3]])])}  # matrix with characters to test for (1st line) & 2nd line for replacing
+          locCh <- lapply(replMat[1,], grep,dat0)
+          locCh <- locCh[which(sapply(locCh,length) >0)]                                            # indexes where substitution should take place
+          if(length(locCh) >0) for(i in 1:length(locCh)) dat0[locCh[[i]]] <- gsub(replMat[1,i],replMat[2,i],dat0[locCh[[i]]])
+          if(debug) {cat("..xxWriteC3\n")}
+          if(length(expTy) >1) {datExp[[ty]] <- dat; datExp[[ty]][,chCols] <- dat0} else dat[,chCols] <- dat0 }}
+      ## idea (future) -make optional non-redundant version ? allowing to replace completely .exportFilteredCSV()
+      ##  prevent Excel trying SYLK format : replace 1st col from 'ID' to 'Id'
+      if(SYLKprevent) {if(is.list(datExp)) { chID <- grep("^ID",sapply(datExp,function(x) colnames(x)[1])) >0
+        if(any(chID)) for(i in which(chID)) colnames(datExp[[i]])[1] <- sub("^ID","Id",colnames(datExp[[i]])[1])
+      } else { chID <- grep("^ID",colnames(datExp)[1])
+        if(chID) colnames(datExp)[1] <- sub("^ID","Id",colnames(datExp)[1])}}
+      ## write to file
+      if(length(filename) <1) filename <- paste(if(is.character(inPutFi)) sub("\\.csv$","",inPutFi) else argN,".",expTy,".csv",sep="")
+      if(length(filename) < length(expTy)) {
+        if(!silent) message(fxNa," adding type to name(s) of file(s) to be written")
+        filename <- paste(sub("\\.csv$","",filename),".",expTy,".csv",sep="")
+        if("txt" %in% expTy) filename <- sub("\\.txt.\\csv$",".txt",filename)
+        names(filename) <- expTy }
+      if(debug) {cat("..xxWriteC4\n")}
+      if(!silent & any(file.exists(filename))) message(fxNa,"file(s) ",pasteC(filename[which(file.exists(filename))],quo="'")," will be overwritten !")
+      if( "US" %in% expTy) tryW <- try(utils::write.csv(as.matrix(format(if(length(datExp)>0) datExp$US else dat,digits=digits)), filename["US"], row.names=FALSE, quote=quote),silent=silent)
+      if("txt" %in% expTy) tryW <- try(utils::write.table(as.matrix(format(if(length(datExp)>0) datExp$txt else dat,digits=digits)), filename["txt"], row.names=FALSE, quote=quote),silent=silent)
+      ## idea (relaed to problem when input is fused numeric&text): in case of Eur test all cols if factor/text and then (optional?) convert '.' to ','
+      if("Eur" %in% expTy) tryW <- try(utils::write.csv2(as.matrix(format(if(length(datExp)>0) datExp$Eur else dat,digits=digits)), filename[1], row.names=FALSE, quote=quote),silent=silent)
+      ## possibility to return values :
+      if(returnOut) {if(length(expTy) <2) dat else datExp} } } }
        

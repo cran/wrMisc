@@ -49,7 +49,8 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 ## expect to find C/D in c,d,e,f
 ## expect to find A/D in f,g,(h)  
 test8 <- moderTestXgrp(t8, grp) 
-head(test8$p.value, n=8)
+# If you have limma installed we can now see further
+if("list" \%in\% mode(test8)) head(test8$p.value, n=8)
 }
 \seealso{
 \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}

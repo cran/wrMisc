@@ -13,7 +13,8 @@ test2factLimma(
   addResults = c("lfdr", "FDR", "Mval", "means"),
   addGenes = NULL,
   silent = FALSE,
-  callFrom = NULL
+  callFrom = NULL,
+  debug = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ test2factLimma(
 \item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 object of class "MArrayLM" (from limma)
@@ -44,19 +47,19 @@ The input data 'datMatr' which should already be organized as limma-type MAList,
 Note: This function uses the Bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}.
 }
 \examples{
-## example for testing change of ratio for 4 sets (AA-DD) of pairs of data  
-set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2),ncol=8,
-  dimnames=list(letters[1:20],c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
-t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
-t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
-## via MAobj
-maOb8 <- makeMAList(t8,MAf=gl(2,4,labels=c("R","G")))
-fit8b <- test2factLimma(maOb8,c(1,1,1,1),c(0,0,1,1),testS=FALSE)  # same result as below (fit8e)
-limma::topTable(fit8b,coef=1,n=5)                      # effect for c,d,g&h
-## explicit (long) way via limma:
-fit8 <- limma::lmFit(maOb8, design= model.matrix(~ 0+factor(c(1,1,2,2))))
-fit8e <- limma::eBayes(fit8)
-limma::topTable(fit8e,coef=1,n=5)                      # effect for c,d,g&h
+set.seed(2014)
+dat0 <- rnorm(30) + rep(c(10,15,19,20),c(9,8,7,6))
+fa <- factor(rep(letters[1:4],c(9,8,7,6)))
+dat2 <- data.frame(facA=rep(c("-","A","-","A"), c(9,8,7,6)),
+  facB= rep(c("-","-","B","B"), c(9,8,7,6)), dat1=dat0, dat2=runif(30))
+grpNa <- sub("-","",sub("\\\\.","", apply(dat2[,1:2], 1, paste, collapse="")))    
+test2f <- test2factLimma(t(dat2[,3:4]), dat2$facA, dat2$facB, testS=FALSE)  
+test2f 
+# Now you can easily summarize results using topTable from limma
+if(requireNamespace("limma", quietly=TRUE)) {
+  library(limma)
+  topTable(test2f, coef=1, n=5) 
+  topTable(test2f, coef=2, n=5) } 
 }
 \seealso{
 \code{\link{makeMAList}}, single line testing \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}

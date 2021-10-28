@@ -2,14 +2,18 @@
 % Please edit documentation in R/levIndex.R
 \name{levIndex}
 \alias{levIndex}
-\title{transform (factor) levels into index}
+\title{Transform (factor) levels into index}
 \usage{
-levIndex(dat, byOccurance = TRUE)
+levIndex(dat, byOccurance = TRUE, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(numeric or character vector or factor) main input}
 
 \item{byOccurance}{(logical) toogle if lowest index should be based on alphabetical order or on order of input}
+
+\item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
 matrix with mean values

@@ -30,7 +30,7 @@
 filterLiColDeList <- function(lst, useLines, useCols=NULL, ref=1, silent=FALSE, callFrom=NULL) {
   ## filter all list-elements matching number of lines from the 'ref'-th list-element
   ## 'ref' .. designs list-element where number of rows will be compared to other list-elements to decide which list-elements (have same number of rows and thus) will be filtered
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="filterLiColDeList")
+  fxNa <- .composeCallName(callFrom, newNa="filterLiColDeList")
   msg <- "invalid argument 'ref' (should be index to existing element of 'lst')"
   doFilt <- TRUE
   chLe <- c(lst=length(lst), useLines=length(useLines), ref=length(ref))
@@ -51,7 +51,7 @@ filterLiColDeList <- function(lst, useLines, useCols=NULL, ref=1, silent=FALSE, 
         ch <- identical(length(useLines), dims[[ref]][1])
         useLines <- if(ch) which(useLines) else NULL } 
       if(is.numeric(useLines)) {
-        useLines <- wrMisc::naOmit(useLines)
+        useLines <- naOmit(useLines)
         if(min(useLines) <1 | max(useLines) > dims[[ref]][1]) {
           if(!silent) message(fxNa,"'useLines' may not design lines higher than number of lines in ref, neither may not be negative")
           useLines <- NULL }
@@ -61,7 +61,7 @@ filterLiColDeList <- function(lst, useLines, useCols=NULL, ref=1, silent=FALSE, 
       } else {
         useEl <- sapply(dims, function(x) if(length(x) >1) x[1] else 0) == dims[[ref]][1]   # compare to ref
         if(any(useEl)) for(i in which(useEl)) {lst[[i]] <- if(length(dims[[i]])==2) lst[[i]][useLines,] else lst[[i]][useLines,,]}
-        if(!silent) message(fxNa,"successfully filtered ",wrMisc::pasteC(names(lst)[which(useEl)],quoteC="'")," from ",dims[[ref]][1]," to ",length(useLines)," lines") } 
+        if(!silent) message(fxNa,"successfully filtered ",pasteC(names(lst)[which(useEl)],quoteC="'")," from ",dims[[ref]][1]," to ",length(useLines)," lines") } 
       ## check for single vectors matching nrow of ref (as long nrow not equal ncol of ref)
       chV <- sapply(dims, length)==0  & dims[[ref]][1]==dims[[ref]][2]
       if(any(chV)) { chV <- which(chV)
@@ -74,7 +74,7 @@ filterLiColDeList <- function(lst, useLines, useCols=NULL, ref=1, silent=FALSE, 
         ch <- length(useCols) == dims[[ref]][2]
         useLines <- if(ch) which(useCols) else NULL } 
       if(is.numeric(useCols)) {
-        useCols <- wrMisc::naOmit(useCols)
+        useCols <- naOmit(useCols)
         if(min(useCols) <1 | max(useCols) > dims[[ref]][2]) {
           if(!silent) message(fxNa,"'useCols' may not design columns higher than number of columns in ref, neither may not be negative")
           useCols <- NULL }
@@ -84,7 +84,7 @@ filterLiColDeList <- function(lst, useLines, useCols=NULL, ref=1, silent=FALSE, 
       } else {
         useEl <- sapply(dims, function(x) if(length(x) >1) x[2] else 0) == dims[[ref]][2]
         if(any(useEl)) for(i in which(useEl)) {cat("i=",i,"\n"); lst[[i]] <- if(length(dims[[i]])==2) lst[[i]][,useCols] else lst[[i]][,useCols,]}
-        if(!silent) message(fxNa,"successfully filtered ",wrMisc::pasteC(names(lst)[which(useEl)],quoteC="'")," from ",dims[[ref]][2]," to ",length(useCols)," columns") } 
+        if(!silent) message(fxNa,"successfully filtered ",pasteC(names(lst)[which(useEl)],quoteC="'")," from ",dims[[ref]][2]," to ",length(useCols)," columns") } 
       ## check for single vectors matching ncol of ref (as long nrow not equal ncol of ref)
       chV <- sapply(dims, length)==0  & dims[[ref]][1]==dims[[ref]][2]
       if(any(chV)) { chV <- which(chV)

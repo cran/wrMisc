@@ -34,10 +34,13 @@ limma-type "MAList" containing M and A values
 The grouping of columns as sets of replicate-measurements is done according to argumnet \code{'MAfac'}.
 The output is fully compatible to functions of package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} (Bioconductor).
 }
+\details{
+This function requires Bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} being installed.
+}
 \examples{
-set.seed(2017); t4 <- matrix(round(runif(40,1,9),2),ncol=4,
-  dimnames=list(letters[c(1:5,3:4,6:4)],c("AA1","BB1","AA2","BB2")))
-makeMAList(t4,gl(2,2,labels=c("R","G")))
+set.seed(2017); t4 <- matrix(round(runif(40,1,9),2), ncol=4,
+  dimnames=list(letters[c(1:5,3:4,6:4)], c("AA1","BB1","AA2","BB2")))
+makeMAList(t4, gl(2,2,labels=c("R","G")))
 }
 \seealso{
 \code{\link{test2factLimma}}, for creating RG-lists within limma: \code{MA.RG} in \code{\link[limma]{normalizeWithinArrays}}

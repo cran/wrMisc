@@ -12,15 +12,18 @@
 #' @export
 htmlSpecCharConv <- function(txt, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="htmlSpecCharConv")
-  chPa <- try(find.package("stringi"), silent=TRUE)
-  if("try-error" %in% class(chPa)) { message(fxNa,"package 'stringi' not found ! Returning initial txt")
+  if(!requireNamespace("stringi", quietly=TRUE)) {
+    message(fxNa,"Package 'stringi' needed for conversion not found ! Please install from CRAN. Returning initial 'txt'")
   } else {
     speCh <- c("\\u00b5","\\u00ba","\\u00b9","\\u00b2","\\u00b3",beta="\\u00df","\\u00e0", ced="\\u00e7",
       "\\u00e8","\\u00e9", ae="\\u00e2","\\u00f6","\\u00fc","\\u00f7","\\u00f5",x="\\u00d7")
-    conv <- matrix(c(stringi::stri_unescape_unicode(speCh), "&micro","&ordm","&sup1","&sup2","&sup3","&szlig",          
-       "&agrave","&ccedil","&egrave","&eacute","&auml", "&ouml","&uuml","&divide","&otilde","&times"),ncol=2) 
-    conv <- rbind(conv,c('"','&quot'))
-    for(i in 1:nrow(conv)) { che <- grep(conv[i,1],txt)
-      if(length(che) >0) txt[che] <- gsub(conv[i,1],conv[i,2],txt[che])}}
+    conv <- try(stringi::stri_unescape_unicode(speCh), silent=TRUE) 
+    if("try-error" %in% class(conv)) { warning(fxNa,": UNABLE to tun stringi::stri_unescape_unicode() !"); txt <- NULL
+    } else {
+      conv <- matrix(c(conv, "&micro","&ordm","&sup1","&sup2","&sup3","&szlig",          
+        "&agrave","&ccedil","&egrave","&eacute","&auml", "&ouml","&uuml","&divide","&otilde","&times"), ncol=2)  
+      conv <- rbind(conv,c('"','&quot'))
+      for(i in 1:nrow(conv)) { che <- grep(conv[i,1],txt)
+        if(length(che) >0) txt[che] <- gsub(conv[i,1],conv[i,2],txt[che]) } } }
   txt }
 

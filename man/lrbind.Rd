@@ -7,7 +7,7 @@
 lrbind(lst, silent = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{lst}{(list) main input (each list-element should have same number of columns, numeric vectors will be converted to number of columns of other elements)}
+\item{lst}{(list, composed of multiple matrix or data.frames or simple vectors) main input (each list-element should have same number of columns, numeric vectors will be converted to number of columns of other columns/elements)}
 
 \item{silent}{(logical) suppress messages}
 
@@ -17,12 +17,13 @@ lrbind(lst, silent = FALSE, callFrom = NULL)
 matrix or data.frame
 }
 \description{
-rbind-like function to append list-elements containing tables and return one long table. 
-Accepts also list-entries with data.frames or vectors (of length of no of columns) as long as at least 1 list-entry is a matrix
+rbind-like function to append list-elements containing matrixes (or data.frames) and return one long table. 
+All list-elements must have same number of columns (and same types of classes in case of data.frames.
+Simple vectors (as list-elements) will be considered as sigle lines for attaching.
 }
 \examples{
-lst1 <- list(matrix(1:9,nc=3,dimnames=list(letters[1:3],c("AA","BB","CC"))),
-  11:13,matrix(51:56,ncol=3))
+lst1 <- list(matrix(1:9, ncol=3, dimnames=list(letters[1:3],c("AA","BB","CC"))),
+  11:13, matrix(51:56, ncol=3))
 lrbind(lst1)
 }
 \seealso{

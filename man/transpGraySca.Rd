@@ -24,10 +24,10 @@ Note : The resulting color gradient does not seem linear to the human eye, you m
 }
 \examples{
 layout(1:2)
-col1 <- wrMisc::transpGraySca(0.8,0.3,7,0.9) 
-pie(rep(1,length(col1)),col=col1,main="from transpGraySca")
+col1 <- transpGraySca(0.8,0.3,7,0.9) 
+pie(rep(1,length(col1)), col=col1, main="from transpGraySca")
 col2 <- gray.colors(7,0.9,0.3,alph=0.9)
-pie(rep(1,length(col2)),col=col2,main="from gray.colors")
+pie(rep(1,length(col2)), col=col2, main="from gray.colors")
 }
 \seealso{
 \code{\link[grDevices]{gray.colors}}

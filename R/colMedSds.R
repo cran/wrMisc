@@ -4,18 +4,25 @@
 #' Note: Uses the package \href{https://CRAN.R-project.org/package=boot}{boot}.
 #' @param dat (numeric) matix 
 #' @param nBoot  (integer) number if iterations
+#' @param silent (logical) suppress messages
+#' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return (numeric) vector with estimated standard errors
 #' @seealso \code{\link[boot]{boot}}
 #' @examples
-#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
+#' set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
 #' colMedSds(dat1) 
 #' @export
-colMedSds <- function(dat,nBoot=99){
+colMedSds <- function(dat, nBoot=99, silent=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="colMedSds")
+  if(!isTRUE(silent)) silent <- FALSE  
   msg <- "'dat' should be matrix or data.frame with "
-  if(is.null(ncol(dat))) stop(msg,"multiple columns !") else if(ncol(dat) < 2) stop(msg,"at least 2 columns !")
-  chPa <- try(find.package("boot"),silent=TRUE)
-  if("try-error" %in% class(chPa)) stop("package 'boot' not found") 
-  median.fun <- function(dat,indices) stats::median(dat[indices],na.rm=TRUE)
-  out <- apply(dat,2,function(x) stats::sd(boot::boot(data=x, statistic=median.fun, R=nBoot)$t))
+  if(length(dat) <1) { warning(fxNa,"Argument 'dat' seems to be empty !"); out <- NULL
+  } else {
+    if(is.null(ncol(dat))) stop(msg,"multiple columns !") else if(ncol(dat) < 2) stop(msg,"at least 2 columns !")
+    chPa <- try(find.package("boot"), silent=TRUE)
+    if("try-error" %in% class(chPa)) stop("Package 'boot' not found") 
+    median.fun <- function(dat,indices) stats::median(dat[indices], na.rm=TRUE)
+    out <- try(apply(dat, 2, function(x) stats::sd(boot::boot(data=x, statistic=median.fun, R=nBoot)$t)), silent=TRUE)
+    if("try-error" %in% class(out)) { warning(fxNa,": Unable to run boot::boot()"); out <- NULL } }
   out }
  

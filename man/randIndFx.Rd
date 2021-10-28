@@ -26,13 +26,14 @@ Note: uses/requires package \href{https://CRAN.R-project.org/package=flexclust}{
 Methods so far available (via flexclust): "ARI" .. adjusted Rand Index, "RI" .. Rand index, "J" .. Jaccard, "FM" .. Fowlkes-Mallows.
 }
 \examples{
-set.seed(2016); tab2 <- matrix(sample(1:2,size=42,replace=TRUE),ncol=7)
-flexclust::comPart(tab2[1,],tab2[2,])
-flexclust::comPart(tab2[1,],tab2[3,])
-flexclust::comPart(tab2[1,],tab2[4,])
-  randIndFx(tab2,adjS=FALSE)
+set.seed(2016); tab2 <- matrix(sample(1:2, size=42, replace=TRUE), ncol=7)
+if(requireNamespace("flexclust")) { flexclust::comPart(tab2[1,],tab2[2,])
+  flexclust::comPart(tab2[1,],tab2[3,])
+  flexclust::comPart(tab2[1,],tab2[4,]) }
+## via randIndFx():
+  randIndFx(tab2, adjSense=FALSE)
   cor(t(tab2))
-  randIndFx(tab2,adjS=TRUE)
+  randIndFx(tab2, adjSense=TRUE)
 }
 \seealso{
 \code{comPart} in \code{\link[flexclust]{randIndex}}

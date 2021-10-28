@@ -21,10 +21,10 @@ sumNAperGroup <- function(x, grp, asRelative=FALSE) {
   if(length(dim(x)) <2) stop("Argument 'x' should be matrix or data.frame")
   if(length(grp) != ncol(x)) stop("Length of argument 'x' should match number of columns in 'x'")
   if(is.data.frame(x)) x <- as.matrix(x)
-  grpLev <- unique(wrMisc::naOmit(grp))
+  grpLev <- unique(naOmit(grp))
   out <- as.integer(by(t(x), grp, function(y) sum(is.na(y))))[rank(grpLev)]
   names(out) <- grpLev
-  if(asRelative) {
+  if(isTRUE(asRelative)) {
     nGrp <- table(grp)[rank(grpLev)] 
     out <- out/(nrow(x)*nGrp) }
   out }   

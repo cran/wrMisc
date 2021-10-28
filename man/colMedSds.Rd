@@ -4,12 +4,16 @@
 \alias{colMedSds}
 \title{Standard error of median for each column by bootstrap}
 \usage{
-colMedSds(dat, nBoot = 99)
+colMedSds(dat, nBoot = 99, silent = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(numeric) matix}
 
 \item{nBoot}{(integer) number if iterations}
+
+\item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
 (numeric) vector with estimated standard errors
@@ -19,7 +23,7 @@ Determine standard error (sd) of median by bootstraping for multiple sets of dat
 Note: Uses the package \href{https://CRAN.R-project.org/package=boot}{boot}.
 }
 \examples{
-set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
+set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
 colMedSds(dat1) 
 }
 \seealso{

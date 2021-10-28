@@ -22,14 +22,16 @@
 #'   dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
 #' test8 <- moderTestXgrp(t8, grp) 
 #' head(test8$p.value)         # all pairwise comparisons available
-#' sampNoDeMArrayLM(test8,1)
-#' head(test8$means[,sampNoDeMArrayLM(test8,1)])
-#' head(test8$means[,sampNoDeMArrayLM(test8,"C-D")])
+#' if(requireNamespace("limma", quietly=TRUE)) {  # need limma installed...
+#'   sampNoDeMArrayLM(test8,1)
+#'   head(test8$means[,sampNoDeMArrayLM(test8,1)])
+#'   head(test8$means[,sampNoDeMArrayLM(test8,"C-D")]) }
 #' 
 #' @export
-sampNoDeMArrayLM <- function(MArrayObj, useComp, groupSep="-",lstMeans="means",lstP=c("BH","FDR","p.value"),silent=FALSE,callFrom=NULL) {
+sampNoDeMArrayLM <- function(MArrayObj, useComp, groupSep="-", lstMeans="means",lstP=c("BH","FDR","p.value"), silent=FALSE, callFrom=NULL) {
   ## locate sample index from index or name of pair-wise comparisons in list or MArrayLM-object
-  fxNa <- .composeCallName(callFrom, newNa=".sampNoDeMArrayLM")
+  fxNa <- .composeCallName(callFrom, newNa="sampNoDeMArrayLM")
+  if(!isTRUE(silent)) silent <- FALSE
   errMsg <- c("argument 'MArrayObj' is ","empty","doesn't contain the list-element needed  ('",lstMeans,"') !")
   if(length(MArrayObj) <1) stop(errMsg[1:2])
   if(length(MArrayObj[[lstMeans]]) <1) stop(errMsg[-2])
@@ -43,7 +45,7 @@ sampNoDeMArrayLM <- function(MArrayObj, useComp, groupSep="-",lstMeans="means",l
     if(any(chP) & length(lstP) >0) lstP <- lstP[which(chP)[1]]
     if(length(colnames(MArrayObj[[lstP]])) <1)  stop(" Problem with 'MArrayObj' (can't find names of comparisons in '",lstP,"')")
     ## convert/locate names to index 
-    if(is.character(useComp) & length(grep("[[:alpha:]]",useComp)) >0) useComp <- wrMisc::naOmit(match(useComp, colnames(MArrayObj[[lstP]]) ))
+    if(is.character(useComp) & length(grep("[[:alpha:]]",useComp)) >0) useComp <- naOmit(match(useComp, colnames(MArrayObj[[lstP]]) ))
     if(length(useComp) <1) stop("Argument 'useComp' is empty or can't locate in comparison-names")
     ## main
     out <- if(ncol(MArrayObj[[lstP]])==2 & colnames(MArrayObj[[lstP]])[1] =="(Intercept)") 1:2 else {

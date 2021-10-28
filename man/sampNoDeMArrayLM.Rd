@@ -46,9 +46,10 @@ set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
   dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
 test8 <- moderTestXgrp(t8, grp) 
 head(test8$p.value)         # all pairwise comparisons available
-sampNoDeMArrayLM(test8,1)
-head(test8$means[,sampNoDeMArrayLM(test8,1)])
-head(test8$means[,sampNoDeMArrayLM(test8,"C-D")])
+if(requireNamespace("limma", quietly=TRUE)) {  # need limma installed...
+  sampNoDeMArrayLM(test8,1)
+  head(test8$means[,sampNoDeMArrayLM(test8,1)])
+  head(test8$means[,sampNoDeMArrayLM(test8,"C-D")]) }
 
 }
 \seealso{

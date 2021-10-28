@@ -19,39 +19,40 @@
 #' @param rangeSign (integer) only used when \code{method="binning"}: range of numbers used as number of significant values
 #' @param nCl (integer) depreciated argument, please use \code{bandw} instead
 #' @param histLike (logical) depreciated, please use argument \code{method} instead
-#' @param callFrom (character) allows easier tracking of message(s) produced
 #' @param silent (logical) suppress messages
+#' @param callFrom (character) allows easier tracking of message(s) produced
 #' @return MA-plot only
 #' @seealso \code{computeMode()} in package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc}
 #' @examples
 #' set.seed(2012); dat <- round(c(rnorm(50), runif(100)),3)
 #' stableMode(dat)
 #' @export
-stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL, histLike=NULL, callFrom=NULL, silent=FALSE) {
+stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL, histLike=NULL, silent=FALSE, callFrom=NULL) {
   ## stable mode  
   fxNa <- .composeCallName(callFrom, newNa="stableMode")
-  if(length(histLike) > 0) message(fxNa, " argument 'histLike' is depreciated, please use argument 'method' instead !")
+  if(length(histLike) > 0) message(fxNa, "Argument 'histLike' is depreciated, please use argument 'method' instead !")
+  if(!isTRUE(silent)) silent <- FALSE
   x <- naOmit(x)
   if(length(unique(x)) < 0) {
     method <- NULL
     return(NULL)
-    if(!silent)  message(fxNa, " no numeric values (nothing to do)") 
+    if(!silent)  message(fxNa, "NO numeric values (nothing to do)") 
   } else if(length(unique(x)) == 1) {
     method <- NULL
     return(x[1])
-    if(!silent &  length(x) >1) message(fxNa, " all values are the same (= mode)") }
+    if(!silent &  length(x) >1) message(fxNa, "All values are the same (= mode)") }
   if(identical(method, "dens"))  method <- "density"
   if(identical(method, "bin")) method <- "binning"
   if(identical(method, "histLike")) {
     method <- "binning"
-    if(!silent) message(fxNa, " Note: argument option 'histLike' has been depreciated and replaced by 'binning'") }
+    if(!silent) message(fxNa, "Note: argument option 'histLike' has been depreciated and replaced by 'binning'") }
   out <- NULL
   isNum <- is.numeric(x)
   ## check type of input
   if(any(sapply(c("BBmisc","density","binning"), identical, method)) & !isNum) {    
     chNum <- try(as.numeric(if(is.factor(x)) as.character(x) else x))
     if("try-error" %in% class(chNum)) {
-     if(!silent) message(fxNa," Note : Input is NOT numeric, not compatible with method chosen, thus setting method='mode' !")
+     if(!silent) message(fxNa,"Note : Input is NOT numeric, not compatible with method chosen, thus setting method='mode' !")
      method <- "mode"
   }}
   ## find simply most frequent exact value(s)
@@ -65,14 +66,20 @@ stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL,
   } else  chDu <- sum(duplicated(x)) 
   ## BBmisc
   if(identical(method, "BBmisc")) {
-    chPa <- try(find.package("BBmisc"), silent = TRUE)
-    if("try-error" %in% class(chPa)) { method <- "density"
-      message(fxNa," package 'BBmisc' not found ! Please install first \n   setting 'method' to 'density'") }
+    if(!requireNamespace("BBmisc")) { method <- "density"
+      message(fxNa,"Package 'BBmisc' not found ! Please install first from CRAN \n   setting 'method' to 'density'") }    
+  }
+  if(identical(method, "BBmisc")) {
+    mo <- try(sapply(rangeSign, function(y) BBmisc::computeMode(signif(x, y))), silent=TRUE)
+    if("try-error" %in% class(mo)) { method <- "density"
+      warning(fxNa,"UNABLE to calulate BBmisc::computeMode(),  setting 'method' to 'density'")
+    } else  { posi <- .firstMin(diff(mo)/mo[-length(mo)], positionOnly = TRUE)
+      out <- mo[posi] }
   }
   ## density 
   if(identical(method, "density")) {
     if(length(bandw) <1) {bandw <- round(1.4* sqrt(length(x)))
-      if(!silent) message(fxNa," method='density',  length of x =",length(x),", 'bandw' has been set to ",bandw)}
+      if(!silent) message(fxNa,"Method='density',  length of x =",length(x),", 'bandw' has been set to ",bandw)}
     x <- sort(x)
     raX <- max(x) - min(x)
     nExt <- bandw - 1
@@ -83,15 +90,11 @@ stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL,
     out <- x[maxDi +nExt]
     names(out) <- maxDi
   }
-  if(identical(method, "BBmisc")) {
-    mo <- sapply(rangeSign, function(y) BBmisc::computeMode(signif(x, y)))
-    posi <- .firstMin(diff(mo)/mo[-length(mo)], positionOnly = TRUE)
-    out <- mo[posi]
-  }
+  ## binning
   if(identical(method, "binning")) {
-    if(length(nCl) >0) message(fxNa," method='binning', argument 'nCl' is depreciated and will be ignored, please use 'bandw' instead !")
+    if(length(nCl) >0) message(fxNa,"Method='binning', argument 'nCl' is depreciated and will be ignored, please use 'bandw' instead !")
     if(!all(length(bandw) >0, is.numeric(bandw))) bandw <- ceiling(sqrt(length(x)))
-    if(70 * bandw > length(x) & !silent)  message(fxNa," method='binning', value of 'bandw'=", bandw, " may be too high for good functioning !")
+    if(70 * bandw > length(x) & !silent)  message(fxNa,"Method='binning', value of 'bandw'=", bandw, " may be too high for good functioning !")
     xRa <- range(x[which(is.finite(x))])
     frq <- table(cut(x, breaks = seq(xRa[1], xRa[2], length.out = bandw)))
     che <- max(frq, na.rm=TRUE) > c(0.5, 0.8) * length(x)

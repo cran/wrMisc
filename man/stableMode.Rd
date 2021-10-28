@@ -11,8 +11,8 @@ stableMode(
   rangeSign = 1:6,
   nCl = NULL,
   histLike = NULL,
-  callFrom = NULL,
-  silent = FALSE
+  silent = FALSE,
+  callFrom = NULL
 )
 }
 \arguments{
@@ -30,9 +30,9 @@ very "critical" parameter, may change results in strong way. Note: with \code{me
 
 \item{histLike}{(logical) depreciated, please use argument \code{method} instead}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
-
 \item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allows easier tracking of message(s) produced}
 }
 \value{
 MA-plot only

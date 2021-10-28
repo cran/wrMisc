@@ -32,7 +32,8 @@
 #' @export
 rnormW <- function(n, mean=0, sd=1, seed=NULL, digits=8, silent=FALSE, callFrom=NULL) {
   ## reconstitute orginal values based on summary
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="rnormW")
+  fxNa <- .composeCallName(callFrom, newNa="rnormW")
+  if(!isTRUE(silent)) silent <- FALSE
   if(length(n) <1 | !is.numeric(n)) { out <- NULL; if(!silent) message(fxNa,"invalid 'n', returning NULL")
   } else { 
     if(length(n) >1) n <- length(n)

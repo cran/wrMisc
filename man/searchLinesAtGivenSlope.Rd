@@ -16,7 +16,7 @@ searchLinesAtGivenSlope(
   bestCluByDistRat = TRUE,
   neighbDiLim = NULL,
   silent = FALSE,
-  debugM = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -43,7 +43,7 @@ searchLinesAtGivenSlope(
 
 \item{silent}{(logical) suppress messages}
 
-\item{debugM}{(logical) for bug-tracking: more/enhanced messages}
+\item{debug}{(logical) for bug-tracking: more/enhanced messages}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }

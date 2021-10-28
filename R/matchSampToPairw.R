@@ -33,6 +33,7 @@
 matchSampToPairw <- function(grpNa, pairwNa, sep=NULL, silent=FALSE, callFrom=NULL) {
   ## return index of grpNa for each pairwNa
   fxNa <- .composeCallName(callFrom, newNa="matchSampToPairw")
+  if(!isTRUE(silent)) silent <- FALSE
   chPw <- duplicated(pairwNa)
   if(any(chPw)) {if(!silent) message(fxNa," some entries of 'pairwNa' are duplicated, removing")
     pairwNa <- pairwNa[-which(chPw)]} 
@@ -41,7 +42,7 @@ matchSampToPairw <- function(grpNa, pairwNa, sep=NULL, silent=FALSE, callFrom=NU
     grpNa <- grpNa[-which(chNa)]} 
   if(length(grpNa) <2) stop("Insufficient 'grpNa' furnished") 
   if(length(pairwNa) <1) stop("Insufficient 'pairwNa' furnished")
-  if(length(sep) >1) {sep <- wrMisc::naOmit(as.character(sep))[1]
+  if(length(sep) >1) {sep <- naOmit(as.character(sep))[1]
     if(!silent) message(fxNa,"'sep' should be of length=1, using first entry")} 
   if(any(is.na(sep))) { sep <- NULL
     if(!silent) message(fxNa,"invalid entry for 'sep', setting to NULL")} 
@@ -52,7 +53,7 @@ matchSampToPairw <- function(grpNa, pairwNa, sep=NULL, silent=FALSE, callFrom=NU
     if(any(chLe <2)) stop(" Problem: Separator '",sep,"' seems NOT to occur in 'pairwNa' !")
     if(any(chLe >2)) { if(!silent) message(fxNa," separator '",sep,"' seems to occur multiple times in ",sum(chLe >2),"'pairwNa', using 1st and last of strsplit")
       spl[which(chLe >2)] <- lapply(spl[which(chLe >2)], function(x) x[c(1,length(x))]) }
-    out <- t(sapply(spl,match,grpNa))
+    out <- t(sapply(spl, match, grpNa))
   } else {
     le <- apply(sapply(pairwNa, function(x) {w <- sapply(grpNa, function(y) length(grep(paste0("^",y),x)) >0)
       if(sum(w) >1) {v <- rep(FALSE, sum(w)); v[which.max(nchar(grpNa)[which(w)])] <- TRUE; w[which(w)] <- v}; w} ), 2, which)
