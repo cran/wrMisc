@@ -114,6 +114,14 @@ head(unlist(bb, recursive=FALSE))
 bb <- list(fa=gl(2,2), ve=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=data.frame(41:44)))
 asSepList(bb)
 
+## ----lappend1, echo=TRUE------------------------------------------------------
+li1 <- list(a=1, b=2, c=3)
+li2 <- list(A=11, b=2, C=13)
+append(li1, li2)
+
+## ----lappend2, echo=TRUE------------------------------------------------------
+appendNR(li1, li2)
+
 ## ----lrbind, echo=TRUE--------------------------------------------------------
 dat2 <- matrix(11:34, ncol=3, dimnames=list(letters[1:8],colnames=LETTERS[1:3]))
 lst2 <- by(dat2, rep(1:3,c(3,2,3)), as.matrix)
@@ -152,7 +160,7 @@ listGroupsByNames((1:10)/5)
 
 ## ----filterList, echo=TRUE----------------------------------------------------
 set.seed(2020); dat1 <- round(runif(80),2)
-list1 <- list(m1=matrix(dat1[1:40],ncol=8),m2=matrix(dat1[41:80],ncol=8),other=letters[1:8])
+list1 <- list(m1=matrix(dat1[1:40], ncol=8), m2=matrix(dat1[41:80], ncol=8), other=letters[1:8])
 rownames(list1$m1) <- rownames(list1$m2) <- paste0("line",1:5)
 # Note: the list-element list1$other has a length different to that of filt. Thus, it won't get filtered.
 filterList(list1, list1$m1[,1] >0.4)       # filter according to 1st column of $m1 ...
@@ -693,6 +701,10 @@ lst2 <- list('121'=data.frame(ID=as.character(c(141,221,228,229,449)),11:15),
 
 ## ----filterNetw3, echo=TRUE---------------------------------------------------
 (nw3 <- filterNetw(lst2, limInt=20, sandwLim=14, remOrphans=TRUE))
+
+## ----propMatr1, echo=TRUE-----------------------------------------------------
+pairs3L <- matrix(LETTERS[c(1,3,3, 2,2,1)], ncol=2)      # loop of 3
+(netw13pr <- pairsAsPropensMatr(pairs3L))                # as prop matr
 
 ## ----contribToContigPerFrag, echo=TRUE----------------------------------------
 path1 <- matrix(c(17,19,18,17, 4,4,2,3), ncol=2,

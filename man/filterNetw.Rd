@@ -13,6 +13,7 @@ filterNetw(
   filterAsInf = TRUE,
   outFormat = "matrix",
   remOrphans = TRUE,
+  remRevPairs = TRUE,
   reverseCheck = TRUE,
   elemNa = "genes",
   silent = FALSE,
@@ -33,7 +34,9 @@ filterNetw(
 
 \item{remOrphans}{(logical) remove networks consisting only of 2 connected edges}
 
-\item{reverseCheck}{(logical)}
+\item{remRevPairs}{(logical) remove duplicate edges due to reverse massping (eg A - B and B - A); NOTE : use only when edges don't have orientation !}
+
+\item{reverseCheck}{(logical) depreciated}
 
 \item{elemNa}{(character) used only for messages}
 

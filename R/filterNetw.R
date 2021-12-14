@@ -9,7 +9,8 @@
 #' @param filterAsInf (logical) filter as 'inferior or equal' or 'superior or equal'
 #' @param outFormat (character) may be 'matrix' for tabular output, 'all' as list with matrix and list of node-names
 #' @param remOrphans (logical) remove networks consisting only of 2 connected edges
-#' @param reverseCheck (logical) 
+#' @param remRevPairs (logical) remove duplicate edges due to reverse massping (eg A - B and B - A); NOTE : use only when edges don't have orientation !   
+#' @param reverseCheck (logical) depreciated
 #' @param elemNa (character) used only for messages
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
@@ -33,7 +34,7 @@
 #' 
 #' 
 #' @export
-filterNetw <- function(lst, limInt=5000, sandwLim=5000, filterAsInf=TRUE, outFormat="matrix", remOrphans=TRUE, reverseCheck=TRUE, elemNa="genes", silent=FALSE, callFrom=NULL, debug=FALSE) {
+filterNetw <- function(lst, limInt=5000, sandwLim=5000, filterAsInf=TRUE, outFormat="matrix", remOrphans=TRUE, remRevPairs=TRUE, reverseCheck=TRUE, elemNa="genes", silent=FALSE, callFrom=NULL, debug=FALSE) {
   ##
   fxNa <- .composeCallName(callFrom, newNa="filterNetw")
   if(!isTRUE(silent)) silent <- FALSE
@@ -70,7 +71,7 @@ filterNetw <- function(lst, limInt=5000, sandwLim=5000, filterAsInf=TRUE, outFor
   } } else limInt <- NULL 
   if(debug) message(fxNa,"fiNe3 check input format if filtering can be applied")
   ## check if reverse-(direct)mapping has same score - only if .filterNetw is not launched (.filterNetw does this check, too)
-  if(reverseCheck & !asMatrix & all(chQ)) {    # run only if no conversion to matris, otherwise do this check after lrbind()
+  if(remRevPairs & !asMatrix & all(chQ)) {    # run only if no conversion to matrix, otherwise do this check after lrbind()
     sepCha <- "__"
     chRe <- cbind(pri=rep(names(lst), sapply(lst,nrow)), sec=lrbind(lst) )
     chR2 <- paste(chRe[,2], chRe[,1], sep=sepCha) %in% paste(chRe[,1], chRe[,2], sep=sepCha) 
@@ -132,9 +133,15 @@ filterNetw <- function(lst, limInt=5000, sandwLim=5000, filterAsInf=TRUE, outFor
   if(length(lst) <1) message(fxNa,"NOTE: NOTHING remaining after filtering for connected networks ") else {
     if(!isFALSE(asMatrix)) {
       ## convert to matrix, remove duplicates
-      lst <- .filterNetw(lst, remOrphans=remOrphans, reverseCheck=reverseCheck, callFrom=fxNa, silent=silent, debug=debug)
+      lst <- .filterNetw(lst, remOrphans=remOrphans, reverseCheck=remRevPairs, callFrom=fxNa, silent=silent, debug=debug)
       isSandw <- lst[,2] %in% useID$sandwID
-      lst <- cbind(lst, toSandw=if(is.data.frame(lst)) isSandw else as.numeric(isSandw)) 
+      lst <- cbind(lst, toSandw=if(is.data.frame(lst)) isSandw else as.numeric(isSandw))
+      if(!isFALSE(remRevPairs)) {
+        te1x <- apply(as.matrix(lst[,1:2]), 1, sort)      ## need to sort le/ri !!
+        lst <- lst[which(!duplicated(paste(te1x[1,],te1x[2,]), fromLast=FALSE)),]      # corrected for duplicate pairs
+
+      
+      }
     } else {
       ## prepare output as list
       lst <- lapply(lst, function(x) {ch1 <- x[,1] %in% unlist(useID)

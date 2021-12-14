@@ -1,7 +1,7 @@
-#' Btach reading of tabulated (text-) files
+#' Batch reading of tabulated (text-) files
 #'  
-#' This function allows batch reading of tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
-#' If package \code{data.table} is 
+#' This function allows batch reading of multiple tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
+#' If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, fast reading of files will be performed using the function \code{\link[data.table]{fread}}.  
 #' 
 #' 
 #' @param query (character) vector of file-names to be read, if \code{"."} all files will be read (no matter what their extension might be)
@@ -26,7 +26,7 @@
 #' str(allTxt)
 #' 
 #' @export
-readTabulatedBatch <- function(query, path, dec=".", header="auto", strip.white=FALSE, blank.lines.skip=TRUE, fill=FALSE, 
+readTabulatedBatch <- function(query, path=NULL, dec=".", header="auto", strip.white=FALSE, blank.lines.skip=TRUE, fill=FALSE, 
   filtCol=2, filterAsInf=TRUE, filtVal=5000, silent=FALSE, callFrom=NULL, debug=FALSE) {
   ## read tabulated data from local download 
   fxNa <- wrMisc::.composeCallName(callFrom, newNa="readTabulatedBatch")

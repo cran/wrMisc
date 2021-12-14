@@ -2,14 +2,14 @@
 % Please edit documentation in R/readTabulatedBatch.R
 \name{readTabulatedBatch}
 \alias{readTabulatedBatch}
-\title{Btach reading of tabulated (text-) files
+\title{Batch reading of tabulated (text-) files
  
-This function allows batch reading of tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
-If package \code{data.table} is}
+This function allows batch reading of multiple tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
+If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, fast reading of files will be performed using the function \code{\link[data.table]{fread}}.}
 \usage{
 readTabulatedBatch(
   query,
-  path,
+  path = NULL,
   dec = ".",
   header = "auto",
   strip.white = FALSE,
@@ -54,10 +54,10 @@ readTabulatedBatch(
 list of data.frames
 }
 \description{
-Btach reading of tabulated (text-) files
+Batch reading of tabulated (text-) files
  
-This function allows batch reading of tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
-If package \code{data.table} is
+This function allows batch reading of multiple tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
+If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, fast reading of files will be performed using the function \code{\link[data.table]{fread}}.
 }
 \examples{
 path1 <- system.file("extdata", package="wrMisc")

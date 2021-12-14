@@ -249,6 +249,24 @@ bb <- list(fa=gl(2,2), ve=31:33, L2=matrix(21:28,ncol=2), li=list(li1=11:14,li2=
 asSepList(bb)
 ```
 
+### Appending/Combining Lists
+
+Separate lists may be combined using the _append()_ command, which also allows treating simple vectors.
+
+```{r lappend1, echo=TRUE}
+li1 <- list(a=1, b=2, c=3)
+li2 <- list(A=11, b=2, C=13)
+append(li1, li2)
+```
+
+However, this way there is no checking if some of the list-elements are present in both lists and thus will appear twice.
+The function `appendNR()` allows to checking if some list-elements will appear twice, and thus avoid such duplicate entries.
+
+
+```{r lappend2, echo=TRUE}
+appendNR(li1, li2)
+```
+
 
 ### rbind on lists
 
@@ -283,10 +301,11 @@ fuseCommonListElem(lst1)
 
 ### Filtering lines and/or columns for all list-elements of same size
 
-In a numerb of cases the information stared in various list-elements is somehow related.
-Eg, in S3-objects produced by [limma](https://bioconductor.org/packages/release/bioc/html/limma.html), or data produced using [wrProteo](https://CRAN.R-project.org/package=wrProteo) several instances of matrix or data.frame are related. 
-Some matrixes may conatain abundance data while a matrix or data.frame may contain the annotation realated to each line of the abundance data.
-So one wants to filter, ie remove some lines in from one of these elements, one should do the same with the other list-elements to maintain conventient 1:1 matching of lines.
+In a number of cases the information in various list-elements is somehow related.
+Eg, in S3-objects produced by [limma](https://bioconductor.org/packages/release/bioc/html/limma.html), or data produced using [wrProteo](https://CRAN.R-project.org/package=wrProteo) several instances of matrix or data.frame refer to data that are related. 
+Some matrixes may conatain abundance data (or weights, etc) while another matrix or data.frame may contain the annotation information related to each line of the abundance data.
+So if one wants to filter the data, ie remove some lines, this should be done in the same way with all related list-elements. 
+This way one may maintain a conventient 1:1 matching of lines.
 
 The function `filterLiColDeList()` searches if other list-elements have suitable dimensions and will then run the same filtering as in the 'target' list-element.
 In consequence this can be used with the output of wrProteo to remove simultaneously the same lines and/or columns.
@@ -331,7 +350,7 @@ The function `filterList()` aims facilitating the filtering of all elements of l
 
 ```{r filterList, echo=TRUE}
 set.seed(2020); dat1 <- round(runif(80),2)
-list1 <- list(m1=matrix(dat1[1:40],ncol=8),m2=matrix(dat1[41:80],ncol=8),other=letters[1:8])
+list1 <- list(m1=matrix(dat1[1:40], ncol=8), m2=matrix(dat1[41:80], ncol=8), other=letters[1:8])
 rownames(list1$m1) <- rownames(list1$m2) <- paste0("line",1:5)
 # Note: the list-element list1$other has a length different to that of filt. Thus, it won't get filtered.
 filterList(list1, list1$m1[,1] >0.4)       # filter according to 1st column of $m1 ...
@@ -444,7 +463,7 @@ correctToUnique(aa)
 correctToUnique(aa, sep=".", NAenu=FALSE)       # keep NAs (ie without transforming to character)
 ```
 
-### Mark any Duplicated (ie Ambiguous) Elements by Changing Their Names (and Separate from Unqiue)
+### Mark Any Duplicated (ie Ambiguous) Elements by Changing Their Names (and Separate from Unqiue)
 First, the truly unique values are reported and then the first occurance of repeated elements is given, NA instances get ignored.
 
 ```{r nonAmbiguousNum, echo=TRUE}
@@ -455,7 +474,7 @@ nonAmbiguousNum(aa, uniq=FALSE, asLi=TRUE)    # separate in list unique and repe
 ```
 
 
-### Combine multiple matrixes where some column-names are the same
+### Combine Multiple Matrixes Where Some Column-Names Are The Same
 Here, it is supposed that you want to join 2 or more matrixes describing different properties of the same collection of individuals (as rows).
 Common column-names are interpreted that their respective information should be combined (either as average or as sum). 
 ```{r cbindNR, echo=TRUE}
@@ -468,7 +487,7 @@ cbindNR(ma1, ma2, summarizeAs="mean")       # average of both columns 'C'
 ```
 
 
-### Filter matrix to keep only first of repeated lines
+### Filter Matrix to Keep Only First of Repeated Lines
 This ressembles to the functioning of _unique()_, but applies to a user-specified column of the matrix.
 ```{r firstLineOfDat, echo=TRUE}
 (mat1 <- matrix(c(1:6,rep(1:3,1:3)), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2])))
@@ -571,7 +590,7 @@ t(sapply(by(t3,t3[,1],function(x) x), summarizeCols, me="maxAbsOfRef"))
 (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxAbsOfRef")), iniID="ref"))
 ```
 
-### Combine/reduce Redundant Lines Based on Specified Column
+### Combine/Reduce Redundant Lines Based on Specified Column
 
 ```{r combineRedBasedOnCol, echo=TRUE}
 matr <- matrix(c(letters[1:6],"h","h","f","e",LETTERS[1:5]), ncol=3,
@@ -1349,6 +1368,18 @@ we can add all 'sandwich' nodes (let's use a threshold of inferior/equal to 14 w
 ```{r filterNetw3, echo=TRUE}
 (nw3 <- filterNetw(lst2, limInt=20, sandwLim=14, remOrphans=TRUE))
 ```
+
+
+### Convert Collection of Pairs of Nodes to Propensity Matrix
+
+Many times networks get created from pairs of nodes. One way to represent the full network is via propensisty matrixes.
+Several advanced tools and packages rather accept such propensisty matrixes as input.
+
+```{r propMatr1, echo=TRUE}
+pairs3L <- matrix(LETTERS[c(1,3,3, 2,2,1)], ncol=2)      # loop of 3
+(netw13pr <- pairsAsPropensMatr(pairs3L))                # as prop matr
+```
+
 
 
 ### Characterize Individual Contribution of Single Edges in Tree-Structures
