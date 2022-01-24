@@ -191,7 +191,7 @@ filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=
 
 ## ----repeated1, echo=TRUE-----------------------------------------------------
 ## some text toy data
-tr <- c("li0","n",NA,NA,rep(c("li2","li3"),2),rep("n",4))
+tr <- c("li0","n",NA,NA, rep(c("li2","li3"),2), rep("n",4))
 
 ## ----repeated2, echo=TRUE-----------------------------------------------------
 table(tr)
@@ -395,7 +395,7 @@ bb <- c("aa","dd","aa; bb; q","p; cc")
 (bOnA <- multiMatch(aa, bb, method="matchedL"))  # match bb on aa
 
 ## ----checkSimValueInSer, echo=TRUE--------------------------------------------
-va1 <- c(4:7,7,7,7,7,8:10)+(1:11)/28600
+va1 <- c(4:7,7,7,7,7,8:10) +(1:11)/28600
 checkSimValueInSer(va1)
 cbind(va=va1, simil=checkSimValueInSer(va1))
 
@@ -451,7 +451,10 @@ layout(1:2)
 plot(1:length(dat), sort(dat), type="l", main="sorted values", las=1)
 abline(h=stableMode(dat), lty=2,col=2)
 
-plot(density(dat, kernel="gaussian", adjust=0.7))
+plot(density(dat, kernel="gaussian", adjust=0.7), main="Desity Estimate Plot")
+useCol <- c("red","green","blue","grey55")
+legend("topleft",c("dens","binning","BBmisc","allModed"), text.col=useCol, col=useCol,
+  lty=2, lwd=1, seg.len=1.2, cex=0.8, xjust=0, yjust=0.5) 
 abline(v=stableMode(dat, method="dens"), lty=2, col="red", lwd=2)
 abline(v=stableMode(dat, method="binning"), lty=2, col="green")
 abline(v=stableMode(dat, method="BBmisc"), lty=2, col="blue")  
@@ -721,6 +724,7 @@ countSameStartEnd(frag1)
 
 ## ----pasteC, echo=TRUE--------------------------------------------------------
 pasteC(1:4)
+pasteC(letters[1:4],quoteC="'")
 
 ## ----color-gradient1, echo=TRUE-----------------------------------------------
 set.seed(2015); dat1 <- round(runif(15),2)
@@ -752,7 +756,7 @@ tabD <- cbind(paste0("univ",1:6), c(sysDate(style="univ1"), sysDate(style="univ2
   sysDate(style="univ4"), as.character(sysDate(style="univ5")), sysDate(style="univ6")),
   paste0("   local",1:6), c(sysDate(style="local1"), sysDate(style="local2"), sysDate(style="local3"), 
   sysDate(style="local4"), sysDate(style="local5"), sysDate(style="local6")))   
-kable(tabD, caption="Various ways of writing current date")
+knitr::kable(tabD, caption="Various ways of writing current date")
 
 ## ----sessionInfo, echo=FALSE--------------------------------------------------
 sessionInfo()

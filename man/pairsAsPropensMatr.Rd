@@ -4,30 +4,42 @@
 \alias{pairsAsPropensMatr}
 \title{Convert pairs of node-names to propensity matrix (non-oriented)
  
-This function allows converting pairs of node-names to a propensity matrix (non-oriented).}
+Numerous network query tools produce a listing of pairs of nodes (with one pair of nodes per line). 
+Using this function such a matrix (or data.frame) can be combined to this more comprehensive view as propensity-matrix.  
+Note, this has been primarily developed for undireted interaction networks, the resulting propensity-matrix does not show any orientation any more.   
+In a number of applications (eg in protein-protein interaction networks, PPI) the resulting matrix may be rather sparse.}
 \usage{
-pairsAsPropensMatr(mat, silent = FALSE, callFrom = NULL)
+pairsAsPropensMatr(mat, callFrom = NULL, silent = FALSE)
 }
 \arguments{
-\item{mat}{(matrix or data.frame, 2 columns) main input, pairs of nodes describing one edge per line}
+\item{mat}{(matrix) main input, matrix of interaction partners with each line as a separate pair of nodes; 
+the first two columns should contain identifiers of the nodes}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 
 \item{silent}{(logical) suppress messages}
-
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
 }
 \value{
-(symmetrix) matrix with numeric content based on counting occurances a given node has edges conected to it
+matrix or data.frame
 }
 \description{
 Convert pairs of node-names to propensity matrix (non-oriented)
  
-This function allows converting pairs of node-names to a propensity matrix (non-oriented).
+Numerous network query tools produce a listing of pairs of nodes (with one pair of nodes per line). 
+Using this function such a matrix (or data.frame) can be combined to this more comprehensive view as propensity-matrix.  
+Note, this has been primarily developed for undireted interaction networks, the resulting propensity-matrix does not show any orientation any more.   
+In a number of applications (eg in protein-protein interaction networks, PPI) the resulting matrix may be rather sparse.
 }
 \examples{
+
 pairs3L <- matrix(LETTERS[c(1,3,3, 2,2,1)], ncol=2)      # loop of 3
 (netw13pr <- pairsAsPropensMatr(pairs3L))   # as prop matr
 
+
+
+
+
 }
 \seealso{
-in \code{\link[base]{cbind}}
+uses typically input from \code{\link{filterNetw}}
 }

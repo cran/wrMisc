@@ -415,11 +415,11 @@ In some applications (eg proteomics) initial identifiers (IDs) may occur multipl
 This package provides functions to easily distinguish values occurring just once (ie _unique_) from those occurring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
 
 
-### Identify What is Repeated (and Where Repeated do Occur)
+### Identify What Is Repeated (and Where Repeated Do Occur)
 
 ```{r repeated1, echo=TRUE}
 ## some text toy data
-tr <- c("li0","n",NA,NA,rep(c("li2","li3"),2),rep("n",4))
+tr <- c("li0","n",NA,NA, rep(c("li2","li3"),2), rep("n",4))
 ```
 The function _table()_ (from the package _base_) is very useful get some insights when working with smaller objects, but may be slow to handle very large objects.
 As mentioned, _unique()_ will make everything unique, and afterwards you won't know any more who was unique in the first place !
@@ -436,14 +436,14 @@ names(aa) <- letters[1:length(aa)]
 aa
 ```
 
-`findRepeated()` (from this package) will return the position/index (and content/value) of repeated elements. However, the output in form of a list is not very convenient to the human eye.
+`findRepeated()` (from this package) will return the position/index (and content/value) of repeated elements. However, the output in form of a list is not very convenient to the human reader.
 ```{r findRepeated, echo=TRUE}
 findRepeated(aa) 
 ```
 
 
 `firstOfRepeated()` tells the index of the first instance of repeated elements, which elements you need to make the vector 'unique', and which elements get stripped off when making unique.
-Please note, that NA (no matter if they occure once or more times) are automatically in the part suggested to be removed.
+Please note, that _NA_ (no matter if they occure once or more times) are automatically in the part suggested to be removed.
 ```{r firstOfRepeated, echo=TRUE}
 firstOfRepeated(aa)
 
@@ -453,7 +453,7 @@ unique(aa)                               # unique() does not return any names !
 ```
 
 ### Correct Vector to Unique (While Maintaining the Original Vector Length)
-If necessary a counter will be added to non-unique entries, thus no individual values get eliminated and the length and order of the resultant object maintains the same.
+If necessary, a counter can be added to non-unique entries, thus no individual values get eliminated and the length and order of the resultant object maintains the same.
 
 This is of importance when assigning rownames to a data.frame : Assigning redundant values/text as rownames of a data.frame will result in an error !
 
@@ -464,7 +464,7 @@ correctToUnique(aa, sep=".", NAenu=FALSE)       # keep NAs (ie without transform
 ```
 
 ### Mark Any Duplicated (ie Ambiguous) Elements by Changing Their Names (and Separate from Unqiue)
-First, the truly unique values are reported and then the first occurance of repeated elements is given, NA instances get ignored.
+First, the truly unique values are reported and then the first occurance of repeated elements is given, _NA_ instances get ignored.
 
 ```{r nonAmbiguousNum, echo=TRUE}
 unique(aa)                                    # names are lost
@@ -541,7 +541,7 @@ table(mat2uniq[,"seq"])
 mat2[which(duplicated(mat2[,2],fromLast=FALSE)),]
 ```
 
-### Transform Matrix to Non-ambiguous Matrix (in Respect to Given Column)
+### Transform (ambigous) Matrix to Non-ambiguous Matrix (in Respect to Given Column)
 ```{r nonAmbiguousMat, echo=TRUE}
 nonAmbiguousMat(mat1,by=2)
 ```
@@ -635,7 +635,7 @@ head(combineOverlapInfo(datT2, suplI=inf2[,2], disThr=0.03), n=10)
 ```
 
 
-### Bin and Summarize values according to their names
+### Bin and Summarize Values According to their Names
 ```{r getValuesByUnique, echo=TRUE}
 dat <- 11:19
 names(dat) <- letters[c(6:3,2:4,8,3)]
@@ -696,7 +696,7 @@ x3 <- matrix(11:16, ncol=2)
 multiCharReplace(x3, cbind(12:13,112:113))
 ```
 
-Sometimes data get imported using different encoding for what should be interpreted as FALSE and TRUE :
+Sometimes data get imported using different encoding for what should be interpreted as _FALSE_ and _TRUE_ :
 
 ```{r multiCharReplace2, echo=TRUE}
 # replace and return logical vactor
@@ -728,12 +728,12 @@ The simplest approach would be to round values and then look for identical value
 The functions presented here (like `checkSimValueInSer`) offer this type of search in a convenient way.
 
 ```{r checkSimValueInSer, echo=TRUE}
-va1 <- c(4:7,7,7,7,7,8:10)+(1:11)/28600
+va1 <- c(4:7,7,7,7,7,8:10) +(1:11)/28600
 checkSimValueInSer(va1)
 cbind(va=va1, simil=checkSimValueInSer(va1))
 ```
 
-### Find similar numeric values of two columns of a matrix
+### Find Similar Numeric Values of Two Columns of a matrix
 
 The search for similar values may be preformed as absolute distance or as 'ppm' (as it is eg usual in proteomics when comparing measured and theoretically expected mass).
 
@@ -824,7 +824,10 @@ layout(1:2)
 plot(1:length(dat), sort(dat), type="l", main="sorted values", las=1)
 abline(h=stableMode(dat), lty=2,col=2)
 
-plot(density(dat, kernel="gaussian", adjust=0.7))
+plot(density(dat, kernel="gaussian", adjust=0.7), main="Desity Estimate Plot")
+useCol <- c("red","green","blue","grey55")
+legend("topleft",c("dens","binning","BBmisc","allModed"), text.col=useCol, col=useCol,
+  lty=2, lwd=1, seg.len=1.2, cex=0.8, xjust=0, yjust=0.5) 
 abline(v=stableMode(dat, method="dens"), lty=2, col="red", lwd=2)
 abline(v=stableMode(dat, method="binning"), lty=2, col="green")
 abline(v=stableMode(dat, method="BBmisc"), lty=2, col="blue")  
@@ -832,9 +835,10 @@ abline(v=stableMode(dat, method="allModes"), lty=2, col="grey55")
 ```
 
 Please note that plotting data modelled via a Kernell function also relies on strong hypothesis which may not be justified in a number of cases.
-Looking for the most frequent exact value is not a perfect choice for continous data. 
-Rather due to the rounding to 3 digits in this example the method _'allModes'_ gave partially usable results (dashed grey lines), 
-as in the example above it may give ties.
+
+As you can see from this example above, looking for the most frequent exact value is very frequently not a perfect choice for continous data. 
+In this example the method _'allModes'_ gave partially usable results (dashed grey lines), due to the rounding to 3 digits. 
+of course, this approach may give ties (as shown above).
 
 
 ### Most Frequently Occuring Value  (traditional mode)
@@ -978,7 +982,7 @@ str(datAll)
 ```
 
 
-### Converting url for Reading Tabulated Data from GitHub
+### Converting Url for Reading Tabulated Data from GitHub
 
 [GitHub](https://github.com/) allows sharing code and (to a lower degree) data.
 In order to properly read tabulated (txt, tsv or csv) data directly from a given url, the user should switch to the 'Raw' view.
@@ -1128,11 +1132,12 @@ coordOfFilt(ma1, ma1 >37)
 
 ### Normal Random Number Generation with Close Fit to Expected mean and sd
 
-When creating random values to an expected _mean_ and _sd_, the standard function _rnorm()_ may deviate somehow from the
-expected mean and sd, in particular with low _n_. 
-To still produce random values fitting closely to the expected mean and sd you may use the function `rnormW()`. 
-In case of _n=2_, there is only one possible result, thus there is no random-component in the vector of 2 values. 
-Otherwise, the random component can be fixed usin the argument _seed_.
+When creating random values to an expected _mean_ and _sd_, the results ontained using the standard function `rnorm()` 
+may deviate somehow from the expected mean and sd, in particular with low _n_. 
+To still produce random values fitting closely to the expected _mean_ and _sd_ you may use the function `rnormW()`. 
+The case of _n=2_ is quite simple with one possible results. 
+In other cases (_n>2_), there will be a random initiation which can be fixed using the argument _seed_.
+
 
 ```{r rnormW1, echo=TRUE}
 ## some sample data :
@@ -1330,7 +1335,7 @@ When interogating network-databases (like String for proteins or the coexpressio
 value is supplied with the connection of node 'A' to node 'B'.  
 In many cases, it may be useful to filter the initial query-output to retain only strong interactions.
 Furthermore, it may be of interest to expand such networks by nodes allowing to (further) inter-connect initial query-nodes 
-(so called 'Sandwich' nodes as they are surouded by initial nodes), for such nodes a separate (eg even more stringent) threshold can be applied.
+(so called 'Sandwich' nodes as they are in the middle of initial nodes), for such nodes a separate (eg even more stringent) threshold can be applied.
 
 Here let's suppose nodes have 3-digit names (ie numbers). 7 nodes of an initial query gave 1 to 7 conected nodes, 
 the results are presented as list of data.frames where the 1st column is the connected node and the 2nd column the quality score of the connection (edge).
@@ -1374,6 +1379,7 @@ we can add all 'sandwich' nodes (let's use a threshold of inferior/equal to 14 w
 
 Many times networks get created from pairs of nodes. One way to represent the full network is via propensisty matrixes.
 Several advanced tools and packages rather accept such propensisty matrixes as input.
+Here, it is assumed that each line of the input represents a separate pair of nodes connected by an edge.
 
 ```{r propMatr1, echo=TRUE}
 pairs3L <- matrix(LETTERS[c(1,3,3, 2,2,1)], ncol=2)      # loop of 3
@@ -1410,10 +1416,11 @@ countSameStartEnd(frag1)
 
 ## Support for Graphical Output
 
-### Convenient paste-collapse
+### Convenient Paste-Collapse
 The function `pasteC` allows adding quotes and separating the last element by specific text (eg 'and').
 ```{r pasteC, echo=TRUE}
 pasteC(1:4)
+pasteC(letters[1:4],quoteC="'")
 ```
 
 ### Transform Numeric Values to Color-Gradient
@@ -1479,7 +1486,7 @@ tabD <- cbind(paste0("univ",1:6), c(sysDate(style="univ1"), sysDate(style="univ2
   sysDate(style="univ4"), as.character(sysDate(style="univ5")), sysDate(style="univ6")),
   paste0("   local",1:6), c(sysDate(style="local1"), sysDate(style="local2"), sysDate(style="local3"), 
   sysDate(style="local4"), sysDate(style="local5"), sysDate(style="local6")))   
-kable(tabD, caption="Various ways of writing current date")
+knitr::kable(tabD, caption="Various ways of writing current date")
 ```
 
 

@@ -1,4 +1,4 @@
-34ed79ffc6f7edef4d724dece37417d0 *DESCRIPTION
+8f2159ce6d15dc3edf3d4b396798ec0a *DESCRIPTION
 5b1c37506ee2b78bb0257c33f773f77b *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
@@ -101,7 +101,7 @@ e9d9137fe97acdf6c59a46177fe11172 *R/nonAmbiguousNum.R
 1fcb295eeddc2279d54dcb483b0c69fa *R/numPairDeColNames.R
 478d71d376f12ed74697e3ec04552a9e *R/organizeAsListOfRepl.R
 1395340df9201bcb9c0c15f9e9f8af40 *R/pVal2lfdr.R
-16bc2eca94b61b5df8970da7ce85d8ec *R/pairsAsPropensMatr.R
+a515755aed05d3b7e96f41ad4c6f3f50 *R/pairsAsPropensMatr.R
 b29bae9532b6254451d2117171c0597a *R/partUnlist.R
 d716eb9a9f636219046adf5f41035377 *R/partialDist.R
 886599da4e64393c952b3757fbc55ade *R/pasteC.R
@@ -155,9 +155,9 @@ fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 14126c4b101f960191e8bfeb66075c1c *R/writeCsv.R
 2cb03e34e3839ce9be0e4ceb0d4ae055 *build/vignette.rds
-29c7b290cf338d23b031325506747b0f *inst/doc/wrMiscVignette1.R
-cd8199a208d07af6b7d61c3c1a42f852 *inst/doc/wrMiscVignette1.Rmd
-51a61afab711ef90f4e334e954ca94b4 *inst/doc/wrMiscVignette1.html
+230b8534e75ecf1a6b211048e342afd5 *inst/doc/wrMiscVignette1.R
+f8a97c53f6cfaba60177ae9a13a72f48 *inst/doc/wrMiscVignette1.Rmd
+615cdebe18922448c45487be5d8a2469 *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -272,7 +272,7 @@ bd3e4561f5ff139443d87cc68b689f1a *man/nonAmbiguousNum.Rd
 18067938e41dc41a02fa541c00f9b198 *man/numPairDeColNames.Rd
 159e3eecbb64f5d9d7d62dfd89f24a38 *man/organizeAsListOfRepl.Rd
 dcb32659b4e87f16d3f9bf0764ad31c4 *man/pVal2lfdr.Rd
-3d93b9f319b80ec447bf1a0bb625e3a3 *man/pairsAsPropensMatr.Rd
+41caba7366ceb20e2c8ce3439defe495 *man/pairsAsPropensMatr.Rd
 35f6c087e4cee6a065890fe72e564f22 *man/partUnlist.Rd
 c16b9f593dcfbd31e8eae8ddfe06b1c2 *man/partialDist.Rd
 b2e26ed68d9dbd1b45dd929c36bdfe71 *man/pasteC.Rd
@@ -325,4 +325,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 d9d9e7dca759b7f8cb532007b5069537 *man/writeCsv.Rd
-cd8199a208d07af6b7d61c3c1a42f852 *vignettes/wrMiscVignette1.Rmd
+f8a97c53f6cfaba60177ae9a13a72f48 *vignettes/wrMiscVignette1.Rmd
