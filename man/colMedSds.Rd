@@ -13,14 +13,14 @@ colMedSds(dat, nBoot = 99, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-(numeric) vector with estimated standard errors
+This function returns a (numeric) vector with estimated standard errors
 }
 \description{
 Determine standard error (sd) of median by bootstraping for multiple sets of data (rows in input matrix 'dat').
-Note: Uses the package \href{https://CRAN.R-project.org/package=boot}{boot}.
+Note: The package \href{https://CRAN.R-project.org/package=boot}{boot} must be installed from CRAN.
 }
 \examples{
 set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)

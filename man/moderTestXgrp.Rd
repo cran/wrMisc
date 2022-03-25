@@ -31,7 +31,7 @@ moderTestXgrp(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-limma-type MA-object (list)
+This function returns a limma-type MA-object (list)
 }
 \description{
 Runs all pair-wise combinations of moderated t-tests from package 'limma' on each line of data against 1st group from 'grp'.

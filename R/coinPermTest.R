@@ -9,7 +9,7 @@
 #' @param nPerm (integer) number of permutations
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return "MCp" class numeric output with p-values 
+#' @return This  function returns an object of "MCp" class numeric output with p-values 
 #' @seealso \code{oneway_test} in \code{\link[coin]{LocationTests}} 
 #' @examples
 #' coinPermTest(2, 3, nPerm=200)
@@ -24,7 +24,7 @@ coinPermTest <- function(x1, x2, orient="two.sided", nPerm=5000, silent=FALSE, c
         try(coin::oneway_test(c(x1, x2) ~ factor(rep(c("A", "B"), c(length(x1), length(x2)))),
           alternative="less", distribution=coin::approximate(B=nPerm)), silent=TRUE) } else {
         try(coin::oneway_test(c(x1, x2) ~ factor(rep(c("A", "B"), c(length(x1), length(x2)))), distribution=coin::approximate(B=nPerm)),silent=TRUE) }
-    if("try-error" %in% class(tmp)) { warning(fxNa,"Unable to run coin::oneway_test() !"); out <- NULL
+    if(inherits(tmp, "try-error")) { warning(fxNa,"Unable to run coin::oneway_test() !"); out <- NULL    
     } else out <- coin::pvalue(tmp)
     out } }
     

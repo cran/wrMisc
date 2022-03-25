@@ -15,10 +15,10 @@ randIndFx(ma, method = "ARI", adjSense = TRUE, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppres messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-distance matrix
+This function returns a distance matrix
 }
 \description{
 \code{randIndFx} calculates distance of categorical data (as Rand Index, Adjusted Rand Index or Jaccard Index). 
@@ -27,9 +27,9 @@ Methods so far available (via flexclust): "ARI" .. adjusted Rand Index, "RI" .. 
 }
 \examples{
 set.seed(2016); tab2 <- matrix(sample(1:2, size=42, replace=TRUE), ncol=7)
-if(requireNamespace("flexclust")) { flexclust::comPart(tab2[1,],tab2[2,])
-  flexclust::comPart(tab2[1,],tab2[3,])
-  flexclust::comPart(tab2[1,],tab2[4,]) }
+if(requireNamespace("flexclust")) { flexclust::comPart(tab2[1,], tab2[2,])
+  flexclust::comPart(tab2[1,], tab2[3,])
+  flexclust::comPart(tab2[1,], tab2[4,]) }
 ## via randIndFx():
   randIndFx(tab2, adjSense=FALSE)
   cor(t(tab2))

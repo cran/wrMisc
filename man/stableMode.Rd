@@ -32,10 +32,10 @@ very "critical" parameter, may change results in strong way. Note: with \code{me
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-MA-plot only
+This function returns a numeric vector with value of mode, the name of the value indicates it's position
 }
 \description{
 Estimate mode, ie most frequent value. In case of continuous numeric data, the most frequent values may not be the most frequently repeated exact term.

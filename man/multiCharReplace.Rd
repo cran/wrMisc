@@ -18,7 +18,7 @@ multiCharReplace(mat, repl, convTo = NULL, silent = FALSE, callFrom = NULL)
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-object of same dimension as input (with replaced content)
+This function returns an object of same dimension as input (with replaced content)
 }
 \description{
 This functions allows multiple types of replacements of entire character elements in simple vector, matrix or data.frame. 
@@ -33,7 +33,7 @@ multiCharReplace(x2, cbind(old=c("n/a","Low","High"), new=c(NA,FALSE,TRUE)),conv
 
 # works also to replace numeric content : 
 x3 <- matrix(11:16, ncol=2)
-multiCharReplace(x3,cbind(12:13,112:113))
+multiCharReplace(x3, cbind(12:13,112:113))
 }
 \seealso{
 \code{\link[base]{grep}}

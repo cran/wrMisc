@@ -15,17 +15,17 @@
 #' @param neighbDiLim (numeric) additional threshold for (trimmed mean) neighbour-distance
 #' @param silent (logical) suppress messages
 #' @param debug (logical) for bug-tracking: more/enhanced messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return matrix of line-characteristics  (or if indexPoints is \code{TRUE} then list (line-characteristics & index & lm-results)
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This functions returns a matrix of line-characteristics  (or if indexPoints is \code{TRUE} then list (line-characteristics & index & lm-results)
 #' @examples
 #' set.seed(2016); ra1 <- runif(300)
 #'  dat1 <- cbind(x=round(c(1:100+ra1[1:100]/5,4*ra1[1:50]),1),
 #'   y=round(c(1:100+ra1[101:200]/5,4*ra1[101:150]),1))
-#' (li1 <- searchLinesAtGivenSlope(dat1,coeff=1))
+#' (li1 <- searchLinesAtGivenSlope(dat1, coeff=1))
 #' @export
 searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistThr=NULL, lmCompare=TRUE, indexPoints=TRUE,
   displHist=FALSE, displScat=FALSE, bestCluByDistRat=TRUE, neighbDiLim=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
-  fxNa <- .composeCallName(callFrom,newNa="searchLinesAtGivenSlope")
+  fxNa <- .composeCallName(callFrom, newNa="searchLinesAtGivenSlope")
   opar <- list(mfrow=graphics::par("mfrow"), mfcol=graphics::par("mfcol"))
   on.exit(graphics::par(opar$mfrow))
   on.exit(graphics::par(opar$mfcol))
@@ -154,16 +154,16 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     dat2 <- as.data.frame(matrix(dat[filt1[which(bestPart$cluster==j)],1:2], ncol=2))
     colnames(dat2) <- c("slope","B")     # LETTERS[1:2]
     tryLm <- try(MASS::rlm(B ~ slope, data=dat2))
-    if(debug) message("  ..i=",i," used ",c("MASS::rlm","stats::lm")[1 +as.numeric("try-error" %in% class(tryLm))])
-    if("try-error" %in% class(tryLm)) {
+    if(debug) message("  ..i=",i," used ",c("MASS::rlm","stats::lm")[1 +as.numeric(inherits(tryLm, "try-error") )])
+    if(inherits(tryLm, "try-error")) {
       if(!silent) message(" group ",refCluNo[i],":  problem making robust regression (from package MASS), trying regular regression instead")
       tryLm <- try(stats::lm(B ~ slope, data=dat2))
     }
     out$lm[[i]] <- tryLm                        # needed for lmFilter()
     if(i==1) out$lmSum <- matrix(NA, nrow=length(refCluNo), ncol=6, dimnames=list(refCluNo,
       c("(Intercept)","slope","pInterc","pSlope","residSE","Rsqu")))
-    if("try-error" %in% class(tryLm)) message(" Problem making regression on group",refCluNo[i],"") else if(is.list(out)) {
-      tmp <- if("rlm" %in% class(tryLm)) {
+    if(inherits(tryLm, "try-error")) message(" Problem making regression on group",refCluNo[i],"") else if(is.list(out)) {
+      tmp <- if(inherits(tryLm, "rlm")) {
         c(2*stats::pt(-abs(stats::coef(summary(tryLm))[,3]), df=length(stats::residuals(tryLm))-1), stats::cor(tryLm$qr$qr[,1],tryLm$qr$qr[,2])^2)
         } else c(stats::coef(summary(tryLm))[,4], summary(tryLm)$adj.r.squared)
       if(any(tmp[1:2] ==0)) tmp[which(tmp[1:2]==0)] <- 1e-320            # avoid p=0 ...
@@ -203,7 +203,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     useLi <- which(bestPart$cluster==useClu)
      cat("  len useLi",length(useLi),"   useCol ",useCol,"\n")
     graphics::plot(dat[,1],dat[,2], main=tit, pch=21, bg=useCol, xlab=colnames(dat)[1], ylab=colnames(dat)[2])
-    graphics::legend("topleft",paste("clu ",rownames(offT)," ,n=",offT[,1],sep=""), text.col=1, pch=21, col=1,pt.bg=useColPa,cex=0.8,xjust=0.5,yjust=0.5)        # as points
+    graphics::legend("topleft",paste0("clu ",rownames(offT)," ,n=",offT[,1]), text.col=1, pch=21, col=1,pt.bg=useColPa,cex=0.8,xjust=0.5,yjust=0.5)        # as points
   }
   out }
 
@@ -241,7 +241,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   ##   so far too stringent (nothing within confint range)
   ##   or use predict() and exploit pVal
   formPat <- sub("","", stats::formula(lMod)[3])                         # inspect formula if (y-x)~x
-  chResForm <- stats::formula(lMod)[2] == paste("(",formPat," - ",sub(" 1"," 2",formPat),")()",sep="")
+  chResForm <- stats::formula(lMod)[2] == paste0("(",formPat," - ",sub(" 1"," 2",formPat),")()")
   mod <- cbind(main=stats::coef(lMod)[2]*dat[,1] +stats::coef(lMod)[1],
     up1=stats::confint(lMod,level=level)[2,1]*dat[,1] +stats::confint(lMod,level=level)[1,1],
     up2=stats::confint(lMod,level=level)[2,1]*dat[,1] +stats::confint(lMod,level=level)[1,2],
@@ -267,7 +267,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     automClu <- FALSE } }
   if(automClu) {
     cluAut <- try(NbClust::NbClust(dat, method="average",index="ccc"),silent=TRUE)     # cluster only best = smallest dist
-    if("try-error" %in% class(cluAut)) { warning(fxNa,"Failed to run NbClust::NbClust(); ignoring  'automClu'")
+    if(inherits(cluAut, "try-error")) { warning(fxNa,"Failed to run NbClust::NbClust(); ignoring  'automClu'")
       automClu <- FALSE }
   if(automClu) {    
     out <- cluAut$Best.partition

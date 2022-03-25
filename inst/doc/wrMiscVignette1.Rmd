@@ -27,12 +27,13 @@ Of course, numerous other documents/sites with tutorials and courses exist, too.
 
 
 ### Dependencies and Compilation
-One of the aims was to write a robust package easy to install (in respect to low system requirements).  
+One of the aims was to write a package easy to install, with low system requirements and few obligatory dependencies.  
 All code is written in pure R and does not need any special compilers.
-The number of obligatory dependencies was kept to a minumum. This helps to reduce potential problems at installation with dependencies which fail to get installed themselves.
+The number of obligatory dependencies was kept to a minumum. 
+This helps to reduce potential problems at installation with dependencies which fail to get installed themselves.
 
-Most of additional packages used here at some point were declared as 'suggested' (ie not obligatory), to allow installation of _wrMisc_ even if some these additional packages can't be installed/compiled by the user's instance.
-This means that, when a feature of one of the 'suggested' packages is about to be used, its presence/installation will be checked and, 
+Most of additional packages used in some of the functions were declared as 'suggested' (ie not obligatory), to allow installation of _wrMisc_ even if some these additional packages can't be installed/compiled by the user's instance.
+When a feature of one of the 'suggested' packages is about to be used, its presence/installation will be checked and, 
 only if found as missing, the user will be propmted a message inviting to install specific package(s) before using these specific functions.    
 
 
@@ -40,7 +41,7 @@ only if found as missing, the user will be propmted a message inviting to instal
 To get started, we need to install (if not yet installed) and load the package "[wrMisc](https://CRAN.R-project.org/package=wrMisc)" available from [CRAN](https://cran.r-project.org/).
 
 
-```{r setup, include=FALSE, echo=FALSE, messages=FALSE, warnings=FALSE}
+```{r setup0, include=FALSE, echo=FALSE, messages=FALSE, warnings=FALSE}
 suppressPackageStartupMessages({
     library(wrMisc)
 })
@@ -55,8 +56,8 @@ install.packages("wrMisc")
 Since the functions in this vignette require a few more optional packages,
 let's check if they are installed and add them (via a small function), if not yet installed.
 ```{r install2, echo=TRUE, eval=FALSE}
-packages <- c("knitr", "rmarkdown", "BiocManager", "kableExtra", "boot", "data.tree", "data.table", "fdrtool",
-  "RColorBrewer", "Rcpp", "wrMisc", "wrGraph", "wrProteo")
+packages <- c("knitr", "rmarkdown", "BiocManager", "kableExtra", "boot", "data.tree", "data.table", 
+  "fdrtool", "RColorBrewer", "Rcpp", "wrMisc", "wrGraph", "wrProteo")
 checkInstallPkg <- function(pkg) {       # install function
   if(!requireNamespace(pkg, quietly=TRUE)) install.packages(pkg) }
 
@@ -77,7 +78,7 @@ The vignettes (like this one) are also accessible from R command-line:
 vignette("wrMiscVignette1", package="wrMisc")
 ```
 
-Before using, we actually need to load the package first :
+Before using, we actually need to load the package first (best on a fresh R-session):
 
 ```{r setup1}
 library("wrMisc")
@@ -94,7 +95,7 @@ In high-throughput experiments in biology (like transcriptomics, proteomics etc.
 As R is a versatile language, multiple options exist for assessing the global characteristics of such data, some are more efficient on a computational point of view.
 In order to allow fast treatment of very large data-sets some tools have been re-designed for optimal performance.
 
-### Assessing basic information about variability (for matrix)
+### Assessing Basic Information About Variability (for matrix)
 
 Many mesurement techniques applied in high throughput manner suffer from precision.
 This means, the same measurements taken twice in a row (ie repeated on the same subject) will very likely not give an identical result. 
@@ -113,14 +114,14 @@ dim(dat1)
 head(dat1)
 ```
 
-Now lets estimate the standard deviation (sd) for every row:
+Now lets estimate the standard deviation _(sd)_ for every row:
 ```{r sdForEachRow, echo=TRUE}
 head(rowSds(dat1))
 system.time(sd1 <- rowSds(dat1))
 system.time(sd2 <- apply(dat1,1,sd))
 ```
 
-On most systems the equivalent calculation using *apply()* will run much slower.
+On most systems the equivalent calculation using *apply()* will run much slower compared to `rowSds`.
 
 Note, there is a minor issue with rounding :
 ```{r usingApply, echo=TRUE}
@@ -140,7 +141,8 @@ head(cv2)
 
 Note, these calculations will be very efficient as long as the number of rows is much higher (>>) than the number of columns.
 
-### Data organized in (sub-)groups as sets of columns
+
+### Data Organized in (Sub-)Groups as Sets of Columns
 
 Now, let's assume our data is contains 3 initial samples measured as several replicates (already defined in _grp1_).
 Similarly, we can also calculate the sd or CV for each line while splitting into groups of replicates (functions `rowGrpMeans`, `rowGrpSds` and `rowGrpCV`): 
@@ -167,9 +169,11 @@ system.time(cv1Gr <- rowGrpCV(dat1, grp1))
 head(cv1Gr)
 ```
 
-#### Counting number of NAs per row and group of columns
 
-Some data, like with quantitative proteomics measures, may contain an elevated number of _NAs_ (see also the package [wrProteo](https://CRAN.R-project.org/package=wrProteo) for further options for dealing with such data).
+#### Counting Number of NAs Per Row and Group of Columns
+
+Some data, like with quantitative proteomics measures, may contain an elevated number of _NAs_ (see also the package [wrProteo](https://CRAN.R-project.org/package=wrProteo) for further options for dealing with such data). 
+Furthermore, many other packages on CRAN and Bioconductor cover this topic, see also the [missing data task-view](https://CRAN.R-project.org/view=MissingData) on CRAN.
 Similar as above there is an easy way to count the number of _NAs_ to get an overview how NAs are distributed. 
 
 Let's assume we have measures from 3 groups/samples with 4 replicates each :
@@ -189,7 +193,7 @@ rowGrpNA(mat2,gr4)
 ```
 
 
-### Fast NA-omit for very large objects
+### Fast NA-omit For Very Large Objects
 
 The function _na.omit()_ from the package _stats_ also keeps a trace of all omitted instances. 
 This can be penalizing in terms of memory usage when handling very large vectors with a high content of NAs (eg >10000 NAs). 
@@ -206,7 +210,7 @@ str(na.omit(aA))
 ```
 
   
-### Minimum distance/difference between values
+### Minimum Distance/Difference Between Values
 
 If you need to find the closest neighbour(s) of a numeric vector, the function `minDiff()` will tell you the 
 distance ("dif","ppm" or "ratio") and index ("best") of the closest neighbour. 
@@ -227,7 +231,7 @@ This is why column _nbest_ for line 15 (_value_ =6.0) indicates that it appears 
 
 
 
-## Working With Lists (and lists of lists)
+## Working With Lists (and Lists of Lists)   {#WorkingWithLists}
 
 ### Partial unlist
 When input from different places gets collected and combined into a list, this may give a collection of different types of data.
@@ -270,7 +274,7 @@ appendNR(li1, li2)
 
 ### rbind on lists
 
-When a matrix (or data.frame) gets split into a list, like in the example using _by()_, as a reverse-function such lists can get joined using `lrbind` in an _rbind_-like fashion.
+When a matrix (or data.frame) gets split into a list, like in the example using _by()_, as a reverse-function such lists can get joined using `lrbind()` in an _rbind_-like fashion.
 
 ```{r lrbind, echo=TRUE}
 dat2 <- matrix(11:34, ncol=3, dimnames=list(letters[1:8],colnames=LETTERS[1:3]))
@@ -282,10 +286,11 @@ lrbind(lst2)
 ```
 
 
-### Fuse content of list-elements with redundant (duplicated) names
+### Fuse Content of list-Elements With Redundant (Duplicated) Names
 
 When list-elements have the same name, their content (of named numeric or character vectors) 
 may get fused using `fuseCommonListElem()` according to the names of the list-elements :
+
 ```{r fuseCommonListElem, echo=TRUE}
 val1 <- 10 +1:26
 names(val1) <- letters
@@ -299,7 +304,7 @@ fuseCommonListElem(lst1)
 ```
 
 
-### Filtering lines and/or columns for all list-elements of same size
+### Filtering Lines and/or Columns For All list-Elements of Same Size
 
 In a number of cases the information in various list-elements is somehow related.
 Eg, in S3-objects produced by [limma](https://bioconductor.org/packages/release/bioc/html/limma.html), or data produced using [wrProteo](https://CRAN.R-project.org/package=wrProteo) several instances of matrix or data.frame refer to data that are related. 
@@ -311,7 +316,8 @@ The function `filterLiColDeList()` searches if other list-elements have suitable
 In consequence this can be used with the output of wrProteo to remove simultaneously the same lines and/or columns.
 
 ```{r listBatchReplace1, echo=TRUE}
-lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34, m3=matrix(c(21:23,NA,25:27,NA),ncol=2))
+lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34,
+  m3=matrix(c(21:23,NA,25:27,NA),ncol=2))
 filterLiColDeList(lst1, useLines=2:3)
 filterLiColDeList(lst1, useLines="allNA", ref=3)
 ```
@@ -327,9 +333,9 @@ listBatchReplace(lst1,search="efg",repl="EFG",silent=FALSE)
 ```
 
 
-### Organize values into list and sort by names 
+### Organize Values Into list and Sort By Names 
 
-Named numeric or character vectors can be organized into lists using _listGroupsByNames()_, 
+Named numeric or character vectors can be organized into lists using `listGroupsByNames()`, 
 based on their names (only the part before any extensions starting with a point gets considered).
 Of course, other separators may be defined using the argument _sep_. 
 
@@ -343,10 +349,12 @@ If no names are present, the content of the vector itself will be used as name :
 listGroupsByNames((1:10)/5)
 ```
 
-### Batch-filter list-elements
+### Batch-filter list-Elements
+
 In the view of object-oriented programming several methods produce results integrated into lists or S3-objects (eg 
 [limma](https://bioconductor.org/packages/release/bioc/html/limma.html)).
-The function `filterList()` aims facilitating the filtering of all elements of lists or S3-objects. List-elements with inappropriate number of lines will be ignored.
+The function `filterList()` aims facilitating the filtering of all elements of lists or S3-objects. 
+List-elements with inappropriate number of lines will be ignored.
 
 ```{r filterList, echo=TRUE}
 set.seed(2020); dat1 <- round(runif(80),2)
@@ -357,7 +365,10 @@ filterList(list1, list1$m1[,1] >0.4)       # filter according to 1st column of $
 filterList(list1, list1$m1 >0.4) 
 ```
 
-### Transform columns of matrix to list of vectors
+### Transform Columns of Matrix to list of Vectors
+
+At some occasions it may be useful separate columns of a matrix into separate vectors inside a list.
+This can be done using `matr2list()`:
 
 ```{r matr2list, echo=TRUE}
 (mat1 <- matrix(1:12, ncol=3, dimnames=list(letters[1:4],LETTERS[1:3])))
@@ -367,7 +378,7 @@ str(matr2list(mat1))
 
 
 
-## Working with Arrays
+## Working with Arrays  {#WorkingWithArrays}
 
 Let's get stared with a little toy-array:
 ```{r array0, echo=TRUE}
@@ -375,8 +386,10 @@ Let's get stared with a little toy-array:
   paste("col",1:3,sep=""),c("ch1","ch2"))))
 ```
 
-### CV (coefficient of variance) with arrays
-Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an _apply_ along the 3rd dimension) using `arrayCV`:
+### CV (Coefficient of Variance) with arrays
+
+Now we can obtain the CV (coefficient of variance) by splitting along 3rd dimesion (ie this is equivalent to an _apply_ along the 3rd dimension) using `arrayCV()`:
+
 ```{r arrayCV1, echo=TRUE}
 arrayCV(arr1)
 
@@ -390,29 +403,33 @@ arrayCV(arr1, byDim=2)
 ```
 
 ### Slice 3-dim array in list of matrixes (or arrays)
+
 This procedure is similar to (re-)organizing an initial array into clusters, here we split along a user-defined factor/vector.
-If a clustering-algorithm produces the cluster assignments, this function can be used to organize the input data accordingly using `cutArrayInCluLike`.
+If a clustering-algorithm produces the cluster assignments, this function can be used to organize the input data accordingly using `cutArrayInCluLike()`.
+
 ```{r cutArrayInCluLike, echo=TRUE}
 cutArrayInCluLike(arr1, cluOrg=c(2,1,2,1))
 ```
 
-Let's cut by filtering along the 3rd dimension for all lines where column 'col2' is >7, and then display only the content of columns 'col1' and 'col2' (using `filt3dimArr`):
+Let's cut by filtering along the 3rd dimension for all lines where column 'col2' is >7, and then display only the content of columns 'col1' and 'col2' (using `filt3dimArr()`):
+
 ```{r filt3dimArr, echo=TRUE}
 filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=">")
 ```
 
 
 
-## Working with Redundant Data
+## Working with Redundant Data  {#WorkingWithRedundantData}
 
-_Semantics_ : Please note, that there are two ways of interpreting the term 'unique' :
+$_Semantics_$ : Please note, that there are two ways of interpreting the term '**unique**' :
 
 * In regular understanding one describes this way an event which occurs only once, and thus does not occur/happen anywhere else.
 
-* The command `unique()` makes a vector with some redundant entries 'unique', ie in the resultant vector all values/content (values) occur only once. However, initially repeated values will still be present. Also, you cannot tell any more which ones were not unique initially ! Thus, the result of _unique()_ does not tell which values were '_unique_' in the first place.
+* The command `unique()` will eliminate redundant entries to obtain a shorter 'unique' output vector, ie in the resultant vector all values/content (values) occur only once. 
+However, from the result of _unique()_ you cannot tell any more which ones were not unique initially ! 
 
-In some applications (eg proteomics) initial identifiers (IDs) may occur multiple times in the data and we frequently need to isolate events/values that occur only once, as the first meaning of '_unique_'. 
-This package provides functions to easily distinguish values occurring just once (ie _unique_) from those occurring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements.
+In some applications (eg proteomics) initial identifiers (IDs) may occur multiple times in the data and we frequently need to identify events/values that occur only once, as the first meaning of '_unique_'. 
+This package provides (additional) functions to easily distinguish values occurring just once (ie _unique_) from those occurring multiple times. Furthermore, there are functions to rename/remove/combine replicated elements, eg `correctToUnique()` or `nonAmbiguousNum()`, so that no elements or lines of data get lost.
 
 
 ### Identify What Is Repeated (and Where Repeated Do Occur)
@@ -424,6 +441,7 @@ tr <- c("li0","n",NA,NA, rep(c("li2","li3"),2), rep("n",4))
 The function _table()_ (from the package _base_) is very useful get some insights when working with smaller objects, but may be slow to handle very large objects.
 As mentioned, _unique()_ will make everything unique, and afterwards you won't know any more who was unique in the first place !
 The function `duplicated()` (also from package base) helps us getting the information who is repeated.
+
 ```{r repeated2, echo=TRUE}
 table(tr)
 unique(tr) 
@@ -437,6 +455,7 @@ aa
 ```
 
 `findRepeated()` (from this package) will return the position/index (and content/value) of repeated elements. However, the output in form of a list is not very convenient to the human reader.
+
 ```{r findRepeated, echo=TRUE}
 findRepeated(aa) 
 ```
@@ -453,18 +472,22 @@ unique(aa)                               # unique() does not return any names !
 ```
 
 ### Correct Vector to Unique (While Maintaining the Original Vector Length)
-If necessary, a counter can be added to non-unique entries, thus no individual values get eliminated and the length and order of the resultant object maintains the same.
+
+If necessary, a counter can be added to non-unique entries, thus no individual values get eliminated and the length and order of the resultant object maintains the same using `correctToUnique()`.
 
 This is of importance when assigning rownames to a data.frame : Assigning redundant values/text as rownames of a data.frame will result in an error !
 
 ```{r correctToUnique1, echo=TRUE}
 correctToUnique(aa)
 
-correctToUnique(aa, sep=".", NAenu=FALSE)       # keep NAs (ie without transforming to character)
+correctToUnique(aa, sep=".", NAenum=FALSE)       # keep NAs (ie without transforming to character)
 ```
+You see from the last example above, that this function has an argument for controlling enumerating elements.
 
 ### Mark Any Duplicated (ie Ambiguous) Elements by Changing Their Names (and Separate from Unqiue)
+
 First, the truly unique values are reported and then the first occurance of repeated elements is given, _NA_ instances get ignored.
+This can be done using `nonAmbiguousNum()` which maintains the length of the initial character vector.
 
 ```{r nonAmbiguousNum, echo=TRUE}
 unique(aa)                                    # names are lost
@@ -475,8 +498,11 @@ nonAmbiguousNum(aa, uniq=FALSE, asLi=TRUE)    # separate in list unique and repe
 
 
 ### Combine Multiple Matrixes Where Some Column-Names Are The Same
+
 Here, it is supposed that you want to join 2 or more matrixes describing different properties of the same collection of individuals (as rows).
 Common column-names are interpreted that their respective information should be combined (either as average or as sum). 
+This can be done using `cbindNR()` :
+
 ```{r cbindNR, echo=TRUE}
 ## First we'll make soe toy data :
 (ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1])))
@@ -488,17 +514,21 @@ cbindNR(ma1, ma2, summarizeAs="mean")       # average of both columns 'C'
 
 
 ### Filter Matrix to Keep Only First of Repeated Lines
+
 This ressembles to the functioning of _unique()_, but applies to a user-specified column of the matrix.
+
 ```{r firstLineOfDat, echo=TRUE}
 (mat1 <- matrix(c(1:6,rep(1:3,1:3)), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2])))
 ```
-The function `firstLineOfDat` allows to access/extract the first line of repeated instances.
+
+The function `firstLineOfDat()` allows to access/extract the first line of repeated instances.
 
 ```{r firstLineOfDat2, echo=TRUE}
 firstLineOfDat(mat1, refCol=2)
 ```
 
 This function was rather designed for dealing with character input, it allows concatenating all columns and to remove redundant.
+
 ```{r firstOfRepLines, echo=TRUE}
 mat2 <- matrix(c("e","n","a","n","z","z","n","z","z","b", 
   "","n","c","n","","","n","","","z"), ncol=2)
@@ -510,12 +540,13 @@ firstOfRepLines(mat2)
 
 
 ### Filter to Unique Column-content of matrix, Add Counter and Concatenated Information
+
 ```{r nonredDataFrame, echo=TRUE}
 (df1 <- data.frame(cbind(xA=letters[1:5], xB=c("h","h","f","e","f"), xC=LETTERS[1:5])))
 ```
-The function `nonredDataFrame` offers to include a counter of redundant instances encountered (for 1st column specified) :
-```{r nonredDataFrame2, echo=TRUE}
+The function `nonredDataFrame()` offers to include a counter of redundant instances encountered (for 1st column specified) :
 
+```{r nonredDataFrame2, echo=TRUE}
 nonredDataFrame(df1, useCol=c("xB","xC")) 
 
 # without counter or concatenating
@@ -542,6 +573,7 @@ mat2[which(duplicated(mat2[,2],fromLast=FALSE)),]
 ```
 
 ### Transform (ambigous) Matrix to Non-ambiguous Matrix (in Respect to Given Column)
+
 ```{r nonAmbiguousMat, echo=TRUE}
 nonAmbiguousMat(mat1,by=2)
 ```
@@ -562,6 +594,7 @@ combineReplFromListToMatr(lst2)
 
 
 ### Non-redundant Lines of matrix
+
 ```{r nonRedundLines, echo=TRUE}
 mat4 <- matrix(rep(c(1,1:3,3,1),2), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2]))
 nonRedundLines(mat4)
@@ -569,6 +602,7 @@ nonRedundLines(mat4)
 
 
 ### Filter for Unique Elements /2
+
 ```{r filtSizeUniq, echo=TRUE}
 # input: c and dd are repeated  :
 filtSizeUniq(list(A="a", B=c("b","bb","c"), D=c("dd","d","ddd","c")), filtUn=TRUE, minSi=NULL)
@@ -579,6 +613,7 @@ filtSizeUniq(list(A="a", B=c("b","bb","c"), D=c("dd","d","ddd","c")), ref=c(lett
 ```
 
 ### Make Non-redundant Matrix 
+
 ```{r makeNRedMatr, echo=TRUE}
 t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],
   matrix(round(runif(30,-3,2),1),nc=2), stringsAsFactors=FALSE)
@@ -682,7 +717,8 @@ pp <- rep(c("m","n","o","p","q"),c(2,2,2,2,5))
 combineByEitherFactor(cbind(mm,pp),1,2, con=FALSE, nBy=TRUE)
 ```
 
-### Batch Replacing of Values or Character-strings
+
+### Batch Replacing of Values or Character-Strings
 
 The function `multiCharReplace()` facilitates multiple replacements in a vector, matrix or data.frame.
 
@@ -704,6 +740,7 @@ x2 <- c("High","n/a","High","High","Low")
 multiCharReplace(x2,cbind(old=c("n/a","Low","High"), new=c(NA,FALSE,TRUE)), convTo="logical")
 ```
 
+
 ### Multi-to-multi Matching of (Concatenated) Terms
 
 The function allows to split (if necessary, using _strsplit()_) two vectors and compare each isolated tag (eg identifyer) from the 1st vector/object against each isolated tag from the second vector/object. This runs like a loop of one to many comparisons. The basic output is a list with indexes of which element of the 1st vector/object has matches in the 2nd vector/object. Since this is not convenient to the human reader, tabular output can be created, too.
@@ -719,13 +756,77 @@ bb <- c("aa","dd","aa; bb; q","p; cc")
 ```
 
 
+### Comparing Global Patterns
 
-## Search For Similar (Numeric) Values
+In most programming languages it is fairly easy to compare _exact_ content of character vectors or factors with unordered levels.
+However, sometimes due to semantic issues some people may call a color 'purple' while others call it 'violet'.
+Thus, without using controled vocabulary the _exact_ terms may vary.
+
+Here, let's address the case, where no dictionaries are available for substituting equivalent terms.
+Thus, here we'll compare 4 vectors of equal length and check if the words/letters used could be substituted to give the first vector.
+Vectors _aa_ and _ab_ have the same global pattern, ie after repeating a word twice it moves to another word.
+Vectors _ac_ and _ad_ have different general patterns, either with alternating words or falling back to a word previsously used.
+
+Based and extended on a post on stackoverflow [https://stackoverflow.com/questions/71353218/extracting-flexible-general-patterns/](https://stackoverflow.com/questions/71353218/extracting-flexible-general-patterns/) :
+
+
+```{r compGlobPat1, echo=TRUE}
+aa <- letters[rep(c(3:1,4), each=2)]
+ab <- letters[rep(c(5,8:6), each=2)]        # 'same general' pattern to aa
+ac <- letters[c(1:2,1:3,3:4,4)]             # NOT 'same general' pattern to any other
+ad <- letters[c(6:8,8:6,7:6)]               # NOT 'same general' pattern to any other
+```
+
+The basic pattern can be extracted combining match() and unique():
+```{r compGlobPat2, echo=TRUE}
+## get global patterns
+cbind(aa= match(aa, unique(aa)),
+  ab= match(ab, unique(ab)),
+  ac= match(ac, unique(ac)),
+  ad= match(ad, unique(ad)) )
+```
+
+Let's make a data.frame with the annotation toy-data from above. 
+Each line is supposed to represent a sample, and the columns show different aspects of annotation.
+
+```{r compGlobPat3, echo=TRUE}
+bb <- data.frame(ind=1:length(aa), a=aa, b=ab, c=ac, d=ad)
+```
+Via the function `replicateStructure()` is it possible to compare annotation as different columns for equivalent global patterns.
+
+By default, this function excludes all columns not designating any replicates, like the numbers in the first column ($ind).
+Also it will try to find the column with the median number of levels, when comparing to all other columns.
+
+The output is a list with  *\$col* inidicating which column(s) may be used, *\$lev* for the correpsonding global pattern, *\$meth* for the method finally used and 
+_\$allCols_ for documenting the global pattern in each column (whether it was selected or not).
+
+
+```{r compGlobPat4, echo=TRUE}
+replicateStructure(bb)
+```
+
+Besides, it is also possible to combine all columns if one cosiders they cotribute complementary substructures of the overal annotation.
+
+```{r compGlobPat5, echo=TRUE}
+replicateStructure(bb, method="combAll")
+```
+However, when combining multiple columns it may happen -like in the example above- that finally no more lines remain being considered as replicates.
+
+To overcome this problem, it is possible to look for non-orthogonal structures, ie to try excluding columns which (after combining) would suggest no replicates after combining all columns.
+This can also be found when one column describes the replicate groups and another gives the order of the replicates therein.
+However, for calling a (standard) statistical test it may be necessary exclude these replicate-numbers to designate the groups of replicates.
+
+```{r compGlobPat6, echo=TRUE}
+replicateStructure(bb, method="combNonOrth")
+```
+
+
+## Search For Similar (Numeric) Values  {#SearchForSimilarNumericValues}
 
 This section addresses values that are not truly _identical_ but may differ only in the very last digit(s) 
 and thus may be in a pragmatic view get considered and treated as 'about the same'.
 The simplest approach would be to round values and then look for identical values. 
-The functions presented here (like `checkSimValueInSer`) offer this type of search in a convenient way.
+The functions presented here (like `checkSimValueInSer()`) offer this type of search in a convenient way.
 
 ```{r checkSimValueInSer, echo=TRUE}
 va1 <- c(4:7,7,7,7,7,8:10) +(1:11)/28600
@@ -769,7 +870,7 @@ a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10
 
 ### Find Similar Numeric Values from Two Vectors/Matrixes    
 
-For comparing two sets of data one may use `findSimilarFrom2sets`.
+For comparing two sets of data one may use `findSimilarFrom2sets()`.
 
 ```{r findSimilFrom2sets, echo=TRUE}
 aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,12.6,15.9,14.1)
@@ -789,7 +890,8 @@ findSimilFrom2sets(aA,cC,comp="ppm",lim=9e4,bestO=TRUE)
 ### Fuse Previously Identified Pairs to 'Clusters' 
 
 When you have already identified the closest neighbour of a set of values, you may want to 
-re-organize/fuse such pairs to a given number of total clusters (using `fusePairs`).
+re-organize/fuse such pairs to a given number of total clusters (using `fusePairs()`).
+
 ```{r fusePairs, echo=TRUE}
 (daPa <- matrix(c(1:5,8,2:6,9), ncol=2))
 fusePairs(daPa, maxFuse=4)
@@ -807,10 +909,11 @@ elimCloseCoord(da1)
 
 ### Mode of (Continuous) Data
 
-Looking for the mode is rather easy with counting data. Looking at the result of _table()_ will get you there quickly.
-However, with continuous data what people intuitively consider the mode is rather a result of a density estimation and may be more tricky to identify.
-The most frequent value may be quite distant to the most dense region of data.
-The function  `stableMode()` presented here has different modes of operation, at this point there is no clear rule which mode may perform most satisfactory on different data. 
+Looking for the _mode_ is rather easy with counting data, the result of _table()_ will get you there quickly.
+However, with continuous data the mode may be more tricky to defne and identify. 
+Intuitively most people consider the mode asthe peak of a density estimation (which remains to be defined and estimated).
+With continuous data most frequent (precise) value may be quite different/distant to the most dense region of data.
+The function `stableMode()` presented here has different modes of operation, at this point there is no clear rule which mode may perform most satisfactory in different situations. 
 
 ```{r stableMode, echo=TRUE}
 set.seed(2012); dat <- round(c(rnorm(120,0,1.2), rnorm(80,0.8,0.6), rnorm(25,-0.6,0.05), runif(200)),3)
@@ -821,30 +924,36 @@ stableMode(dat)
 Now we can try to show on a plot :
 ```{r stableMode2, fig.height=8, fig.width=9, fig.align="center",  echo=TRUE}
 layout(1:2)
-plot(1:length(dat), sort(dat), type="l", main="sorted values", las=1)
-abline(h=stableMode(dat), lty=2,col=2)
+plot(1:length(dat), sort(dat), type="l", main="Sorted Values", xlab="rank", las=1)
+abline(h=stableMode(dat, silent=TRUE), lty=2,col=2)
+legend("topleft",c("stableMode"), text.col=2, col=2, lty=2, lwd=1, seg.len=1.2, cex=0.8, xjust=0, yjust=0.5) 
 
-plot(density(dat, kernel="gaussian", adjust=0.7), main="Desity Estimate Plot")
+
+plot(density(dat, kernel="gaussian", adjust=0.7), xlab="Value of dat", main="Density Estimate Plot")
 useCol <- c("red","green","blue","grey55")
-legend("topleft",c("dens","binning","BBmisc","allModed"), text.col=useCol, col=useCol,
+legend("topleft",c("dens","binning","BBmisc","allModes"), text.col=useCol, col=useCol,
   lty=2, lwd=1, seg.len=1.2, cex=0.8, xjust=0, yjust=0.5) 
-abline(v=stableMode(dat, method="dens"), lty=2, col="red", lwd=2)
-abline(v=stableMode(dat, method="binning"), lty=2, col="green")
-abline(v=stableMode(dat, method="BBmisc"), lty=2, col="blue")  
+abline(v=stableMode(dat, method="dens", silent=TRUE), lty=2, col="red", lwd=2)
+abline(v=stableMode(dat, method="binning", silent=TRUE), lty=2, col="green")
+abline(v=stableMode(dat, method="BBmisc", silent=TRUE), lty=2, col="blue")  
 abline(v=stableMode(dat, method="allModes"), lty=2, col="grey55")  
 ```
 
-Please note that plotting data modelled via a Kernell function also relies on strong hypothesis which may not be justified in a number of cases.
+Please note, that plotting data modelled via a Kernell function (as above) also relies on strong hypothesis which may not be well justified in a number of cases !
+For this reason, the _sorted values_ were plotted, too.
 
-As you can see from this example above, looking for the most frequent exact value is very frequently not a perfect choice for continous data. 
-In this example the method _'allModes'_ gave partially usable results (dashed grey lines), due to the rounding to 3 digits. 
-of course, this approach may give ties (as shown above).
+As you can see from this example above, looking for the most frequent exact value may not be a perfect choice for continous data. 
+In this example the method _'allModes'_ (ie the multiple instances of most frequent exact values) gave partially usable results (dashed grey lines), due to the rounding to 3 digits. 
+As you can see in the example above, the method _'allModes'_ may give multiple ties !
+More rounding will make to data more discrete and ultimately ressemble cunting data. However, with rounding some of the finer resolution/details will get lost. 
+
 
 
 ### Most Frequently Occuring Value  (traditional mode)
 
-The function  `stableMode()` can also be used to locate the most frequently occuring exact value of numeric or character vectors.
-The argument _method="allModes"_ allows finding all ties (if any).
+The function  `stableMode()` can also be used to locate _the_ most frequently occuring exact value of numeric or character vectors.
+As we just saw at the end of the previous example, the argument _method="allModes"_ allows finding all ties (if present).
+
 ```{r stableMode3, echo=TRUE}
 set.seed(2021)
 x <- sample(letters, 50000, replace=TRUE)
@@ -852,9 +961,20 @@ stableMode(dat, method="mode")
 stableMode(dat, method="allModes")
 ```
 
+### Trimming Redundant Text
+
+Automatic annotation has the tendency to concatenate many parameters into a single names.
+The function `trimRedundText()` was designed to allow trimming redundant text from left and/or right side of a character-vector 
+(when the same portion of text appears in _each_ element). 
+However, as in some cases (like the first element of the example below) nothing would remain, it is possible to define a _minimum_ width for the remaining/resulting text.
+
+```{r trimRedundText1, echo=TRUE}
+x <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
+trimRedundText(x)
+```
 
 
-## Working with Regressions 
+## Working with Regressions    {#WorkingWithRegressions}
 
 ### Best Starting Point For Linear Regressions
 
@@ -884,51 +1004,58 @@ We still allow omitting some starting points, if the resulting model would fit b
 
 ```{r plotLinModelCoef1, echo=TRUE}
 set.seed(2020)
-x1 <- matrix(rep(c(2,2:5),each=20) + runif(100) +rep(c(0,0.5,2:3,5),20), byrow=FALSE, ncol=10, dimnames=list(LETTERS[1:10],NULL))
+x1 <- matrix(rep(c(2,2:5),each=20) + runif(100) +rep(c(0,0.5,2:3,5),20), 
+  byrow=FALSE, ncol=10, dimnames=list(LETTERS[1:10],NULL))
 ## just the 1st regression :
-   summary(lm(b~a,data=data.frame(b=x1[,1],a=rep(1:5,each=2))))
+   summary(lm(b~a, data=data.frame(b=x1[,1], a=rep(1:5,each=2))))
 ## all regressions
-x1.lmSum <- t(sapply(lapply(rownames(x1), linModelSelect, dat=x1, expect=rep(1:5,each=2), silent=TRUE, plotGraph=FALSE), 
+x1.lmSum <- t(sapply(lapply(rownames(x1), linModelSelect, dat=x1, 
+  expect=rep(1:5,each=2), silent=TRUE, plotGraph=FALSE), 
   function(x) c(x$coef[2,c(4,1)], startFr=x$startLev)))
 x1.lmSum <- cbind(x1.lmSum, medQuantity=apply(x1,1,median))
 x1.lmSum[,1] <- log10(x1.lmSum[,1])
 head(x1.lmSum)
 ```
-Now we can try to plot
+
+Now we can try to plot :
 ```{r plotLinModelCoef2, echo=TRUE}
 wrGraphOK <- requireNamespace("wrGraph", quietly=TRUE)      # check if package is available
-if(wrGraphOK) wrGraph::plotW2Leg(x1.lmSum, useCol=c("Pr(>|t|)","Estimate","medQuantity","startFr"), legendloc="topleft", txtLegend="start at")
+if(wrGraphOK) wrGraph::plotW2Leg(x1.lmSum, useCol=c("Pr(>|t|)","Estimate","medQuantity","startFr"), 
+  legendloc="topleft", txtLegend="start at")
 ```
 
 
 
-## Combinatorics Issues
+## Combinatorics Issues   {#CombinatoricsIssues}
 
 ### All Pairwise Ratios
 
 `ratioAllComb()` calculates all possible pairwise ratios between all individual calues of x and y.
 
 ```{r ratioAllComb0, echo=TRUE}
-set.seed(2014); ra1 <- c(rnorm(9,2,1),runif(8,1,2))
+set.seed(2014); ra1 <- c(rnorm(9,2,1), runif(8,1,2))
 ```
+
 Let's assume there are 2 parts of 'x' for which we would like to know the representative ratio :
 The ratio of medians does not well reflect the typical ratio (if each element has the same chance to be picked).
+
 ```{r ratioAllComb1, echo=TRUE}
 median(ra1[1:9])/median(ra1[10:17])
 ```
 
 Instead, we'll build all possible ratios and summarize then.
+
 ```{r ratioAllComb2, echo=TRUE}
-summary( ratioAllComb(ra1[1:9],ra1[10:17]))
-boxplot(list(norm=ra1[1:9],unif=ra1[10:17],rat=ratioAllComb(ra1[1:9],ra1[10:17])))
+summary( ratioAllComb(ra1[1:9], ra1[10:17]))
+boxplot(list(norm=ra1[1:9], unif=ra1[10:17], rat=ratioAllComb(ra1[1:9],ra1[10:17])))
 ```
 
 
 ## Import/Export
 
-### Batch-Reading of csv Files
+### Batch-Reading of Csv Files
 
-Some programs produce a series of csv files, where a large experiment/data-set was split in multiple files.
+Some software do produce a series of csv files, where a large experiment/data-set get recorded as multiple files.
 The function `readCsvBatch()` was designed for reading multiple csv files of exactly the same layout and to join their content.
 As output a list with the content of each file can be produced (one matrix per file), or the data may be fused into an array, as shown below.  
 
@@ -936,7 +1063,7 @@ As output a list with the content of each file can be produced (one matrix per f
 ```{r readCsvBatch, echo=TRUE}
 path1 <- system.file("extdata", package="wrMisc")
 fiNa <-  c("pl01_1.csv","pl01_2.csv","pl02_1.csv","pl02_2.csv")
-datAll <- readCsvBatch(fiNa, path1)
+datAll <- readCsvBatch(fiNa, path1, silent=TRUE)
 str(datAll)
 ```
 
@@ -944,7 +1071,9 @@ When setting the first argument _fileNames_ to _NULL_, you can read all files of
 ```{r readCsvBatch2, echo=TRUE}
 ## batch reading of all csv files in specified path :
 datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
+str(datAll2)
 ```
+
 
 ### Batch-Reading of Tabulated Files
 
@@ -965,7 +1094,7 @@ str(allTxt)
 
 Sometimes were may get confronted with data which look like 'incomplete' tables. 
 In such cases some rows do not contain as many elements/columns as other columns. 
-Files with this type of data pose a problem for _read.table()_ (from the _utils_ package).
+Files with this type of data pose a problem for `read.table()` (from the _utils_ package).
 In some cases using the argument _fill=TRUE_ may allow to overcome this problem.
 The function _readVarColumns()_ (from this package) was designed to provide better help in such cases.
 Basically each line is read and parsed separately, the user should check/decide on the separator to be used.
@@ -986,7 +1115,7 @@ str(datAll)
 
 [GitHub](https://github.com/) allows sharing code and (to a lower degree) data.
 In order to properly read tabulated (txt, tsv or csv) data directly from a given url, the user should switch to the 'Raw' view.
-The function `gitDataUrl` allows to conventiently switch any url (on git) to the format from 'Raw view', suitable for directly reading the data using _read.delim()_ , _read.table()_ or _read.csv()_ etc ).
+The function `gitDataUrl()` allows to conventiently switch any url (on git) to the format from 'Raw view', suitable for directly reading the data using _read.delim()_ , _read.table()_ or _read.csv()_ etc ...).
 
 ```{r readGit1, echo=TRUE}
 ## An example url with tabulated data :
@@ -998,7 +1127,7 @@ str(dataPxd)
 
 
 
-## Normalization
+## Normalization   {#Normalization}
 
 The main reason of normalization is to remove variability in the data which is not directly linked to the (original/biological) concept of a given experiment. 
 High throughput data from real world measurements may easily contain various deformations due to technical reasons, eg slight temperature variations, electromagnetic interference, instability of reagents etc. 
@@ -1006,7 +1135,7 @@ In particular, transferring constant amounts of liquids/reagents in highly repea
 At some point it may rather be better to eliminate a few samples or branches of an experiment to avoid too invasive intervention. This shows that quality control can be tightly linked to decisions about data-normalization. 
 In conclusion, normalization may be far more challenging than simply running some algorithms.. 
 
-In general the use has to assume/define some hypothesis to justify intervention.
+In general, the use has to assume/define some hypothesis to justify intervention.
 Sometimes specific elements of an experiment are known to be not affected and can therefore be used to normalize the rest.
 Eg, if you observe growth of trees in a forest, big blocks of rock on the floor are assumed no to change their location. 
 So one could use them as alignment-marks to superpose pictures taken at slightly different positions.
@@ -1018,13 +1147,15 @@ So, if one assumes that there are no global changes one normalizes the input-dat
 In analogy, if one takes photographs on a partially cloudy day, most cameras will adjust light settings (sun r clouds) so that global luminosity stays the same. 
 However, if too many of the measured elements are affected, this normalization approach will lead to (additional) loss of information.
 
-I suggest the user also to include graphical representation(s) of the data helping to visualize variability in various samples along a given experiment and 
-how different normalization procedures affect these outcomes. 
+It is _essential_ to understand the type of deformation(s) data may suffer from in order to choose the appropriate approacges for normalization. 
+Of course, graphical representations ([PCA](https://en.wikipedia.org/wiki/Principal_component_analysis), [MA-plots](https://en.wikipedia.org/wiki/MA_plot), etc) are extremely important to identifying abnormalities and potential problems. 
+The package [wrGraph](https://CRAN.R-project.org/package=wrGraph) offers also complementary options useful in the context of normalization.
+Again, graphical representation(s) of the data help to visualize how different normalization procedures affect outcomes.
 
 Before jumping into normalization it may be quite useful to _filter_ the data first.
 The overall idea is, that most high-throughput experiments do produce some non-meaningful data (artefacts) and it may be wise to remove such 'bad' data
-first as they may effect normalization (in particular extreme values). 
-A special case of such problematic data concerns _NA_-values.
+first, as they may effect normalization (in particular _extreme values_). 
+A special case of problematic data concerns _NA_-values.
 
 
 ### Filter Lines of Matrix to Reduce Content of NAs 
@@ -1061,19 +1192,20 @@ All decisions of which approach to use should be data-driven.
 
 In biological high-throughput data columns typically represent different samples, which may be organized as replicates. 
 During high-throughput experiments thousands of (independent) elements are measured (eg abundance of gene-products), they are represented by rows.
-Note, that some experiments may produce a considerable amount of missing data (NAs) which require special attention (dedicated developments exist in other R-packages eg in [wrProteo](https://CRAN.R-project.org/package=wrProteo)).
- 
+As real-world experiments are not always as perfect as we may think, small changes in the signal measured may easily happen.
+Thus, the aim of normalizing is to remove or reduce any trace/variability in the data not related to the original experiement but due to imperfections during detection.
+
+Note, that some experiments may produce a considerable amount of missing data (NAs) which require special attention (dedicated developments exist in other R-packages eg in [wrProteo](https://CRAN.R-project.org/package=wrProteo)). 
 My general advice is to first carefully look where such missing data is observed and to pay attention to replicate measurements 
 where a given element once was measured with a real numeric value and once as missing information (NA). 
-Of course, graphical representations ([PCA](https://en.wikipedia.org/wiki/Principal_component_analysis), [MA-plots](https://en.wikipedia.org/wiki/MA_plot), etc) are frequently extremely important to identifying abnormalities and potential problems. 
-The package [wrGraph](https://CRAN.R-project.org/package=wrGraph) offers also complementary options useful in the context of normalization.
 
 
 ```{r normalizeThis0, echo=TRUE}
 set.seed(2015); rand1 <- round(runif(300) +rnorm(300,0,2),3)
-dat1 <- cbind(ser1=round(100:1+rand1[1:100]), ser2=round(1.2*(100:1+rand1[101:200])-2),
+dat1 <- cbind(ser1=round(100:1 +rand1[1:100]), ser2=round(1.2*(100:1 +rand1[101:200]) -2),
   ser3=round((100:1+rand1[201:300])^1.2-3))
-dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
+dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100) +rand1[11:110],1))
+## Let's introduce some NAs
 dat1[dat1 <1] <- NA
 ## Let's get a quick overview of the data
 summary(dat1)
@@ -1128,7 +1260,7 @@ coordOfFilt(ma1, ma1 >37)
 ```
 
 
-## Statistical Testing
+## Statistical Testing  {#StatisticalTesting}
 
 ### Normal Random Number Generation with Close Fit to Expected mean and sd
 
@@ -1160,11 +1292,13 @@ mean(ra2) -mean(x1)
 sd(ra2) -sd(x1)   # much closer to expected value
 ```
 
+Thus, the second data-sets fits even with few _n_ very well to the global characteristics defined/expected.
+
 
 ### Moderated Pair-wise t-Test from limma
 
 If you are not familiar with the way data is handled in the Bioconductor package [limma](https://bioconductor.org/packages/release/bioc/html/limma.html) 
-and you would like to use some of the tools for running moderated t-tests therein, this will provide easy access using `moderTest2grp` :
+and you would like to use some of the tools for running moderated t-tests therein, this will provide easy access using `moderTest2grp()` :
 ```{r moderTest2grp, echo=TRUE}
 set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2), ncol=8,
   dimnames=list(paste("l",1:200), c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
@@ -1182,9 +1316,9 @@ if("list" %in% mode(fit4)) {  # if you have limma installed we can look further
 
 ### Multiple Moderated Pair-wise t-Tests from limma
 
-If you want to make multiple pair-wise comparisons using `moderTestXgrp` :
+If you want to make multiple pair-wise comparisons using `moderTestXgrp()` :
 ```{r moderTestXgrp, echo=TRUE}
-grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
+grp <- factor(rep(LETTERS[c(3,1,4)], c(2,3,3)))
 set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
   dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
 t8[3:6,1:2] <- t8[3:6,1:2] +3                    # augment lines 3:6 (c-f) 
@@ -1198,11 +1332,11 @@ head(test8$p.value, n=8)
 ```
 
 
-### Transform p-values to local false dicovery rate (lfdr)
+### Transform p-values to Local False Discovery Rate (lfdr)
 
 To get an introduction into local false discovery rate estimations you may read [Strimmer 2008](https://doi.org/10.1093/bioinformatics/btn209). 
 An overview of R packages in this context was prepared by the [strimmerlab](http://www.strimmerlab.org/notes/fdr.html).
-A convenient way to get lfdr values is available suing the function `pVal2lfdr`.
+A convenient way to get lfdr values is available suing the function `pVal2lfdr()`.
 
 Note, that the toy-example used below is too small for estimating really meaningful lfdr values.
 For this reason the function _fdrtool()_ from package [fdrtool](https://CRAN.R-project.org/package=fdrtool) will issue warnings.
@@ -1210,9 +1344,9 @@ For this reason the function _fdrtool()_ from package [fdrtool](https://CRAN.R-p
 ```{r pVal2lfdr, echo=TRUE}
 set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2), ncol=8, dimnames=list(letters[1:20],
   c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
-t8[3:6,1:2] <- t8[3:6,1:2]+3   # augment lines 3:6 (c-f) for AA1&BB1
-t8[5:8,5:6] <- t8[5:8,5:6]+3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
-head(pVal2lfdr(apply(t8, 1, function(x) t.test(x[1:4],x[5:8])$p.value)))
+t8[3:6,1:2] <- t8[3:6,1:2] +3   # augment lines 3:6 (c-f) for AA1&BB1
+t8[5:8,5:6] <- t8[5:8,5:6] +3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
+head(pVal2lfdr(apply(t8, 1, function(x) t.test(x[1:4], x[5:8])$p.value)))
 ```
 
 
@@ -1240,7 +1374,7 @@ numPairDeColNames(mat1)
 ```
 
 
-## Working With Clustering
+## Working With Clustering  {#WorkingWithClustering}
 
 Multiple concepts for clustering have been deeveloped, most of them allow extracting a vector with the cluster-numbers.
 Here some functions helping to work with the output of such clustering results are presented.
@@ -1294,7 +1428,7 @@ summary(datR2); sd(datR2)
 
 ### Characterize Clustering Results
 
-Here very basic clustering example...
+Here a very basic clustering example...
 
 ```{r clu01, echo=TRUE}
 nGr <- 3
@@ -1315,18 +1449,23 @@ Let's calculate the median and sd values for each cluster:
 
 ```{r clu03, echo=TRUE}
 ## median an CV
-ir2 <- reorgByCluNo(iris[,-5],irKm$cluster,retList=TRUE)
+ir2 <- reorgByCluNo(iris[,-5], irKm$cluster, addInfo=FALSE, retList=TRUE)
+```
 
-sapply(ir2, function(x) apply(x,2,median))
 
+```{r clu04, echo=TRUE}
+sapply(ir2, function(x) apply(x, 2, median))
+```
+
+```{r clu05, echo=TRUE}
 sapply(ir2, colSds)
 ```
 
-Besides, we have alreaady seen in section 'Working with Arrays' the function `cutArrayInCluLike()`.
+Besides, we have already seen the function `cutArrayInCluLike()` in section [Working with Arrays](#WorkingWithArrays) 'Working with Arrays'.
 
 
 
-## Tree-Like Structures
+## Tree-Like Structures   {#TreeLikeStructures}
 
 
 ### Filter Lists of Connected Nodes, Extension of Networks as 'Sandwich'
@@ -1414,10 +1553,11 @@ countSameStartEnd(frag1)
 ```
 
 
-## Support for Graphical Output
+## Support for Graphical Output   {#SupportForGraphicalOutput}
 
 ### Convenient Paste-Collapse
-The function `pasteC` allows adding quotes and separating the last element by specific text (eg 'and').
+
+The function `pasteC()` allows adding quotes and separating the last element by specific text (eg 'and').
 ```{r pasteC, echo=TRUE}
 pasteC(1:4)
 pasteC(letters[1:4],quoteC="'")
@@ -1435,10 +1575,11 @@ plot(1:15, dat1, pch=16, cex=2, las=1,
   col=colorAccording2(dat1,nStartO=0,nEndO=4,revCol=TRUE), main="blue to red")
 # It is also possible to work with scales of transparency
 plot(1:9, pch=3, las=1)
-points(1:9,1:9,col=transpGraySca(st=0,en=0.8,nSt=9,trans=0.3), cex=42, pch=16)
+points(1:9, 1:9, col=transpGraySca(st=0, en=0.8, nSt=9,trans=0.3), cex=42, pch=16)
 ```
 
-### Assign New Transparency to Given Colors 
+### Assign New Transparency to Given Colors
+ 
 For this purpose you may use `convColorToTransp`.
 ```{r convColorToTransp, fig.height=6, fig.width=3, echo=TRUE}
 col0 <- c("#998FCC","#5AC3BA","#CBD34E","#FF7D73")
@@ -1449,12 +1590,13 @@ pie(rep(1,length(col1)), col=col1, main="new transparency")
 ```
 
 ### Print Matrix-Content as Plot
-There are many ways of creating reports. If you want simply to combine a few plots into a pdf, the function `tableToPlot` 
+
+There are many ways of creating reports. If you want simply to combine a few plots into a pdf, the function `tableToPlot()` 
 may be helpful to add a small table (eg overview of points/samples/files used in other plots of the same pdf). 
 This function prints tables in the current graphical output/window (which may by a pdf-device).
 
 
-## Other Convenience Functions
+## Other Convenience Functions  {#OtherConvenienceFunctions}
 
 ### Writing Compact Dates (more options ...)
 
@@ -1465,27 +1607,28 @@ Generally I like to use abbreviated month-names since the order of writing the m
 so this may help avoiding mis-interpreting dates insetad of writing the number of the Month.
 For example, 2021-03-05 means in Europe March 5th while in other places it means May 3rd.
 
-The R-functions mentioned above use local language settings, so I finally made the function `sysDate` to 
-produce compact versions of current the date, independent to local language settings (or not -if you prefer), ie locale-specific, 
-(yes, in some languages like French the first 3 letters of the month do give ambiguous results !) 
+The R-functions mentioned above use local language settings, so I wrote the function `sysDate` to 
+produce compact versions of current the date, **independent to local language settings** (or not -if you prefer), ie locale-specific, 
+(yes, in some languages - like French - the first 3 letters of the month may give ambiguous results !) 
 and to avoid white space ' ' (which I prefer to avoid in file-names).
-Please look at the help-page for all available options.
+Please look at the function's help-page for all available options.
 
 ```{r sysDate1, echo=TRUE}
 ## To get started
 Sys.Date()
 
-## Compact English names, no matter what your local settings are :
+## Compact English names (in European order), no matter what your local settings are :
 sysDate() 
 ```
 
 The table below shows a number of options to write the date in English or using local month-names :
 
 ```{r DateTab, echo=TRUE}
-tabD <- cbind(paste0("univ",1:6), c(sysDate(style="univ1"), sysDate(style="univ2"), sysDate(style="univ3"), 
-  sysDate(style="univ4"), as.character(sysDate(style="univ5")), sysDate(style="univ6")),
-  paste0("   local",1:6), c(sysDate(style="local1"), sysDate(style="local2"), sysDate(style="local3"), 
-  sysDate(style="local4"), sysDate(style="local5"), sysDate(style="local6")))   
+tabD <- cbind(paste0("univ",1:6), c(sysDate(style="univ1"), sysDate(style="univ2"), 
+    sysDate(style="univ3"), sysDate(style="univ4"), as.character(sysDate(style="univ5")), 
+    sysDate(style="univ6")), paste0("   local",1:6), 
+  c(sysDate(style="local1"), sysDate(style="local2"), sysDate(style="local3"), 
+    sysDate(style="local4"), sysDate(style="local5"), sysDate(style="local6")))   
 knitr::kable(tabD, caption="Various ways of writing current date")
 ```
 

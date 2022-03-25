@@ -47,7 +47,7 @@ readXlsxBatch <- function(fileNames=NULL, path=".", fileExtension="xlsx", exclud
   } else {
     ## prepare
     if(is.null(path)) path <- "."
-    chPath <- file.exists(path)
+    chPath <- dir.exists(path)
     if(!chPath) {message(fxNa,"Cannot find path '",path,"' !  ... Setting to default='.'")}
     if(is.null(fileNames)) {
       ## automatic reading of all files in directory

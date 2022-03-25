@@ -12,7 +12,7 @@
 #' @param expTy (character) 'US' and/or 'Eur' for sparator and decimal type in output
 #' @param imporTy (character) default 'Eur' (otherwise set to 'US')
 #' @param filename (character) optional new file name(s)
-#' @param quote (logical) will be passed to \code{write.csv}
+#' @param quote (logical) will be passed to function \code{write.csv}
 #' @param filterCol (integer or character) optionally, to export only the columns specified here
 #' @param replMatr optional, matrix (1st line:search, 2nd li:use for replacing) indicating which characters need to be replaced )
 #' @param returnOut (logical) return output as object
@@ -21,21 +21,22 @@
 #' @param digits (interger) limit number of signif digits in output (ie file)
 #' @param silent (logical) suppress messages
 #' @param debug (logical) for bug-tracking: more/enhanced messages  
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return writes file to disk and returns \code{NULL} unless \code{returnOut=TRUE}
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function writes a file to disk and returns \code{NULL} unless \code{returnOut=TRUE}
 #' @seealso \code{write.csv} in \code{\link[utils]{write.table}}, batch reading using this package \code{\link{readCsvBatch}}
 #' @examples
 #' dat1 <- data.frame(ini=letters[1:5],x1=1:5,x2=11:15,t1=c("10,10","20.20","11,11","21,21","33.33"),
 #'   t2=c("10,11","20.21","kl;kl","az,az","ze.ze"))
-#' fiNa <- file.path(tempdir(),paste("test",1:2,".csv",sep=""))
-#' writeCsv(dat1,filename=fiNa[1])
-#' dir(path=tempdir(),pattern="cs")
-#' (writeCsv(dat1,replM=rbind(bad=c(";",","),replBy="__"),expTy=c("Eur"),
-#'   returnOut=TRUE,filename=fiNa[2]))
+#' fiNa <- file.path(tempdir(), paste("test",1:2,".csv",sep=""))
+#' writeCsv(dat1, filename=fiNa[1])
+#' dir(path=tempdir(), pattern="cs")
+#'
+#' (writeCsv(dat1, replM=rbind(bad=c(";",","), replBy="__"), expTy=c("Eur"),
+#'   returnOut=TRUE, filename=fiNa[2]))
 #'
 #' @export
 writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", filename=NULL, quote=FALSE, filterCol=NULL, replMatr=NULL, returnOut=FALSE,SYLKprevent=TRUE,digits=22,silent=FALSE,debug=FALSE,callFrom=NULL) {
-  fxNa <- .composeCallName(callFrom,newNa="saveCsv")
+  fxNa <- .composeCallName(callFrom,newNa="writeCsv")
   argN <- deparse(substitute(input))
   doWrite <- TRUE
   if(!requireNamespace("utils", quietly=TRUE)) { doWrite <- FALSE
@@ -119,10 +120,10 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
       } else { chID <- grep("^ID",colnames(datExp)[1])
         if(chID) colnames(datExp)[1] <- sub("^ID","Id",colnames(datExp)[1])}}
       ## write to file
-      if(length(filename) <1) filename <- paste(if(is.character(inPutFi)) sub("\\.csv$","",inPutFi) else argN,".",expTy,".csv",sep="")
+      if(length(filename) <1) filename <- paste0(if(is.character(inPutFi)) sub("\\.csv$","",inPutFi) else argN,".",expTy,".csv")
       if(length(filename) < length(expTy)) {
         if(!silent) message(fxNa," adding type to name(s) of file(s) to be written")
-        filename <- paste(sub("\\.csv$","",filename),".",expTy,".csv",sep="")
+        filename <- paste0(sub("\\.csv$","",filename),".",expTy,".csv")
         if("txt" %in% expTy) filename <- sub("\\.txt.\\csv$",".txt",filename)
         names(filename) <- expTy }
       if(debug) {cat("..xxWriteC4\n")}

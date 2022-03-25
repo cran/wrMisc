@@ -27,10 +27,10 @@ rnormW(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-numeric vector of random values
+This function returns a numeric vector of random values
 }
 \description{
 This function allows creating a vector of random values similar to \code{rnorm}, but resulting value get recorrected to fit to expected mean and sd.

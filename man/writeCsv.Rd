@@ -32,7 +32,7 @@ writeCsv(
 
 \item{filename}{(character) optional new file name(s)}
 
-\item{quote}{(logical) will be passed to \code{write.csv}}
+\item{quote}{(logical) will be passed to function \code{write.csv}}
 
 \item{filterCol}{(integer or character) optionally, to export only the columns specified here}
 
@@ -49,10 +49,10 @@ To prevent this, if necessary, the 1st column-name will be changed from 'ID' to 
 
 \item{debug}{(logical) for bug-tracking: more/enhanced messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-writes file to disk and returns \code{NULL} unless \code{returnOut=TRUE}
+This function writes a file to disk and returns \code{NULL} unless \code{returnOut=TRUE}
 }
 \description{
 This functions is absed on \code{write.csv} allows for more options when writing data into csv-files.
@@ -65,11 +65,12 @@ Note: Mixing '.' and ',' as comma separators via text-columns or fused text&data
 \examples{
 dat1 <- data.frame(ini=letters[1:5],x1=1:5,x2=11:15,t1=c("10,10","20.20","11,11","21,21","33.33"),
   t2=c("10,11","20.21","kl;kl","az,az","ze.ze"))
-fiNa <- file.path(tempdir(),paste("test",1:2,".csv",sep=""))
-writeCsv(dat1,filename=fiNa[1])
-dir(path=tempdir(),pattern="cs")
-(writeCsv(dat1,replM=rbind(bad=c(";",","),replBy="__"),expTy=c("Eur"),
-  returnOut=TRUE,filename=fiNa[2]))
+fiNa <- file.path(tempdir(), paste("test",1:2,".csv",sep=""))
+writeCsv(dat1, filename=fiNa[1])
+dir(path=tempdir(), pattern="cs")
+
+(writeCsv(dat1, replM=rbind(bad=c(";",","), replBy="__"), expTy=c("Eur"),
+  returnOut=TRUE, filename=fiNa[2]))
 
 }
 \seealso{

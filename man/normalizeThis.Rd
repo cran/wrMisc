@@ -33,10 +33,10 @@ normalizeThis(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix of normalized data
+This function returns a matrix of normalized data
 }
 \description{
 Generic normalization of 'dat' (by columns), multiple methods may be applied.
@@ -49,9 +49,9 @@ Note : Depending on the procedure chosen, the normalized data may appear on a di
 }
 \examples{
 set.seed(2015); rand1 <- round(runif(300)+rnorm(300,0,2),3)
-dat1 <- cbind(ser1=round(100:1+rand1[1:100]),ser2=round(1.2*(100:1+rand1[101:200])-2),
-  ser3=round((100:1+rand1[201:300])^1.2-3))
-dat1 <- cbind(dat1,ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
+dat1 <- cbind(ser1=round(100:1+rand1[1:100]), ser2=round(1.2*(100:1+rand1[101:200])-2),
+  ser3=round((100:1 +rand1[201:300])^1.2-3))
+dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
 dat1[dat1 <1] <- NA
   summary(dat1)
   head( .normalize(dat1,"mean",list()))

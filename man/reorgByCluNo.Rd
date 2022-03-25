@@ -9,9 +9,11 @@ reorgByCluNo(
   cluNo,
   useColumn = NULL,
   meanCol = NULL,
+  addInfo = TRUE,
   retList = FALSE,
   silent = FALSE,
-  callFrom = NULL
+  callFrom = NULL,
+  debug = FALSE
 )
 }
 \arguments{
@@ -19,18 +21,22 @@ reorgByCluNo(
 
 \item{cluNo}{(positive integer, length to match nrow(dat) initial cluster numbers for each line of 'mat' (obtained by separate clustering or other segmentation) or may desinn column of \code{mat} to use as cluster-numbers}
 
-\item{useColumn}{(character or integer) the columns to use from mat as main data (default will use all, exept \code{cluCol} and/or \code{meanCol} if they design columns))}
+\item{useColumn}{(character or integer) the columns to use from \code{mat} as main data (default will use all, exept \code{cluCol} and/or \code{meanCol} if they design columns))}
 
 \item{meanCol}{(character or integer) alternative summarizing data for intra-cluster sorting (instead of geometric mean)}
 
-\item{retList}{(logical)}
+\item{addInfo}{(logical) allows adding of columns 'index', 'geoMean' and 'cluNo'  (or array if \code{FALSE})}
+
+\item{retList}{(logical) return as list of matrixes (or array if \code{FALSE})}
 
 \item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
-list or array (as 2- or 3 dim) with possible number of occurances for each of the 3 elements in nMax. Read results vertical : out[[1]] or out[,,1] .. (multiplicative) table for 1st element of nMax; out[,,2] .. for 2nd
+This function returns a list or array (as 2- or 3 dim) with possible number of occurances for each of the 3 elements in nMax. Read results vertical : out[[1]] or out[,,1] .. (multiplicative) table for 1st element of nMax; out[,,2] .. for 2nd
 }
 \description{
 Reorganize input matrix as sorted by cluster numbers (and geometric mean) according to vector with cluster names, and index for sorting per cluster and per geometric mean.
@@ -45,5 +51,5 @@ dat2 <- cbind(dat1, clu=clu)
 reorgByCluNo(dat2, "clu") 
 }
 \seealso{
-\code{\link[utils]{combn}}
+pairwise combinations \code{\link[utils]{combn}}, clustering \code{\link[stats]{kmeans}}
 }

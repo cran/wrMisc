@@ -30,10 +30,11 @@ colorAccording2(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-character vector (of same length as x) with color encoding
+This function returns a character vector (of same length as x) with color encoding
 }
 \description{
 This function helps making color-gradients for plotting a numerical variable.
+It requires the package 'RColorBrewer' being installed from CRAN. 
 Note : RColorBrewer palettes were not integrated here, since they are not continuous.
 }
 \examples{

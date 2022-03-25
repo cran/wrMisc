@@ -5,27 +5,30 @@
 #'  'maxLast','maxAbsLast' or 'minLast' .. consider only last column of 'matr' : choose from all columns the line where (max of) last col is at min;
 #'  'medianComplete' or 'meanComplete' consideres only lines/rows where no NA occur (NA have influence other columns !)
 #' @param matr data.frame matrix of data to be summarized by comlumn (may do different method for text and numeric comlumns)
-#' @param meth (character) summarization method (eg 'maxLast','minLast','maxLast','maxAbsLast','minLast','medianComplete' or 'meanComplete')
+#' @param meth (character) summarization method (eg 'maxLast','minLast','maxLast','maxAbsLast', 'minLast', 'medianComplete' or 'meanComplete')
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging 
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return vector with summary for each column
 #' @seealso \code{rowMeans} in \code{\link[base]{colSums}}
 #' @examples
-#' t1 <- matrix(round(runif(30,1,9)),nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
-#' summarizeCols(t1,me="median")
+#' t1 <- matrix(round(runif(30,1,9)), nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
+#' summarizeCols(t1, me="median")
 #' t(sapply(by(t1,rownames(t1), function(x) x), summarizeCols,me="maxLast"))
-#' t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],
-#'   matrix(round(runif(30,-3,2),1),ncol=2),stringsAsFactors=FALSE)
-#' by(t3,t3[,1],function(x) x)
-#' t(sapply(by(t3,t3[,1],function(x) x), summarizeCols,me="maxAbsLast"))
+#' t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
+#'   matrix(round(runif(30,-3,2),1), ncol=2), stringsAsFactors=FALSE)
+#' by(t3,t3[,1], function(x) x)
+#' t(sapply(by(t3,t3[,1], function(x) x), summarizeCols,me="maxAbsLast"))
 #' @export
-summarizeCols <- function(matr,meth="median",silent=FALSE,callFrom=NULL) {
+summarizeCols <- function(matr, meth="median", silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## summarize all columns of matrix (or data.frame) 'x' (most methods will call apply)
   ## in case of text-columns the sorted middle (~median) will be given, unless 'maxLast' or 'minLast'
   ##   'maxLast','maxAbsLast' or 'minLast' .. consider only last column of 'matr' : choose from all columns the line where (max of) last col is at min,max...
   ##   'medianComplete' or 'meanComplete' consideres only lines/rows where no NA occur (NA have influence other columns !)
   ## return vector with summary for each column
-  fxNa <- .composeCallName(callFrom,newNa="summarizeCols")
+  fxNa <- .composeCallName(callFrom, newNa="summarizeCols")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   argOpt <- c("median","mean","aver","average","min","max","maxOfRef","minOfRef","maxAbsOfRef","firstLi","lastLi","first","last")
   argOpt <- c(argOpt,paste(argOpt,"Complete",sep=""),"Null")  
   txt <- c("Argument '","' should be "," seeting to first/default (meth='median')")
@@ -42,10 +45,10 @@ summarizeCols <- function(matr,meth="median",silent=FALSE,callFrom=NULL) {
   for(i in 1:ncol(matr)) colMod[i] <- mode(matr[,i])
   colMod <- colMod != "numeric"                                                 # check which col is not numeric
   if(meth=="Null") out <- NULL else { if(any(colMod)) {                                # has character columns ..
-    #cat(" any(maxLast,minLast) %in% meth  ",any(c("maxLast","minLast") %in% meth),"\n")
+    if(debug) message(fxNa," any(maxLast,minLast) %in% meth  ",any(c("maxLast","minLast") %in% meth))
     if(any(c("maxLast","maxAbsLast","minLast") %in% meth)) out <- .summarizeCols(matr,meth) else {
-      out <- rep(NA,ncol(matr))
-      out[which(colMod)] <- if(sum(colMod)==1) .sortMid(matr[,which(colMod)]) else apply(matr[,which(colMod)],2,.sortMid)
+      out <- rep(NA, ncol(matr))
+      out[which(colMod)] <- if(sum(colMod)==1) .sortMid(matr[,which(colMod)]) else apply(matr[,which(colMod)], 2, .sortMid)
       if(any(!colMod)) out[which(!colMod)] <- .summarizeCols(matr[,which(!colMod)],meth)    # and put in initial order
     } 
   } else out <- .summarizeCols(matr,meth)}  

@@ -24,16 +24,16 @@ ratioAllComb(
 
 \item{silent}{(logical) suppress (less important) messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-(numeric) vector with all ratios
+This function returns a (numeric) vector with all ratios
 }
 \description{
-\code{ratioAllComb} calculates all possible pairwise ratios between all individual calues of x and y.
+This function calculates all possible pairwise ratios between all individual calues of x and y, or samples up to a maximum number of combinations.
 }
 \examples{
 set.seed(2014); ra1 <- c(rnorm(9,2,1),runif(8,1,2))
 ratioAllComb(ra1[1:9],ra1[10:17])
-boxplot(list(norm=ra1[1:9],unif=ra1[10:17],rat=ratioAllComb(ra1[1:9],ra1[10:17])))
+boxplot(list(norm=ra1[1:9], unif=ra1[10:17], rat=ratioAllComb(ra1[1:9],ra1[10:17])))
 }

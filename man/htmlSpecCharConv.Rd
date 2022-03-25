@@ -12,11 +12,12 @@ htmlSpecCharConv(txt, callFrom = NULL)
 \item{callFrom}{(character) allow easier tracking of message produced}
 }
 \value{
-corrected character vector adopted to html display
+This function returns a corrected character vector adopted for html display
 }
 \description{
 Converts 'txt' so that (the most common) special characters (like 'beta','micro','square' etc) will be displayed correctly whe used for display in html (eg at mouse-over).
 Note : The package \href{https://CRAN.R-project.org/package=stringi}{stringi} is required for the conversions (the input will get returned if \code{stringi} is not available).
+Currently only the 16 most common special characters are implemented.
 }
 \examples{
 (x <- stringi::stri_unescape_unicode("\\\\u00b5\\\\u003d\\\\u0061\\\\u0062"))

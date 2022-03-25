@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeMAList.R
 \name{makeMAList}
 \alias{makeMAList}
-\title{make MA-List object}
+\title{Make MA-List object}
 \usage{
 makeMAList(
   mat,
@@ -24,7 +24,7 @@ makeMAList(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 limma-type "MAList" containing M and A values

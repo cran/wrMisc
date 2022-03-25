@@ -10,7 +10,7 @@ partUnlist(lst)
 \item{lst}{list to be partially unlisted}
 }
 \value{
-list with partially reduced nested structure
+This function returns a list with partially reduced nested structure
 }
 \description{
 \code{partUnlist} does partial unlist for treating list of lists : New (returned) list has one level less of hierarchy 

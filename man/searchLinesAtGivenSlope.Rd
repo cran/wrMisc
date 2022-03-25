@@ -45,10 +45,10 @@ searchLinesAtGivenSlope(
 
 \item{debug}{(logical) for bug-tracking: more/enhanced messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix of line-characteristics  (or if indexPoints is \code{TRUE} then list (line-characteristics & index & lm-results)
+This functions returns a matrix of line-characteristics  (or if indexPoints is \code{TRUE} then list (line-characteristics & index & lm-results)
 }
 \description{
 \code{searchLinesAtGivenSlope} searchs among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
@@ -59,5 +59,5 @@ matrix of line-characteristics  (or if indexPoints is \code{TRUE} then list (lin
 set.seed(2016); ra1 <- runif(300)
  dat1 <- cbind(x=round(c(1:100+ra1[1:100]/5,4*ra1[1:50]),1),
   y=round(c(1:100+ra1[101:200]/5,4*ra1[101:150]),1))
-(li1 <- searchLinesAtGivenSlope(dat1,coeff=1))
+(li1 <- searchLinesAtGivenSlope(dat1, coeff=1))
 }

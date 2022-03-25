@@ -1,6 +1,6 @@
 #' Convert vector to numeric
 #'
-#' \code{convToNum} checks if input vector/character string contains numbers (with or without comma) and attempts converting to numeric.
+#' This function checks if input vector/character string contains numbers (with or without comma) and attempts converting to numeric.
 #' This functions was designed for extracting the numeric part of character-vectors (or matrix) containing both numbers and character-elements.
 #' Depending on the parameters \code{convert} and \code{remove} text-entries can be converted to NA (in resulting numeric objects) or removed (the number of elements/lines gets reduced, in consequece). 
 #' Note: if 'x' is a matrix, its matrix-dimensions & -names will be preserved.
@@ -13,14 +13,14 @@
 #' @param remove (character) define which type of non-conform entries to remove, removed items cannot be converted to \code{NA} any more. Use 'allChar' for removing all character entries; \code{NA} for removing all instances of \code{NA} (execept thise created by converting text); all elements will be kept if 'none' or \code{NULL}. 
 #' @param euroStyle (logical) if \code{TRUE} will convert all ',' (eg used as European decimal-separator) to '.' (as internally used by R as decimal-separator), thus allowing converting the European decimal format. 
 #' @param sciIncl (logical) include recognizing scientific notation (eg 2e-4)
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @param silent (logical) suppress messages
 #' 
 #' @details This function may be used in two modes, depening if argument \code{autoConv} is \code{TRUE} or \code{FALSE}.
 #' The first options allows accessing an automatic mode based on \code{as.numeric}, 
 #' while the second options investigates all characters if they may belong to numeric expressions and allows removing specific text-elements. 
 #' 
-#' @return numeric vector (or matrix (if 'x' is matrix))
+#' @return This function returns a numeric vector (or matrix (if 'x' is matrix))
 #' @seealso \code{\link[base]{numeric}} and \code{as.numeric} (on same help-page)
 #' @examples
 #' x1 <- c("+4"," + 5","6","bb","Na","-7") 
@@ -33,7 +33,7 @@
 #' convToNum(x2, autoConv=FALSE, convert=NA,remove=c("allChar",NA))
 #' convToNum(x2, autoConv=FALSE, convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
 #' @export 
-convToNum <- function(x, autoConv=TRUE, spaceRemove=TRUE,convert=c(NA,"sparseChar"),remove=NULL,euroStyle=TRUE,sciIncl=TRUE,callFrom=NULL,silent=TRUE) {
+convToNum <- function(x, autoConv=TRUE, spaceRemove=TRUE, convert=c(NA,"sparseChar"),remove=NULL,euroStyle=TRUE,sciIncl=TRUE,callFrom=NULL,silent=TRUE) {
   fxNa <- .composeCallName(callFrom,newNa="convToNum")
   if(!is.numeric(x)) {
     if(isTRUE(autoConv)) {
@@ -44,8 +44,8 @@ convToNum <- function(x, autoConv=TRUE, spaceRemove=TRUE,convert=c(NA,"sparseCha
         if(isFALSE(silent)) message(fxNa,"length(x) ",ini$len,"   class(x) ",class(x),"    mode(x) ",  mode(x),
           "   head ",paste(utils::head(x),collapse=" "))
         if("data.frame" %in% ini$class | "list" %in% ini$mode) x <- unlist(x)
-        x <- try(suppressWarnings(as.numeric(if("factor" %in% class(x)) as.character(x) else x)), silent=TRUE)
-        if("try-error" %in% class(x)) x <- rep(NA,ini$len)
+        x <- try(suppressWarnings(as.numeric(if(inherits(x, "factor")) as.character(x) else x)), silent=TRUE)
+        if(inherits(x, "try-error")) x <- rep(NA,ini$len)
         if(length(ini$dim) ==2) {x <- matrix(x, nrow=ini$dim[1], ncol=ini$dim[2], dimnames=ini$dimnames)
           if("data.frame" %in% ini$class) x <- as.data.frame(x)}         
       }    
@@ -63,7 +63,7 @@ convToNum <- function(x, autoConv=TRUE, spaceRemove=TRUE,convert=c(NA,"sparseCha
         if(any(naCh)) x[which(naCh)] <- NA}
       if("NA" %in% remove | any(is.na(remove))) {chNa <- is.na(x); if(any(chNa)) x <- x[-1*which(chNa)]}
       aa <- c("[[:digit:]]+\\.[[:digit:]]+$","[[:digit:]]+$")
-      ab <- paste("^",rep(c("","\\+ *","\\- *"),each=2),rep(aa,3),sep="")
+      ab <- paste0("^",rep(c("","\\+ *","\\- *"),each=2),rep(aa,3))
       check <- grep(paste(ab,collapse="|"),x)
       if(sciIncl) {
         ac <- c("[[:digit:]]+","[[:digit:]]+\\.[[:digit:]]+")
@@ -102,7 +102,7 @@ convToNum <- function(x, autoConv=TRUE, spaceRemove=TRUE,convert=c(NA,"sparseCha
       if(length(check) >0) x[check] <- sub(" ","",x[check])
       chNa <- is.na(x) 
       x <- if(length(x) <1) NULL else { if(identical(1:length(x),check)) as.numeric(x) else {
-        if(identical(1:length(x),sort(unique(check,which(chNa))))) as.numeric(x) else x}}}      
+        if(identical(1:length(x), sort(unique(check,which(chNa))))) as.numeric(x) else x}}}      
   } }
   x }     
   

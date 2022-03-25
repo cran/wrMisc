@@ -11,10 +11,10 @@ pVal2lfdr(x, silent = TRUE, callFrom = NULL)
 
 \item{silent}{(logical) suppres messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-(numeric) vector of lfdr values (or \code{NULL} if data insufficient to run the function 'fdrtool')
+This function returns a (numeric) vector of lfdr values (or \code{NULL} if data insufficient to run the function 'fdrtool')
 }
 \description{
 This function takes a numeric vector of p-values and returns a vector of lfdr-values (local false discovery) using 

@@ -24,14 +24,14 @@ convMatr2df(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-data.frame
+This functions returns a data.frame equivalent to the input matrix, an additional column named 'ID' will be added for initial rownames
 }
 \description{
-\code{convMatr2df} provides flexible converting of matrix to data.frame. 
+This function provides flexible converting of matrix to data.frame. 
 For example repeated/redundant rownames are not allowed in data.frame(), thus the corresponding column-names have to be renamed using a counter-suffix.
 In case of non-redundant rownames, a new column 'addIniNa' will be introduced at beginning to document the initial (redundant) rownames, 
 non-redundant rownames will be created.
-Finally, this functions converts the corrected matrix to data.frame and checks/converts columns for transforming character to numeric. 
+Finally, this functions converts the corrected matrix to data.frame and checks/converts columns for transforming character to numeric if possible. 
 If the input is a data.frame containing factors, they will be converted to character before potential conversion.
 Note: for simpler version (only text to numeric) see from this package \code{.convertMatrToNum} .
 }
@@ -40,12 +40,13 @@ dat1 <- matrix(1:10, ncol=2)
 rownames(dat1) <- letters[c(1:3,2,5)]
 ## as.data.frame(dat1)  ...  would result in an error
 convMatr2df(dat1)
-convMatr2df(data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3))
-tmp <- data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3,stringsAsFactors=FALSE)
-convMatr2df(tmp)
-tmp <- data.frame(a=as.character((1:3)/2), b=1:3, stringsAsFactors=FALSE)
-convMatr2df(tmp) 
+
+df1 <- data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3)
+str(convMatr2df(df1))
+
+df2 <- df1; df2$b <- as.factor(df2$b)
+str(convMatr2df(df2))
 }
 \seealso{
-for simpler version (only text to numeric) see from this package \code{.convertMatrToNum}
+\code{\link[base]{numeric}}, for simpler version (only text to numeric) see from this package \code{.convertMatrToNum}
 }

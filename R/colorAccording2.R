@@ -1,6 +1,7 @@
 #' Transform numeric values to color-gradient
 #'
 #' This function helps making color-gradients for plotting a numerical variable.
+#' It requires the package 'RColorBrewer' being installed from CRAN. 
 #' Note : RColorBrewer palettes were not integrated here, since they are not continuous.
 #'
 #' @param x (character) color input
@@ -10,7 +11,7 @@
 #' @param revCol (logical) reverse order
 #' @param alpha (numeric) optional transparency value (1 for no transparency, 0 for complete opaqueness)
 #' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return character vector (of same length as x) with color encoding
+#' @return This function returns a character vector (of same length as x) with color encoding
 #' @seealso \code{\link[base]{cut}} 
 #' @examples
 #' set.seed(2015); dat1 <- round(runif(15),2)
@@ -45,15 +46,16 @@ colorAccording2 <- function(x, gradTy="rainbow", nStartOmit=NULL, nEndOmit=NULL,
   ## automatic choice of colors: if single-> grey, if few -> RColorBrewer, if many : gradient green -> grey/red
   ## if max groups =8 (or max 2x6 paired groups) choose contrasting colors from RColorBrewer
   ## requires (RColorBrewer)
-  finCol <- grDevices::rgb(0.2,0.2,0.2,alpha=alph)                                  # dark grey
+  finCol <- grDevices::rgb(0.2,0.2,0.2, alpha=alph)                                  # dark grey
   if(nGrp >1 & nGrp < (9+4*paired)) {
-    if(paired) { chPa <- try(find.package("RColorBrewer"), silent=TRUE)
-      if("try-error" %in% class(chPa)) stop("package 'RColorBrewer' not found !")} 
-    finCol <- if(paired) RColorBrewer::brewer.pal(12,"Paired")[c(5:6,1:4,7:12)] else RColorBrewer::brewer.pal(8,"Accent")[c(6,5,1:3,4,7:8)]   # red, blue,green,purple,orange,yellow,brown,grey
+    if(paired) { #chPa <- try(find.package("RColorBrewer"), silent=TRUE)
+      chPa <- requireNamespace("RColorBrewer", quietly=TRUE)
+      if(!chPa) stop("package 'RColorBrewer' not found !  Please install first from CRAN")}
+      finCol <- if(paired) RColorBrewer::brewer.pal(12,"Paired")[c(5:6,1:4,7:12)] else RColorBrewer::brewer.pal(8,"Accent")[c(6,5,1:3,4,7:8)]   # red, blue,green,purple,orange,yellow,brown,grey
     if(nGrp < length(finCol)) finCol <- finCol[1:nGrp]
     if(alph <1 & alph >0) finCol <- convColorToTransp(finCol,alph=alph)}
   if(nGrp > (8+4*paired)) {      # gradient bright green -> dark olive -> bright red
-    finCol <- grDevices::rgb(seq(0,0.9,length.out=nGrp),seq(0.9,0,length.out=nGrp),0.2,alpha=alph)
+    finCol <- grDevices::rgb(seq(0,0.9,length.out=nGrp), seq(0.9,0,length.out=nGrp), 0.2, alpha=alph)
   }
   finCol }
     

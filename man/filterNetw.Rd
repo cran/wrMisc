@@ -4,10 +4,11 @@
 \alias{filterNetw}
 \title{Filter nodes & edges for extracting networks
  
-This function allows extracting and filtering network-data based on fixed threshold () and add sandwich-nodes (nodes inter-connecting initial nodes) out of node-based queries.}
+This function allows extracting and filtering network-data based on fixed threshold (\code{limInt}) and add sandwich-nodes (nodes inter-connecting initial nodes) out of node-based queries.}
 \usage{
 filterNetw(
   lst,
+  filtCol = 3,
   limInt = 5000,
   sandwLim = 5000,
   filterAsInf = TRUE,
@@ -24,7 +25,9 @@ filterNetw(
 \arguments{
 \item{lst}{(list, composed of multiple matrix or data.frames ) main input (each list-element should have same number of columns)}
 
-\item{limInt}{(numeric, length=1) filter main edge-scores accodring to \code{filterAsInf}}
+\item{filtCol}{(integer, length=1) which column of \code{lst} should be usd to filter using thresholds \code{limInt} and \code{sandwLim}}
+
+\item{limInt}{(numeric, length=1) filter main edge-scores according to \code{filterAsInf}}
 
 \item{sandwLim}{(numeric, length=1) filter sandwich connection edge-scores accodring to \code{filterAsInf}}
 
@@ -47,12 +50,12 @@ filterNetw(
 \item{debug}{(logical) display additional messages for debugging}
 }
 \value{
-matrix or data.frame
+This function returns a matrix or data.frame
 }
 \description{
 Filter nodes & edges for extracting networks
  
-This function allows extracting and filtering network-data based on fixed threshold () and add sandwich-nodes (nodes inter-connecting initial nodes) out of node-based queries.
+This function allows extracting and filtering network-data based on fixed threshold (\code{limInt}) and add sandwich-nodes (nodes inter-connecting initial nodes) out of node-based queries.
 }
 \examples{
 
@@ -62,6 +65,13 @@ lst2 <- list('121'=data.frame(ID=as.character(c(141,221,228,229,449)),11:15),
   '151'=data.frame(ID=as.character(c(449,141,551,552)),11:14),
   '161'=data.frame(ID=as.character(171),11), '171'=data.frame(ID=as.character(161),11),
   '181'=data.frame(ID=as.character(881:882),11:12) )
+
+lst2 <- list('121'=data.frame(ID=as.character(c(141,221,228,229,449)),11:15, 21:25), 
+	 '131'=data.frame(ID=as.character(c(228,331,332,333,339)),11:15, 21:25), 
+  '141'=data.frame(ID=as.character(c(121,151,229,339,441,442,449)), c(11:17), 21:27), 
+  '151'=data.frame(ID=as.character(c(449,141,551,552)), 11:14, 21:24),
+  '161'=data.frame(ID=as.character(171), 11,21), '171'=data.frame(ID=as.character(161), 11,21),
+  '181'=data.frame(ID=as.character(881:882), 11:12,21:22) )
 
 (te1 <- filterNetw(lst2, limInt=90, remOrphans=FALSE))
 (te2 <- filterNetw(lst2, limInt=90, remOrphans=TRUE))

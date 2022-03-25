@@ -22,7 +22,7 @@ nonredDataFrame(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-data.frame of filtered (fewer lines) with additional 2 columns 'nSamePep' (number of redundant entries) and 'concID' (concatenated content)
+This function returns a data.frame of filtered (fewer lines) with additional 2 columns 'nSamePep' (number of redundant entries) and 'concID' (concatenated content)
 }
 \description{
 \code{nonredDataFrame}  filters 'x' (list of char-vectors or char-vector) for elements unique (to 'ref' or if NULL to all 'x') and of character length. 
@@ -30,8 +30,8 @@ May be used for different 'accession' for same pep sequence (same 'peptide_id').
 Note : made for treating data.frames, may be slightly slower than matrix equivalent
 }
 \examples{
-df1 <- data.frame(cbind(xA=letters[1:5],xB=c("h","h","f","e","f"),xC=LETTERS[1:5])) 
-nonredDataFrame(df1,useCol=c("xB","xC")) 
+df1 <- data.frame(cbind(xA=letters[1:5], xB=c("h","h","f","e","f"), xC=LETTERS[1:5])) 
+nonredDataFrame(df1, useCol=c("xB","xC")) 
 }
 \seealso{
 \code{\link{combineRedBasedOnCol}}, \code{\link{correctToUnique}}, \code{\link[base]{unique}}

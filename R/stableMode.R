@@ -20,8 +20,8 @@
 #' @param nCl (integer) depreciated argument, please use \code{bandw} instead
 #' @param histLike (logical) depreciated, please use argument \code{method} instead
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
-#' @return MA-plot only
+#' @param callFrom (character) allows easier tracking of messages produced
+#' @return This function returns a numeric vector with value of mode, the name of the value indicates it's position
 #' @seealso \code{computeMode()} in package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc}
 #' @examples
 #' set.seed(2012); dat <- round(c(rnorm(50), runif(100)),3)
@@ -50,9 +50,9 @@ stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL,
   isNum <- is.numeric(x)
   ## check type of input
   if(any(sapply(c("BBmisc","density","binning"), identical, method)) & !isNum) {    
-    chNum <- try(as.numeric(if(is.factor(x)) as.character(x) else x))
-    if("try-error" %in% class(chNum)) {
-     if(!silent) message(fxNa,"Note : Input is NOT numeric, not compatible with method chosen, thus setting method='mode' !")
+    chNum <- try(as.numeric(if(is.factor(x)) as.character(x) else x), silent=TRUE)
+    if(inherits(chNum, "try-error")) {
+      if(!silent) message(fxNa,"Note : Input is NOT numeric, not compatible with method chosen, thus setting method='mode' !")
      method <- "mode"
   }}
   ## find simply most frequent exact value(s)
@@ -71,7 +71,7 @@ stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL,
   }
   if(identical(method, "BBmisc")) {
     mo <- try(sapply(rangeSign, function(y) BBmisc::computeMode(signif(x, y))), silent=TRUE)
-    if("try-error" %in% class(mo)) { method <- "density"
+    if(inherits(mo, "try-error")) { method <- "density"
       warning(fxNa,"UNABLE to calulate BBmisc::computeMode(),  setting 'method' to 'density'")
     } else  { posi <- .firstMin(diff(mo)/mo[-length(mo)], positionOnly = TRUE)
       out <- mo[posi] }

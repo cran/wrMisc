@@ -33,7 +33,7 @@ asSepList(
 \item{debug}{(logical) display additional messages for debugging}
 }
 \value{
-list, partially unlisted to vectors
+This function returns a list, partially unlisted to vectors
 }
 \description{
 \code{asSepList} allows reorganizing list into separate numeric vectors. For example, matrixes or data.frames will be split into separate columns 

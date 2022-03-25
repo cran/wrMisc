@@ -14,7 +14,7 @@ lrbind(lst, silent = FALSE, callFrom = NULL)
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-matrix or data.frame
+This function returns (depending on input) a matrix or data.frame
 }
 \description{
 rbind-like function to append list-elements containing matrixes (or data.frames) and return one long table. 

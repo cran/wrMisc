@@ -6,8 +6,8 @@
 #' The transformation to lfdr values may give warning messages, in this case the resultant lfdr values may be invalid ! 
 #' @param x (numeric) vector of p.values
 #' @param silent (logical) suppres messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return (numeric) vector of lfdr values (or \code{NULL} if data insufficient to run the function 'fdrtool')
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a (numeric) vector of lfdr values (or \code{NULL} if data insufficient to run the function 'fdrtool')
 #' @seealso lfdr from \code{\link[fdrtool]{fdrtool}}, other p-adjustments (multiple test correction, eg FDR) in \code{\link[stats]{p.adjust}} 
 #' @examples
 #' ## Note that this example is too small for estimating really meaningful fdr values
@@ -27,11 +27,11 @@ pVal2lfdr <- function(x, silent=TRUE, callFrom=NULL) {    ## take vector of p-va
   } else {
     if(sum(is.na(x)) >0 & !silent) message(fxNa," omitting ",sum(is.na(x))," NAs !")
     z <- as.numeric(naOmit(x)) 
-    z <- try(fdrtool::fdrtool(z, statistic="pvalue", plot=FALSE, verbose=!silent)$lfdr)
-    if(any(class(z) == "try-error")) { message(fxNa," FAILED to calulate lfdr !  Check how to use package 'fdrtool' (data too small ?)")
+    z <- try(fdrtool::fdrtool(z, statistic="pvalue", plot=FALSE, verbose=!silent)$lfdr, silent=TRUE)
+    if(inherits(z, "try-error")) { message(fxNa," FAILED to calulate lfdr !  Check how to use package 'fdrtool' (data too small ?)")
       return(NULL) 
     } else { z <- as.numeric(z)
-      lfdr <- rep(NA,length(x))
+      lfdr <- rep(NA, length(x))
       lfdr[!is.na(x)] <- z                          #  for returning NA at place of initial NAs
       if(!is.null(names(x))) names(lfdr) <- names(x)
       lfdr }}}

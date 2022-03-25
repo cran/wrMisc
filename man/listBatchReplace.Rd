@@ -18,14 +18,14 @@ listBatchReplace(lst, searchValue, replaceBy, silent = FALSE, callFrom = NULL)
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-corrected list
+This function returns a corrected list
 }
 \description{
-\code{listBatchReplace} replaces in list 'lst' all entries with value 'searchValue' by 'replaceBy'
+\code{listBatchReplace} replaces in list \code{lst} all entries with value \code{searchValue} by \code{replaceBy}
 }
 \examples{
-lst1 <- list(aa=1:4,bb=c("abc","efg","abhh","effge"),cc=c("abdc","efg"))
-listBatchReplace(lst1,search="efg",repl="EFG",sil=FALSE)
+lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge"), cc=c("abdc","efg"))
+listBatchReplace(lst1, search="efg", repl="EFG", sil=FALSE)
 }
 \seealso{
 basic replacement \code{sub} in \code{\link[base]{grep}}

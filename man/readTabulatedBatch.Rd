@@ -46,7 +46,7 @@ readTabulatedBatch(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{debug}{(logical) display additional messages for debugging}
 }
@@ -59,6 +59,10 @@ Batch reading of tabulated (text-) files
 This function allows batch reading of multiple tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
 If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, fast reading of files will be performed using the function \code{\link[data.table]{fread}}.
 }
+\details{
+If you want to provide a flexible pattern of ffile-names, this has to be done before calling this usntion, eg using \code{grep} to provide an explicit collection of flles.
+However, it is possible to read different files from different locations/directories, the length of \code{path} must match the length of \code{query}
+}
 \examples{
 path1 <- system.file("extdata", package="wrMisc")
 fiNa <-  c("a1.txt","a2.txt")
@@ -67,5 +71,5 @@ str(allTxt)
 
 }
 \seealso{
-\code{\link[data.table]{fread}}, \code{\link[utils]{read.delim}}, for reading csv : \code{\link{readCsvBatch}}
+\code{\link[data.table]{fread}}, \code{\link[utils]{read.delim}}, for reading batch of csv files : \code{\link{readCsvBatch}}
 }

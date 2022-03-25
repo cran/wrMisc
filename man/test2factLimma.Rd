@@ -34,12 +34,12 @@ test2factLimma(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{debug}{(logical) additional messages for debugging}
 }
 \value{
-object of class "MArrayLM" (from limma)
+This function returns an object of class "MArrayLM" (from limma) containing/enriched by the testing results
 }
 \description{
 The aim of this function is to provide convenient acces to two-factorial (linear) testing withing the framework of \code{\link{makeMAList}} including the emprical Bayes shrinkage. 

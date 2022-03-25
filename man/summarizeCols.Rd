@@ -4,16 +4,24 @@
 \alias{summarizeCols}
 \title{Summarize columns (as median,mean,min,last or other methods)}
 \usage{
-summarizeCols(matr, meth = "median", silent = FALSE, callFrom = NULL)
+summarizeCols(
+  matr,
+  meth = "median",
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{matr}{data.frame matrix of data to be summarized by comlumn (may do different method for text and numeric comlumns)}
 
-\item{meth}{(character) summarization method (eg 'maxLast','minLast','maxLast','maxAbsLast','minLast','medianComplete' or 'meanComplete')}
+\item{meth}{(character) summarization method (eg 'maxLast','minLast','maxLast','maxAbsLast', 'minLast', 'medianComplete' or 'meanComplete')}
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 vector with summary for each column
@@ -25,13 +33,13 @@ In case of text-columns the sorted middle (~median) will be given, unless 'maxLa
  'medianComplete' or 'meanComplete' consideres only lines/rows where no NA occur (NA have influence other columns !)
 }
 \examples{
-t1 <- matrix(round(runif(30,1,9)),nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
-summarizeCols(t1,me="median")
+t1 <- matrix(round(runif(30,1,9)), nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
+summarizeCols(t1, me="median")
 t(sapply(by(t1,rownames(t1), function(x) x), summarizeCols,me="maxLast"))
-t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],
-  matrix(round(runif(30,-3,2),1),ncol=2),stringsAsFactors=FALSE)
-by(t3,t3[,1],function(x) x)
-t(sapply(by(t3,t3[,1],function(x) x), summarizeCols,me="maxAbsLast"))
+t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
+  matrix(round(runif(30,-3,2),1), ncol=2), stringsAsFactors=FALSE)
+by(t3,t3[,1], function(x) x)
+t(sapply(by(t3,t3[,1], function(x) x), summarizeCols,me="maxAbsLast"))
 }
 \seealso{
 \code{rowMeans} in \code{\link[base]{colSums}}

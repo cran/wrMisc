@@ -31,15 +31,15 @@ convToNum(
 
 \item{sciIncl}{(logical) include recognizing scientific notation (eg 2e-4)}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{silent}{(logical) suppress messages}
 }
 \value{
-numeric vector (or matrix (if 'x' is matrix))
+This function returns a numeric vector (or matrix (if 'x' is matrix))
 }
 \description{
-\code{convToNum} checks if input vector/character string contains numbers (with or without comma) and attempts converting to numeric.
+This function checks if input vector/character string contains numbers (with or without comma) and attempts converting to numeric.
 This functions was designed for extracting the numeric part of character-vectors (or matrix) containing both numbers and character-elements.
 Depending on the parameters \code{convert} and \code{remove} text-entries can be converted to NA (in resulting numeric objects) or removed (the number of elements/lines gets reduced, in consequece). 
 Note: if 'x' is a matrix, its matrix-dimensions & -names will be preserved.

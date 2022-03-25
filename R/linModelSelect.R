@@ -6,7 +6,8 @@
 #' This function allows trying to omit all starting levels designed in \code{startLev}, then the resulting p-values for the linear regression slopes will be checked and the best p-value chosen. 
 #' The input may also be a MArrayLM-type object from package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} or from \code{\link{moderTestXgrp}} or \code{\link{moderTest2grp}}.
 #' In the graphical representation all points assocoated to levels omitted are shown in light green.
-#' For the graphical display additional information can be used : If the  \code{dat} is list or MArrayLM-type object, the list-elements $raw (according to argument \code{lisNa} will be used to display points initially given as NA ad imputed lateron in grey.
+#' For the graphical display additional information can be used : If the  \code{dat} is list or MArrayLM-type object, 
+#'  the list-elements $raw (according to argument \code{lisNa} will be used to display points initially given as NA ad imputed lateron in grey.
 #' Logarithmic (ie log-linear) data can be treated by settting argument \code{logExpect=TRUE}. Then the levels will be taken as exponent of 2 for the regression, while the original values will be displayed in the figure. 
 #'
 #' @param rowNa (character, length=1) rowname for line to be extracted from \code{dat}
@@ -28,8 +29,8 @@
 #' @param xLabLas (integer) \code{las}-type orientation of x-axis labels (set to 2 for vertical axix-labels)
 #' @param cexLab (numeric) \code{cex}-type for size of text in x & y axis labels (will be passed to \code{cex.lab} in \code{plot()})
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return list with $coef (coefficients), $name (as/from input \code{rowNa}), $startLev the best starting level) 
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a list with $coef (coefficients), $name (as/from input \code{rowNa}), $startLev the best starting level) 
 #' @seealso \code{\link{moderTestXgrp}} for single comparisons, \code{\link[base]{order}}  
 #' @examples
 #' ## Construct data
@@ -95,8 +96,8 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
     if(!is.numeric(expect)) {
       subPat <- "[[:alpha:]]*[[:punct:]]*[[:alpha:]]*"
       subPat <- paste0(c("^",""),subPat,c("","$"))   
-      expect <- try(as.numeric( sub(subPat[2], "", sub(subPat[1], "", as.character(expect))))) }  
-    if("try-error" %in% class(expect)) stop(fxNa," Problem extracting the numeric content of 'expect': ",pasteC(expect0,quoteC="'"))
+      expect <- try(as.numeric( sub(subPat[2], "", sub(subPat[1], "", as.character(expect))))) } 
+    if(inherits(expect, "try-error")) stop(fxNa," Problem extracting the numeric content of 'expect': ",pasteC(expect0,quoteC="'"))  
     if(!is.numeric(expect)) {
       expect <- as.numeric(as.factor(as.character(expect)))
       if(!silent) message(fxNa,"Note: 'expect' is not numeric, transforming to integers")
@@ -143,8 +144,8 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
       if(!chPa) { message(fxNa,": package 'wrGraph' not installed for searching optimal placement of legend")
         legLoc <- "bottomright"
       } else legLoc <- try(wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc, silent=TRUE)
-      if("try-error" %in% class(legLoc)) { legLoc <- "bottomright"
-        message(fxNa,"Did not succeed in determining optimal legend location")}
+      if(inherits(legLoc, "try-error")) { legLoc <- "bottomright"
+         message(fxNa,"Did not succeed in determining optimal legend location")}
       tmp <- try(graphics::legend(legLoc, legLab, pch=legPch, col=legCol, text.col=legCol, pt.bg=ptBg, cex=cexLeg, xjust=0.5,yjust=0.5), silent=TRUE)        # as points
       if("try-error" %in% class(tmp)) message(fxNa,"NOTE : Unable to add legend !  ",as.character(tmp))
     }

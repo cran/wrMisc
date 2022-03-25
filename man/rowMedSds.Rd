@@ -12,7 +12,7 @@ rowMedSds(dat, nBoot = 99)
 \item{nBoot}{(integer) number if iterations for bootstrap}
 }
 \value{
-(numeric) vector with estimated standard errors
+This functions returns a (numeric) vector with estimated standard errors
 }
 \description{
 \code{rowMedSds} determines the stand error (sd) of the median for each row by bootstraping each row of 'dat'.

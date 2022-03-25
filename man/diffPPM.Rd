@@ -2,7 +2,7 @@
 % Please edit documentation in R/diffPPM.R
 \name{diffPPM}
 \alias{diffPPM}
-\title{difference in ppm between numeric values}
+\title{Difference in ppm between numeric values}
 \usage{
 diffPPM(dat, toPrev = FALSE, silent = FALSE, callFrom = NULL)
 }
@@ -13,19 +13,19 @@ diffPPM(dat, toPrev = FALSE, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-list with close matches of 'x' to given 'y', the numeric value dependes on 'sortMatch' (if FALSE then always value of 'y' otherwise of longest of x&y)
+This function returns a list with close matches of 'x' to given 'y', the numeric value dependes on 'sortMatch' (if FALSE then always value of 'y' otherwise of longest of x&y)
 }
 \description{
-\code{diff()}-like function to return difference in ppm between psubsequent values. 
+This is a \code{diff()}-like function to return difference in ppm between subsequent values. 
  Result is oriented, ie neg ppm value means decrease (from higher to lower value). Note that if the absolute difference remains the same the difference in ppm will not remain same.
  Any difference to NA is returned as NA, thus a single NA will result in two NAs in output (unless NA is 1st or last).
 }
 \examples{
-aa <- c(1000.01,1000.02,1000.05,1000.08,1000.09,1000.08)
-.compareByPPM(list(aa,aa),30,TRUE)                    # tabular 'long' version
+aa <- c(1000.01, 1000.02, 1000.05, 1000.08, 1000.09, 1000.08)
+.compareByPPM(list(aa,aa), 30, TRUE)                    # tabular 'long' version
 diffPPM(aa)
 }
 \seealso{

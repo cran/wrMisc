@@ -1,34 +1,34 @@
 #' Calculate all ratios between x and y
 #'
-#' \code{ratioAllComb} calculates all possible pairwise ratios between all individual calues of x and y.
+#' This function calculates all possible pairwise ratios between all individual calues of x and y, or samples up to a maximum number of combinations.
 #' 
 #' @param x (numeric) vector, numerator for constructing rations
 #' @param y (numeric) vector, denominator for constructing rations
 #' @param maxLim (integer) allows reducing complexity by drawing for very long x or y
 #' @param isLog (logical) adjust ratio calculation to log-data
 #' @param silent (logical) suppress (less important) messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return (numeric) vector with all ratios
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a (numeric) vector with all ratios
 #' @examples
 #' set.seed(2014); ra1 <- c(rnorm(9,2,1),runif(8,1,2))
 #' ratioAllComb(ra1[1:9],ra1[10:17])
-#' boxplot(list(norm=ra1[1:9],unif=ra1[10:17],rat=ratioAllComb(ra1[1:9],ra1[10:17])))
+#' boxplot(list(norm=ra1[1:9], unif=ra1[10:17], rat=ratioAllComb(ra1[1:9],ra1[10:17])))
 #' @export
 ratioAllComb <- function(x, y, maxLim=1e4, isLog=FALSE, silent=FALSE,callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="ratioAllComb")
   namesXY <- c(deparse(substitute(x)), deparse(substitute(y)))
-  if(!is.numeric(x)) x <- try(if(is.factor(x)) as.numeric(as.character(x)) else as.numeric(x))
-  if(!is.numeric(y)) y <- try(if(is.factor(y)) as.numeric(as.character(y)) else as.numeric(y))
+  if(!is.numeric(x)) x <- try(if(is.factor(x)) as.numeric(as.character(x)) else as.numeric(x), silent=TRUE)
+  if(!is.numeric(y)) y <- try(if(is.factor(y)) as.numeric(as.character(y)) else as.numeric(y), silent=TRUE)
   msg <- " 'x' and 'y' must be numeric and length >0. Can't convert !"
-  if("try-error" %in% class(x)) stop(fxNa,msg,namesXY[1]," to numeric")
-  if("try-error" %in% class(y)) stop(fxNa,msg,namesXY[2]," to numeric")
+  if(inherits(x, "try-error")) stop(fxNa,msg,namesXY[1]," to numeric")
+  if(inherits(y, "try-error")) stop(fxNa,msg,namesXY[2]," to numeric")
   if(length(x) > maxLim){
     if(!silent) message(fxNa," reducing x from to ",length(x)," to user-selectend length ",maxLim)
     x <- sample(x,size=maxLim,replace=FALSE) }
   if(length(y) > maxLim){
     if(!silent) message(fxNa," reducing y from to ",length(y)," to user-selectend length ",maxLim)
-    y <- sample(y,size=maxLim,replace=FALSE) }
-  if(!silent) {nMax <- prod(length(x),length(y))
+    y <- sample(y, size=maxLim, replace=FALSE) }
+  if(!silent) {nMax <- prod(length(x), length(y))
     if(nMax > 1e8) message(fxNa," calculations may take long time ! (",signif(nMax,4)," combinations !)")}
   rat <- if(isLog) rep(x,each=length(y)) -rep(y,length(x)) else rep(x,each=length(y))/rep(y,length(x))
   rat }
@@ -99,14 +99,14 @@ ratioAllComb <- function(x, y, maxLim=1e4, isLog=FALSE, silent=FALSE,callFrom=NU
   ## 'curNa' .. character vector for references of names
   ## cannot handle NAs !
   ## return corrected 'newNa' (character vector)
-  chSear <- unlist(regexec(paste(extPref,"[[:digit:]]+$",sep=""),newNa))           # for finding extension at very end
+  chSear <- unlist(regexec(paste0(extPref,"[[:digit:]]+$"),newNa))           # for finding extension at very end
   if(all(chSear==-1)) corExt <- newNa else {
-    tt <- chSea2 <- unlist(regexec(paste(extPref,"[[:digit:]]",sep=""),newNa))       # for finding extension at first of mult occurance
+    tt <- chSea2 <- unlist(regexec(paste0(extPref,"[[:digit:]]"),newNa))       # for finding extension at first of mult occurance
     whS <- which(chSear >0)
     tt[tt==-1] <- nchar(newNa)[tt==-1] +1
     newExt <- cbind(bas=substr(newNa,1,tt-1),ext=substr(newNa,tt+2,nchar(newNa)))
-    chSear <- unlist(regexec(paste(extPref,"[[:digit:]]+$",sep=""),curNa))     # for finding extension at very end
-    chSea2 <- unlist(regexec(paste(extPref,"[[:digit:]]",sep=""),curNa))       # for finding extension at first of mult occurance
+    chSear <- unlist(regexec(paste0(extPref,"[[:digit:]]+$"),curNa))     # for finding extension at very end
+    chSea2 <- unlist(regexec(paste0(extPref,"[[:digit:]]"),curNa))       # for finding extension at first of mult occurance
     whS <- which(chSear >0)
     curExt <- cbind(bas=substr(curNa[whS],1,chSea2[whS]-1),
       ext=substr(curNa[whS],chSear[whS]+2,nchar(curNa)[whS]))

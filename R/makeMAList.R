@@ -1,4 +1,4 @@
-#' make MA-List object 
+#' Make MA-List object 
 #'
 #' \code{makeMAList} extracts sets of data-pairs (like R & G series) and makes MA objects as \code{MA-List object} (eg for ratio oriented analysis).
 #' The grouping of columns as sets of replicate-measurements is done according to argumnet \code{'MAfac'}.
@@ -11,7 +11,7 @@
 #' @param useF (character) two specific factor-leves of \code{MAfac} that will be used/extracted
 #' @param isLog (logical) tell if data is already log2 (will be considered when computing M and A values)
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
+#' @param callFrom (character) allows easier tracking of messages produced
 #' @return limma-type "MAList" containing M and A values
 #' @seealso \code{\link{test2factLimma}}, for creating RG-lists within limma: \code{MA.RG} in \code{\link[limma]{normalizeWithinArrays}}
 #' @examples
@@ -32,7 +32,7 @@ makeMAList <- function(mat, MAfac, useF=c("R","G"), isLog=TRUE, silent=FALSE, ca
       if(any(mat <0) & !silent) message(fxNa,"Negative values will create NAs at log2-transformation !") }
     out <- try(limma::MA.RG(if(isLog) list(R=2^mat[,which(MAfac==useF[1])], G=2^mat[,which(MAfac==useF[2])]) else {
       list(R=mat[,which(MAfac==useF[1])], G=mat[,which(MAfac==useF[2])])}, bc.method="subtract", offset=0), silent=TRUE)
-    if("try-error" %in% class(out)) {warning("UNABLE to run limma::MA.RG() '!"); out <- NULL}  
+    if(inherits(out, "try-error")) {warning("UNABLE to run limma::MA.RG() '!"); out <- NULL}
     out } }
 
 #' @export

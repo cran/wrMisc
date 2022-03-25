@@ -12,9 +12,9 @@
 #' @param addResults (character) vector defining which types of information should be included to output, may be 'lfdr','FDR' (for BY correction), 'Mval' (M values), 'means' (matrix with mean values for each group of replicates)
 #' @param addGenes (matrix or data.frame) additional information to add to output
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) additional messages for debugging
-#' @return object of class "MArrayLM" (from limma)
+#' @return This function returns an object of class "MArrayLM" (from limma) containing/enriched by the testing results
 #' @seealso \code{\link{makeMAList}}, single line testing \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
 #' @examples
 #' set.seed(2014)
@@ -32,7 +32,7 @@
 #'   topTable(test2f, coef=2, n=5) } 
 #' @export
 test2factLimma <- function(datMatr, fac1, fac2, testSynerg=TRUE, testOrientation="=", addResults=c("lfdr","FDR","Mval","means"), addGenes=NULL, silent=FALSE, callFrom=NULL, debug=FALSE){
-  fxNa <- .composeCallName(callFrom,newNa="test2factLimma")
+  fxNa <- .composeCallName(callFrom, newNa="test2factLimma")
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(!isTRUE(silent)) silent <- FALSE
   doTest <- TRUE
@@ -41,13 +41,13 @@ test2factLimma <- function(datMatr, fac1, fac2, testSynerg=TRUE, testOrientation
   if(doTest) {    
     msg1 <- " 'datMatr' should have the same number of cols as length of fac1 & fac2 !"
     if(ncol(datMatr) != length(fac1) | ncol(datMatr) != length(fac2)) stop(msg1)
-    datDesign <- if(isTRUE(testSynerg)) try(stats::model.matrix(~ fac1 * fac2),silent=TRUE) else try(stats::model.matrix(~ fac1 + fac2),silent=TRUE)
-    if("try-error" %in% class(datDesign))  { doTest <- FALSE; message(fxNa," Problem with model.matrix(), please check your factors !")
+    datDesign <- if(isTRUE(testSynerg)) try(stats::model.matrix(~ fac1 * fac2),silent=TRUE) else try(stats::model.matrix(~ fac1 + fac2), silent=TRUE)
+    if(inherits(datDesign, "try-error")) { doTest <- FALSE; message(fxNa," Problem with model.matrix(), please check your factors !")
     } else if(debug) message(fxNa,"design matrix has ",nrow(datDesign)," rows and ",ncol(datDesign),"  cols")
   }
   if(doTest) {    
     datFit <- try(limma::lmFit(datMatr, design=datDesign), silent=TRUE)                ## Fitting linear models
-    if("try-error" %in% class(datFit)) {warning(fxNa," PROBLEM with lmFit(); check if package 'limma' is correctly installed, it seems not to be working properly !?!")
+    if(inherits(datFit, "try-error")) {warning(fxNa," PROBLEM with lmFit(); check if package 'limma' is correctly installed, it seems not to be working properly !?!")
       doTest <- FALSE
     } else if(debug) message(fxNa,"Sucessfully run lmFit()") }
     
@@ -60,7 +60,7 @@ test2factLimma <- function(datMatr, fac1, fac2, testSynerg=TRUE, testOrientation
     chNAp <- colSums(!is.na(datFit$p.value))
     if(any(chNAp <1)) {message(fxNa," problem with redundant factors ?  Some cols of p.values are all NA !! (remove)")
       datFit$p.value <- datFit$p.value[,which(chNAp >0)]}  
-    chFdr <- requireNamespace("fdrtool", quietly=TRUE) # try(find.package("fdrtool"), silent=TRUE)
+    chFdr <- requireNamespace("fdrtool", quietly=TRUE)            # try(find.package("fdrtool"), silent=TRUE)
     if(length(addResults) >0) if("lfdr" %in% tolower(addResults) & !chFdr) {
       if(!silent) message(fxNa,"package 'fdrtool' not found ! Please install package fdrtool from CRAN for enabeling 'lfdr' estimations") 
       addResults <- addResults[which(!"lfdr" %in% tolower(addResults))] }    
@@ -85,16 +85,16 @@ test2factLimma <- function(datMatr, fac1, fac2, testSynerg=TRUE, testOrientation
       if("FDR" %in% toupper(addResults)) out$FDR <- if(length(dim(out$p.value)) >1) {
         apply(out$p.value,2,stats::p.adjust,meth="BH")} else stats::p.adjust(out$p.value, meth="BH")
       if("lfdr" %in% tolower(addResults)) {
-        chPa <- try(find.package("fdrtool"),silent=TRUE)
-        if("try-error" %in% class(chPa)) message("package 'fdrtool' not found ! Please install first .. running so far without 'lfdr'") 
+        chPa <- try(find.package("fdrtool"), silent=TRUE)
+        if(inherits(chPa, "try-error")) message("package 'fdrtool' not found ! Please install first .. running so far without 'lfdr'") 
         addResults <- addResults[which(!tolower(addResults) %in% "lfdr")] }
       if("lfdr" %in% tolower(addResults)) {out$lfdr <- if(is.matrix(out$p.value)) {
         apply(out$p.value,2,pVal2lfdr)} else pVal2lfdr(out$p.value)
-       }
-      if("try-error" %in% class(datFit$lfdr)) {message(fxNa," PROBLEM with calulating lfdr ! ")
+      }
+      if(inherits(datFit$lfdr, "try-error")) {message(fxNa," PROBLEM with calulating lfdr ! ")
       } else if(debug) message(fxNa,"Sucessfully calculated lfdr ...")
       if("BY" %in% toupper(addResults)) {datFit$BY <- if(length(dim(out$p.value)) >1) {
-        apply(datFit$p.value,2,stats::p.adjust,meth="BY")} else stats::p.adjust(out$p.value,meth="BY")
+        apply(datFit$p.value,2,stats::p.adjust,meth="BY")} else stats::p.adjust(out$p.value, meth="BY")
        }
       for(i in c("FDR","lfdr","BY")) {if(length(dim(out[[i]])) >1) rownames(out[[i]]) <- rownames(datMatr)}}
     out 

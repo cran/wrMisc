@@ -16,35 +16,36 @@ searchDataPairs(
 )
 }
 \arguments{
-\item{dat}{matrix or data.frame}
+\item{dat}{matrix or data.frame (main input)}
 
 \item{disThr}{(numeric) threshold to decide when to report similar data (applied on normalized distances, low val fewer reported), applied on normalized distances (norm to diagonale of all data for best relative 'unbiased' view)}
 
 \item{byColumn}{(logical) rotates main input by 90 degrees (using \code{\link[base]{t}}), thus allows to read by rows instead of by columns}
 
-\item{normRange}{(logical) normize each columns separately if TRUE}
+\item{normRange}{(logical) normize each columns separately if \code{TRUE}}
 
-\item{altNa}{(character, default NULL) vector with alternative names (for display)}
+\item{altNa}{(character, default \code{NULL}) vector with alternative names (for display)}
 
 \item{realDupsOnly}{(logical) if \code{TRUE} will consider equal values only, otherwise will also consider very close values (based on argument \code{disThr})}
 
 \item{silent}{(logical) suppres messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-data.frame with names for sample-pair, percent of identical values (100 for complete identical pair) and rel (Euclidean) distance (ie max dist observed =1.0)
+This function returns a data.frame with names of sample-pairs, percent of identical values (100 for complete identical pair) and rel (Euclidean) distance (ie max dist observed =1.0)
 }
 \description{
-\code{searchDataPairs} searches matrix for columns of similar data, ie 'duplicate' values in separate columns or very similar columns if 'realDupsOnly'=FALSE.
-Initial distance measures will be normalized either to diagonale (normRange=TRUE) of 'window' or to the real max distance observed (equal or less than diagonale).
+\code{searchDataPairs} searches matrix for columns of similar data, ie 'duplicate' values in separate columns or very similar columns if \code{realDupsOnly=FALSE}.
+Initial distance measures will be normalized either to diagonale (\code{normRange=TRUE)} of 'window' or to the real max distance observed (equal or less than diagonale).
 Return data.frame with names for sample-pair, percent of identical values (100 for complete identical pair) and relative (Euclidean) distance (ie max dist observed =1.0).
 Note, that low distance values do not necessarily imply correlating data.
 }
 \examples{
-mat <- round(matrix(c(11:40,runif(20)+12,11:19,17,runif(20)+18,11:20),nrow=10),1); colnames(mat)=1:9
+mat <- round(matrix(c(11:40,runif(20)+12,11:19,17,runif(20)+18,11:20), nrow=10), 1)
+colnames(mat) <- 1:9
 searchDataPairs(mat,disThr=0.05)
 }
 \seealso{
-\code{\link[base]{duplicated}}, \code{\link[stats]{dist}}
+\code{\link[base]{duplicated}}
 }

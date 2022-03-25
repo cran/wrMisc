@@ -8,7 +8,7 @@
 #' @param convTo (character) optional conversion of content to 'numeric' or 'logical' 
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return object of same dimension as input (with replaced content) 
+#' @return This function returns an object of same dimension as input (with replaced content) 
 #' @seealso  \code{\link[base]{grep}}
 #' @examples
 #' x1 <- c("ab","bc","cd","efg","ghj")
@@ -19,7 +19,7 @@
 #' 
 #' # works also to replace numeric content : 
 #' x3 <- matrix(11:16, ncol=2)
-#' multiCharReplace(x3,cbind(12:13,112:113))
+#' multiCharReplace(x3, cbind(12:13,112:113))
 #' @export
 multiCharReplace <- function(mat, repl, convTo=NULL, silent=FALSE, callFrom=NULL){
   ## multiple replacement of entire character elements in simple vector, matrix or data.frame
@@ -40,11 +40,11 @@ multiCharReplace <- function(mat, repl, convTo=NULL, silent=FALSE, callFrom=NULL
   msg <- "Unable to convert to "
   if(length(convTo)==1) { if("numeric" %in% convTo & !is.numeric(mat)) {                                 
     tmp <- try(as.numeric(mat), silent=TRUE)
-    if(!"try-error" %in% class(tmp)) {mat <- if(length(dim(mat)) <2) tmp else matrix(tmp,ncol=ncol(mat),dimnames=dimnames(mat))
+    if(inherits(tmp, "try-error")) {mat <- if(length(dim(mat)) <2) tmp else matrix(tmp, ncol=ncol(mat), dimnames=dimnames(mat))
     } else if(!silent) message(fxNa,msg,"numeric")
   } else if("logical" %in% convTo & !is.logical(mat)) {
     tmp <- try(as.logical(mat), silent=TRUE)
-    if(!"try-error" %in% class(tmp)) {mat <- if(length(dim(mat)) <2) tmp else matrix(tmp,ncol=ncol(mat),dimnames=dimnames(mat)) 
+    if(!inherits(tmp, "try-error")) {mat <- if(length(dim(mat)) <2) tmp else matrix(tmp, ncol=ncol(mat), dimnames=dimnames(mat))
     } else if(!silent) message(fxNa,msg,"logical") }}
   mat }
    

@@ -1,12 +1,13 @@
 Package: wrMisc
-Version: 1.8.1
+Version: 1.9.0
 Title: Analyze Experimental High-Throughput (Omics) Data
 Authors@R: person("Wolfgang", "Raffelsberger", email = "w.raffelsberger@gmail.com", role = c("aut", "cre"))
 Author: Wolfgang Raffelsberger [aut, cre]
 Maintainer: Wolfgang Raffelsberger <w.raffelsberger@gmail.com>
 Description: The efficient treatment and convenient analysis of experimental high-throughput (omics) data gets facilitated through this collection of diverse functions. 
   Several functions address advanced object-conversions, like manipulating lists of lists or lists of arrays, reorganizing lists to arrays or into separate vectors, merging of multiple entries, etc.  
-  Another set of functions provides speed-optimized calculation of standard deviation (sd), coefficient of variance (CV) or standard error of the mean (SEM) for data in matrixes or means per line with respect to additional grouping (eg n groups of replicates). 
+  Another set of functions provides speed-optimized calculation of standard deviation (sd), coefficient of variance (CV) or standard error of the mean (SEM)  
+  for data in matrixes or means per line with respect to additional grouping (eg n groups of replicates). 
   Other functions facilitate dealing with non-redundant information, by indexing unique, adding counters to redundant or eliminating lines with respect redundancy in a given reference-column, etc. 
   Help is provided to identify very closely matching numeric values to generate (partial) distance matrixes for very big data in a memory efficient manner or to reduce the complexity of large data-sets by combining very close values. 
   Many times large experimental datasets need some additional filtering, adequate functions are provided. 
@@ -23,6 +24,6 @@ License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.2
 NeedsCompilation: no
-Packaged: 2022-01-24 14:15:15 UTC; wraff
+Packaged: 2022-03-25 10:38:10 UTC; wraff
 Repository: CRAN
-Date/Publication: 2022-01-24 15:10:02 UTC
+Date/Publication: 2022-03-25 12:00:02 UTC

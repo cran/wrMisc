@@ -12,7 +12,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @param debug (logical) display additional messages for debugging
-#' @return list, partially unlisted to vectors
+#' @return This function returns a list, partially unlisted to vectors
 #' @seealso \code{\link[wrMisc]{partUnlist}}, \code{\link[base]{unlist}}
 #' @examples
 #' bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,nc=2),li=list(li1=11:14,li2=data.frame(41:44)))
@@ -47,9 +47,7 @@ asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, si
       y[length(y) +1:length(w)] <- w  } }
   ## depreciate fxArg  (v 1.6.2)
   if(length(fxArg) >0) {
-    msg <- NULL
-    if(length(exclElem) <1) {exclElem <- fxArg; msg <- " (still using since 'exclElem=NULL'"}
-    if(isFALSE(silent)) message(fxNa, "argument 'fxArg' is depreciated, please use argument 'exclElem'", msg)
+    if(isFALSE(silent)) message(fxNa, "Argument 'fxArg' is depreciated, please use argument 'exclElem'")
   }
   ## check for conflicting names to 'exclElem'
   if(length(exclElem) >0 & length(y) >0) {

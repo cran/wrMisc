@@ -12,7 +12,7 @@ stdErrMedBoot(x, nBoot = 99)
 \item{nBoot}{(integer) number for iterations}
 }
 \value{
-(numeric) vector with estimated standard error
+This function returns a (numeric) vector with estimated standard error
 }
 \description{
 \code{stdErrMedBoot} estimate standard eror of median by boot-strap approach. 

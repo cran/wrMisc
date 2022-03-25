@@ -1,4 +1,4 @@
-#' Convert pairs of node-names to propensity matrix (non-oriented)
+#' Convert pairs of node-names to non-oriented propensity matrix 
 #'  
 #' Numerous network query tools produce a listing of pairs of nodes (with one pair of nodes per line). 
 #' Using this function such a matrix (or data.frame) can be combined to this more comprehensive view as propensity-matrix.  
@@ -11,25 +11,21 @@
 #'   the first two columns should contain identifiers of the nodes
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return matrix or data.frame
+#' @return This function returns matrix or data.frame
 #' @seealso uses typically input from \code{\link{filterNetw}}
 #' @examples
 #' 
 #' pairs3L <- matrix(LETTERS[c(1,3,3, 2,2,1)], ncol=2)      # loop of 3
 #' (netw13pr <- pairsAsPropensMatr(pairs3L))   # as prop matr
 #' 
-#' 
-#' 
-#' 
-#' 
 #' @export
-pairsAsPropensMatr <-function(mat, callFrom=NULL, silent=FALSE) {
+pairsAsPropensMatr <- function(mat, callFrom=NULL, silent=FALSE) {
   ## convert pairs of node-names (non-oriented) to propensity matrix  
   ## sparse matrix solution
   fxNa <- .composeCallName(callFrom, newNa="pairsAsPropensMatr")
   if(!is.matrix(mat)) mat <- try(as.matrix(mat), silent=TRUE)
   msg <- " 'mat'; must be matrix or data.frame with min 1 line and 2 col"
-  if("try-error" %in% class(mat)) stop("Invalid input in",msg) 
+  if(inherits(mat, "try-error")) stop("Invalid input in",msg)
   if(any(length(dim(mat)) !=2, dim(mat) < 1:2)) stop("Invalid argument",msg)
   
   nodeNa <- sort(unique(as.character(mat[,1:2])))

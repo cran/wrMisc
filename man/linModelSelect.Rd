@@ -64,10 +64,10 @@ $datImp (the main quantitation data to use) and $annot for displaying the corres
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-list with $coef (coefficients), $name (as/from input \code{rowNa}), $startLev the best starting level)
+This function returns a list with $coef (coefficients), $name (as/from input \code{rowNa}), $startLev the best starting level)
 }
 \description{
 The aim of this function is to select the data suiting set of levels of the main input data to construct a linear regression model. 
@@ -76,7 +76,8 @@ With such data it may be preferable to omit the read-outs for the lowest concent
 This function allows trying to omit all starting levels designed in \code{startLev}, then the resulting p-values for the linear regression slopes will be checked and the best p-value chosen. 
 The input may also be a MArrayLM-type object from package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} or from \code{\link{moderTestXgrp}} or \code{\link{moderTest2grp}}.
 In the graphical representation all points assocoated to levels omitted are shown in light green.
-For the graphical display additional information can be used : If the  \code{dat} is list or MArrayLM-type object, the list-elements $raw (according to argument \code{lisNa} will be used to display points initially given as NA ad imputed lateron in grey.
+For the graphical display additional information can be used : If the  \code{dat} is list or MArrayLM-type object, 
+ the list-elements $raw (according to argument \code{lisNa} will be used to display points initially given as NA ad imputed lateron in grey.
 Logarithmic (ie log-linear) data can be treated by settting argument \code{logExpect=TRUE}. Then the levels will be taken as exponent of 2 for the regression, while the original values will be displayed in the figure.
 }
 \examples{

@@ -27,7 +27,7 @@ cbindNR(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix or data.frame (as cbind would return)
+This function returns a matrix or data.frame (as cbind would return)
 }
 \description{
 \code{cbindNR} combines all matrixes given as arguments to non-redundant column names (by ADDING the number of 'duplicated' columns !). 
@@ -37,10 +37,10 @@ By default, the output gets sorted by column-names.
 Note, due to the use of '...' arguments must be given by their full argument-names, lazy evaluation might not recognize properly argument names.
 }
 \examples{
-ma1 <- matrix(1:6,ncol=3,dimnames=list(1:2,LETTERS[3:1]))
-ma2 <- matrix(11:16,ncol=3,dimnames=list(1:2,LETTERS[3:5]))
-cbindNR(ma1,ma2)
-cbindNR(ma1,ma2,summarizeAs="mean")
+ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1]))
+ma2 <- matrix(11:16, ncol=3, dimnames=list(1:2,LETTERS[3:5]))
+cbindNR(ma1, ma2)
+cbindNR(ma1, ma2, summarizeAs="mean")
 }
 \seealso{
 \code{\link[base]{cbind}}, \code{\link{nonAmbiguousNum}}, \code{\link{firstOfRepLines}}

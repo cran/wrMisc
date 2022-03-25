@@ -27,17 +27,22 @@ extrSpcText(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-modified character vector
+This function returns a modified character vector
 }
 \description{
-\code{extrSpcText} extracts/cuts text-fragments out of 'txt' following specific anchors 'cutFrom' and 'cutTo'.
-In case 'cutFrom' not found 'missingAs' will be returned.
-In case 'cutTo' not found text gets extracted with 'chaMaxEl' characters.
+This function extracts/cuts text-fragments out of \code{txt} following specific anchors defined by arguments \code{cutFrom} and \code{cutTo}.
+}
+\details{
+In case \code{cutFrom} is not found \code{missingAs} will be returned.
+In case \code{cutTo} is not found, text gets extracted with \code{chaMaxEl} characters.
 }
 \examples{
-extrSpcText(c(" ghjg GN=thisText PE=001"," GN=_ PE=",NA,"abcd"))
-extrSpcText(c("ABCDEF.3-6","05g","bc.4-5"),cutFr="\\\\.",cutT="-")
+extrSpcText(c(" ghjg GN=thisText PE=001"," GN=_ PE=", NA, "abcd"))
+extrSpcText(c("ABCDEF.3-6","05g","bc.4-5"), cutFr="\\\\.", cutT="-")
+}
+\seealso{
+\code{\link[base]{substr}}
 }

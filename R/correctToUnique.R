@@ -6,13 +6,14 @@
 #' @param atEnd (logical) decide location of placing the counter (at end or at beginning of initial text)
 #' @param maxIter (numeric) max number of iterations
 #' @param NAenum (logical) if \code{TRUE} all \code{NA}s will be enumerated (NA_1,NA_2,...)
+#' @param silent (logical) suppress messages
 #' @param callFrom (character) for better tracking of use of functions
-#' @return character vector
+#' @return This function returns a character vector
 #' @seealso \code{\link[base]{unique}} will simply remove repeated elements, ie length of 'x' won't remain constant, \code{\link{filtSizeUniq}} is more complex and slower, \code{\link{treatTxtDuplicates}}
 #' @examples
 #' correctToUnique(c("li0","n",NA,NA,rep(c("li2","li3"),2),rep("n",4))) 
 #' @export
-correctToUnique <- function(x,sep="_",atEnd=TRUE,maxIter=4,NAenum=TRUE,callFrom=NULL){
+correctToUnique <- function(x, sep="_", atEnd=TRUE, maxIter=4, NAenum=TRUE, silent=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="correctToUnique")
   chNA <- is.na(x)
   if(NAenum & any(chNA)) x[which(chNA)] <- "NA"
@@ -39,7 +40,7 @@ correctToUnique <- function(x,sep="_",atEnd=TRUE,maxIter=4,NAenum=TRUE,callFrom=
         z <- which(x==i); x[z] <- if(atEnd) paste(x[z],(maxIter+1):xTab[which(names(xTab)==i)],sep=sep) else paste((maxIter+1):xTab[i],x[z],sep=sep)}}}
   x }
 
-.uniqueWName <- function(x,silent=TRUE,splitSameName=TRUE,callFrom=NULL){
+.uniqueWName <- function(x, silent=TRUE, splitSameName=TRUE, callFrom=NULL){
   ## enhanced version of unique(): return unique of vector 'x' with names (if multiple names fit to same value of 'x', use 1st of names)
   ## assumes that names of 'x' are redundant to value of 'x'
   ## 'splitSameName' .. allows keeping different names, even if with same value in 'x' (which would disappear with unique(x))

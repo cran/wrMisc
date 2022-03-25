@@ -13,7 +13,7 @@
 #' @param testOrientation (character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return limma-type object of class \code{MArrayLM}
+#' @return This function returns a limma-type object of class \code{MArrayLM}
 #' @seealso \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}, \code{\link[stats]{p.adjust}}
 #' @examples
 #' set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2), ncol=8,
@@ -66,7 +66,7 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
     datDesign <- stats::model.matrix(~ grp)
     if(nrow(datDesign) < ncol(dat)) datDesign <- rbind(datDesign, matrix(rep(0,length(levels(grp))*(ncol(dat)-nrow(datDesign))), ncol=ncol(datDesign)))
     fit1 <- try(limma::eBayes(limma::lmFit(dat, design=datDesign)), silent=TRUE)                ## Fitting linear model
-    if("try-error" %in% class(fit1)) { runTest <- FALSE
+    if(inherits(fit1, "try-error")) { runTest <- FALSE
       warning(fxNa," UNABLE to run limma::lmFit() and/or limma::eBayes(); can't run this function !")}
   }
   if(runTest) {  
@@ -100,7 +100,7 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       if(any(c("qval","qvalue") %in% tolower(addResults))) { out$qVal <- if(is.matrix(out$p.value)) {
         try(apply(out$p.value, 2, function(x) qvalue::qvalue(x,lfdr.out=TRUE)$lfdr), silent=TRUE)
           } else try(qvalue::qvalue(out$p.value,lfdr.out=TRUE)$lfdr, silent=TRUE) 
-        if("try-error" %in% class(out$qVal)) { 
+        if(inherits(out$qVal, "try-error")) {  
           if(!silent) message(fxNa," Problem with pi0 estimation, setting pi0=1 like BH-FDR")
           out$qVal <- if(is.matrix(out$p.value)) { apply(out$p.value, 2, function(x) qvalue::qvalue(x, pi0=1, lfdr.out=TRUE)$lfdr)
             } else qvalue::qvalue(out$p.value, pi0=1, lfdr.out=TRUE)$lfdr }
@@ -117,8 +117,8 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       if("BY" %in% toupper(addResults)) out$nonMod.BY <- stats::p.adjust(out$nonMod.p, method="BY")
       if(any(c("lfdr") %in% tolower(addResults))) out$nonMod.lfdr <- try(pVal2lfdr(out$nonMod.p), silent=TRUE) 
       if(any(c("qval","qvalue") %in% tolower(addResults))) { 
-        out$nonMod.qVal <- try(qvalue::qvalue(out$nonMod.p, lfdr.out=TRUE)$lfdr, silent=TRUE) 
-        if("try-error" %in% class(out$nonMod.qVal)) { 
+        out$nonMod.qVal <- try(qvalue::qvalue(out$nonMod.p, lfdr.out=TRUE)$lfdr, silent=TRUE)
+        if(inherits(out$nonMod.qVal, "try-error")) {
           if(!silent) message(fxNa," Problem with pi0 estimation (non-shrinked p-values) fro qValue, setting pi0=1 like BH-FDR")
           out$qVal <- if(is.matrix(out$p.value)) qvalue::qvalue(out$nonMod.p, pi0=1, lfdr.out=TRUE)$lfdr }}
       if(any(c("bonferroni","bonf") %in% tolower(addResults))) out$nonMod.bonf <- stats::p.adjust(out$nonMod.p, method="bonferroni")     

@@ -4,7 +4,7 @@
 #' (Highest level list will be appended). In case of conflicting (non-null) listnames a prefix will be added. 
 #' Behaviour different to \code{\link[base]{unlist}} when unlisting list of matrixes.
 #' @param lst list to be partially unlisted
-#' @return list with partially reduced nested structure
+#' @return This function returns a list with partially reduced nested structure
 #' @seealso \code{\link[base]{unlist}}, \code{\link{asSepList}}
 #' @examples
 #' partUnlist(list(list(a=11:12,b=21:24), list(c=101:101,d=201:204)))
@@ -13,7 +13,7 @@
 #' unlist(li4, rec=FALSE)
 #' @export
 partUnlist <- function(lst) {
-  notL <- sapply(lst, function(x) !("list" %in% class(x)))
+  notL <- !sapply(lst, inherits, "list")
   if(all(notL)) return(lst) else {
     ## lst is list of list(s)
     out <- if(any(notL)) lst[which(notL)] else list()   # the non-list elements

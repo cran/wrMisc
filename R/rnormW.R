@@ -14,8 +14,8 @@
 #' @param seed (integer, length=1) seed for generating random numbers
 #' @param digits (integer, length=1 or \code{NULL}) number of significant digits for output, set to \code{NULL} to get all digits   
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message produced
-#' @return numeric vector of random values
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a numeric vector of random values
 #' @seealso \code{\link[stats]{Normal}} 
 #' @examples
 #' x1 <- (11:16)[-5]
@@ -39,12 +39,12 @@ rnormW <- function(n, mean=0, sd=1, seed=NULL, digits=8, silent=FALSE, callFrom=
     if(length(n) >1) n <- length(n)
     msg <- c("argument '","' must be positive numeric and of length=1")
     if(!is.numeric(mean)) mean <- try(as.numeric(mean))
-    if(length(mean) != 1 | "try-error" %in% class(mean)) stop(msg[1],"mean",msg[2])
+    if(length(mean) != 1 | inherits(mean, "try-error")) stop(msg[1],"mean",msg[2])
     if(!is.numeric(sd)) sd <- try(as.numeric(sd))
     ## main
     if(n==1) {out <- mean
-      if(isFALSE(silent) & is.finite(sd)) message(fxNa,"Ignoring 'sd' since n=1") 
-    } else if(length(sd) != 1 | "try-error" %in% class(sd)) stop(msg[1],"sd",msg[2])
+      if(isFALSE(silent) & is.finite(sd)) message(fxNa,"Ignoring 'sd' since n=1")   
+    } else if(length(sd) != 1 | inherits(sd, "try-error")) stop(msg[1],"sd",msg[2])
     if(n==2) out <- mean + c(-1,1)*sd/sqrt(2) 
     if(n >2) {
       if(length(seed) ==1) try(set.seed(seed), silent=TRUE)

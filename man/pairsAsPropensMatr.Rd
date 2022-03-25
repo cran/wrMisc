@@ -2,7 +2,7 @@
 % Please edit documentation in R/pairsAsPropensMatr.R
 \name{pairsAsPropensMatr}
 \alias{pairsAsPropensMatr}
-\title{Convert pairs of node-names to propensity matrix (non-oriented)
+\title{Convert pairs of node-names to non-oriented propensity matrix 
  
 Numerous network query tools produce a listing of pairs of nodes (with one pair of nodes per line). 
 Using this function such a matrix (or data.frame) can be combined to this more comprehensive view as propensity-matrix.  
@@ -20,10 +20,10 @@ the first two columns should contain identifiers of the nodes}
 \item{silent}{(logical) suppress messages}
 }
 \value{
-matrix or data.frame
+This function returns matrix or data.frame
 }
 \description{
-Convert pairs of node-names to propensity matrix (non-oriented)
+Convert pairs of node-names to non-oriented propensity matrix 
  
 Numerous network query tools produce a listing of pairs of nodes (with one pair of nodes per line). 
 Using this function such a matrix (or data.frame) can be combined to this more comprehensive view as propensity-matrix.  
@@ -34,10 +34,6 @@ In a number of applications (eg in protein-protein interaction networks, PPI) th
 
 pairs3L <- matrix(LETTERS[c(1,3,3, 2,2,1)], ncol=2)      # loop of 3
 (netw13pr <- pairsAsPropensMatr(pairs3L))   # as prop matr
-
-
-
-
 
 }
 \seealso{

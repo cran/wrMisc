@@ -6,7 +6,7 @@
 #' @param lst (list, composed of multiple matrix or data.frames or simple vectors) main input (each list-element should have same number of columns, numeric vectors will be converted to number of columns of other columns/elements)
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return matrix or data.frame
+#' @return This function returns (depending on input) a matrix or data.frame
 #' @seealso \code{rbind} in \code{\link[base]{cbind}}
 #' @examples
 #' lst1 <- list(matrix(1:9, ncol=3, dimnames=list(letters[1:3],c("AA","BB","CC"))),
@@ -17,12 +17,12 @@ lrbind <- function(lst, silent=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="lrbind")
   argN <- deparse(substitute(lst))
   if(!isTRUE(silent)) silent <- FALSE
-  chDf <- sapply(lst, function(x) "data.frame" %in% class(x))
+  chDf <- sapply(lst, inherits, "data.frame")
   if(any(chDf)) {
     iniCla <- sapply(lst[[which(chDf)[1]]], class)    # read types of classes of 1st data.frame
     for(i in which(chDf)) lst[[i]] <- as.matrix(lst[[i]])  
-  }  
-  chNum <- sapply(lst, function(x) any(c("numeric","integer") %in% class(x)))
+  }
+  chNum <- sapply(lst, inherits, c("numeric","integer"))
   nCol <- if(any(!chNum)) ncol(lst[[which(!chNum)[1]]]) else min(sapply(lst, length), na.rm=TRUE)
   if(any(chNum)) for (i in which(chNum)) lst[[i]] <- matrix(lst[[i]], ncol=nCol)
   ldim <- sapply(lst, dim)

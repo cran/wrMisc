@@ -15,7 +15,7 @@ will priviledge more uniform size of groups, higher values will cause small init
 \item{nGrp}{(integer) number of groups expected}
 }
 \value{
-numeric vector with number of counts and class-borders as names (like table).
+This function returns a numeric vector with number of counts and class-borders as names (like table).
 }
 \description{
 \code{reduceTable} treats/reduces results from \code{\link[base]{table}} to 'nGrp' groups, 
@@ -25,8 +25,9 @@ Mainly made for reducing the number of classes for betters plots with \code{\lin
 \examples{
 set.seed(2018); dat <- sample(11:60,200,repl=TRUE)
 pie(table(dat))
-pie(reduceTable(table(dat),sep=NULL))
-pie(reduceTable(table(dat),sep=NULL),init.angle=90,clockwise=TRUE,col=rainbow(20)[1:15],cex=0.8) 
+pie(reduceTable(table(dat), sep=NULL))
+pie(reduceTable(table(dat), sep=NULL), init.angle=90,
+  clockwise=TRUE, col=rainbow(20)[1:15], cex=0.8)
 }
 \seealso{
 \code{\link[base]{table}}

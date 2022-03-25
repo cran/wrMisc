@@ -33,10 +33,10 @@ readVarColumns(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix (character or numeric)
+This function returns a matrix (character or numeric)
 }
 \description{
 Reading the content of files where the number of separators (eg tabulation) is variable poses problems with traditional methods for reding files, like  \code{\link[utils]{read.table}}.

@@ -12,15 +12,15 @@ rowGrpSds(x, grp)
 \item{grp}{(character or factor) defining which columns should be grouped (considered as replicates)}
 }
 \value{
-matrix of sd values
+This function returns a matrix of sd values
 }
 \description{
 \code{rowGrpSds} calculate Sd (standard-deviation) for matrix with multiple groups of data, ie one sd for each group of data. 
 Groups are specified as columns of 'x' in 'grp' (so length of grp should match number of columns of 'x', NAs are allowed).
 }
 \examples{
-set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
-head(rowGrpSds(dat1,gr=gl(4,3,labels=LETTERS[1:4])[2:11]))
+set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
+head(rowGrpSds(dat1, gr=gl(4,3,labels=LETTERS[1:4])[2:11]))
 }
 \seealso{
 \code{\link{rowGrpMeans}}, \code{\link{rowCVs}}, \code{\link{rowSEMs}},\code{\link[stats]{sd}}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildTree.R
 \name{buildTree}
 \alias{buildTree}
-\title{Connect edges to form tree and extract all possible branches}
+\title{Connect edges to from tree and extract all possible branches}
 \usage{
 buildTree(
   disDat,
@@ -24,7 +24,7 @@ buildTree(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-list with $paths (branches as matrix with columns 'sumLen' & 'n'), $usedNodes (character vector of all names used to build tree) and $tree (object from data.tree)
+This function returns a list with $paths (branches as matrix with columns 'sumLen' & 'n'), $usedNodes (character vector of all names used to build tree) and $tree (object from data.tree)
 }
 \description{
 It is assumed that multiple fragments from a common ancestor bay be charcterized by the their start- and end-sites by integer values.  

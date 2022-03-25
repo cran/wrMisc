@@ -15,14 +15,14 @@
 #' @param quantFa (numeric, length=2) additional parameters for quantiles to use with method='slope'
 #' @param expFa (numeric, length=1) additional parameters for method='exponent'
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message produced
-#' @return matrix of normalized data
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a matrix of normalized data
 #' @seealso \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}} 
 #' @examples
 #' set.seed(2015); rand1 <- round(runif(300)+rnorm(300,0,2),3)
-#' dat1 <- cbind(ser1=round(100:1+rand1[1:100]),ser2=round(1.2*(100:1+rand1[101:200])-2),
-#'   ser3=round((100:1+rand1[201:300])^1.2-3))
-#' dat1 <- cbind(dat1,ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
+#' dat1 <- cbind(ser1=round(100:1+rand1[1:100]), ser2=round(1.2*(100:1+rand1[101:200])-2),
+#'   ser3=round((100:1 +rand1[201:300])^1.2-3))
+#' dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
 #' dat1[dat1 <1] <- NA
 #'   summary(dat1)
 #'   head( .normalize(dat1,"mean",list()))
@@ -37,8 +37,8 @@
 #' cor(dat1[c(1:10,91:100),4],rowMeans(dat1[c(1:10,91:100),1:2],na.rm=TRUE),use="complete.obs")
 #' cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 #' @export
-normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NULL,quantFa=NULL,expFa=NULL,silent=FALSE,callFrom=NULL){
-  fxNa <- "normalizeThis"
+normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, trimFa=NULL, quantFa=NULL, expFa=NULL,silent=FALSE,callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="normalizeThis")
   out <- NULL  
   chMe <- is.na(method)
   if(sum(!chMe) <1) stop(" argument 'method' seems empty - nothing to do !")
@@ -47,7 +47,7 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   if(!is.matrix(dat)) dat <- as.matrix(dat)
   if(!is.null(refLines)) if(identical(refLines,1:nrow(dat))) {refLines <- NULL; if(!silent) message(fxNa," omit redundant 'refLines'")}
   ## assemble parameters
-  params <- list(refLines=refLines,trimFa=trimFa,useQ=quantFa,useExp=expFa)
+  params <- list(refLines=refLines, trimFa=trimFa, useQ=quantFa, useExp=expFa)
   ## method specific elements
   if(is.null(refGrp)) { refGrp <- 1:ncol(dat)
   } else if(min(refGrp) > ncol(dat) | max(refGrp) < 1) stop(fxNa," 'refGrp' should be integer vector indicating which columns to be used as reference")
@@ -61,7 +61,7 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   }
   if(method %in% "slope2Sections") {
     if(length(params$useQ) !=1) params$useQ <- list(signif(stats::quantile(dat,c(0.05,0.15),na.rm=TRUE),3),
-      signif(stats::quantile(dat,c(0.05,0.15),na.rm=TRUE),3))
+      signif(stats::quantile(dat,c(0.05,0.15), na.rm=TRUE),3))
   }
   if(method %in% "exponent") {
      if(length(expFa) <1) { useExp <- c(log(c(10:1)),30,10,3)
@@ -71,12 +71,12 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
     pram$refLines <- NULL
     if(!silent) message(fxNa," ignoring content of 'refLines', since 'vsn' can only normalize considering all data")}  
   ## main normalization
-  out <- .normalize(dat,method,param=params,callFrom=fxNa)
-  if("try-error" %in% class(out)) { message(fxNa," Could not run normalization by '",method,"' which gave an error (return unnormalized)"); out <- dat}
+  out <- .normalize(dat, method, param=params, callFrom=fxNa)
+  if(inherits(out, "try-error")) { message(fxNa," Could not run normalization by '",method,"' which gave an error (returning unnormalized)"); out <- dat}
   out }
 
 #' @export
-.normalize <- function(dat,meth,param,silent=FALSE,callFrom=NULL){
+.normalize <- function(dat, meth, param, silent=FALSE, callFrom=NULL){
   ## 'dat' .. matrix (>1 col, >1 li) to be normalized
   ## 'meth' .. method
   ## 'param' .. list with supl parameters (refLines, certain specific for norm methods)
@@ -84,21 +84,24 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   if(identical(meth,"average")) meth <- "mean"
   asRefL <- (length(param$refLines) < nrow(dat) & !is.null(param$refLines))
   datRef <- if(asRefL) {if(length(param$refLines) >1) dat[param$refLines,] else matrix(dat[param$refLines,],nrow=1)} else NULL
-  if("vsn" %in% meth) { chPa <- try(find.package("vsn"), silent=TRUE)
-    if("try-error" %in% class(chPa)) warning("package 'vsn' not found ! Please install first from Bioconductor") 
+  if("vsn" %in% meth) { 
+    chPa <- requireNamespace("vsn", quietly=TRUE) 
+    if(!chPa) { meth <- "mean"
+      warning(fxNa, "package 'vsn' not found ! Please install first from Bioconductor; resetting to default 'mean'")
+    }
     if(nrow(if(asRefL) datRef else dat) <42) message(callFrom," PROBLEM : Too few lines of data to run 'vsn' ! ")}
   switch(meth,
     none=dat,  
-    mean= sum(if(asRefL) datRef else dat,na.rm=TRUE) * dat / (matrix(rep(colMeans(if(asRefL) datRef else dat,na.rm=TRUE),
+    mean= sum(if(asRefL) datRef else dat, na.rm=TRUE) * dat / (matrix(rep(colMeans(if(asRefL) datRef else dat, na.rm=TRUE),
       each=nrow(dat)), nrow=nrow(dat))*sum(!is.na(dat))),
     trimMean=mean(if(asRefL) datRef else dat, trim=param$trimFa,na.rm=TRUE) * dat / matrix(rep(apply(
       if(asRefL) datRef else dat, 2, mean, trim=param$trimFa,na.rm=TRUE), each=nrow(dat)), nrow=nrow(dat)),
     median=stats::median(if(asRefL) datRef else dat,na.rm=TRUE) * dat / matrix(rep(apply(
       if(asRefL) datRef else dat, 2, stats::median,na.rm=TRUE), each=nrow(dat)), nrow=nrow(dat)),
     slope=.normConstSlope(mat=dat, useQuant=param$useQ, refLines=param$refLines, diagPlot=FALSE),
-    exponent=try(exponNormalize(dat, useExpon=param$useExp, refLines=param$refLines)$datNor),
-    slope2Sections=try(adjBy2ptReg(dat, lims=param$useQ, refLines=param$refLines)),
-    vsn=try(vsn::justvsn(dat)) ) 
+    exponent=try(exponNormalize(dat, useExpon=param$useExp, refLines=param$refLines)$datNor, silent=TRUE),
+    slope2Sections=try(adjBy2ptReg(dat, lims=param$useQ, refLines=param$refLines), silent=TRUE),
+    vsn=try(vsn::justvsn(dat), silent=TRUE) ) 
   }
 
 #' @export
@@ -118,11 +121,11 @@ normalizeThis <- function(dat,method="mean",refLines=NULL,refGrp=NULL,trimFa=NUL
   if(useQuant[1] < 0 | useQuant[1] > 1) {message(msg1); useQuant=c(0.2,0.8)}
   if(plotLog %in% c("x","xy")) {matOri <- mat; mat <- log(mat); message(fxNa," ..setting data to log")}
   quantVal <- apply(mat,2,stats::quantile,useQuant,na.rm=TRUE)
-  tmp <- apply(mat,2,function(x) {x <- naOmit(x); x[x >= stats::quantile(x,min(useQuant),na.rm=TRUE) & x <= stats::quantile(x,max(useQuant),na.rm=TRUE)]})
+  tmp <- apply(mat, 2, function(x) {x <- naOmit(x); x[x >= stats::quantile(x,min(useQuant),na.rm=TRUE) & x <= stats::quantile(x,max(useQuant),na.rm=TRUE)]})
   if(!is.list(tmp)) tmp <- as.data.frame(tmp)
   regr <- sapply(if(length(refLines) < nrow(mat) & !is.null(refLines)) tmp[refLines,] else tmp,.datSlope,toNinX=TRUE)
   regr[1,] <- regr[1,] + apply(rbind(quantVal[1,],mat),2,function(x) sum(x[-1] < x[1],na.rm=TRUE))    # correct intercept for no of quantile-omitted data
-  regrM <- rowMeans(regr,na.rm=FALSE)
+  regrM <- rowMeans(regr, na.rm=FALSE)
   normD <- apply(rbind(regr, mat),2,function(x) (x[-1*(1:2)]-(regrM[1]-x[1])/x[2]) *x[2]/regrM[2])
   if(plotLog %in% c("x","xy")) normD <- exp(normD)
   if(diagPlot) {

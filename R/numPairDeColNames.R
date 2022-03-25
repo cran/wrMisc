@@ -12,8 +12,8 @@
 #' @param columLabel (character) column labels in output
 #' @param sortByAbsRatio (logical) optional sorting of output by (absolute) log-ratios (most extreme ratios on top)
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return matrix
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a matrix
 #' @seealso \code{\link[base]{strsplit}} and help on regex 
 #' @examples
 #' ##  composed column names
@@ -24,7 +24,7 @@
 #' mat2 <- matrix(1:8, nrow=2, dimnames=list(NULL, paste0("a",6:9)))
 #' numPairDeColNames(mat2)
 #' @export
-numPairDeColNames <- function(dat,selComp=NULL,stripTxt=NULL,sep="-",columLabel="conc",sortByAbsRatio=FALSE,silent=FALSE,callFrom=NULL) {
+numPairDeColNames <- function(dat, selComp=NULL, stripTxt=NULL, sep="-", columLabel="conc", sortByAbsRatio=FALSE,silent=FALSE,callFrom=NULL) {
   ## to wrMisc::numPairOfColNames ?
   ##  extract pair of numeric content of colnames from pairwise comparisons, return matrix with 'index'=selComp, log2rat and both numeric 
   ## dat (matrix or data.frame) testing results (only the colnames will be used)
@@ -48,15 +48,16 @@ numPairDeColNames <- function(dat,selComp=NULL,stripTxt=NULL,sep="-",columLabel=
   if(length(chSep) <1) {
     if(!silent) message(fxNa,"Could not find any instance of separator 'sep'; (maybe removed with 'stripTxt' ?)")
     logRat <- try(as.integer(dat))       # try remove text at start or end
-    if("try-error" %in% class(logRat)) stop(" Did not succed to extract (single) numeric content")
+    if(inherits(logRat, "try-error")) stop(" Did not succed to extract (single) numeric content")
     logRat <- cbind(index=selComp, logRat=NA, logRat)
     colnames(logRat)[3] <- columLabel 
   } else {
     logRat <- try(as.integer( unlist(strsplit(dat, sep))))
-    if("try-error" %in% class(logRat)) stop(" Did not succed to extract numeric content (by splitting)")
+    if(inherits(logRat, "try-error")) stop(" Did not succed to extract numeric content (by splitting)")
     logRat <- matrix(logRat, ncol=2, byrow=TRUE, dimnames=list(NULL,paste0(columLabel,1:2)))
     chRat <- logRat[,1] > logRat[,2]
     if(any(chRat)) logRat[which(chRat),] <- logRat[which(chRat), 2:1]
     logRat <- cbind(index=selComp, log2rat=signif(log2(logRat[,2]/logRat[,1]),4), logRat) }
   if(sortByAbsRatio & nrow(logRat) >1) logRat <- logRat[order(if(length(chSep) <1) logRat[,3] else abs(logRat[,2]), decreasing=TRUE),]
   logRat }
+   

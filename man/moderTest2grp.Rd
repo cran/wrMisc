@@ -31,7 +31,7 @@ moderTest2grp(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-limma-type object of class \code{MArrayLM}
+This function returns a limma-type object of class \code{MArrayLM}
 }
 \description{
 Runs moderated t-test from package 'limma' on each line of data.

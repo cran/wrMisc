@@ -30,10 +30,10 @@ numPairDeColNames(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix
+This function returns a matrix
 }
 \description{
 This function extracts a pair of numeric values out of a vector or colnames (from a matrix). 

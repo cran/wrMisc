@@ -27,7 +27,7 @@ coinPermTest(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-"MCp" class numeric output with p-values
+This  function returns an object of "MCp" class numeric output with p-values
 }
 \description{
 Run coin-flipping like permutation tests (to compare difference of 2 means: 'x1' and 'x2') without any distribution-assumptions.

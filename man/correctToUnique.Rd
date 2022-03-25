@@ -10,6 +10,7 @@ correctToUnique(
   atEnd = TRUE,
   maxIter = 4,
   NAenum = TRUE,
+  silent = FALSE,
   callFrom = NULL
 )
 }
@@ -24,10 +25,12 @@ correctToUnique(
 
 \item{NAenum}{(logical) if \code{TRUE} all \code{NA}s will be enumerated (NA_1,NA_2,...)}
 
+\item{silent}{(logical) suppress messages}
+
 \item{callFrom}{(character) for better tracking of use of functions}
 }
 \value{
-character vector
+This function returns a character vector
 }
 \description{
 \code{correctToUnique} checks 'x' for unique entries, while maintaining the original length. If necessary a counter will added to non-unique entries.

@@ -18,8 +18,8 @@
 #' @param refCo (integer) for custom choice of column to be used as row-names (default will use 1st text-column)
 #' @param supNa (character) base for constructing name for columns wo names (+counter starting at 2), default column-name to left of 1st col wo colname
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return matrix (character or numeric)
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a matrix (character or numeric)
 #' @seealso for regular 'complete' data \code{\link[utils]{read.table}}  
 #' @examples
 #' path1 <- system.file("extdata",package="wrMisc")
@@ -41,19 +41,19 @@ readVarColumns <- function(fiName, path=NULL, sep="\t", header=TRUE, emptyFields
     dataOK <- TRUE
     if(length(header) !=1) header <- FALSE
     if(!is.logical(header)) { dataOK <- FALSE 
-      warning(fxNa," Invalid command: argument 'header' should be logical and of length=1")} }
+      warning(fxNa,"Invalid command: argument 'header' should be logical and of length=1")} }
   if(dataOK) {
     out <- try(scan(fiName, what="character", sep="\n"), silent=TRUE)
-    if("try-error" %in% class(out)) { dataOK <- FALSE
-      warning(fxNa," Did NOT succed reading file '",fiName,"'")}}
+    if(inherits(out, "try-error")) { dataOK <- FALSE
+      warning(fxNa,"Did NOT succeed reading file '",fiName,"'")}}
 
   if(dataOK) {  
     ## parse each line since file does/may contain variable number of columns and/or (many) columns wo colnames
     out <- strsplit(out, sep)
     maxCo <- max(sapply(out, length))
     out <- t(sapply(out, function(x,maxC) {if(length(x)==maxC) x else {z <- rep("",maxC); z[1:length(x)] <- x; z}}, maxC=maxCo))
-    supPep <- which(out[1,]=="")
-    if(length(supNa) !=1) { supNa0 <- min(supPep ,na.rm=TRUE)
+    supPep <- which(out[1,] =="")
+    if(length(supNa) !=1) { supNa0 <- min(supPep, na.rm=TRUE)
       supNa <- if(supNa0 >1) out[1, min(supPep, na.rm=TRUE) -1] else ((1:ncol(out))[-supPep])[1]}
     out[1, supPep] <- paste(supNa, 1 +1:length(supPep),sep="_")
     if(nrow(out) <2) { dataOK <- FALSE
@@ -61,16 +61,16 @@ readVarColumns <- function(fiName, path=NULL, sep="\t", header=TRUE, emptyFields
 
   if(dataOK) {  
     ## extract row- and col-names, prepare for separating numeric from text
-    testNum <- function(x) all(length(grep("(^([0-9]+)|(^[+-][0-9]+)|(^\\.[0-9]+))((\\.[0-9]+)?)(([eE][+-]?[0-9]+)?)$",x)) ==length(x))
+    testNum <- function(x) all(grepl("(^([0-9]+)|(^[+-][0-9]+)|(^\\.[0-9]+))((\\.[0-9]+)?)(([eE][+-]?[0-9]+)?)$", x))
     numCol <- apply(out[-1,], 2, testNum)
     if(length(refCo) !=1) {refCo <- min(which(!numCol))
       if(isFALSE(silent)) message(fxNa," setting 'refCo' to '",out[1,refCo],"'")}  #
     dupNa <- duplicated(out[1,])  
     ## integrate colnames and rownames ...
     useLi <- if(header) 2:nrow(out) else 1:nrow(out)
-    colNa <- if(header) {if(any(dupNa)) correctToUnique(out[1,]) else out[1,]} else NULL
+    colNa <- if(header) {if(any(dupNa)) correctToUnique(out[1,], callFrom=fxNa) else out[1,]} else NULL
     dupNa <- duplicated(out[useLi,refCo])
-    rowNa <- if(any(dupNa)) correctToUnique(out[useLi,refCo]) else out[useLi,refCo]
+    rowNa <- if(any(dupNa)) correctToUnique(out[useLi,refCo], callFrom=fxNa) else out[useLi,refCo]
     if(header) out <- out[-1,]
     if(length(dim(out)) <2) out <- matrix(out, nrow=1, dimnames=list(rowNa, names(out))) else dimnames(out) <- list(rowNa,colNa)  
     out } }

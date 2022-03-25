@@ -15,6 +15,7 @@ readCsvBatch(
   simpleNames = TRUE,
   minNamesLe = 4,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -39,10 +40,12 @@ readCsvBatch(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-array (or list if \code{returnArray=FALSE}) of all numeric data read (numerical columns only) from individual files
+This function returns an array (or list if \code{returnArray=FALSE}) of all numeric data read (numerical columns only) from individual files
 }
 \description{
 This function was designed to read screening data split in parts (with common structure) and saved to multiple files,  
@@ -52,12 +55,12 @@ European or US-formatted csv files can be read, if argument \code{fileFormat} is
 The presence of headers (to be used as column-names) may be tested using \code{checkFormat}.
 }
 \examples{
-path1 <- system.file("extdata",package="wrMisc")
+path1 <- system.file("extdata", package="wrMisc")
 fiNa <-  c("pl01_1.csv","pl01_2.csv","pl02_1.csv","pl02_2.csv")
-datAll <- readCsvBatch(fiNa,path1)
+datAll <- readCsvBatch(fiNa, path1)
 str(datAll)
 ## batch reading of all csv files in specified path :
-datAll2 <- readCsvBatch(fileNames=NULL,path=path1,silent=TRUE)
+datAll2 <- readCsvBatch(fileNames=NULL, path=path1, silent=TRUE)
 }
 \seealso{
 \code{\link[utils]{read.table}}, \code{\link{writeCsv}}, \code{\link{readXlsxBatch}}
