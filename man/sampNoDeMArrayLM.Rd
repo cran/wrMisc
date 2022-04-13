@@ -2,7 +2,7 @@
 % Please edit documentation in R/sampNoDeMArrayLM.R
 \name{sampNoDeMArrayLM}
 \alias{sampNoDeMArrayLM}
-\title{Locate sample index from index or name of pair-wise comparisons in list or MArrayLM-object}
+\title{Locate Sample Index From Index or Name Of Pair-Wise Comparisons in list or MArrayLM-Object}
 \usage{
 sampNoDeMArrayLM(
   MArrayObj,
@@ -11,6 +11,7 @@ sampNoDeMArrayLM(
   lstMeans = "means",
   lstP = c("BH", "FDR", "p.value"),
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -27,13 +28,15 @@ sampNoDeMArrayLM(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-numeric vector (length=2) with index indicating the columns of (replicate) mean-values corresponding to the comparison specified in \code{useComp}
+This fuction returns a numeric vector (length=2) with index indicating the columns of (replicate) mean-values corresponding to the comparison specified in \code{useComp}
 }
 \description{
-When multiple series of data are tested simultaneaously (eg using \code{moderTestXgrp}, multiple pairwise comparisons get performed. 
+When multiple series of data are tested simultaneaously (eg using \code{moderTestXgrp}), multiple pairwise comparisons get performed. 
 This function helps locating the samples, ie mean-columns, corresponding to a specific pairwise comparison.
 }
 \details{

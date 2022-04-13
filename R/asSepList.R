@@ -8,21 +8,22 @@
 #' @param asNumeric (logical) to transform all list-elements in simple numeric vectors (won't work if some entries are character)
 #' @param exclElem (character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)
 #' @param fxArg depreciated, replaced by \code{exclElem}
-#' @param minLen (integer) (currently use of this argument not implemeneted!) min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2
+#' @param minLen (integer) min length (or number of rows), as add'l element to eliminate arguments given without names when asSepList is called in vioplot2
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
 #' @return This function returns a list, partially unlisted to vectors
 #' @seealso \code{\link[wrMisc]{partUnlist}}, \code{\link[base]{unlist}}
 #' @examples
-#' bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,nc=2),li=list(li1=11:14,li2=data.frame(41:44)))
+#' bb <- list(fa=gl(2,2), c=31:33, L2=matrix(21:28,nc=2), 
+#'   li=list(li1=11:14, li2=data.frame(41:44)))
 #' asSepList(bb)
 #' ## multi data-frame examples
-#' ca <- data.frame(a=11:15,b=21:25,c=31:35)
-#' cb <- data.frame(a=51:53,b=61:63)
-#' cc <- list(gl(3,2),ca, cb, 91:94, short=81:82, letters[1:5])
+#' ca <- data.frame(a=11:15, b=21:25, c=31:35)
+#' cb <- data.frame(a=51:53, b=61:63)
+#' cc <- list(gl(3,2), ca, cb, 91:94, short=81:82, letters[1:5])
 #' asSepList(cc)
-#' cd <- list(e1=gl(3,2),e2=ca, e3=cb, e4=91:94,short=81:82, e6=letters[1:5])
+#' cd <- list(e1=gl(3,2), e2=ca, e3=cb, e4=91:94, short=81:82, e6=letters[1:5])
 #' asSepList(cd)
 #' @export
 asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, silent=FALSE, callFrom=NULL, debug=FALSE) {
@@ -31,6 +32,8 @@ asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, si
   ## 'minLen' .. min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2
   ## 'fxArg' .. optinal, names to exclude if any (lazy matching) matches (to exclude other arguments be mis-interpreted as data, used in vioplot2)
   fxNa <- .composeCallName(callFrom, newNa="asSepList")
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(!isTRUE(silent)) silent <- FALSE
   f1 <- function(x,lim=1) if(length(dim(x)) ==2) ncol(x) >lim else FALSE   # locate elements with multiple cols
   if(is.matrix(y)) y <- list(y) else if(!is.list(y)) y <- as.list(y)
   chSubLi <- sapply(y, is.list) & !sapply(y, is.data.frame)
@@ -53,7 +56,7 @@ asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, si
   if(length(exclElem) >0 & length(y) >0) {
     chNa <- names(y) %in% exclElem
     if(debug) message(fxNa,"head chNa ",pasteC(utils::head(chNa)))    # problem using .checkArgNa() ? 
-    if(any(chNa)) { if(isFALSE(silent)) message(fxNa," reducing list from ",length(y)," to ",sum(!chNa,na.rm=TRUE))
+    if(any(chNa)) { if(isFALSE(silent)) message(fxNa,"Reducing list from ",length(y)," to ",sum(!chNa,na.rm=TRUE))
       y <- y[which(!chNa)]} }
   ## filter minLen
   chCol <- sapply(y, f1)

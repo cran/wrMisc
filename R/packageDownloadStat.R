@@ -24,12 +24,12 @@
 #' @param log (character) set count-axis of figure to linear or log-scale (by setting \code{log="y"})
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return This function retuns a matrix with download counts (or NULL if the web-site can't be accessed or the query-packages are not found there)
-#' @seealso  \code{\link[cranlogs]{cran_downloads}}, \code{\link[packageRank]{packageRank}}
+#' @return This function retuns a matrix with download counts (or \code{NULL} if the web-site can't be accessed or the query-packages are not found there)
+#' @seealso packages \href{https://CRAN.R-project.org/package=cranlogs}{cranlogs} and \href{https://CRAN.R-project.org/package=packageRank}{packageRank}
 #' @examples
-#' ## Let's try a microscopic test-file (NOT representative for true counts !!)
-#' pack1 <- c("cif","bcv","FinCovRegularization","wrMisc","wrProteo")
-#' testFi <- file.path(system.file("extdata",package="wrMisc"),"rpackagesMicro.html")
+#' ## Let's try a microscopic test-file (NOT representative for true up to date counts !!)
+#' pack1 <- c("cif", "bcv", "FinCovRegularization", "wrMisc", "wrProteo")
+#' testFi <- file.path(system.file("extdata", package="wrMisc"), "rpackagesMicro.html")
 #' packageDownloadStat(pack1, countUrl=testFi, log="y", figure=FALSE)
 #' ## For real online counting simply drop the argument countUrl
 #' 

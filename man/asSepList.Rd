@@ -20,7 +20,7 @@ asSepList(
 
 \item{asNumeric}{(logical) to transform all list-elements in simple numeric vectors (won't work if some entries are character)}
 
-\item{minLen}{(integer) (currently use of this argument not implemeneted!) min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2}
+\item{minLen}{(integer) min length (or number of rows), as add'l element to eliminate arguments given without names when asSepList is called in vioplot2}
 
 \item{exclElem}{(character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)}
 
@@ -28,7 +28,7 @@ asSepList(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{debug}{(logical) display additional messages for debugging}
 }
@@ -41,14 +41,15 @@ This function returns a list, partially unlisted to vectors
 This function may be helpful for reorganizing data for plots.
 }
 \examples{
-bb <- list(fa=gl(2,2),c=31:33,L2=matrix(21:28,nc=2),li=list(li1=11:14,li2=data.frame(41:44)))
+bb <- list(fa=gl(2,2), c=31:33, L2=matrix(21:28,nc=2), 
+  li=list(li1=11:14, li2=data.frame(41:44)))
 asSepList(bb)
 ## multi data-frame examples
-ca <- data.frame(a=11:15,b=21:25,c=31:35)
-cb <- data.frame(a=51:53,b=61:63)
-cc <- list(gl(3,2),ca, cb, 91:94, short=81:82, letters[1:5])
+ca <- data.frame(a=11:15, b=21:25, c=31:35)
+cb <- data.frame(a=51:53, b=61:63)
+cc <- list(gl(3,2), ca, cb, 91:94, short=81:82, letters[1:5])
 asSepList(cc)
-cd <- list(e1=gl(3,2),e2=ca, e3=cb, e4=91:94,short=81:82, e6=letters[1:5])
+cd <- list(e1=gl(3,2), e2=ca, e3=cb, e4=91:94, short=81:82, e6=letters[1:5])
 asSepList(cd)
 }
 \seealso{

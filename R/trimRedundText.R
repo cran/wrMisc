@@ -1,6 +1,6 @@
 #' Trim redundant text
 #'
-#' This function allows trimming/removing redundant text-fragments (redundant from head or tail) out of chracter vector 'txt'.
+#' This function allows trimming/removing redundant text-fragments (redundant from head or tail) out of character vector 'txt'.
 #' 
 #' 
 #' 
@@ -12,14 +12,17 @@
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
 #' @return This function returns a modified character vector
+#' @seealso Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 #' @examples
-#' x <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
-#' trimRedundText(x)
+#' txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
+#' trimRedundText(txt1, side="right")       # trim from right
 #' 
+#' txt2 <- c("ddd_ab","ddd_bcd","ddd_cde")
+#' trimRedundText(txt2, side="left")        # trim from left 
 #' @export
 trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent=TRUE, callFrom=NULL, debug=FALSE) {
   ##
-  fxNa <- .composeCallName(callFrom, newNa=".trimFromStart")
+  fxNa <- .composeCallName(callFrom, newNa="trimRedundText")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   doTrim <- TRUE
@@ -47,12 +50,12 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
     if(!is.character(side)) {side <- "both"; message(fxNa, msg1)} 
     ## main
     nChar <- nchar(txt)
-    if(debug) {message(fxNa," ready tm trim ",pasteC(nChar)," characters"); trL <- list(txt=txt,minNchar=minNchar,nChar=nChar)}
-    if(any(c("both","left") %in% side)) {      
+    if(debug) {message(fxNa,"Ready tm trim ",pasteC(nChar)," characters"); trL <- list(txt=txt,minNchar=minNchar,nChar=nChar)}
+    if(any(c("any","both","left") %in% side)) {      
       txt <- .trimLeft(txt, minNchar=minNchar, silent=TRUE, callFrom=fxNa)
       if(debug) {message(fxNa," .trimLeft reduced to ",pasteC(nchar(txt))," characters")}
     }
-    if(any(c("both","right") %in% side)) {      
+    if(any(c("any","both","right") %in% side)) {      
       txt <- .trimRight(txt, minNchar=minNchar, silent=TRUE, callFrom=fxNa)
       if(debug){ message(fxNa," .trimRight reduced to ",pasteC(nchar(txt))," characters")}
     }
@@ -60,6 +63,7 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
 
 #' @export
 .trimLeft <- function(x, minNchar=1, silent=TRUE, callFrom=NULL) {
+  ## trim redundant starting from left side
   fxNa <- .composeCallName(callFrom, newNa=".trimLeft")
   nChar <- nchar(x)
   msg <- c(fxNa,"Some entries are too short for trimming to min ",minNchar," characters, nothing to do")
@@ -68,8 +72,9 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
     if(ch1 -1 > minNchar) {
       ch1 <- (ch1 -minNchar) :1
       ch1 <- paste0("^",substr(rep(x[which.min(nChar)], length(ch1)), 1, ch1))
-      ch3 <- lapply(gsub(".","\\.",ch1), grep, x)
-      x <- substring(x, nchar(ch1[which.max(sapply(ch3, length))]))
+      ch3 <- lapply(gsub("\\.","\\\\.",ch1), grep, x)
+      ch3 <- sapply(ch3, length) ==length(x)
+      if(any(ch3)) x <- substring(x, nchar(ch1[min(which(ch3))]))
     } else {
       if(!silent) message(msg) }
   } else if(!silent) message(msg)
@@ -86,9 +91,10 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
     if(ch1 -1 > minNchar) {
       ch1 <- 1: (ch1 -minNchar) 
       ch2 <- x[which.min(nChar)]
-      ch1 <- paste0(substr(paste0(rep(ch2, length(ch1))), ch1, nchar(ch2)),"$")
-      ch3 <- lapply(gsub(".","\\.",ch1), grep, x)
-       x <- substring(x, 1, nchar(ch1[which.max(sapply(ch3, length))]))
+      ch1 <- paste0(substr(paste0(rep(ch2, length(ch1))), nchar(ch2)- ch1 +1, nchar(ch2)),"$")
+      ch3 <- lapply(gsub("\\.","\\\\.",ch1), grep, x)
+      ch3 <- sapply(ch3, length) ==length(x)
+      if(any(ch3)) x <- substring(x, 1, nchar(x) - nchar(ch1[which.max(which(ch3))]) +1)
     } else {
       if(!silent) message(msg) }
   } else if(!silent) message(msg) 
@@ -125,6 +131,6 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
   if(sum(sapply(y,length) >0)) {   # '...' argument will be added to x
     x <- c(x,unlist(y)) }
   if(!silent) message(fxNa," initial no of characters  ",paste(nchar(x),collapse=" "))
-  while(length(unique(substr(x,nchar(x),nchar(x)))) <2) x <- substr(x,1,nchar(x)-1)
+  while(length(unique(substr(x,nchar(x),nchar(x)))) <2) x <- substr(x, 1, nchar(x)-1)
   x }
   

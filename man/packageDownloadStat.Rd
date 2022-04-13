@@ -30,7 +30,7 @@ packageDownloadStat(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function retuns a matrix with download counts (or NULL if the web-site can't be accessed or the query-packages are not found there)
+This function retuns a matrix with download counts (or \code{NULL} if the web-site can't be accessed or the query-packages are not found there)
 }
 \description{
 This function allows accessing the most recent counts of package downloads availabale on http://www.datasciencemeta.com/rpackages, 
@@ -51,13 +51,13 @@ the articles cited above discuss this in more detail.
 For example, multiple downloads from the same IP or subsequent downloads of multiple (older) versions of the same package are counted, too.
 }
 \examples{
-## Let's try a microscopic test-file (NOT representative for true counts !!)
-pack1 <- c("cif","bcv","FinCovRegularization","wrMisc","wrProteo")
-testFi <- file.path(system.file("extdata",package="wrMisc"),"rpackagesMicro.html")
+## Let's try a microscopic test-file (NOT representative for true up to date counts !!)
+pack1 <- c("cif", "bcv", "FinCovRegularization", "wrMisc", "wrProteo")
+testFi <- file.path(system.file("extdata", package="wrMisc"), "rpackagesMicro.html")
 packageDownloadStat(pack1, countUrl=testFi, log="y", figure=FALSE)
 ## For real online counting simply drop the argument countUrl
 
 }
 \seealso{
-\code{\link[cranlogs]{cran_downloads}}, \code{\link[packageRank]{packageRank}}
+packages \href{https://CRAN.R-project.org/package=cranlogs}{cranlogs} and \href{https://CRAN.R-project.org/package=packageRank}{packageRank}
 }

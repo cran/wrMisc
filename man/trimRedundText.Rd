@@ -33,10 +33,15 @@ trimRedundText(
 This function returns a modified character vector
 }
 \description{
-This function allows trimming/removing redundant text-fragments (redundant from head or tail) out of chracter vector 'txt'.
+This function allows trimming/removing redundant text-fragments (redundant from head or tail) out of character vector 'txt'.
 }
 \examples{
-x <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
-trimRedundText(x)
+txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
+trimRedundText(txt1, side="right")       # trim from right
 
+txt2 <- c("ddd_ab","ddd_bcd","ddd_cde")
+trimRedundText(txt2, side="left")        # trim from left 
+}
+\seealso{
+Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 }

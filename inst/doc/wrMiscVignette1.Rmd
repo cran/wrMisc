@@ -961,6 +961,7 @@ stableMode(dat, method="mode")
 stableMode(dat, method="allModes")
 ```
 
+
 ### Trimming Redundant Text
 
 Automatic annotation has the tendency to concatenate many parameters into a single names.
@@ -969,8 +970,36 @@ The function `trimRedundText()` was designed to allow trimming redundant text fr
 However, as in some cases (like the first element of the example below) nothing would remain, it is possible to define a _minimum_ width for the remaining/resulting text.
 
 ```{r trimRedundText1, echo=TRUE}
-x <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
-trimRedundText(x)
+txt1 <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
+trimRedundText(txt1)
+```
+
+
+### Extract Common Part of Text
+
+The original idea was to do something resembling the inverse process of trimming redundant text (example above), but this time to discard the variable text.
+
+In the end this is not as trivial when 'common' or 'redundant' text is not at the beginning or end of a chain of characters. 
+In particular with very large text this is an active field of research (eg for sequence alignment). 
+The function presented here is a very light-weight solution designed for smaller and simple settings, like inspecting column-names.
+Furthermore, the function `keepCommonText()` only reports the first (longest) hit. 
+So, when there are multiple conserved 'words' of equal length, only the first of them will be identified.
+
+When setting the argument 'hiResol=FALSE' this function has an option to decrease the resulution of searching, which in turn increases the speed, howevere, at cost of missing the optimal solution.
+In this case the resultant chain of characters should be inspected if it can be further extended/optimized.
+
+With terminal common text :
+```{r keepCommonText1, echo=TRUE}
+txt1 <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
+trimRedundText(txt1, side="left")         # remove redundant 
+keepCommonText(txt1, side="terminal")     # keep redundant
+keepCommonText(txt1, side="center")       # computationally easier   
+```
+
+With internal coomon text:
+```{r keepCommonText2, echo=TRUE}
+txt2 <- c("abcd_abc_kjh", "bcd_abc123", "cd_abc_po")
+keepCommonText(txt2, side="center")       
 ```
 
 
@@ -995,6 +1024,7 @@ exp4 <- rep(c(3,10,30,100,300,1000), each=3)
 linModelSelect("P1", dat2, expect=exp2)
 linModelSelect("P2", dat2, expect=exp2)
 ```
+
 
 ### High Throughput Testing For Linear Regressions
 
@@ -1121,7 +1151,7 @@ The function `gitDataUrl()` allows to conventiently switch any url (on git) to t
 ## An example url with tabulated data :
 url1 <- "https://github.com/bigbio/proteomics-metadata-standard/blob/master/annotated-projects/PXD001819/PXD001819.sdrf.tsv"
 gitDataUrl(url1)
-dataPxd <- read.delim(gitDataUrl(url1), sep='\t', header=TRUE)
+dataPxd <- try(read.delim(gitDataUrl(url1), sep='\t', header=TRUE))
 str(dataPxd)
 ```
 

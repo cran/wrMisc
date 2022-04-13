@@ -1,4 +1,4 @@
-#' Read batch of Excel xlsx-files
+#' Read Batch of Excel xlsx-Files
 #'
 #' \code{readXlsxBatch} reads data out of multiple xlsx files, the sheet indicated by 'sheetInd' will be considered. 
 #' All files must have the same organization of data, as this is typically the case when high-throughput measurements are automatically saved while experiments progress.
@@ -22,8 +22,8 @@
 #' @param columns (NULL or character) column-headers to be extracted (if specified, otherwise all columns will be extracted)
 #' @param simpleNames (integer), if \code{NULL} all characters of fileNames will be maintained, otherwise allows truncating names (from beginning) to get to variable part (using .trimFromStart()), but keeping at least the number of charcters indicated by this argument
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
-#' @return list
+#' @param callFrom (character) allows easier tracking of messages produced
+#' @return This function returns a list of data.frames
 #' @seealso \code{\link[readxl]{read_excel}}; for simple reading of (older) xls-files under 32-bit R one may also see the package \href{https://CRAN.R-project.org/package=RODBC}{RODBC} 
 #' @examples
 #' path1 <- system.file("extdata", package="wrMisc")

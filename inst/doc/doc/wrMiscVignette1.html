@@ -336,7 +336,7 @@ All code is written in pure R and does not need any special compilers. The numbe
 ##       0       0       0</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(sd2 <span class="ot">&lt;-</span> <span class="fu">apply</span>(dat1,<span class="dv">1</span>,sd))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.11    0.00    0.11</code></pre>
+##    0.08    0.00    0.08</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em> will run much slower compared to <code>rowSds</code>.</p>
 <p>Note, there is a minor issue with rounding :</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">round</span>(sd1,<span class="dv">13</span>)<span class="sc">==</span><span class="fu">round</span>(sd2,<span class="dv">13</span>))</span></code></pre></div>
@@ -349,7 +349,7 @@ All code is written in pure R and does not need any special compilers. The numbe
 ##       0       0       0</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(cv2 <span class="ot">&lt;-</span> <span class="fu">apply</span>(dat1,<span class="dv">1</span>,sd)<span class="sc">/</span><span class="fu">rowMeans</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.08    0.00    0.08</code></pre>
+##    0.09    0.00    0.09</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># typically the calculation using rowCVs is much faster</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cv1)</span></code></pre></div>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -367,11 +367,11 @@ All code is written in pure R and does not need any special compilers. The numbe
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="do">## the mean for each group and row</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(mean1Gr <span class="ot">&lt;-</span> <span class="fu">rowGrpMeans</span>(dat1, grp1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.02    0.00    0.02</code></pre>
+##       0       0       0</code></pre>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Now the sd for each row and group</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(sd1Gr <span class="ot">&lt;-</span> <span class="fu">rowGrpSds</span>(dat1, grp1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.02    0.00    0.01</code></pre>
+##       0       0       0</code></pre>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># will give us a matrix with the sd for each group &amp; line </span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sd1Gr)</span></code></pre></div>
 <pre><code>##                A          B         C
@@ -1114,7 +1114,7 @@ All code is written in pure R and does not need any special compilers. The numbe
 ##  [8,] &quot;10&quot; &quot;D&quot; &quot;full&quot;  &quot;TRUE&quot; &quot;_10&quot;
 ##  [9,] &quot;8&quot;  &quot;E&quot; &quot;full&quot;  &quot;TRUE&quot; &quot;_8&quot; 
 ## [10,] &quot;9&quot;  &quot;F&quot; &quot;full&quot;  &quot;TRUE&quot; &quot;_9&quot; 
-## [11,] &quot;13&quot; &quot;G&quot; &quot;Nter&quot;  &quot;TRUE&quot; &quot;_13&quot;
+## [11,] &quot;2&quot;  &quot;G&quot; &quot;full&quot;  &quot;TRUE&quot; &quot;_2&quot; 
 ## [12,] &quot;3&quot;  &quot;H&quot; &quot;Nter&quot;  &quot;TRUE&quot; &quot;_3&quot;</code></pre>
 <div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the values from column &#39;seq&#39; are indeed unique</span></span>
 <span id="cb164-2"><a href="#cb164-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(mat2uniq[,<span class="st">&quot;seq&quot;</span>])</span></code></pre></div>
@@ -2739,7 +2739,7 @@ In many cases, it may be useful to filter the initial query-output to retain onl
 ## Matrix products: default
 ## 
 ## locale:
-## [1] LC_COLLATE=C                   LC_CTYPE=French_France.1252   
+## [1] LC_COLLATE=French_France.1252  LC_CTYPE=French_France.1252   
 ## [3] LC_MONETARY=French_France.1252 LC_NUMERIC=C                  
 ## [5] LC_TIME=French_France.1252    
 ## 
@@ -2750,20 +2750,24 @@ In many cases, it may be useful to filter the initial query-output to retain onl
 ## [1] limma_3.50.1 knitr_1.37   wrMisc_1.9.1
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.8.3      plyr_1.8.6        bslib_0.3.1       compiler_4.1.3   
-##  [5] pillar_1.7.0      jquerylib_0.1.4   highr_0.9         tools_4.1.3      
-##  [9] digest_0.6.29     jsonlite_1.8.0    evaluate_0.15     lifecycle_1.0.1  
-## [13] tibble_3.1.6      checkmate_2.0.0   gtable_0.3.0      pkgconfig_2.0.3  
-## [17] rlang_1.0.2       wrGraph_1.3.1     DBI_1.1.2         cli_3.2.0        
-## [21] yaml_2.3.5        xfun_0.30         fastmap_1.1.0     dplyr_1.0.8      
-## [25] stringr_1.4.0     generics_0.1.2    vctrs_0.3.8       sass_0.4.0       
-## [29] tidyselect_1.1.2  grid_4.1.3        qvalue_2.26.0     glue_1.5.1       
-## [33] data.table_1.14.2 R6_2.5.1          fansi_1.0.2       fdrtool_1.2.17   
-## [37] rmarkdown_2.13    reshape2_1.4.4    purrr_0.3.4       ggplot2_3.3.5    
-## [41] magrittr_2.0.2    splines_4.1.3     backports_1.4.1   BBmisc_1.12      
-## [45] scales_1.1.1      htmltools_0.5.2   ellipsis_0.3.2    assertthat_0.2.1 
-## [49] colorspace_2.0-3  utf8_1.2.2        stringi_1.7.6     munsell_0.5.0    
-## [53] crayon_1.5.0</code></pre>
+##  [1] Rcpp_1.0.8.3      prettyunits_1.1.1 ps_1.6.0          assertthat_0.2.1 
+##  [5] rprojroot_2.0.2   digest_0.6.29     utf8_1.2.2        plyr_1.8.6       
+##  [9] R6_2.5.1          backports_1.4.1   evaluate_0.15     ggplot2_3.3.5    
+## [13] highr_0.9         pillar_1.7.0      rlang_1.0.2       wrGraph_1.3.1    
+## [17] data.table_1.14.2 callr_3.7.0       jquerylib_0.1.4   checkmate_2.0.0  
+## [21] qvalue_2.26.0     rmarkdown_2.13    splines_4.1.3     desc_1.4.1       
+## [25] devtools_2.4.3    stringr_1.4.0     munsell_0.5.0     compiler_4.1.3   
+## [29] xfun_0.30         pkgconfig_2.0.3   pkgbuild_1.3.1    BBmisc_1.12      
+## [33] htmltools_0.5.2   tidyselect_1.1.2  tibble_3.1.6      fansi_1.0.2      
+## [37] crayon_1.5.0      dplyr_1.0.8       withr_2.4.3       brio_1.1.3       
+## [41] grid_4.1.3        DBI_1.1.2         jsonlite_1.8.0    gtable_0.3.0     
+## [45] lifecycle_1.0.1   magrittr_2.0.2    scales_1.1.1      cli_3.2.0        
+## [49] stringi_1.7.6     cachem_1.0.6      reshape2_1.4.4    fs_1.5.1         
+## [53] remotes_2.4.2     fdrtool_1.2.17    testthat_3.1.2    bslib_0.3.1      
+## [57] ellipsis_0.3.2    vctrs_0.3.8       generics_0.1.2    tools_4.1.3      
+## [61] glue_1.5.1        purrr_0.3.4       processx_3.5.2    pkgload_1.2.4    
+## [65] fastmap_1.1.0     yaml_2.3.5        colorspace_2.0-3  sessioninfo_1.2.2
+## [69] memoise_2.0.1     sass_0.4.0        usethis_2.1.5</code></pre>
 </div>
 
 <script type="text/javascript">

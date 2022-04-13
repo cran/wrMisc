@@ -111,7 +111,7 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
     if(sum(dup) <1) out <- if(isTRUE(exclNoRepl)) 0 else 1:length(y)     # all unique
     if(sum(dup) == length(y) -1) out <- 1                                # all duplic
     if(any(out < 0)) out <- match(y, unique(y))
-    if(debug) message(fxNa," chStru : ",wrMisc::pasteC(out))
+    if(FALSE) message(fxNa," chStru : ",wrMisc::pasteC(out))
     out }
   fMin <- function(y, ref=y) { coln <- which.min(apply(y, 2, max, na.rm=TRUE)); 
     if(debug) {message(fxNa," -> fMin   colnames y", colnames(y),"\n"); fMi <- list(y=y,coln=coln, ref=ref)}

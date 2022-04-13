@@ -2,7 +2,7 @@
 % Please edit documentation in R/readXlsxBatch.R
 \name{readXlsxBatch}
 \alias{readXlsxBatch}
-\title{Read batch of Excel xlsx-files}
+\title{Read Batch of Excel xlsx-Files}
 \usage{
 readXlsxBatch(
   fileNames = NULL,
@@ -39,10 +39,10 @@ readXlsxBatch(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-list
+This function returns a list of data.frames
 }
 \description{
 \code{readXlsxBatch} reads data out of multiple xlsx files, the sheet indicated by 'sheetInd' will be considered. 

@@ -2,10 +2,7 @@
 % Please edit documentation in R/readTabulatedBatch.R
 \name{readTabulatedBatch}
 \alias{readTabulatedBatch}
-\title{Batch reading of tabulated (text-) files
- 
-This function allows batch reading of multiple tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
-If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, fast reading of files will be performed using the function \code{\link[data.table]{fread}}.}
+\title{Batch reading of Tabulated Text-Files}
 \usage{
 readTabulatedBatch(
   query,
@@ -51,13 +48,12 @@ readTabulatedBatch(
 \item{debug}{(logical) display additional messages for debugging}
 }
 \value{
-list of data.frames
+This function returns a list of data.frames
 }
 \description{
-Batch reading of tabulated (text-) files
- 
-This function allows batch reading of multiple tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
-If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, fast reading of files will be performed using the function \code{\link[data.table]{fread}}.
+This function allows batch reading of multiple tabulated text files n batch. 
+The files can be designed specifically, or, alternatively all files from a given directory can be read.
+If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, faster reading of files will be performed using the function \code{\link[data.table]{fread}}.
 }
 \details{
 If you want to provide a flexible pattern of ffile-names, this has to be done before calling this usntion, eg using \code{grep} to provide an explicit collection of flles.

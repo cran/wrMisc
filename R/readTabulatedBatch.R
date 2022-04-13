@@ -1,12 +1,13 @@
-#' Batch reading of tabulated (text-) files
+#' Batch reading of Tabulated Text-Files
 #'  
-#' This function allows batch reading of multiple tabulated text files. The files can be designed specifically, alternatively all files from a given directory can be read.
-#' If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, fast reading of files will be performed using the function \code{\link[data.table]{fread}}.  
+#' @description
+#' This function allows batch reading of multiple tabulated text files n batch. 
+#' The files can be designed specifically, or, alternatively all files from a given directory can be read.
+#' If package \href{https://CRAN.R-project.org/package=data.table}{data.table} is available, faster reading of files will be performed using the function \code{\link[data.table]{fread}}.  
 #' 
 #' @details 
 #' If you want to provide a flexible pattern of ffile-names, this has to be done before calling this usntion, eg using \code{grep} to provide an explicit collection of flles.
 #' However, it is possible to read different files from different locations/directories, the length of \code{path} must match the length of \code{query} 
-#' 
 #' 
 #' @param query (character) vector of file-names to be read, if \code{"."} all files will be read (no matter what their extension might be)
 #' @param path (character) path for reading files, if \code{NULL} or \code{NA} the current directory will be used
@@ -21,7 +22,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
-#' @return list of data.frames
+#' @return This function returns a list of data.frames
 #' @seealso  \code{\link[data.table]{fread}}, \code{\link[utils]{read.delim}}, for reading batch of csv files : \code{\link{readCsvBatch}}
 #' @examples
 #' path1 <- system.file("extdata", package="wrMisc")
