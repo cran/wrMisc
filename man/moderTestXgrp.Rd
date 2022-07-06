@@ -11,6 +11,7 @@ moderTestXgrp(
   addResults = c("lfdr", "FDR", "Mval", "means"),
   testOrientation = "=",
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -27,6 +28,8 @@ moderTestXgrp(
 \item{testOrientation}{(character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }

@@ -111,7 +111,7 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
     if(sum(dup) <1) out <- if(isTRUE(exclNoRepl)) 0 else 1:length(y)     # all unique
     if(sum(dup) == length(y) -1) out <- 1                                # all duplic
     if(any(out < 0)) out <- match(y, unique(y))
-    if(FALSE) message(fxNa," chStru : ",wrMisc::pasteC(out))
+    if(debug) message(fxNa," -> chStru : ",wrMisc::pasteC(out))
     out }
   fMin <- function(y, ref=y) { coln <- which.min(apply(y, 2, max, na.rm=TRUE)); 
     if(debug) {message(fxNa," -> fMin   colnames y", colnames(y),"\n"); fMi <- list(y=y,coln=coln, ref=ref)}
@@ -163,19 +163,21 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
   if(datOK) {
     str1 <- apply(x, 2, chStru, debug=debug)
     chStr <- if(is.matrix(str1)) rep(nrow(str1) <nrow(x), ncol(x)) else {sapply(str1, length) < nrow(x)}
-    if(debug) message(fxNa,"fd1"); fd1 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK)
+    ## develop more to recuperate replicates after enumerarators ?
+
+    if(debug) {message(fxNa,"fd1"); fd1 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK)}
     if(all(chStr)) {
-     if(exclNoRepl){
-       if(!silent) message(fxNa,"NONE of the columns has any replicates, setting exclNoRepl=FALSE")
+      if(exclNoRepl) {
+        if(debug) message(fxNa,"None of the columns have any replicates, setting exclNoRepl=FALSE")
         exclNoRepl <- FALSE
         str1 <- apply(x, 2, chStru, debug=debug)
         chStr <- sapply(str1, length) < nrow(x)
-      } else warning(fxNa,"Can't find replicates for ANY of the columns !! ") 
+      } else warning(fxNa,"Can't find replicates for any of the columns !! ") 
     }
     if(any(chStr)) str1 <- str1[which(!chStr)]      
     if(is.list(str1)) str1 <- as.matrix(as.data.frame(str1))
     if(length(dim(str1)) <2) str1 <- matrix(unlist(str1), ncol=ncol(x), dimnames=dimnames(x))    
-    if(debug) message(fxNa,"fd2"); fd2 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK)
+    if(debug) {message(fxNa,"fd2"); fd2 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK)}
     if(!isTRUE(exclNoRepl)) {              ## check if single col at max levels may serve as shortcut
       chMax <- sapply(str1, max, na.rm=TRUE) ==nrow(x)
       if(any(chMax)) { datOK <- FALSE
@@ -198,11 +200,11 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
       tm2 <- apply(ou3, 2, paste0, collapse="") 
       chDu <- duplicated(tm2, fromLast=FALSE)
       if(any(chDu)) {tm2 <- tm2[which(!chDu)]; 
-        ou3 <- matrix(ou3[,which(!chDu)],nrow=nrow(x),dimnames=list(NULL,colnames(ou3)[which(!chDu)]))}  
+        ou3 <- matrix(ou3[,which(!chDu)], nrow=nrow(x), dimnames=list(NULL,colnames(ou3)[which(!chDu)]))}  
       if(debug) {message(fxNa,"fd4"); fd4 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
   
       out <- if(ncol(ou3) <2) {
-        if(debug) message(fxNa," single col for choice ..")
+        if(debug) message(fxNa," single column for choice ..")
         co <- which(colnames(x) ==colnames(ou3))
         names(co) <- colnames(ou3)
         nn <- as.integer(ou3)

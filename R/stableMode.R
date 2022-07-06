@@ -14,25 +14,31 @@
 #' @param x (numeric, or character if 'method='mode') data to find/estimate most frequent value
 #' @param method (character) There are 3 options : BBmisc, binning and density (default). If "binning" the function will search context dependent, ie like most frequent class of histogram.
 #'  Using "binning" mode the search will be refined if either 80 percent of values in single class or >50 percent in single class.
+#' @param finiteOnly (logical) suppress non-finite values; allows avoiding \code{NULL} as result in presence of some \code{Inf} values; \code{NA} will be ignored in any case
 #' @param bandw (integer) only used when \code{method="binning"} or  \code{method="density"} : defines the number of points to look for density or number of classes used; 
-#'  very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" one will finally loose advantage of histLike-type search of mode !
+#'  very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" you will finally loose advantage of histLike-type search of mode !
 #' @param rangeSign (integer) only used when \code{method="binning"}: range of numbers used as number of significant values
 #' @param nCl (integer) depreciated argument, please use \code{bandw} instead
 #' @param histLike (logical) depreciated, please use argument \code{method} instead
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allows easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging 
 #' @return This function returns a numeric vector with value of mode, the name of the value indicates it's position
 #' @seealso \code{computeMode()} in package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc}
 #' @examples
 #' set.seed(2012); dat <- round(c(rnorm(50), runif(100)),3)
 #' stableMode(dat)
 #' @export
-stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL, histLike=NULL, silent=FALSE, callFrom=NULL) {
+stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSign=1:6, nCl=NULL, histLike=NULL, silent=FALSE, callFrom=NULL, debug=FALSE) {
   ## stable mode  
   fxNa <- .composeCallName(callFrom, newNa="stableMode")
   if(length(histLike) > 0) message(fxNa, "Argument 'histLike' is depreciated, please use argument 'method' instead !")
   if(!isTRUE(silent)) silent <- FALSE
-  x <- naOmit(x)
+  ## prepare data: treat NA or non-finite values
+  if(finiteOnly) { chFin <- is.finite(x)
+    if(all(!chFin)) x <- NULL else if(any(!chFin)) {x <- x[which(chFin)]
+      if(!silent) message(fxNa,"Removing ",sum(!chFin)," (out of ",length(chFin),") non-finite values") }
+  } else x <- naOmit(x)
   if(length(unique(x)) < 0) {
     method <- NULL
     return(NULL)
@@ -63,6 +69,7 @@ stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL,
       levels(x)[which(tabX == max(tabX))]
     } else levels(x)[which.max(tabX)]
     if(isNum) out <- as.numeric(out)
+    if(debug) {message(fxNa," stM1"); stM1 <- list(method=method,bandw=bandw,x=x,tabX=tabX) }
   } else  chDu <- sum(duplicated(x)) 
   ## BBmisc
   if(identical(method, "BBmisc")) {
@@ -75,6 +82,7 @@ stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL,
       warning(fxNa,"UNABLE to calulate BBmisc::computeMode(),  setting 'method' to 'density'")
     } else  { posi <- .firstMin(diff(mo)/mo[-length(mo)], positionOnly = TRUE)
       out <- mo[posi] }
+    if(debug) {message(fxNa," stM2"); stM2 <- list(method=method,bandw=bandw,x=x,mo=mo) }
   }
   ## density 
   if(identical(method, "density")) {
@@ -85,10 +93,11 @@ stableMode <- function(x, method="density", bandw=NULL, rangeSign=1:6, nCl=NULL,
     nExt <- bandw - 1
     x <- c(min(x) - raX * (nExt:1)/nExt, x, max(x) + raX * (1:nExt)/nExt)
     dif <- x[(bandw + 1):length(x)] - x[1:(length(x) - bandw)]
-    maxDi <- which(dif == min(dif))
+    maxDi <- which(dif == min(dif) & is.finite(dif))
     if(length(maxDi) > 1) maxDi <- maxDi[round(length(maxDi)/2)]
     out <- x[maxDi +nExt]
     names(out) <- maxDi
+    if(debug) {message(fxNa," stM3"); stM3 <- list(method=method,bandw=bandw,x=x,raX=raX,nExt=nExt,maxDi=maxDi,dif=dif) }
   }
   ## binning
   if(identical(method, "binning")) {

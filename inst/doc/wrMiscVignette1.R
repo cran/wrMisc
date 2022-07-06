@@ -225,6 +225,17 @@ unique(aa)                                    # names are lost
 nonAmbiguousNum(aa)
 nonAmbiguousNum(aa, uniq=FALSE, asLi=TRUE)    # separate in list unique and repeated 
 
+## ----sortByNRepeated, echo=TRUE-----------------------------------------------
+cities <- c("Bangkok","London","Paris","Singapore","New York City","Istambul","Delhi","Rome","Dubai")
+sortByNRepeated(x=cities[c(1:4)], y=cities[c(3,5:8)])
+
+## or (unlimited) multiple inputs via list
+choices1 <- list(Mary=cities[c(1:4)], Olivia=cities[c(3,5:8)], Paul=cities[c(5:3,9,5)])
+## Note : Paul cited NYC twice !
+table(unlist(choices1))
+sortByNRepeated(choices1)
+sortByNRepeated(choices1, filterIntraRep=FALSE)  # without correcting multiple citation by Paul
+
 ## ----cbindNR, echo=TRUE-------------------------------------------------------
 ## First we'll make soe toy data :
 (ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1])))
@@ -675,6 +686,14 @@ set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2), ncol=8, dimnames=list(l
 t8[3:6,1:2] <- t8[3:6,1:2] +3   # augment lines 3:6 (c-f) for AA1&BB1
 t8[5:8,5:6] <- t8[5:8,5:6] +3   # augment lines 5:8 (e-h) for AA2&BB2 (c,d,g,h should be found)
 head(pVal2lfdr(apply(t8, 1, function(x) t.test(x[1:4], x[5:8])$p.value)))
+
+## ----fcCI, echo=TRUE----------------------------------------------------------
+set.seed(2022); ran <- rnorm(50)
+confInt(ran, alpha=0.05)
+## plot points and confindence interval of mean
+plot(ran, jitter(rep(1,length(ran))), ylim=c(0.9,1.1), main="Points and Confidence Interval of Mean (alpha=0.05)", ylab="", las=1)
+points(mean(ran),0.97, pch=3, col=4)     # mean
+lines(mean(ran) +c(-1,1)*confInt(ran, 0.05), c(0.97,0.97), lwd=4, col=4)  # CI
 
 ## ----matchSampToPairw, echo=TRUE----------------------------------------------
 ## make example if limma is not installed

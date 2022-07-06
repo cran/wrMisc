@@ -1,5 +1,5 @@
-db8f44f5de1681e62215c4e0061de6c8 *DESCRIPTION
-692cad1831fe51a9cfdf662423ad56f2 *NAMESPACE
+941ae73721e5a6c3762e9096bbf7243d *DESCRIPTION
+761e0b5b421ab4da758899f387fae95a *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
 564c0a274b79e761c0962159350967f4 *R/adjBy2ptReg.R
@@ -21,12 +21,14 @@ dfd7af900608771fdb71642f5a749ba3 *R/cleanReplicates.R
 3ac0b17c4947b156624ad3cc0e7e5644 *R/colSds.R
 fff1f977a2d3150a76e2616b4742f43c *R/colorAccording2.R
 9293b36a7b38352f5e9a54a51f53fdb1 *R/combinatIntTable.R
+8b57fcc78ab5d23b3404a03e086525fc *R/combineAsN.R
 8a9b097a5f7d0eb7c5d2a75450237ef4 *R/combineByEitherFactor.R
 8eef2483d075fa70edc3dbbcf27b6258 *R/combineOverlapInfo.R
 04861244efb660460ac858cef19c72e0 *R/combineRedBasedOnCol.R
 3fcc03564fef43a6422ed9444fbcfc75 *R/combineReplFromListToMatr.R
 ad169c83260647adea8619acfc1eed5c *R/combineSingleT.R
 e109283bd022590c8628d1a6edb3ef3d *R/completeArrLst.R
+26bbe417acbde343adb3835f2de2fbea *R/confInt.R
 52e71e1882ec784ed3892c0a5c0f9fe0 *R/contribToContigPerFrag.R
 98fa8fe9d0fc417565307fe70c44bb2f *R/conv01toColNa.R
 ec5fe93688985364dfe0660e0d398795 *R/convColorToTransp.R
@@ -88,7 +90,7 @@ f2f5a1dfce58cb2f8693d6f1372a8645 *R/mergeVectors.R
 da2886146aaeaba638d2379fb883eca7 *R/mergeW2.R
 fdf1ce4d1dfb7e80cd4ff12be590b384 *R/minDiff.R
 559e67ab3e3d592e6975f8845759affb *R/moderTest2grp.R
-96277eab485a1d87bd7b595f01f9da25 *R/moderTestXgrp.R
+9696f2cf32ef6f7f11992a5cbb392786 *R/moderTestXgrp.R
 606270532c5ddf257a06d01509fc840c *R/multiCharReplace.R
 0f3f78935cde7b60610c63c9a983aefb *R/multiMatch.R
 edaf7608b3164dce1062cb0d282b8d38 *R/nFragments.R
@@ -124,7 +126,7 @@ d66240cdd8db6e38abe6f682e5cc604e *R/regrMultBy1or2point.R
 1435d32b6405eb38c8db03f2a57920c3 *R/reorgByCluNo.R
 11f39103b7cd6dc805b937a4a0a5dd0b *R/replNAbyLow.R
 cd03b36bcdda43d4e34ded2f417dee2d *R/replPlateCV.R
-1020b8f631ab379fa842eb4fcd268a84 *R/replicateStructure.R
+48e951ed217efa690fb71d4591b1d994 *R/replicateStructure.R
 c944ba7309448a8fe0fcd28e958ce871 *R/rmDupl2colMatr.R
 703687d541d0fea00888e9660aa2a55c *R/rnormW.R
 b0465727b8d225680bcf9159c31c39d3 *R/rowCVs.R
@@ -132,6 +134,7 @@ c960ee9be9cb398d12e7c57ab59efe29 *R/rowGrpCV.R
 022d901a7453236114d409bc3c20f449 *R/rowGrpMeans.R
 22bc8adf6bafef6107ab227b7bc99a90 *R/rowGrpNA.R
 0163af4c06d117c88c5bbeb3f2bf423a *R/rowGrpSds.R
+24d3f9dc1d1ddfe0cc81f5f8375ea7a7 *R/rowGrpSums.R
 0a5c6394e850bfb3c5efd2c65c20fd82 *R/rowMedSds.R
 4e6170ca1f374402cf490e34b7cc9632 *R/rowSEMs.R
 bf6881d448efc87939b9df208723931c *R/rowSds.R
@@ -142,7 +145,8 @@ dea2b79a971e6b90d3db69399eb3bcd7 *R/searchLinesAtGivenSlope.R
 8a3f01f09c57d9de559808b566605ecd *R/simpleFragFig.R
 b1384736c813650afdfa80f110acd6a2 *R/singleLineAnova.R
 744ca148e57442a5fa8ee6447bc4fbe6 *R/sortBy2CategorAnd1intCol.R
-f21e4254fd812143bd67ccb89c9da91d *R/stableMode.R
+d5a6cda25658cb1f2a9b61a8e82e8c5b *R/sortByNRepeated.R
+43e2a1d85ac11713c52a2603ad41cc36 *R/stableMode.R
 768297647cf34feaeab43d4a948ebd10 *R/standardW.R
 d15892ea6cb77425df2e08d5d3198acf *R/stdErrMedBoot.R
 b71518d16746b4afe47ca2fb2da99f5d *R/sumNAperGroup.R
@@ -160,12 +164,9 @@ fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 4c46ce07427319f6580ddaa31f45ebb0 *R/writeCsv.R
 f7e118e22d8bddec81465e69c25967f4 *build/vignette.rds
-7d67fd201d37bbf77adeec79f6bfe278 *inst/doc/doc/wrMiscVignette1.R
-3ea47114a8c7c0bf36f673027680e3c4 *inst/doc/doc/wrMiscVignette1.Rmd
-bf704170f57c5851b38295da659d901f *inst/doc/doc/wrMiscVignette1.html
-7d67fd201d37bbf77adeec79f6bfe278 *inst/doc/wrMiscVignette1.R
-3ea47114a8c7c0bf36f673027680e3c4 *inst/doc/wrMiscVignette1.Rmd
-3f02b226f8d286ffbecdee8001ded07b *inst/doc/wrMiscVignette1.html
+c88a339b01450ed0b000e44c16be6e4e *inst/doc/wrMiscVignette1.R
+038e401b8c94f1a1e3c2f52010978176 *inst/doc/wrMiscVignette1.Rmd
+801b3c0fda654c26f3a3edcfe9eefcd9 *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -199,12 +200,14 @@ da350e096d60af819411519586c5d0a7 *man/coinPermTest.Rd
 581cb95eee0fbbc7432fafa877af584b *man/colSds.Rd
 89c41283b97c64fc6b2b74579d65c693 *man/colorAccording2.Rd
 6e8415d0e92a7a6bdb904ba49674ff54 *man/combinatIntTable.Rd
+eb110439809ef0b41f7ea0b27f1fcd93 *man/combineAsN.Rd
 00e4fbdc18f730b1f9a148304668dea6 *man/combineByEitherFactor.Rd
 b4c168e7e17bc06b1bce18d747c4d18d *man/combineOverlapInfo.Rd
 2cd61aef2e44dc981f12fe2e48824212 *man/combineRedBasedOnCol.Rd
 1623e9e0ffa85acc02e4dd8ccdbee175 *man/combineReplFromListToMatr.Rd
 fb279b4270f2f5bd759718f88b4f0df6 *man/combineSingleT.Rd
 0689b4cbabfde8862f0dca7fddda4774 *man/completeArrLst.Rd
+15086e6ce3ee6bb03bbfb96a78759746 *man/confInt.Rd
 e68d9b50cd639a2514660737f81da37e *man/contribToContigPerFrag.Rd
 4976640ebef6013d452fe9f26e061dd8 *man/conv01toColNa.Rd
 f6b76f1097156ed054ec4265cad450da *man/convColorToTransp.Rd
@@ -267,7 +270,7 @@ b9414ea0bda771161659c8a657a0e105 *man/mergeVectors.Rd
 8a868280aae72bef84d194e1bacc8d76 *man/mergeW2.Rd
 d2b828f10053bb520b085d0aab73a153 *man/minDiff.Rd
 674a3b31fdca64af0ad105951b239f43 *man/moderTest2grp.Rd
-fbb65573381646f52f70451c8be1c3ea *man/moderTestXgrp.Rd
+5b64dd9e84db8696d77aafa18fb563cb *man/moderTestXgrp.Rd
 17f001964da0d64d0b80cecd5fc88956 *man/multiCharReplace.Rd
 c76e9081456e80fb42077f9c38fb4621 *man/multiMatch.Rd
 5fdbe631e9109fa731e66eceee2facdb *man/nFragments.Rd
@@ -312,6 +315,7 @@ e518fdce2fa05bf12d1592697590d61c *man/rnormW.Rd
 a8f2dd7e9867179bf5c6e5e28660da48 *man/rowGrpMeans.Rd
 99326959a65779cdd9dad158c92f549d *man/rowGrpNA.Rd
 ab57bd31bc775d9bca81b53636ae47a1 *man/rowGrpSds.Rd
+95f19bbf61ead2cec78edc650e2c035e *man/rowGrpSums.Rd
 d503187871e48666163b6a7252b3e6e1 *man/rowMedSds.Rd
 93cc9035bb701736acea690f1698e395 *man/rowSEMs.Rd
 f69abba8c9d9f16bddeb6604af75236b *man/rowSds.Rd
@@ -322,7 +326,8 @@ ce4e75c5f67d128f9b5430defd170667 *man/scaleXY.Rd
 9aaa8040dd0f51f255eabbfd9cbfb2d0 *man/simpleFragFig.Rd
 cb53c96f48c9af65e604fb293fae66d9 *man/singleLineAnova.Rd
 61f558c239174e7147ff943cf0dbdedf *man/sortBy2CategorAnd1IntCol.Rd
-fccc71f0d855c869be89d7c25a2750ac *man/stableMode.Rd
+d8705a2cde12c275496c5ae1d954f594 *man/sortByNRepeated.Rd
+0c9386bbe17a857bfe048a13eacc5f14 *man/stableMode.Rd
 6593d47261256aaeb3e67fc7fdf2a92c *man/standardW.Rd
 28e877917beb0856377953af7c360b29 *man/stdErrMedBoot.Rd
 a2ce865a3399c4f15919ec07f9ee5d26 *man/sumNAperGroup.Rd
@@ -339,4 +344,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 2336ef261384d4d3fee8b2a1fea8335f *man/writeCsv.Rd
-3ea47114a8c7c0bf36f673027680e3c4 *vignettes/wrMiscVignette1.Rmd
+038e401b8c94f1a1e3c2f52010978176 *vignettes/wrMiscVignette1.Rmd

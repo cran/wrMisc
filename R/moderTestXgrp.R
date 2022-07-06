@@ -11,6 +11,7 @@
 #'   "bonferroni" for Bonferroni-correction, "qValue" for lfdr by qvalue, "Mval", "means" or "nonMod" for non-moderated test and he equivaent all (other) multiple testing corrections chosen here)
 #' @param testOrientation (character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2
 #' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return This function returns a limma-type MA-object (list)
 #' @seealso \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
@@ -28,10 +29,11 @@
 #' # If you have limma installed we can now see further
 #' if("list" %in% mode(test8)) head(test8$p.value, n=8)
 #' @export
-moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR","Mval","means"), testOrientation="=", silent=FALSE, callFrom=NULL){
+moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR","Mval","means"), testOrientation="=", silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="moderTestXgrp")
   runTest <- TRUE
   if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(!isFALSE(limmaOutput)) limmaOutput <- TRUE
   if(any(length(dat) <1, length(dim(dat)) !=2, dim(dat) < c(1,3))) { runTest <- FALSE
     warning(fxNa,"Invalid argument 'dat'; must be matrix or data.frame with min 1 lines and 3 columns") }
@@ -46,6 +48,7 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
     checkPkg <- function(pkg) requireNamespace(pkg, quietly=TRUE)
     checkPkgs <- sapply(packages, checkPkg)
     if(!checkPkgs[1]) { runTest <- FALSE; warning(fxNa,"Package 'limma' not found ! Unable to run tests. Please install first from Bioconductor")} } 
+  if(debug) {message(fxNa,"mTX1"); mTX1 <- list(dat=dat,grp=grp,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest)}
     
   if(runTest) {
     if(limmaOutput & length(addResults) >0) if("all" %in% addResults) addResults <- c("BH", "BY","lfdr","qValue","bonferroni","Mval","means","nonMod")
@@ -55,6 +58,7 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
     if(!checkPkgs[3] & any(c("qvalue","qval") %in% tolower(addResults))) {
       if(!silent) message(fxNa,"Package 'qvalue' not found, omitting .. Please install from Bioconductor for enabeling 'qValue'")
       addResults <- addResults[which(!tolower(addResults) %in% c("qvalue","qval"))] }
+    if(debug) {message(fxNa,"mTX2")}
     ## treat non-unique row-names ?
 
     if(length(rownames(dat) >0)) if(length(unique(rownames(dat))) < nrow(dat)) {
@@ -70,6 +74,7 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
     rownames(comp) <- paste(levels(grp)[comp[,1]], levels(grp)[comp[,2]],sep="-")
     contr.matr <- matrix(0, nrow=length(levels(grp)), ncol=nrow(comp), dimnames=list(levels(grp), rownames(comp)))
     for(j in 1:nrow(comp)) contr.matr[comp[j,],j] <- c(1,-1)
+    if(debug) {message(fxNa,"mTX3"); mTX3 <- list(dat=dat,grp=grp,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,datDesign=datDesign,comp=comp,contr.matr=contr.matr )}
     ## see eg   https://support.bioconductor.org/p/57268/; https://www.biostars.org/p/157068/
     globFilt <- 1:nrow(dat)                                       # so far apply testing to all lines
     
@@ -77,6 +82,8 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
     fit0 <- try(limma::lmFit(dat[globFilt,], datDesign), silent=TRUE)          # testing part 1
     if(inherits(fit0, "try-error")) { runTest <- FALSE
        warning(fxNa," Problem running lmFit(), unable to run tests; check if package 'limma' is properly installed !")}
+    if(debug) {message(fxNa,"mTX4")}
+       
   }  
   if(runTest) {
     fit1 <- limma::eBayes(limma::contrasts.fit(fit0, contrasts=contr.matr))  # variant to run all contrasts at same time

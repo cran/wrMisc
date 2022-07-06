@@ -7,12 +7,14 @@
 stableMode(
   x,
   method = "density",
+  finiteOnly = TRUE,
   bandw = NULL,
   rangeSign = 1:6,
   nCl = NULL,
   histLike = NULL,
   silent = FALSE,
-  callFrom = NULL
+  callFrom = NULL,
+  debug = FALSE
 )
 }
 \arguments{
@@ -21,8 +23,10 @@ stableMode(
 \item{method}{(character) There are 3 options : BBmisc, binning and density (default). If "binning" the function will search context dependent, ie like most frequent class of histogram.
 Using "binning" mode the search will be refined if either 80 percent of values in single class or >50 percent in single class.}
 
+\item{finiteOnly}{(logical) suppress non-finite values; allows avoiding \code{NULL} as result in presence of some \code{Inf} values; \code{NA} will be ignored in any case}
+
 \item{bandw}{(integer) only used when \code{method="binning"} or  \code{method="density"} : defines the number of points to look for density or number of classes used; 
-very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" one will finally loose advantage of histLike-type search of mode !}
+very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" you will finally loose advantage of histLike-type search of mode !}
 
 \item{rangeSign}{(integer) only used when \code{method="binning"}: range of numbers used as number of significant values}
 
@@ -33,6 +37,8 @@ very "critical" parameter, may change results in strong way. Note: with \code{me
 \item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allows easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 This function returns a numeric vector with value of mode, the name of the value indicates it's position
