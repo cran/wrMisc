@@ -24,7 +24,7 @@
 #' t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines 
 #' ## expect to find C/A in c,d,g, (h)
 #' ## expect to find C/D in c,d,e,f
-#' ## expect to find A/D in f,g,(h)  
+#' ## expect to find A/D in f,g,(h) 
 #' test8 <- moderTestXgrp(t8, grp) 
 #' # If you have limma installed we can now see further
 #' if("list" %in% mode(test8)) head(test8$p.value, n=8)

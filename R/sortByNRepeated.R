@@ -26,27 +26,28 @@
 #' 
 #' @export
 sortByNRepeated <- function(x, y=NULL, z=NULL, filterIntraRep=TRUE, silent=TRUE, debug=FALSE, callFrom=NULL) {
+  ## move to wrMisc with combineAsN()
   ## make list of common occurances sorted by number of repeats based on list of character-entries/words (eg peptide sequ) or up to 3 separate character vectors
   ## the name of output indicates number onf times all elements of the vector are repeated
   ## for 4 sets of data provide 'x' in form of list conatining all data
-  fxNa <- .composeCallName(callFrom, newNa="sortByNRepeated")
+  fxNa <- wrMisc::.composeCallName(callFrom, newNa="sortByNRepeated")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
-  if(length(x) >1 & is.list(x)) { 
+  if(length(x) >1 & is.list(x)) {
     if(length(y) >0) x[length(x) +1] <- unlist(y)
     if(length(z) >0) x[length(x) +1] <- unlist(z)
   } else {x <- list(x=x, y=y, z=z); rm(y,z)}
   chLe <- sapply(x, length) >0
-  if(debug) { message(fxNa,"sBYN1   list-elements >0 ",pasteC(chLe)); sBYN1 <- list(x=x,chLe=chLe)}
+  if(debug) { message(fxNa,"sBYN1   list-elements >0 ",pasteC(chLe))}
 
   ## remove empty list-elements
   if(!all(!chLe) & any(!chLe)) { x <- x[which(chLe)]
     if(debug) message(fxNa,"Removing ",sum(!chLe)," empty entries (out of ",length(x),")")
     chLe <- sapply(x, length) >0 }
-  if(debug) {message(fxNa,"sBYN2   length of list-elements >0 ",pasteC(sapply(x,length))); sBYN2 <- list(x=x,chLe=chLe)}
-  if(length(x) <2) { if(!silent) message(fxNa,"Only ",length(x)," set(s) of data provided", if(length(x) <1 | filterIntraRep)" nothing to do !") 
+  if(debug) {message(fxNa,"sBYN2   length of list-elements >0 ",pasteC(sapply(x,length))) }
+  if(length(x) <2) { if(!silent) message(fxNa,"Only ",length(x)," set(s) of data provided", if(length(x) <1 | filterIntraRep)" nothing to do !")
     if(length(x) ==1) {             ## simple case : single vector to treat
-      chDu <- duplicated(x[[1]]) 
+      chDu <- duplicated(x[[1]])
       if(any(chDu) & filterIntraRep) x[[1]] <- unique(naOmit(x[[1]]))
       out2 <- table(table(x[[1]]))
       out <- rep(0, max(as.integer(names(out2))))
@@ -56,21 +57,21 @@ sortByNRepeated <- function(x, y=NULL, z=NULL, filterIntraRep=TRUE, silent=TRUE,
       } else out <- c(out,0,0,0,out)
       out <- array(c(out, rep(NA, length(out)*3)), dim=c(length(out),1,4), dimnames=list(
         c("sing","doub","trip","min2","any", if(length(out) >5) paste0("x",4:(length(out) +2))),
-        names(x[[1]]), c("n","sem","CI","sd")) )                                      
+        names(x[[1]]), c("n","sem","CI","sd")) )
     } else out <- NULL
-  } else { 
+  } else {
     ## check/remove for internal repeats
-    if(filterIntraRep) { 
+    if(filterIntraRep) {
       chDu <- lapply(x, duplicated)
       chDu2 <- sapply(chDu, any)
       if(any(chDu2)) { if(debug) message(fxNa,sum(chDu2)," list elements contain (intra-) duplicated elements, need to remove for correct inter-comparison")
         for(i in which(chDu2)) x[[i]] <- x[[i]][which(!chDu[[i]])] }
     }
-    if(debug) {message(fxNa,"sBYN3   length of list-elements ",pasteC(sapply(x,length))); sBYN3 <- list(x=x,chLe=chLe)}
-  
+    if(debug) {message(fxNa,"sBYN3   length of list-elements ",pasteC(sapply(x,length))) }
+
     ## sort according to level of duplication
     x <- table(unlist(x, use.names=FALSE))
     ta2 <- table(x)
-    out <- sapply(names(ta2), function(y) names(x)[which(x==as.integer(y))]) } 
-  out }      
-   
+    out <- sapply(names(ta2), function(y) names(x)[which(x==as.integer(y))]) }
+  out }
+    

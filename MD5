@@ -1,5 +1,5 @@
-941ae73721e5a6c3762e9096bbf7243d *DESCRIPTION
-761e0b5b421ab4da758899f387fae95a *NAMESPACE
+276693e498e4c2fbffc4b0b405cc2d81 *DESCRIPTION
+8872cd49aa8eaf29e55f7adc034b1a04 *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
 564c0a274b79e761c0962159350967f4 *R/adjBy2ptReg.R
@@ -14,14 +14,14 @@ cd43dc0544343c61bf3d74c946d19383 *R/checkGroupOrderSEM.R
 020603616db99dd8c8cd5cc9cfe31af6 *R/checkSimValueInSer.R
 211f6bf7ee35f5f50bf18274449c6ec6 *R/checkStrictOrder.R
 7c9222fd7d9e4f573ba71dc754451cf6 *R/checkVectLength.R
-dfd7af900608771fdb71642f5a749ba3 *R/cleanReplicates.R
+f7e1887ae2d26e1c08d63e9780c0257f *R/cleanReplicates.R
 879e77aeb5708812cfcb2c08f35b66c4 *R/closeMatchMatrix.R
 9675aa75dec2b6357ee86e4a2e436ca9 *R/coinPermTest.R
 0b1e9b07b555732938066c2fd24ad8d0 *R/colMedSds.R
 3ac0b17c4947b156624ad3cc0e7e5644 *R/colSds.R
 fff1f977a2d3150a76e2616b4742f43c *R/colorAccording2.R
 9293b36a7b38352f5e9a54a51f53fdb1 *R/combinatIntTable.R
-8b57fcc78ab5d23b3404a03e086525fc *R/combineAsN.R
+7aa037031e61d053eea2fb63a2941a28 *R/combineAsN.R
 8a9b097a5f7d0eb7c5d2a75450237ef4 *R/combineByEitherFactor.R
 8eef2483d075fa70edc3dbbcf27b6258 *R/combineOverlapInfo.R
 04861244efb660460ac858cef19c72e0 *R/combineRedBasedOnCol.R
@@ -90,7 +90,7 @@ f2f5a1dfce58cb2f8693d6f1372a8645 *R/mergeVectors.R
 da2886146aaeaba638d2379fb883eca7 *R/mergeW2.R
 fdf1ce4d1dfb7e80cd4ff12be590b384 *R/minDiff.R
 559e67ab3e3d592e6975f8845759affb *R/moderTest2grp.R
-9696f2cf32ef6f7f11992a5cbb392786 *R/moderTestXgrp.R
+13ea440f50f12d858c03d6bcbd8a648b *R/moderTestXgrp.R
 606270532c5ddf257a06d01509fc840c *R/multiCharReplace.R
 0f3f78935cde7b60610c63c9a983aefb *R/multiMatch.R
 edaf7608b3164dce1062cb0d282b8d38 *R/nFragments.R
@@ -100,7 +100,7 @@ b8c366f2c610bafa6c811afdb08f900c *R/naOmit.R
 e9d9137fe97acdf6c59a46177fe11172 *R/nonAmbiguousNum.R
 599950b1c44535064a5967b9e2ad0e8a *R/nonRedundLines.R
 32701886c239d0c52bcae16c0382e032 *R/nonredDataFrame.R
-2b447e97d1307f552e37acd5c25df36b *R/normalizeThis.R
+07f15f1a35c02b70d64cbded8384dc75 *R/normalizeThis.R
 3bd856ae9d926d3fd80054f97485ce1b *R/numPairDeColNames.R
 478d71d376f12ed74697e3ec04552a9e *R/organizeAsListOfRepl.R
 d247f5326e0b8cdeec74031cf4e7e63f *R/pVal2lfdr.R
@@ -109,7 +109,8 @@ c4c6bdbcaec981c46fcd397ae996bea4 *R/packageDownloadStat.R
 268277315b1a0d4af0c6215c0679607c *R/partUnlist.R
 d716eb9a9f636219046adf5f41035377 *R/partialDist.R
 886599da4e64393c952b3757fbc55ade *R/pasteC.R
-0d4deb4ca73fffe980e4e94f32d9bb80 *R/presenceFilt.R
+c7f93c3e1a1edd69efb2e7439e2e6af1 *R/presenceFilt.R
+099f55d136f1b52ac077c54a25c1d28e *R/presenceGrpFilt.R
 c6cb3a683983f57953ccc71de6c1bc2f *R/protectSpecChar.R
 0fd9dd257de8a8d45efb503056b55249 *R/randIndFx.R
 44b2138c789d984884e162caa132b963 *R/rankToContigTab.R
@@ -136,6 +137,7 @@ c960ee9be9cb398d12e7c57ab59efe29 *R/rowGrpCV.R
 0163af4c06d117c88c5bbeb3f2bf423a *R/rowGrpSds.R
 24d3f9dc1d1ddfe0cc81f5f8375ea7a7 *R/rowGrpSums.R
 0a5c6394e850bfb3c5efd2c65c20fd82 *R/rowMedSds.R
+2809dd95926aeed2d821127a5898a124 *R/rowNormalize.R
 4e6170ca1f374402cf490e34b7cc9632 *R/rowSEMs.R
 bf6881d448efc87939b9df208723931c *R/rowSds.R
 35af58e7c80babc2f057cfa1f4990dec *R/sampNoDeMArrayLM.R
@@ -145,7 +147,7 @@ dea2b79a971e6b90d3db69399eb3bcd7 *R/searchLinesAtGivenSlope.R
 8a3f01f09c57d9de559808b566605ecd *R/simpleFragFig.R
 b1384736c813650afdfa80f110acd6a2 *R/singleLineAnova.R
 744ca148e57442a5fa8ee6447bc4fbe6 *R/sortBy2CategorAnd1intCol.R
-d5a6cda25658cb1f2a9b61a8e82e8c5b *R/sortByNRepeated.R
+bb674622df97844c52b0c291debed36b *R/sortByNRepeated.R
 43e2a1d85ac11713c52a2603ad41cc36 *R/stableMode.R
 768297647cf34feaeab43d4a948ebd10 *R/standardW.R
 d15892ea6cb77425df2e08d5d3198acf *R/stdErrMedBoot.R
@@ -163,10 +165,10 @@ e91c2cbdc7a8d4fd69cf23b1dd7269ca *R/trimRedundText.R
 fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 4c46ce07427319f6580ddaa31f45ebb0 *R/writeCsv.R
-f7e118e22d8bddec81465e69c25967f4 *build/vignette.rds
-c88a339b01450ed0b000e44c16be6e4e *inst/doc/wrMiscVignette1.R
-038e401b8c94f1a1e3c2f52010978176 *inst/doc/wrMiscVignette1.Rmd
-801b3c0fda654c26f3a3edcfe9eefcd9 *inst/doc/wrMiscVignette1.html
+2d4470bf79c5d5ff451e3dcdcea4a475 *build/vignette.rds
+a685f974823b5a3ad119f5126e0ff735 *inst/doc/wrMiscVignette1.R
+008a410771bb25e14af9db77fb79e61a *inst/doc/wrMiscVignette1.Rmd
+7337be880299b1573f2875ef57b39857 *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -193,14 +195,14 @@ f6522d1a34265b57d88fa2a105f4d6b6 *man/checkGrpOrder.Rd
 0a0ea7d22db1e874a68e30dffabe40c9 *man/checkSimValueInSer.Rd
 6233c5935c9da9dd6391e8e5f64a6621 *man/checkStrictOrder.Rd
 2f2679ddb4ad91ca4b800f134e8f8bb5 *man/checkVectLength.Rd
-a9af09807a25d2a132a7658075208f19 *man/cleanReplicates.Rd
+ebca074936fba18b102bd6aa9d350afa *man/cleanReplicates.Rd
 4ba118c578fae20e67d20f5fdbea19ea *man/closeMatchMatrix.Rd
 da350e096d60af819411519586c5d0a7 *man/coinPermTest.Rd
 0e0753431766195521ab80f18a8b6c57 *man/colMedSds.Rd
 581cb95eee0fbbc7432fafa877af584b *man/colSds.Rd
 89c41283b97c64fc6b2b74579d65c693 *man/colorAccording2.Rd
 6e8415d0e92a7a6bdb904ba49674ff54 *man/combinatIntTable.Rd
-eb110439809ef0b41f7ea0b27f1fcd93 *man/combineAsN.Rd
+7dcffaa56e2187320f98b797bf2bc9bc *man/combineAsN.Rd
 00e4fbdc18f730b1f9a148304668dea6 *man/combineByEitherFactor.Rd
 b4c168e7e17bc06b1bce18d747c4d18d *man/combineOverlapInfo.Rd
 2cd61aef2e44dc981f12fe2e48824212 *man/combineRedBasedOnCol.Rd
@@ -270,7 +272,7 @@ b9414ea0bda771161659c8a657a0e105 *man/mergeVectors.Rd
 8a868280aae72bef84d194e1bacc8d76 *man/mergeW2.Rd
 d2b828f10053bb520b085d0aab73a153 *man/minDiff.Rd
 674a3b31fdca64af0ad105951b239f43 *man/moderTest2grp.Rd
-5b64dd9e84db8696d77aafa18fb563cb *man/moderTestXgrp.Rd
+0d7ba27f361a70d9910a9569212fcae3 *man/moderTestXgrp.Rd
 17f001964da0d64d0b80cecd5fc88956 *man/multiCharReplace.Rd
 c76e9081456e80fb42077f9c38fb4621 *man/multiMatch.Rd
 5fdbe631e9109fa731e66eceee2facdb *man/nFragments.Rd
@@ -281,7 +283,7 @@ cb350f5c12fee960900af4919d6b58b3 *man/naOmit.Rd
 bd3e4561f5ff139443d87cc68b689f1a *man/nonAmbiguousNum.Rd
 3d7aba38a74fe76b02500d4c2d9b82d0 *man/nonRedundLines.Rd
 17ff460cf752baacf441437da3bf35d9 *man/nonredDataFrame.Rd
-3e1b2bc4c288e915ef7503e4c519c657 *man/normalizeThis.Rd
+ff7f54727a40230f91e48823af0a9e67 *man/normalizeThis.Rd
 7240b752463fdf89d67d5bb488ed65a8 *man/numPairDeColNames.Rd
 159e3eecbb64f5d9d7d62dfd89f24a38 *man/organizeAsListOfRepl.Rd
 27e0709d988953f5b91f7f26ab474148 *man/pVal2lfdr.Rd
@@ -290,7 +292,8 @@ e17d973be91cda8d14829ceb8b6c0a5a *man/pairsAsPropensMatr.Rd
 a24914b79f3af1f0821472695f33fe34 *man/partUnlist.Rd
 c16b9f593dcfbd31e8eae8ddfe06b1c2 *man/partialDist.Rd
 b2e26ed68d9dbd1b45dd929c36bdfe71 *man/pasteC.Rd
-a1e38639746bc9be0e00264491dab556 *man/presenceFilt.Rd
+76304af5d340c249c755eaa9fa17e40f *man/presenceFilt.Rd
+84601e8918fd027998bd9963a0014ca1 *man/presenceGrpFilt.Rd
 6d0c02ca8bb4fa9af3393687910730ec *man/protectSpecChar.Rd
 5dfddc7f10ac3ec68a6c766bb4553932 *man/randIndFx.Rd
 c67df045d1b68b66e384e1f77dac5191 *man/rankToContigTab.Rd
@@ -317,6 +320,7 @@ a8f2dd7e9867179bf5c6e5e28660da48 *man/rowGrpMeans.Rd
 ab57bd31bc775d9bca81b53636ae47a1 *man/rowGrpSds.Rd
 95f19bbf61ead2cec78edc650e2c035e *man/rowGrpSums.Rd
 d503187871e48666163b6a7252b3e6e1 *man/rowMedSds.Rd
+b8c2690abe6e5d39bcc3350bc0b0d8af *man/rowNormalize.Rd
 93cc9035bb701736acea690f1698e395 *man/rowSEMs.Rd
 f69abba8c9d9f16bddeb6604af75236b *man/rowSds.Rd
 d417f939679ecea4845eab56be7a5de9 *man/sampNoDeMArrayLM.Rd
@@ -344,4 +348,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 2336ef261384d4d3fee8b2a1fea8335f *man/writeCsv.Rd
-038e401b8c94f1a1e3c2f52010978176 *vignettes/wrMiscVignette1.Rmd
+008a410771bb25e14af9db77fb79e61a *vignettes/wrMiscVignette1.Rmd

@@ -17,7 +17,7 @@ normalizeThis(
 )
 }
 \arguments{
-\item{dat}{matrix or data.frame}
+\item{dat}{matrix or data.frame of data to get normalized}
 
 \item{method}{(character) may be "mean","median","NULL","none", "trimMean", "slope", "exponent", "slope2Sections", "vsn"; When NULL or 'none' is chosen the input will be returned}
 

@@ -559,6 +559,19 @@ median(ra1[1:9])/median(ra1[10:17])
 summary( ratioAllComb(ra1[1:9], ra1[10:17]))
 boxplot(list(norm=ra1[1:9], unif=ra1[10:17], rat=ratioAllComb(ra1[1:9],ra1[10:17])))
 
+## ----combineAsN1, echo=TRUE---------------------------------------------------
+tm1 <- list(a1=LETTERS[1:7], a2=LETTERS[3:9], a3=LETTERS[6:10], a4=LETTERS[8:12])
+combineAsN(tm1, nCombin=3, lev=gl(1,4))[,1,]
+
+## ----combineAsN2, echo=TRUE---------------------------------------------------
+## different levels/groups in list-elements
+tm4 <- list(a1=LETTERS[1:15], a2=LETTERS[3:16], a3=LETTERS[6:17], a4=LETTERS[8:19],
+  b1=LETTERS[5:19], b2=LETTERS[7:20], b3=LETTERS[11:24], b4=LETTERS[13:25], c1=LETTERS[17:26],
+  d1=LETTERS[4:12], d2=LETTERS[5:11], d3=LETTERS[6:12], e1=LETTERS[7:10])
+te4 <- combineAsN(tm4, nCombin=4, lev=substr(names(tm4),1,1))
+str(te4)
+te4[,,1]           # the counts part only
+
 ## ----readCsvBatch, echo=TRUE--------------------------------------------------
 path1 <- system.file("extdata", package="wrMisc")
 fiNa <-  c("pl01_1.csv","pl01_2.csv","pl02_1.csv","pl02_2.csv")
@@ -589,17 +602,27 @@ gitDataUrl(url1)
 dataPxd <- try(read.delim(gitDataUrl(url1), sep='\t', header=TRUE))
 str(dataPxd)
 
-## ----presenceFilt, echo=TRUE--------------------------------------------------
+## ----presenceGrpFilt1, echo=TRUE----------------------------------------------
 dat1 <- matrix(1:56,ncol=7)
 dat1[c(2,3,4,5,6,10,12,18,19,20,22,23,26,27,28,30,31,34,38,39,50,54)] <- NA
-dat1; presenceFilt(dat1, gr=gl(3,3)[-(3:4)], maxGr=0)
-presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=1, ratM=0.1)
-presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=2, rat=0.5)
+grp1 <- gl(3,3)[-(3:4)]
+dat1
+
+## now let's filter
+presenceGrpFilt(dat1, gr=grp1, presThr=0.75)  # stringent
+presenceGrpFilt(dat1, gr=grp1, presThr=0.25)  # less stringent
+
+
+## ----presenceFilt, echo=TRUE--------------------------------------------------
+presenceFilt(dat1, gr=grp1, maxGr=1, ratM=0.1)
+presenceFilt(dat1, gr=grp1, maxGr=2, rat=0.5)
 
 ## ----cleanReplicates, echo=TRUE-----------------------------------------------
 
-mat3 <- matrix(c(19,20,30, 18,19,28, 16,14,35),ncol=3)
-cleanReplicates(mat3,nOutl=1)
+(mat3 <- matrix(c(19,20,30,40, 18,19,28,39, 16,14,35,41, 17,20,30,40), ncol=4))
+cleanReplicates(mat3, nOutl=1)
+cleanReplicates(mat3, nOutl=3)
+
 
 ## ----normalizeThis0, echo=TRUE------------------------------------------------
 set.seed(2015); rand1 <- round(runif(300) +rnorm(300,0,2),3)
@@ -629,7 +652,19 @@ boxplot(no2, main="trimMean normalization", las=1)
 boxplot(no3, main="median normalization", las=1)
 boxplot(no4, main="slope normalization", las=1)
 
-## ----coordOfFilt1, echo=FALSE,eval=TRUE---------------------------------------
+## ----rowNormalize1, echo=FALSE, eval=TRUE-------------------------------------
+set.seed(2); AA <- matrix(rbinom(110,10,0.05), nrow=10)
+AA[,4:5] <- AA[,4:5] *rep(4:3, each=nrow(AA))
+
+(AA1 <- rowNormalize(AA))
+
+## ----rowNormalize2, echo=FALSE, eval=TRUE-------------------------------------
+AC <- AA
+AC[which(AC <1)] <- NA
+(AC1 <- rowNormalize(AC))
+(AC3 <- rowNormalize(AC, refLines=1:5, omitNonAlignable=TRUE))
+
+## ----coordOfFilt1, echo=FALSE, eval=TRUE--------------------------------------
 set.seed(2021); ma1 <- matrix(sample.int(n=40,size=27,replace=TRUE), ncol=9)
 ## let's test which values are >37
 which(ma1 >37)      # doesn't tell which row & col
@@ -691,9 +726,10 @@ head(pVal2lfdr(apply(t8, 1, function(x) t.test(x[1:4], x[5:8])$p.value)))
 set.seed(2022); ran <- rnorm(50)
 confInt(ran, alpha=0.05)
 ## plot points and confindence interval of mean
-plot(ran, jitter(rep(1,length(ran))), ylim=c(0.9,1.1), main="Points and Confidence Interval of Mean (alpha=0.05)", ylab="", las=1)
-points(mean(ran),0.97, pch=3, col=4)     # mean
-lines(mean(ran) +c(-1,1)*confInt(ran, 0.05), c(0.97,0.97), lwd=4, col=4)  # CI
+plot(ran, jitter(rep(1, length(ran))), ylim=c(0.95, 1.05), xlab="random variable 'ran'",main="Points and Confidence Interval of Mean (alpha=0.05)", ylab="", las=1)
+points(mean(ran), 0.97, pch=3, col=4)     # mean
+lines(mean(ran) +c(-1, 1) *confInt(ran, 0.05), c(0.97, 0.97), lwd=4, col=4)  # CI
+legend("topleft","95% conficence interval of mean", text.col=4,col=4,lty=1,lwd=1,seg.len=1.2,cex=0.9,xjust=0,yjust=0.5)
 
 ## ----matchSampToPairw, echo=TRUE----------------------------------------------
 ## make example if limma is not installed

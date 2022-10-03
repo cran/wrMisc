@@ -30,35 +30,44 @@ combineAsN(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function returns an array with 3 dimensions : i)  ii) the combinations of \code{nCombin} list-elements, 
+This function returns an array with 3 dimensions : i)  ii) the combinations of \code{nCombin} list-elements,
   iii) the number of counts (n), sem (standard error of the mean), CI (confidence interval) and sd
 }
 \description{
 The aim of this function is to choose a fixed number (\code{nCombin}) of list-elments from \code{lst} and count the number of common values/words.
-Furthermore, one can define levels to fine-tune the types of combinations to examine. 
-In case multiple combinations for a given level are possible, some basic summary statistics are provided, too
+Furthermore, one can define levels to fine-tune the types of combinations to examine.
+In case multiple combinations for a given level are possible, some basic summary statistics are provided, too.
 }
 \details{
-When a given level apprears multiple tile, all possible combinations using one of the respective entries will be be made with the other levels.  
-For exmaple, when you ask several students from city A abut only one student each from city B and city C to cyte their preferred hobbies, one could declare the cities as levels.
-Then, all combinations of the students from city A with the students from city B and C will be made when counting the number of common hobbies (by either 2 or 3 students).
-In such a case, all counting results will be summarized to the average count for the various categories (seen once, twice or 3 times...), 
-sem (standard error of the mean) and CI (confidence interval), as well as sd.
+Note of caution :
+With very long lists and/or high numbers of repeats of given levels, however, the computational effort incerases very much (like it does when using \code{table}).
+Thus, when exploring all different combinations of large data-sets may easily result in queries consuming many ressources (RAM and processing time) !
+It is recommended to start testing with test smaller sub-groups.
 
-With very long lists and high numbers of repeats of given levels, however, the computational effort incerases very much (like it does when using \code{table}).
+The main idea of this function is to count frequency of terms when combining different drawings.
+For example, you ask students from different cities which are their preferred hobbies, they may have different preference depending on the city ( defined by \code{lev}).
+Now, if you want to make groups of 3 students, possibly with one from each city (A ,B and C), you want to count (/estimate) the frequency of different combinations possible.
+Thus, using this function all combinations of the students from city A with the students from city B and C will be made when counting the number of common hobbies (by \code{nCombin} students).
+Then, all counting results will be summarized to the average count for the various categories (which hobbies were seen once, twice or 3 times...),
+sem (standard error of the mean) and CI (95% confidence interval), as well as sd.
+
+Of course, the number of potential combinations may quickly get very large. Using the argument \code{remDouble=TRUE} you can limit the search to
+either finding all students giving the same answer plus all student giving different answers.
+In this case, when a given level appears multiple times, all possible combinations using one of the respective entries will be be made with the other levels.
 }
 \examples{
 ## all list-elements are considered equal
-tm1 <- list(a1=LETTERS[1:17], a2=LETTERS[3:19], a3=LETTERS[6:20], a4=LETTERS[8:22])  
+tm1 <- list(a1=LETTERS[1:17], a2=LETTERS[3:19], a3=LETTERS[6:20], a4=LETTERS[8:22])
 combineAsN(tm1, lev=gl(1,4))[,1,]
 
 ## different levels/groups in list-elements
-tm4 <- list(a1=LETTERS[1:15], a2=LETTERS[3:16], a3=LETTERS[6:17], a4=LETTERS[8:19], 
+tm4 <- list(a1=LETTERS[1:15], a2=LETTERS[3:16], a3=LETTERS[6:17], a4=LETTERS[8:19],
   b1=LETTERS[5:19], b2=LETTERS[7:20], b3=LETTERS[11:24], b4=LETTERS[13:25], c1=LETTERS[17:26],
-  d1=LETTERS[4:12], d2=LETTERS[5:11], d3=LETTERS[6:12], e1=LETTERS[7:10])  # 
+  d1=LETTERS[4:12], d2=LETTERS[5:11], d3=LETTERS[6:12], e1=LETTERS[7:10])
 te4 <- combineAsN(tm4, nCombin=4, lev=substr(names(tm4),1,1))
 str(te4)
 te4[,,1]
+
 }
 \seealso{
 \code{\link[base]{table}},  \code{\link[wrMisc]{replicateStructure}}

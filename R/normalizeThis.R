@@ -7,7 +7,7 @@
 #' Normalization using the method \code{vsn} runs \code{\link[vsn]{justvsn}} from \href{https://bioconductor.org/packages/release/bioc/html/vsn.html}{vsn} 
 #' (this requires a minimum of 42 rows of input-data).
 #' Note : Depending on the procedure chosen, the normalized data may appear on a different scale.
-#' @param dat matrix or data.frame
+#' @param dat matrix or data.frame of data to get normalized
 #' @param method (character) may be "mean","median","NULL","none", "trimMean", "slope", "exponent", "slope2Sections", "vsn"; When NULL or 'none' is chosen the input will be returned
 #' @param refLines (NULL or numeric) allows to consider only specific lines of 'dat' when determining normalization factors (all data will be normalized)
 #' @param refGrp Only the columns indicated will be used as reference, default all columns (integer or colnames)

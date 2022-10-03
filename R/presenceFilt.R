@@ -12,6 +12,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message produced
 #' @return logical matrix (with separate col for each pairwise combination of 'grp' levels) indicating if line of 'dat' acceptable based on \code{NA}s (and values minVal)
+#' @seealso  \code{\link{presenceGrpFilt}},  there are also other packages totaly dedicated to filtering on CRAN and Bioconductor 
 #' @examples
 #' mat <- matrix(rep(8,150), ncol=15, dimnames=list(NULL,
 #'   paste0(rep(LETTERS[4:2],each=6),1:6)[c(1:5,7:16)]))

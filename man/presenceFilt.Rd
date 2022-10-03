@@ -55,3 +55,6 @@ dat1; presenceFilt(dat1,gr=gl(3,3)[-(3:4)], maxGr=0)
 presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=1, ratM=0.1)
 presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=2, rat=0.5)
 }
+\seealso{
+\code{\link{presenceGrpFilt}},  there are also other packages totaly dedicated to filtering on CRAN and Bioconductor
+}

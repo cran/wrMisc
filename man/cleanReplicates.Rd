@@ -2,7 +2,7 @@
 % Please edit documentation in R/cleanReplicates.R
 \name{cleanReplicates}
 \alias{cleanReplicates}
-\title{Replace most distant values by NA}
+\title{Replace Most Distant Values by NA}
 \usage{
 cleanReplicates(
   x,
@@ -18,28 +18,30 @@ cleanReplicates(
 
 \item{centrMeth}{(character) method to summarize (mean or median)}
 
-\item{nOutl}{(integer) determines how many points per line will be set to NA (with n=1 the worst row of replicates will be 'cleaned')}
+\item{nOutl}{(integer) determines how many points per line will be set to \code{NA} (with n=1 the worst row of replicates will be 'cleaned')}
 
 \item{retOffPos}{(logical) if \code{TRUE}, replace the most extreme outlyer only}
 
 \item{silent}{(logical) suppres messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-input data with "removed" points set as \code{NA}, or if \code{retOffPos=TRUE} the most extreme/outlier positions
+This function returns a matrix of same dimensions as input \code{x},  data-points which were tagged/removed are set to \code{NA}, or if \code{retOffPos=TRUE} the most extreme/outlier positions
 }
 \description{
-This procedures aims to streighten (clean) the most extreme of noisy replicates by identifying the most distant points 
+This procedures aims to streighten (clean) the most extreme values of noisy replicates by identifying the most distant points 
 (among a set of replicates). The input 'x' (matrix or data.frame) is supposed to come from multiple different measures taken 
 in replicates (eg weight of different individuals as rows taken as multiple replicate measures in subsequent columns).
+}
+\details{
 With the argument \code{nOutl} the user chooses the total number of most extreme values to replace by \code{NA}.
 how many of the most extreme replicates of the whole dataset will replaced by \code{NA}, ie with \code{nOutl=1} 
 only the single most extreme outlyer will be replaced by \code{NA}. 
 Outlier points are determined as point(s) with highest distance to (row) center (median and mean choice via argument 'centrMeth').
-Returns input data with "removed" points set to \code{NA}, or if \code{retOffPos=TRUE} the most extreme/outlier positions.
+Thus function returns input data with "removed" points set to \code{NA}, or if \code{retOffPos=TRUE} the most extreme/outlier positions.
 }
 \examples{
 mat3 <- matrix(c(19,20,30, 18,19,28, 16,14,35),ncol=3)
-cleanReplicates(mat3,nOutl=1)
+cleanReplicates(mat3, nOutl=1)
 }
