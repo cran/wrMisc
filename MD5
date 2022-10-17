@@ -1,5 +1,5 @@
-276693e498e4c2fbffc4b0b405cc2d81 *DESCRIPTION
-8872cd49aa8eaf29e55f7adc034b1a04 *NAMESPACE
+1ded6e9643fb9a1a8e444e90048b704c *DESCRIPTION
+8799d7a7c309ce77edffd28c09954eab *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
 564c0a274b79e761c0962159350967f4 *R/adjBy2ptReg.R
@@ -100,7 +100,7 @@ b8c366f2c610bafa6c811afdb08f900c *R/naOmit.R
 e9d9137fe97acdf6c59a46177fe11172 *R/nonAmbiguousNum.R
 599950b1c44535064a5967b9e2ad0e8a *R/nonRedundLines.R
 32701886c239d0c52bcae16c0382e032 *R/nonredDataFrame.R
-07f15f1a35c02b70d64cbded8384dc75 *R/normalizeThis.R
+aaffb3969be50d27341bd0fe7b6ec3f0 *R/normalizeThis.R
 3bd856ae9d926d3fd80054f97485ce1b *R/numPairDeColNames.R
 478d71d376f12ed74697e3ec04552a9e *R/organizeAsListOfRepl.R
 d247f5326e0b8cdeec74031cf4e7e63f *R/pVal2lfdr.R
@@ -137,7 +137,7 @@ c960ee9be9cb398d12e7c57ab59efe29 *R/rowGrpCV.R
 0163af4c06d117c88c5bbeb3f2bf423a *R/rowGrpSds.R
 24d3f9dc1d1ddfe0cc81f5f8375ea7a7 *R/rowGrpSums.R
 0a5c6394e850bfb3c5efd2c65c20fd82 *R/rowMedSds.R
-2809dd95926aeed2d821127a5898a124 *R/rowNormalize.R
+232ea66bdbff9137667aab779ae9559d *R/rowNormalize.R
 4e6170ca1f374402cf490e34b7cc9632 *R/rowSEMs.R
 bf6881d448efc87939b9df208723931c *R/rowSds.R
 35af58e7c80babc2f057cfa1f4990dec *R/sampNoDeMArrayLM.R
@@ -166,9 +166,9 @@ fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 4c46ce07427319f6580ddaa31f45ebb0 *R/writeCsv.R
 2d4470bf79c5d5ff451e3dcdcea4a475 *build/vignette.rds
-a685f974823b5a3ad119f5126e0ff735 *inst/doc/wrMiscVignette1.R
-008a410771bb25e14af9db77fb79e61a *inst/doc/wrMiscVignette1.Rmd
-7337be880299b1573f2875ef57b39857 *inst/doc/wrMiscVignette1.html
+4912eac8b1fff518f14b8f6bc9fdc149 *inst/doc/wrMiscVignette1.R
+02e1a8dfd28286a52fb1c117fe752c9d *inst/doc/wrMiscVignette1.Rmd
+70a7487b0c85fadc8b825f44cc35a747 *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -283,7 +283,7 @@ cb350f5c12fee960900af4919d6b58b3 *man/naOmit.Rd
 bd3e4561f5ff139443d87cc68b689f1a *man/nonAmbiguousNum.Rd
 3d7aba38a74fe76b02500d4c2d9b82d0 *man/nonRedundLines.Rd
 17ff460cf752baacf441437da3bf35d9 *man/nonredDataFrame.Rd
-ff7f54727a40230f91e48823af0a9e67 *man/normalizeThis.Rd
+88dfad53e01ab6708d321253b66fd5c8 *man/normalizeThis.Rd
 7240b752463fdf89d67d5bb488ed65a8 *man/numPairDeColNames.Rd
 159e3eecbb64f5d9d7d62dfd89f24a38 *man/organizeAsListOfRepl.Rd
 27e0709d988953f5b91f7f26ab474148 *man/pVal2lfdr.Rd
@@ -320,7 +320,7 @@ a8f2dd7e9867179bf5c6e5e28660da48 *man/rowGrpMeans.Rd
 ab57bd31bc775d9bca81b53636ae47a1 *man/rowGrpSds.Rd
 95f19bbf61ead2cec78edc650e2c035e *man/rowGrpSums.Rd
 d503187871e48666163b6a7252b3e6e1 *man/rowMedSds.Rd
-b8c2690abe6e5d39bcc3350bc0b0d8af *man/rowNormalize.Rd
+136869ce23bd1f1d1270051e1091fe96 *man/rowNormalize.Rd
 93cc9035bb701736acea690f1698e395 *man/rowSEMs.Rd
 f69abba8c9d9f16bddeb6604af75236b *man/rowSds.Rd
 d417f939679ecea4845eab56be7a5de9 *man/sampNoDeMArrayLM.Rd
@@ -348,4 +348,4 @@ e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 2336ef261384d4d3fee8b2a1fea8335f *man/writeCsv.Rd
-008a410771bb25e14af9db77fb79e61a *vignettes/wrMiscVignette1.Rmd
+02e1a8dfd28286a52fb1c117fe752c9d *vignettes/wrMiscVignette1.Rmd

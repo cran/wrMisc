@@ -9,23 +9,45 @@ normalizeThis(
   method = "mean",
   refLines = NULL,
   refGrp = NULL,
+  mode = "proportional",
   trimFa = NULL,
+  minQuant = NULL,
+  sparseLim = 0.4,
+  nCombin = 3,
+  omitNonAlignable = FALSE,
+  maxFact = 10,
   quantFa = NULL,
   expFa = NULL,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
 \arguments{
 \item{dat}{matrix or data.frame of data to get normalized}
 
-\item{method}{(character) may be "mean","median","NULL","none", "trimMean", "slope", "exponent", "slope2Sections", "vsn"; When NULL or 'none' is chosen the input will be returned}
+\item{method}{(character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "slope2Sections", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned}
 
 \item{refLines}{(NULL or numeric) allows to consider only specific lines of 'dat' when determining normalization factors (all data will be normalized)}
 
 \item{refGrp}{Only the columns indicated will be used as reference, default all columns (integer or colnames)}
 
+\item{mode}{(character) may be "proportional", "additive";
+decide if normalizatio factors will be applies as multiplicative (proportional) or additive; for log2-omics data \code{mode="aditive"} is suggested}
+
 \item{trimFa}{(numeric, length=1) additional parameters for trimmed mean}
+
+\item{minQuant}{(numeric) only used with \code{method='rowNormalize'}: optional filter to set all values below given value as \code{NA}; see also \code{\link{rowNormalize}}}
+
+\item{sparseLim}{(integer) only used with \code{method='rowNormalize'}: decide at which min content of  \code{NA} values the function should go in sparse-mode; see also \code{\link{rowNormalize}}}
+
+\item{nCombin}{(NULL or integer) only used with \code{method='rowNormalize'}: used only in sparse-mode (ie if content of \code{NA}s higher than content of \code{sparseLim}):
+Number of groups of smller matrixes with this number of columns to be inspected initially;
+low values (small groups have higher chances of more common elements); see also \code{\link{rowNormalize}}}
+
+\item{omitNonAlignable}{(logical) only used with \code{method='rowNormalize'}: allow omitting all columns which can't get aligned due to sparseness; see also \code{\link{rowNormalize}}}
+
+\item{maxFact}{(numeric, length=2) only used with \code{method='rowNormalize'}:  max normalization factor; see also \code{\link{rowNormalize}}}
 
 \item{quantFa}{(numeric, length=2) additional parameters for quantiles to use with method='slope'}
 
@@ -33,18 +55,39 @@ normalizeThis(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-This function returns a matrix of normalized data
+This function returns a matrix of normalized data (same dimensions as input)
 }
 \description{
 Generic normalization of 'dat' (by columns), multiple methods may be applied.
-The choice of normalization procedures must be done with care, plotting the data before and after normalization 
-may be critical to understandig the initial data structure and the effect of the procedure applied. 
+The choice of normalization procedures must be done with care, plotting the data before and after normalization
+may be critical to understandig the initial data structure and the effect of the procedure applied.
 Inappropriate methods chosen may render interpretation of (further) results incorrect.
-Normalization using the method \code{vsn} runs \code{\link[vsn]{justvsn}} from \href{https://bioconductor.org/packages/release/bioc/html/vsn.html}{vsn} 
-(this requires a minimum of 42 rows of input-data).
+}
+\details{
+In most cases of treating 'Omics'-data one works with the hypothesis that there are no global changes in the structure of all data/columns
+Under this htpothesis it is very common to assume the the median (via the argument \code{method}) of all samples (ie columns) should remain constant.
+For examples samples/columns with less signal will be considered as having received 'accidentally' less material (eg due to the imprecision when transfering very small amounts of liquid samples).
+In consequence, a sample having received only 95% of input material is assumed to give only 95% signal intensity of what may have been expected.
+Thus, all measures will be multiplied by 1/0.95 (apr 1.053) to compensate for supposed lack of staring material.
+
+With the analysis of 'Omics'-data it is very common to work with data on log-scale.
+In this case the argument \code{mode} should be set to \code{additive}, since adding a constant factor to log-data corresponds to a multiplicative factor on regular scale
+Please note that (at this point) the methods 'slope', 'exponent', 'slope2Sections' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
+(you may look at the original documenation for more details, see \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
+
+Normalization using \code{method="rowNormalize"} runs \code{\link{rowNormalize}} from this package.
+In this case, the working hypothesis is, that all values in each row are expected to be the same.
+This method could be applied when all series of values (ie columns) are replicate measurements of the same sample.
+THere is also an option for treating sparse data (see argument \code{sparseLim}), which may, hovere, consume much more comptational ressources,
+in particular, when the value \code{nCombin} is low (compared to the number of samples/columns).
+
+Normalization using  \code{method="vsn"} runs \code{\link[vsn]{justvsn}} from \href{https://bioconductor.org/packages/release/bioc/html/vsn.html}{vsn}
+(this requires a minimum of 42 rows of input-data and having the Bioconductor package vsn installed).
 Note : Depending on the procedure chosen, the normalized data may appear on a different scale.
 }
 \examples{
@@ -54,7 +97,6 @@ dat1 <- cbind(ser1=round(100:1+rand1[1:100]), ser2=round(1.2*(100:1+rand1[101:20
 dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100)+rand1[11:110],1))
 dat1[dat1 <1] <- NA
   summary(dat1)
-  head( .normalize(dat1,"mean",list()))
   dat1[c(1:5,50:54,95:100),]
 no1 <- normalizeThis(dat1, refGrp=1:3, meth="mean")
 no2 <- normalizeThis(dat1, refGrp=1:3, meth="trimMean", trim=0.4)
@@ -67,5 +109,5 @@ cor(dat1[c(1:10,91:100),4],rowMeans(dat1[c(1:10,91:100),1:2],na.rm=TRUE),use="co
 cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 }
 \seealso{
-\code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
+\code{\link{rowNormalize}}, \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
 }

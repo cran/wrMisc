@@ -118,21 +118,21 @@ Now lets estimate the standard deviation _(sd)_ for every row:
 ```{r sdForEachRow, echo=TRUE}
 head(rowSds(dat1))
 system.time(sd1 <- rowSds(dat1))
-system.time(sd2 <- apply(dat1,1,sd))
+system.time(sd2 <- apply(dat1, 1, sd))
 ```
 
 On most systems the equivalent calculation using *apply()* will run much slower compared to `rowSds`.
 
 Note, there is a minor issue with rounding :
 ```{r usingApply, echo=TRUE}
-table(round(sd1,13)==round(sd2,13))
+table(round(sd1, 13)==round(sd2, 13))
 ```
 
 Similarly we can easily calculate the CV (coefficient of variation, ie sd / mean, see also [CV](https://en.wikipedia.org/wiki/Coefficient_of_variation)) for every row using `rowCVs` :
 
 ```{r calculateRowCV, echo=TRUE}
 system.time(cv1 <- rowCVs(dat1))
-system.time(cv2 <- apply(dat1,1,sd)/rowMeans(dat1))
+system.time(cv2 <- apply(dat1, 1, sd) / rowMeans(dat1))
 # typically the calculation using rowCVs is much faster
 head(cv1)
 # results from the 'conventional' way
@@ -217,7 +217,7 @@ distance ("dif","ppm" or "ratio") and index ("best") of the closest neighbour.
 In case of multiple shortest distances the index if the first one is reported, and the column "nbest" will display a value of >1.
 
 ```{r minDiff, echo=TRUE}
-set.seed(2017); aa <- 10*c(0.1 +round(runif(20),2), 0.53, 0.53)
+set.seed(2017); aa <- 10 *c(0.1 +round(runif(20),2), 0.53, 0.53)
 head(aa)
 
 minDiff(aa,ppm=FALSE)
@@ -277,7 +277,7 @@ appendNR(li1, li2)
 When a matrix (or data.frame) gets split into a list, like in the example using _by()_, as a reverse-function such lists can get joined using `lrbind()` in an _rbind_-like fashion.
 
 ```{r lrbind, echo=TRUE}
-dat2 <- matrix(11:34, ncol=3, dimnames=list(letters[1:8],colnames=LETTERS[1:3]))
+dat2 <- matrix(11:34, ncol=3, dimnames=list(letters[1:8], colnames=LETTERS[1:3]))
 lst2 <- by(dat2, rep(1:3,c(3,2,3)), as.matrix)
 lst2
 
@@ -316,8 +316,8 @@ The function `filterLiColDeList()` searches if other list-elements have suitable
 In consequence this can be used with the output of wrProteo to remove simultaneously the same lines and/or columns.
 
 ```{r listBatchReplace1, echo=TRUE}
-lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34,
-  m3=matrix(c(21:23,NA,25:27,NA),ncol=2))
+lst1 <- list(m1=matrix(11:18, ncol=2), m2=matrix(21:30, ncol=2), indR=31:34,
+  m3=matrix(c(21:23,NA,25:27,NA), ncol=2))
 filterLiColDeList(lst1, useLines=2:3)
 filterLiColDeList(lst1, useLines="allNA", ref=3)
 ```
@@ -328,8 +328,8 @@ filterLiColDeList(lst1, useLines="allNA", ref=3)
 The function `listBatchReplace()` works similar to _sub()_ and allows to search & replace exact matches to a character string along all elements of a list. 
 
 ```{r replInList1, echo=TRUE}
-(lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge") ,cc=c("abdc","efg","efgh")))
-listBatchReplace(lst1,search="efg",repl="EFG",silent=FALSE)
+(lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge"), cc=c("abdc","efg","efgh")))
+listBatchReplace(lst1, search="efg", repl="EFG", silent=FALSE)
 ```
 
 
@@ -542,7 +542,7 @@ cbindNR(ma1, ma2, summarizeAs="mean")       # average of both columns 'C'
 This ressembles to the functioning of _unique()_, but applies to a user-specified column of the matrix.
 
 ```{r firstLineOfDat, echo=TRUE}
-(mat1 <- matrix(c(1:6,rep(1:3,1:3)), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2])))
+(mat1 <- matrix(c(1:6, rep(1:3,1:3)), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2])))
 ```
 
 The function `firstLineOfDat()` allows to access/extract the first line of repeated instances.
@@ -640,8 +640,8 @@ filtSizeUniq(list(A="a", B=c("b","bb","c"), D=c("dd","d","ddd","c")), ref=c(lett
 ### Make Non-redundant Matrix 
 
 ```{r makeNRedMatr, echo=TRUE}
-t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],
-  matrix(round(runif(30,-3,2),1),nc=2), stringsAsFactors=FALSE)
+t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
+  matrix(round(runif(30,-3,2),1), nc=2), stringsAsFactors=FALSE)
   
 # First we split the data.frame in list  
 by(t3,t3[,1],function(x) x)
@@ -665,12 +665,12 @@ combineRedBasedOnCol(rbind(matr[1,],matr), colN="xB")
 
 ```{r convMatr2df, echo=TRUE}
 x <- 1
-dat1 <- matrix(1:10,ncol=2)
+dat1 <- matrix(1:10, ncol=2)
 rownames(dat1) <- letters[c(1:3,2,5)]
 ## as.data.frame(dat1)  ...  would result in an error
 convMatr2df(dat1)
 convMatr2df(data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3))
-tmp <- data.frame(a=as.character((1:3)/2), b=LETTERS[1:3],c=1:3, stringsAsFactors=FALSE)
+tmp <- data.frame(a=as.character((1:3)/2), b=LETTERS[1:3], c=1:3, stringsAsFactors=FALSE)
 convMatr2df(tmp)
 tmp <- data.frame(a=as.character((1:3)/2), b=1:3, stringsAsFactors=FALSE)
 convMatr2df(tmp) 
@@ -684,11 +684,11 @@ set.seed(2013)
 datT2 <- matrix(round(rnorm(200)+3,1), ncol=2, dimnames=list(paste("li",1:100,sep=""),
   letters[23:24]))
 # (mimick) some short and longer names for each line
-inf2 <- cbind(sh=paste(rep(letters[1:4],each=26),rep(letters,4),1:(26*4),sep=""),
+inf2 <- cbind(sh=paste(rep(letters[1:4],each=26), rep(letters,4),1:(26*4),sep=""),
   lo=paste(rep(LETTERS[1:4],each=26), rep(LETTERS,4), 1:(26*4), ",", 
   rep(letters[sample.int(26)],4), rep(letters[sample.int(26)],4), sep=""))[1:100,] 
 ## We'll use this to test :  
-head(datT2,n=10)
+head(datT2, n=10)
 ## let's assign to each pair of x & y values a 'cluster' (column _clu_, the column _combInf_ tells us which lines/indexes are in this cluster)
 head(combineOverlapInfo(datT2, disThr=0.03), n=10)
 ## it is also possible to rather display names (eg gene or protein-names) instead of index values
@@ -704,11 +704,11 @@ names(dat) <- letters[c(6:3,2:4,8,3)]
 ## Thus, the values can be binned by their (non-unique) names and a representative values calculated.
 
 ## Let's make a 'datUniq' with the mean of each group of values :
-datUniq <- round(tapply(dat, names(dat),mean),1)
+datUniq <- round(tapply(dat, names(dat), mean),1)
 ## now we propagate the mean values to the full vector 
 getValuesByUnique(dat, datUniq)
 cbind(ini=dat,firstOfRep=getValuesByUnique(dat, datUniq),
-  indexUniq=getValuesByUnique(dat, datUniq,asIn=TRUE))
+  indexUniq=getValuesByUnique(dat, datUniq, asIn=TRUE))
 ```
 
 
@@ -725,22 +725,22 @@ qq <- rep(c("m","n","p","o","q"),c(2,1,1,4,4))
 nq <- cbind(nn,qq)[c(4,2,9,11,6,10,7,3,5,1,12,8),]
 ## Here we consider 2 columns 'nn' and 'qq' whe trying to regroup common values
 ##  (eg value 'a' from column 'nn' and value 'o' from 'qq') 
-combineByEitherFactor(nq,1,2,nBy=FALSE)
+combineByEitherFactor(nq, 1, 2, nBy=FALSE)
 ```
 The argument _nBy_ simply allows adding an additional column with the group/cluster-number.
 
 ```{r combineByEitherFactor2, echo=TRUE}
 ## the same, but including n by group/cluster
-combineByEitherFactor(nq,1,2,nBy=TRUE)
+combineByEitherFactor(nq, 1, 2, nBy=TRUE)
 ## Not running further iterations works faster, but you may not reach 'convergence' immediately
-combineByEitherFactor(nq,1,2,nBy=FALSE)
+combineByEitherFactor(nq,1, 2, nBy=FALSE)
 ```
 
 ```{r combineByEitherFactor3, echo=TRUE}
 ##  another example
-mm <- rep(c("a","b","c","d","e"),c(3,4,2,3,1))
-pp <- rep(c("m","n","o","p","q"),c(2,2,2,2,5))
-combineByEitherFactor(cbind(mm,pp),1,2, con=FALSE, nBy=TRUE)
+mm <- rep(c("a","b","c","d","e"), c(3,4,2,3,1))
+pp <- rep(c("m","n","o","p","q"), c(2,2,2,2,5))
+combineByEitherFactor(cbind(mm,pp), 1, 2, con=FALSE, nBy=TRUE)
 ```
 
 
@@ -882,15 +882,15 @@ Using the argument _limitToBest=FALSE_ we can display all distances within the l
 For example, value number 4 of 'cC' (=12.5) or value number 3 of 'aA' (=13) now occur multiple times...
 
 ```{r closeMatchMatrix2, echo=TRUE}
-(maAa <- closeMatchMatrix(cloMa,aA, cC, lim=FALSE,origN=TRUE))  #
-(maAa <- closeMatchMatrix(cloMa, cbind(valA=81:87,aA), cbind(valC=91:99,cC), colM=2,
-  colP=2,lim=FALSE))
+(maAa <- closeMatchMatrix(cloMa, aA, cC, lim=FALSE,origN=TRUE))  #
+(maAa <- closeMatchMatrix(cloMa, cbind(valA=81:87, aA), cbind(valC=91:99, cC), colM=2,
+  colP=2, lim=FALSE))
 (maAa <- closeMatchMatrix(cloMa, cbind(aA,valA=81:87), cC, lim=FALSE, deb=TRUE))  #
-a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10+1:length(c2)]
+a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10 +1:length(c2)]
 (cloM2 <- findCloseMatch(x=a2, y=c2, com="diff", lim=0.5, sor=FALSE)) 
-(maA2 <- closeMatchMatrix(cloM2, predM=cbind(valA=81:87,a2), 
-  measM=cbind(valC=91:99,c2), colM=2, colP=2, lim=FALSE, asData=TRUE)) 
-(maA2 <- closeMatchMatrix(cloM2, cbind(id=names(a2),valA=81:87,a2), cbind(id=names(c2),
+(maA2 <- closeMatchMatrix(cloM2, predM=cbind(valA=81:87, a2),
+  measM=cbind(valC=91:99, c2), colM=2, colP=2, lim=FALSE, asData=TRUE))
+(maA2 <- closeMatchMatrix(cloM2, cbind(id=names(a2), valA=81:87,a2), cbind(id=names(c2),
   valC=91:99,c2), colM=3, colP=3, lim=FALSE, deb=FALSE)) 
 ```
 
@@ -903,14 +903,14 @@ For comparing two sets of data one may use `findSimilarFrom2sets()`.
 aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,12.6,15.9,14.1)
 aZ <-  matrix(c(aA,aA+20), ncol=2, dimnames=list(letters[1:length(aA)],c("aaA","aZ")))
 cZ <-  matrix(c(cC,cC+20), ncol=2, dimnames=list(letters[1:length(cC)],c("ccC","cZ")))
-findCloseMatch(cC,aA,com="diff",lim=0.5,sor=FALSE)
-findSimilFrom2sets(aA,cC)
-findSimilFrom2sets(cC,aA)
-findSimilFrom2sets(aA,cC,best=FALSE)
-findSimilFrom2sets(aA,cC,comp="ppm",lim=5e4,deb=TRUE)
-findSimilFrom2sets(aA,cC,comp="ppm",lim=9e4,bestO=FALSE)
+findCloseMatch(cC, aA, com="diff", lim=0.5, sor=FALSE)
+findSimilFrom2sets(aA, cC)
+findSimilFrom2sets(cC, aA)
+findSimilFrom2sets(aA, cC, best=FALSE)
+findSimilFrom2sets(aA, cC, comp="ppm", lim=5e4, deb=TRUE)
+findSimilFrom2sets(aA, cC, comp="ppm", lim=9e4, bestO=FALSE)
 # below: find fewer 'best matches' since search window larger (ie more good hits compete !)
-findSimilFrom2sets(aA,cC,comp="ppm",lim=9e4,bestO=TRUE)      
+findSimilFrom2sets(aA, cC, comp="ppm", lim=9e4, bestO=TRUE)
 ```
 
 
@@ -1041,7 +1041,7 @@ In such cases some of the very lowest levels of the analyte are masked by the (r
 The function `linModelSelect()` presented here allows omitting some of the lowest analyte measures to focus on the linear part of the dose-response relationship.
 
 ```{r linModelSelect1, echo=TRUE}
-li1 <- rep(c(4,3,3:6),each=3) + round(runif(18)/5,2)
+li1 <- rep(c(4,3,3:6), each=3) + round(runif(18)/5,2)
 names(li1) <- paste0(rep(letters[1:5], each=3), rep(1:3,6))
 li2 <- rep(c(6,3:7), each=3) + round(runif(18)/5, 2)
 dat2 <- rbind(P1=li1, P2=li2)
@@ -1098,7 +1098,7 @@ Let's assume there are 2 parts of 'x' for which we would like to know the repres
 The ratio of medians does not well reflect the typical ratio (if each element has the same chance to be picked).
 
 ```{r ratioAllComb1, echo=TRUE}
-median(ra1[1:9])/median(ra1[10:17])
+median(ra1[1:9]) / median(ra1[10:17])
 ```
 
 Instead, we'll build all possible ratios and summarize then.
@@ -1324,7 +1324,7 @@ where a given element once was measured with a real numeric value and once as mi
 ```{r normalizeThis0, echo=TRUE}
 set.seed(2015); rand1 <- round(runif(300) +rnorm(300,0,2),3)
 dat1 <- cbind(ser1=round(100:1 +rand1[1:100]), ser2=round(1.2*(100:1 +rand1[101:200]) -2),
-  ser3=round((100:1+rand1[201:300])^1.2-3))
+  ser3=round((100:1 +rand1[201:300])^1.2-3))
 dat1 <- cbind(dat1, ser4=round(dat1[,1]^seq(2,5,length.out=100) +rand1[11:110],1))
 ## Let's introduce some NAs
 dat1[dat1 <1] <- NA
@@ -1359,7 +1359,7 @@ You can see clearly, that the 4th data-set has a problem of range. So we'll see 
 may help to make it more comparable to the other ones.
  
 ```{r normalizeThis_plot2, echo=FALSE,eval=TRUE}
-layout(matrix(1:4,ncol=2))
+layout(matrix(1:4, ncol=2))
 boxplot(no1, main="mean normalization", las=1)
 boxplot(no2, main="trimMean normalization", las=1)
 boxplot(no3, main="median normalization", las=1)
@@ -1374,7 +1374,7 @@ In some cases/projects we may want to formulate a much more 'aggressive' hypothe
 For example this may be the case when comparing with tehcnical replicates only.
 In such cases one may use the function `rowNormalize()` which tries to find the average or mean optimal within-line normalization factor.
 
-Besides, an additional mode of operation for sparse data has been added :
+Besides, an additional mode of operation for _sparse data_ has been added :
 Basically, once a row contains just one NA, this row can't be used any more to derive a normalization factor for all rows.
 Thus, with many NA-values the number of 'complete' rows will be low or even 0 redering this approach inefficient or impossible.
 Once the content of NA-values is above a customizable threshold, the data will be broken in smaller subsets with fewer groups of fewer columns,
@@ -1382,13 +1382,13 @@ Once the content of NA-values is above a customizable threshold, the data will b
 
 
 ```{r rowNormalize1, echo=FALSE, eval=TRUE}
-set.seed(2); AA <- matrix(rbinom(110,10,0.05), nrow=10)
+set.seed(2); AA <- matrix(rbinom(110, 10, 0.05), nrow=10)
 AA[,4:5] <- AA[,4:5] *rep(4:3, each=nrow(AA))
 
 (AA1 <- rowNormalize(AA))
 ```
 
-Now, let's make this sparse :
+Now, let's make this sparse and try normalizing:
 
 ```{r rowNormalize2, echo=FALSE, eval=TRUE}
 AC <- AA
@@ -1396,6 +1396,13 @@ AC[which(AC <1)] <- NA
 (AC1 <- rowNormalize(AC))
 (AC3 <- rowNormalize(AC, refLines=1:5, omitNonAlignable=TRUE))
 ```
+
+This approach relies on the hypothesis that all data in a given line should be (aproximately) the same value.
+Thus, this procedure is particularly well adopted to the case when _all_ samples are multiple replicate measurements of the _same_ sample.
+
+Please note, that the iterative procedure for _sparse data_ may consume large amounts of computational resources, in particular when
+a small number of subgroups has been selected.
+
 
 
 ### Matrix Coordinates Of Values/Points According To Filtering
@@ -1405,7 +1412,7 @@ The standard approach using _which()_ gives only a _linearized_ index but not ro
 If you need to know the true row/column indexes, you may use `coordOfFilt()`.
 
 ```{r coordOfFilt1, echo=FALSE, eval=TRUE}
-set.seed(2021); ma1 <- matrix(sample.int(n=40,size=27,replace=TRUE), ncol=9)
+set.seed(2021); ma1 <- matrix(sample.int(n=40, size=27, replace=TRUE), ncol=9)
 ## let's test which values are >37
 which(ma1 >37)      # doesn't tell which row & col
 coordOfFilt(ma1, ma1 >37)
@@ -1472,7 +1479,7 @@ If you want to make multiple pair-wise comparisons using `moderTestXgrp()` :
 ```{r moderTestXgrp, echo=TRUE}
 grp <- factor(rep(LETTERS[c(3,1,4)], c(2,3,3)))
 set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
-  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
+  dimnames=list(paste(letters[], rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
 t8[3:6,1:2] <- t8[3:6,1:2] +3                    # augment lines 3:6 (c-f) 
 t8[5:8,c(1:2,6:8)] <- t8[5:8,c(1:2,6:8)] -1.5    # lower lines 
 t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines 
@@ -1526,7 +1533,7 @@ To get the index of which group has been used in which pair-wise set you may use
 
 ```{r matchSampToPairw, echo=TRUE}
 ## make example if limma is not installed
-if(!requireNamespace("limma", quietly=TRUE)) test8 <- list(FDR=matrix(1,nrow=2,ncol=3,dimnames=list(NULL,c("A-C","A-D","C-D")))) 
+if(!requireNamespace("limma", quietly=TRUE)) test8 <- list(FDR=matrix(1, nrow=2, ncol=3, dimnames=list(NULL,c("A-C","A-D","C-D"))))
 matchSampToPairw(unique(grp), colnames(test8$FDR)) 
 ```
 
@@ -1743,7 +1750,7 @@ plot(1:15, dat1, pch=16, cex=2, las=1, col=colorAccording2(dat1),
   main="Color gradient according to value in y")
 # Here we modify the span of the color gradient
 plot(1:15, dat1, pch=16, cex=2, las=1, 
-  col=colorAccording2(dat1,nStartO=0,nEndO=4,revCol=TRUE), main="blue to red")
+  col=colorAccording2(dat1, nStartO=0, nEndO=4, revCol=TRUE), main="blue to red")
 # It is also possible to work with scales of transparency
 plot(1:9, pch=3, las=1)
 points(1:9, 1:9, col=transpGraySca(st=0, en=0.8, nSt=9,trans=0.3), cex=42, pch=16)

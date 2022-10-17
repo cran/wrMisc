@@ -35,7 +35,7 @@ rowNormalize(
 
 \item{sparseLim}{(integer) decide at which min content of  \code{NA} values the function should go in sparse-mode}
 
-\item{nCombin}{(NULL or integer) used only in sparse-mode (ie if content of \code{NA}s higher than content of \code{sparseLim}): Number of groups of smller matrixes with this number of columns to be inspected initailly; 
+\item{nCombin}{(NULL or integer) used only in sparse-mode (ie if content of \code{NA}s higher than content of \code{sparseLim}): Number of groups of smller matrixes with this number of columns to be inspected initailly;
 low values (small groups have higher chances of more common elements)}
 
 \item{omitNonAlignable}{(logical) allow omitting all columns which can't get aligned due to sparseness}
@@ -53,28 +53,31 @@ This function returns a matrix of normalized data
 }
 \description{
 This function was designed for normalizing data that is supposed to be particularly similar, like a collection of technical replicates.
-Thus, for each row a normalization factor is calculated and the median or mean across all factors will be applied. 
-A low content of \code{NA} values poses generally no problems. If the content is higher than the threshold set in \code{sparseLim}   
-an alternative procedure for sparse data will be applied (iteratively trating subsets of \code{nCombin} columns that will be combined in a later step).
+Thus, initially for each row an independent normalization factor is calculated and the median or mean across all factors will be finally applied to the data.
+This function has a special mode of operation with higher content of \code{NA} values (which may pose problems with other normalization approaches). 
+If the \code{NA}-content is higher than the threshold set in \code{sparseLim},
+a special procedure for sparse data will be applied (iteratively trating subsets of \code{nCombin} columns that will be combined in a later step).
 }
 \details{
-Arguments were kept similar with function \code{normalizeThis};
-Normally data get normalized by proportional factors. In case of log2-data (very common in omics-data) normalizing by an additive factor is equivalent to a proportional factor.
+Arguments were kept similar with function \code{normalizeThis} as much as possible.
+In most cases data get normalized by proportional factors. In case of log2-data (very common in omics-data) normalizing by an additive factor is equivalent to a proportional factor.
 
-This function has a special mode of operation for sparse data (ie containing a high content of \code{NA} values). 
-O-values by themselves will be primarily considered as true measurment outcomes and not as missing. 
-By using the argument \code{minQuant} all values below a given threshold will be set as \code{NA} and this may possibly trigger the sparse mode of normaizing. 
+This function has a special mode of operation for sparse data (ie containing a high content of \code{NA} values).
+0-values by themselves will be primarily considered as true measurment outcomes and not as missing.
+However, by using the argument \code{minQuant} all values below a given threshold will be set as \code{NA} and this may possibly trigger the sparse mode of normalizing.
 
-Note : Using a small value of \code{nCombin} will give the highest chances of finding sufficient complete data-sets with sparse data.
-However, this will also increase the computational efforts and time required to produce an output.
+Note : Using a small value of \code{nCombin} will give the highest chances of finding sufficient complete combination of columns with sparse data.
+However, this will also increase (very much) the computational efforts and time required to produce an output.
 
-When using default proportinal mode a potential division by 0 could occur when the initial normalization factor turns out as 0. 
-In this case a small value (default the maximum value of \code{dat} / 10; if this value exits in the data it will be multiplied by 0.03) will be added to all data before normalizing.
+When using default proportional mode a potential division by 0 could occur, when the initial normalization factor turns out as 0.
+In this case a small value (default the maximum value of \code{dat} / 10 will be added to all data before normalizing.
+If this also creates 0-vales in the data this factor will be multiplied by 0.03.
 }
 \examples{
 ## sparse matrix  normalization
 set.seed(2); AA <- matrix(rbinom(110,10,0.05), nrow=10)
 AA[,4:5] <- AA[,4:5] *rep(4:3, each=nrow(AA))
+AA[2,c(2,6,7)] <- 1; AA[3,8] <- 1;
 
 (AA1 <- rowNormalize(AA))
 (AA2 <- rowNormalize(AA, minQuant=1))   # set all 0 as NAs
