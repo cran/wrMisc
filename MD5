@@ -1,5 +1,5 @@
-1ded6e9643fb9a1a8e444e90048b704c *DESCRIPTION
-8799d7a7c309ce77edffd28c09954eab *NAMESPACE
+c409fc63ab5f599b5473132fad7f5c8e *DESCRIPTION
+14901dae0f11165fa05e27fa279bb5cd *NAMESPACE
 d9c10d2fbd35a603118930c7f0158616 *R/XYToDiffPpm.R
 a971ed1cdb923d9fd87bc057df4b3204 *R/addBeforFileExtension.R
 564c0a274b79e761c0962159350967f4 *R/adjBy2ptReg.R
@@ -104,7 +104,7 @@ aaffb3969be50d27341bd0fe7b6ec3f0 *R/normalizeThis.R
 3bd856ae9d926d3fd80054f97485ce1b *R/numPairDeColNames.R
 478d71d376f12ed74697e3ec04552a9e *R/organizeAsListOfRepl.R
 d247f5326e0b8cdeec74031cf4e7e63f *R/pVal2lfdr.R
-c4c6bdbcaec981c46fcd397ae996bea4 *R/packageDownloadStat.R
+1bfb740a1e931319274418dbd5df9d88 *R/packageDownloadStat.R
 0460e6ddc4bd769fb06d6c6f60a57292 *R/pairsAsPropensMatr.R
 268277315b1a0d4af0c6215c0679607c *R/partUnlist.R
 d716eb9a9f636219046adf5f41035377 *R/partialDist.R
@@ -127,7 +127,7 @@ d66240cdd8db6e38abe6f682e5cc604e *R/regrMultBy1or2point.R
 1435d32b6405eb38c8db03f2a57920c3 *R/reorgByCluNo.R
 11f39103b7cd6dc805b937a4a0a5dd0b *R/replNAbyLow.R
 cd03b36bcdda43d4e34ded2f417dee2d *R/replPlateCV.R
-48e951ed217efa690fb71d4591b1d994 *R/replicateStructure.R
+22fa00774cdf1bb1f90944712ab5edc3 *R/replicateStructure.R
 c944ba7309448a8fe0fcd28e958ce871 *R/rmDupl2colMatr.R
 703687d541d0fea00888e9660aa2a55c *R/rnormW.R
 b0465727b8d225680bcf9159c31c39d3 *R/rowCVs.R
@@ -161,14 +161,15 @@ f4745ff26334061b7e17ef3cc1f613c8 *R/tableToPlot.R
 47f43c0f4e47a21aff6a5dad74b96dca *R/treatTxtDuplicates.R
 c821c2277d4c0236ae36b55dd061fee8 *R/triCoord.R
 e91c2cbdc7a8d4fd69cf23b1dd7269ca *R/trimRedundText.R
+6f6bd9befe988357aacb8439e39fb59f *R/unifyEnumerator.R
 221cc867421da01a0de5059a0e43185e *R/uniqCountReport.R
 fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 4c46ce07427319f6580ddaa31f45ebb0 *R/writeCsv.R
 2d4470bf79c5d5ff451e3dcdcea4a475 *build/vignette.rds
-4912eac8b1fff518f14b8f6bc9fdc149 *inst/doc/wrMiscVignette1.R
-02e1a8dfd28286a52fb1c117fe752c9d *inst/doc/wrMiscVignette1.Rmd
-70a7487b0c85fadc8b825f44cc35a747 *inst/doc/wrMiscVignette1.html
+c6cdf215a9284bb717c13f69a19eeabd *inst/doc/wrMiscVignette1.R
+faa3d441143114bed1ae63ee98fd2a69 *inst/doc/wrMiscVignette1.Rmd
+12a3392f8cc6d0a39f51fe2df2fd359a *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -287,7 +288,7 @@ bd3e4561f5ff139443d87cc68b689f1a *man/nonAmbiguousNum.Rd
 7240b752463fdf89d67d5bb488ed65a8 *man/numPairDeColNames.Rd
 159e3eecbb64f5d9d7d62dfd89f24a38 *man/organizeAsListOfRepl.Rd
 27e0709d988953f5b91f7f26ab474148 *man/pVal2lfdr.Rd
-0c16e5d548cb4e0d0b27bb9ebf086d6d *man/packageDownloadStat.Rd
+d589e6a9bd32e1a5aea2e1cb57bf5726 *man/packageDownloadStat.Rd
 e17d973be91cda8d14829ceb8b6c0a5a *man/pairsAsPropensMatr.Rd
 a24914b79f3af1f0821472695f33fe34 *man/partUnlist.Rd
 c16b9f593dcfbd31e8eae8ddfe06b1c2 *man/partialDist.Rd
@@ -310,7 +311,7 @@ a75836680be1fbe4d0122282580fd8f2 *man/regrMultBy1or2point.Rd
 b413563314afcebaa23c07465ba2682a *man/reorgByCluNo.Rd
 70492180ecbb6e12fe8da063cc672364 *man/replNAbyLow.Rd
 a5dded4142e37927cc8bb60281835249 *man/replPlateCV.Rd
-e2c21b51fa0e585055724f3d5398c1fd *man/replicateStructure.Rd
+ce90da437eedfdd29e8db6812292a45b *man/replicateStructure.Rd
 de6591b5e6d19b67ae4f1da41f0f0ab9 *man/rmDupl2colMatr.Rd
 e518fdce2fa05bf12d1592697590d61c *man/rnormW.Rd
 982dee576705d215a9b733b51f2fdb41 *man/rowCVs.Rd
@@ -344,8 +345,9 @@ ad2cb0962d6f57ca64a756478811d892 *man/summarizeCols.Rd
 35bfdc9aa7dd953c6483f30d2bf37132 *man/treatTxtDuplicates.Rd
 9850f8c01bd9625540e3cd05bc116f32 *man/triCoord.Rd
 203a01c251b608caef913064e72d4616 *man/trimRedundText.Rd
+9a6fdc3238444e13217187af16ded8a0 *man/unifyEnumerator.Rd
 e3d7013bae9c56becb8f7a754b9d3807 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 2336ef261384d4d3fee8b2a1fea8335f *man/writeCsv.Rd
-02e1a8dfd28286a52fb1c117fe752c9d *vignettes/wrMiscVignette1.Rmd
+faa3d441143114bed1ae63ee98fd2a69 *vignettes/wrMiscVignette1.Rmd

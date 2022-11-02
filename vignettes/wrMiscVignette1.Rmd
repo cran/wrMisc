@@ -990,6 +990,11 @@ stableMode(dat, method="allModes")
 ```
 
 
+
+## Text-Manipulations    {#Text-Manipulations}
+
+There are several packages offering interesting functions for manipulating text. Here are a few functions to complement these.
+
 ### Trimming Redundant Text
 
 Automatic annotation has the tendency to concatenate many parameters into a single names.
@@ -1031,9 +1036,28 @@ keepCommonText(txt2, side="center")
 ```
 
 
+### Unify Enumerators
+
+Human operators may have many ways to write enumerators like 'xx_sample_1', 'xx_Sample_2', 'xx_s3', 'xx_4', etc.
+Many times you may find such text as names or column-names for measures underneith.
+The aim of `unifyEnumerator()` is to provide help in automatically harmonizing enumerators at the end of sample-names.
+
+```{r unifyEnumerator1, echo=TRUE}
+unifyEnumerator(c("ab-1","ab-2","c-3"))
+unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
+unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
+```
+
+This function will work only, if the numerator, ie digit-character(s) are ate the end of the character-string.
+
+Please note, that with large vectors testing/checking a larger panel of enumerator-abreviations may result in slower performance.
+In cases of such larger data-sets it may be more effective to first study the data and then run simple subsitions using _sub()_ targeted for this very case.
+
+
+
 ## Working With Regressions    {#WorkingWithRegressions}
 
-### Best Starting Point For Linear Regressions
+### Best Starting Point For Linear Regressions (Start of linearity)
 
 In many types of measurments the very low level measures are delicate.
 Especially when the readout starts with a baseline signal before increasing amounts of the analyte start producing a linear relationship.
@@ -1052,6 +1076,12 @@ exp4 <- rep(c(3,10,30,100,300,1000), each=3)
 linModelSelect("P1", dat2, expect=exp2)
 linModelSelect("P2", dat2, expect=exp2)
 ```
+
+This function was designed for use with rather small data-sets with no (or very few) measures of base-line.
+When larger panels of data ara available, it may be better to first define a confidence interval for the base-line measurement
+and then only to consider points outside this confidence interval for regressing dose-response relationships
+(see also [Detection limit](https://en.wikipedia.org/wiki/Detection_limit)).
+
 
 
 ### High Throughput Testing For Linear Regressions

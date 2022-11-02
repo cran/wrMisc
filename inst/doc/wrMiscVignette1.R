@@ -518,6 +518,11 @@ keepCommonText(txt1, side="center")       # computationally easier
 txt2 <- c("abcd_abc_kjh", "bcd_abc123", "cd_abc_po")
 keepCommonText(txt2, side="center")       
 
+## ----unifyEnumerator1, echo=TRUE----------------------------------------------
+unifyEnumerator(c("ab-1","ab-2","c-3"))
+unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
+unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
+
 ## ----linModelSelect1, echo=TRUE-----------------------------------------------
 li1 <- rep(c(4,3,3:6), each=3) + round(runif(18)/5,2)
 names(li1) <- paste0(rep(letters[1:5], each=3), rep(1:3,6))

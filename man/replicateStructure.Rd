@@ -19,7 +19,7 @@ replicateStructure(
 \item{x}{(matrix or data.frame) the annotation to inspect; each column is supposed to describe another set of annoation/metadata for the rows of \code{x} (min 1 row and 1 column),}
 
 \item{method}{(character, length=1) the procedure to choose column(s) with properties of information, may be \code{highest} (max number of levels)
-\code{lowest} (min number of levels), \code{median} (median of all options for number of levels), 
+\code{lowest} (min number of levels), \code{median} (median of all options for number of levels),
 \code{combAll} (combine all columns of \code{x}) or \code{combNonOrth} (combine only non-orthogonal columns of \code{x}, to avoid avoid n lines with n levels);
 lazy evluation of the argument is possible}
 
@@ -36,31 +36,31 @@ lazy evluation of the argument is possible}
 \item{debug}{(logical) additional messages for debugging}
 }
 \value{
-This function returns a list with $col (column index relativ to \code{x}), $lev (abstract labels of level), 
+This function returns a list with $col (column index relativ to \code{x}), $lev (abstract labels of level),
   $meth (note of method finally used) and $allCols with general replicate structure of all columns of  \code{x}
 }
 \description{
 This function was designed for mining annotation information organized in multiple columns to identify the grouping of multiple samples.
 }
 \details{
-Statistical tests requite specifying which samples should be considered as replicates. 
-In some cases, like the Sdrf-format, automatic mining of such annotation to indentify an experiment's underlying structure of replicates 
-may be challanging, since the key information may not always be found in the same column. 
-For this reason this function allows inspecting all columns of a matrix of data.frame to identify which colmns may serve describing groups of replicates.   
+Statistical tests requite specifying which samples should be considered as replicates.
+In some cases, like the Sdrf-format, automatic mining of such annotation to indentify an experiment's underlying structure of replicates
+may be challanging, since the key information may not always be found in the same column.
+For this reason this function allows inspecting all columns of a matrix of data.frame to identify which colmns may serve describing groups of replicates.
 
 The argument \code{exclNoRepl=TRUE} allows excluding all columns with different content for each line (like line-numbers), ie information without any replicates.
-It is set by default to \code{TRUE} to exclude such columns, since statistical tests usually do require some replicates. 
+It is set by default to \code{TRUE} to exclude such columns, since statistical tests usually do require some replicates.
 
-When using as \code{method="combAll"}, there is risk all lines (samples) will be be considered different and no replicates remain.  
+When using as \code{method="combAll"}, there is risk all lines (samples) will be be considered different and no replicates remain.
 To avoid this situation the argument can be set to \code{method="combNonOrth"}.
 Using this mode it will be checked if adding more columns will lead to complete loss of replicates, and -if so- concerned columns omitted.
 }
 \examples{
 ## a is all different, b is groups of 2,
 ## c & d  are groups of 2 nut NOT 'same general' pattern as b
-strX <- data.frame(a=letters[18:11], b=letters[rep(c(3:1,4), each=2)], 
- c=letters[rep(c(5,8:6), each=2)], d=letters[c(1:2,1:3,3:4,4)],        
- e=letters[rep(c(4,8,4,7),each=2)], f=rep("z",8) ) 
+strX <- data.frame(a=letters[18:11], b=letters[rep(c(3:1,4), each=2)],
+ c=letters[rep(c(5,8:6), each=2)], d=letters[c(1:2,1:3,3:4,4)],
+ e=letters[rep(c(4,8,4,7),each=2)], f=rep("z",8) )
 strX
 replicateStructure(strX[,1:2])
 replicateStructure(strX[,1:4], method="combAll")
