@@ -74,17 +74,19 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
 
   out <- NULL
   chMe <- is.na(method)
-  if(sum(!chMe) <1) stop(" argument 'method' seems empty - nothing to do !")
+  if(sum(!chMe) <1) stop(" Argument 'method' seems empty - nothing to do !")
   method <- if(any(chMe)) naOmit(method)[1] else method[1]
   if(length(dim(dat)) !=2) stop(" expecting matrix or data.frame with >= 2 rows as 'dat' !")
   if(!is.matrix(dat)) dat <- as.matrix(dat)
   if(!is.null(refLines)) if(identical(refLines,1:nrow(dat))) {refLines <- NULL; if(!silent) message(fxNa," omit redundant 'refLines'")}
   ## assemble parameters
   params <- list(refLines=refLines, trimFa=trimFa, useQ=quantFa, useExp=expFa)
+  
   ## method specific elements
   if(is.null(refGrp)) { refGrp <- 1:ncol(dat)
   } else if(min(refGrp) > ncol(dat) | max(refGrp) < 1) stop(fxNa," 'refGrp' should be integer vector indicating which columns to be used as reference")
   if(debug) {message(fxNa,"Assemble parameters ; nt1 ;  using method=",method,"   mode=",mode,"   params=",pasteC(unlist(params[-1])))}
+  
   if(method %in% "trimMean") {
     params$trimFa <- 0.2
     if(length(trimFa) >0) {if(length(trimFa) ==1) params$trimFa <- trimFa else if(!silent) message(fxNa," invalid 'trimFa', use default 0.2")}
@@ -117,6 +119,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
     params$refLines <- NULL
     if(!silent) message(fxNa," ignoring content of 'refLines', since 'vsn' can only normalize considering all data")}
   if(debug) {message(fxNa,"Ready to start .normalize() ; nt2 ;  using method=",method,"   mode=",mode,"   params=",pasteC(unlist(params)))}
+  
   ## main normalization
   out <- .normalize(dat, method, mode=mode, param=params, silent=silent, debug=debug, callFrom=fxNa)
   if(inherits(out, "try-error")) { message(fxNa," Could not run normalization by '",method,"' which gave an error (returning unnormalized)"); out <- dat}

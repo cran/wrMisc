@@ -286,6 +286,42 @@ lrbind(lst2)
 ```
 
 
+### Merge Multiple Matrices From List
+
+When combining different datasets the function  `mergeMatrixList()` allows merging multiple matrices (or data.frames) into a single matrix.
+Two types of mode of operation are available : i) Returning only the common/shared elements (as defined by the rownames), this is default _mode='intersect'_ ;
+alternatively one may ii) fuse/merge all matrices together without any loss of data (using _mode='union'_, additional _NA_s may appear when a given rowname is absent in one of the input matrices).
+
+Furthermore, one may specifically select which columns should be used for fusing using the argument _useColumn_.
+
+
+```{r mergeMatrixList, echo=TRUE}
+mat1 <- matrix(11:18, ncol=2, dimnames=list(letters[3:6],LETTERS[1:2]))
+mat2 <- matrix(21:28, ncol=2, dimnames=list(letters[2:5],LETTERS[3:4]))
+mat3 <- matrix(31:38, ncol=2, dimnames=list(letters[c(1,3:4,3)],LETTERS[4:5]))
+#
+mergeMatrixList(list(mat1, mat2), useColumn="all")
+
+# with custom names for the individual matrices
+mergeMatrixList(list(m1=mat1, m2=mat2, mat3), mode="union", useColumn=2)
+```
+
+Similarly, separate entries may be merged using  `mergeMatrices()` :
+
+```{r mergeMatrices, echo=TRUE}
+mergeMatrices(mat1, mat2)
+
+mergeMatrices(mat1, mat2, mat3, mode="union", useColumn=2)
+
+## custom names for matrix-origin
+mergeMatrices(m1=mat1, m2=mat2, mat3, mode="union", useColumn=2)
+
+## flexible/custom selection of columns
+mergeMatrices(m1=mat1, m2=mat2, mat3, mode="union", useColumn=list(1,1:2,2))
+```
+
+
+
 ### Fuse Content Of List-Elements With Redundant (Duplicated) Names
 
 When list-elements have the same name, their content (of named numeric or character vectors) 
@@ -509,15 +545,14 @@ Here we consider individual choices as equally ranked.
 By default intra-repeats are eliminated.
 
 ```{r sortByNRepeated, echo=TRUE}
-cities <- c("Bangkok","London","Paris","Singapore","New York City","Istambul","Delhi","Rome","Dubai")
-sortByNRepeated(x=cities[c(1:4)], y=cities[c(3,5:8)])
+cities <- c("Bangkok","London","Paris", "Singapore","New York City", "Istambul","Delhi","Rome","Dubai")
+sortByNRepeated(x=cities[c(1:4)], y=cities[c(2:3,5:8)])
 
 ## or (unlimited) multiple inputs via list
-choices1 <- list(Mary=cities[c(1:4)], Olivia=cities[c(3,5:8)], Paul=cities[c(5:3,9,5)])
-## Note : Paul cited NYC twice !
+choices1 <- list(Mary=cities[c(1:4)], Olivia=cities[c(2:3,5:8)], Paul=cities[c(5:3,9,5)])    # Note : Paul cited NYC twice !
 table(unlist(choices1))
 sortByNRepeated(choices1)
-sortByNRepeated(choices1, filterIntraRep=FALSE)  # without correcting multiple citation by Paul
+sortByNRepeated(choices1, filterIntraRep=FALSE)  # without correcting multiple citation of NYC by Paul
 ```
 
 
@@ -785,11 +820,11 @@ bb <- c("aa","dd","aa; bb; q","p; cc")
 ### Comparing Global Patterns
 
 In most programming languages it is fairly easy to compare _exact_ content of character vectors or factors with unordered levels.
-However, sometimes due to semantic issues some people may call a color 'purple' while others call it 'violet'.
+However, sometimes - due to semantic issues - some people may call a color 'purple' while others call it 'violet'.
 Thus, without using controled vocabulary the _exact_ terms may vary.
 
-Here, let's address the case, where no dictionaries are available for substituting equivalent terms.
-Thus, here we'll compare 4 vectors of equal length and check if the words/letters used could be substituted to give the first vector.
+Here, let's address the case, where no dictionaries of controled vocabulary are available for substituting equivalent terms.
+Thus, we'll compare 4 vectors of equal length and check if the words/letters used could be substituted to result in the first vector.
 Vectors _aa_ and _ab_ have the same global pattern, ie after repeating a word twice it moves to another word.
 Vectors _ac_ and _ad_ have different general patterns, either with alternating words or falling back to a word previsously used.
 
@@ -831,16 +866,19 @@ _\$allCols_ for documenting the global pattern in each column (whether it was se
 replicateStructure(bb)
 ```
 
-Besides, it is also possible to combine all columns if one cosiders they cotribute complementary substructures of the overal annotation.
+Besides, it is also possible to combine all columns if one considers they contribute complementary substructures of the overal annotation.
 
 ```{r compGlobPat5, echo=TRUE}
 replicateStructure(bb, method="combAll")
 ```
 However, when combining multiple columns it may happen -like in the example above- that finally no more lines remain being considered as replicates.
 
-To overcome this problem, it is possible to look for non-orthogonal structures, ie to try excluding columns which (after combining) would suggest no replicates after combining all columns.
-This can also be found when one column describes the replicate groups and another gives the order of the replicates therein.
+This can also be found when one column describes the groups and another gives the order of the replicates therein.
 However, for calling a (standard) statistical test it may be necessary exclude these replicate-numbers to designate the groups of replicates.
+
+To overcome the problem of loosing the understanding of replicate-structure when combining all factors, it is possible to look for non-orthogonal structures,
+ie to try excluding columns which (after combining) would suggest no replicates after combining all columns.
+See the example below :
 
 ```{r compGlobPat6, echo=TRUE}
 replicateStructure(bb, method="combNonOrth")
@@ -1054,6 +1092,50 @@ Please note, that with large vectors testing/checking a larger panel of enumerat
 In cases of such larger data-sets it may be more effective to first study the data and then run simple subsitions using _sub()_ targeted for this very case.
 
 
+### Order Matrix According To Reference
+
+The function `orderMatrToRef()` has the aim of facilitating brining a matrix of text/data in the order of a given reference (character vector).
+This function will try all columns of the input-matrix to see which gives the best coverage/ highest number of matches to the reference.
+If no hits are found, this function will try by partial matching (using _grep()_) all entries of the reference and vice-versa all entries of the matrix.
+
+```{r orderMatrToRef1, echo=TRUE}
+mat1 <- matrix(paste0("__",letters[rep(c(1,1,2,2,3),3) +rep(0:2,each=5)], rep(1:5)), ncol=3)
+orderMatrToRef(mat1, paste0(letters[c(3,4,5,3,4)],c(1,3,5,2,4)))
+
+mat2 <- matrix(paste0("__",letters[rep(c(1,1,2,2,3),3) +rep(0:2,each=5)], c(rep(1:5,2),1,1,3:5 )), ncol=3)
+orderMatrToRef(mat2, paste0(letters[c(3,4,5,3,4)],c(1,3,5,1,4)))
+
+mat3 <- matrix(paste0(letters[rep(c(1,1,2,2,3),3) +rep(0:2,each=5)], c(rep(1:5,2),1,1,3,3,5 )), ncol=3)
+orderMatrToRef(mat3, paste0("__",letters[c(3,4,5,3,4)],c(1,3,5,1,3)))
+```
+
+
+### Check for (Strict) Order
+
+Thi function `checkStrictOrder()` was designed to scan each line of an (numeric) input matrix for up- down- or equal-development, ie the chang to the next value on the right.
+For example when working with a matrix of with 4 columns one can look 3 times a the neighbour value following to the right (in the same line), thus the output will mention 3 events (for each line).
+If _all counts_ are 'up' and 0 counts are 'down' or 'eq', the line follows a permanently increase (not necessarily linear), etc.
+
+In some automated procedures (where the numer of columns of initial input may vary) it may be easier to test if any 0 occur.
+For this reason the argument _invertCount_ was introduced, in this case a line with a '0' occurring characterizes a constant behaviour (for the respective column).
+
+```{r checkStrictOrder1, echo=TRUE}
+set.seed(2005); mat1 <- rbind(matrix(round(runif(40),1),nc=4), rep(1,4))
+head(mat1)
+checkStrictOrder(mat1); mat1[which(checkStrictOrder(mat1)[,2]==0),]
+```
+
+A slightly more general way of testing can be done using  `checkGrpOrder()`. Here, simlpy a logical value will produced for each line of input indicating if there is constant behaviour.
+When the argument _revRank=TRUE_ (default) constant up- or constant down-characteristics will be tested
+
+```{r checkGrpOrder1, echo=TRUE}
+head(mat1)
+checkGrpOrder(mat1)
+checkGrpOrder(mat1, revRank=FALSE)    # only constant 'up' tested
+```
+
+
+
 
 ## Working With Regressions    {#WorkingWithRegressions}
 
@@ -1243,6 +1325,10 @@ The function `gitDataUrl()` allows to conventiently switch any url (on git) to t
 ## An example url with tabulated data :
 url1 <- "https://github.com/bigbio/proteomics-metadata-standard/blob/master/annotated-projects/PXD001819/PXD001819.sdrf.tsv"
 gitDataUrl(url1)
+```
+
+The example below shows how this is used in the function _readSampleMetaData()_ in [wrProteo](https://CRAN.R-project.org/package=wrProteo).
+```{r readGit2, echo=TRUE}
 dataPxd <- try(read.delim(gitDataUrl(url1), sep='\t', header=TRUE))
 str(dataPxd)
 ```
@@ -1379,7 +1465,8 @@ no4 <- normalizeThis(dat1, refGrp=1:3, meth="slope", quantFa=c(0.2,0.8))
 ```
 
 It is suggested to verify normalization results by plots. 
-Note, that  [Box plots](https://en.wikipedia.org/wiki/Box_plot) may not be appropriate in some cases (eg multimodal distributions), for more details you may consider using [Violin-Plots](https://en.wikipedia.org/wiki/Violin_plot) from packages [vioplot](https://CRAN.R-project.org/package=vioplot) or [wrGraph](https://CRAN.R-project.org/package=wrGraph), another option might be a (cumulated) frequency plot (eg in package [wrGraph](https://CRAN.R-project.org/package=wrGraph)).
+Note, that  [Box plots](https://en.wikipedia.org/wiki/Box_plot) may not be appropriate in some cases (eg multimodal distributions),
+for displaying more details you may consider using [Violin-Plots](https://en.wikipedia.org/wiki/Violin_plot) from packages [vioplot](https://CRAN.R-project.org/package=vioplot) or [wrGraph](https://CRAN.R-project.org/package=wrGraph), another option might be a (cumulated) frequency plot (eg in package [wrGraph](https://CRAN.R-project.org/package=wrGraph)).
 
 ```{r normalizeThis_plot1, echo=FALSE,eval=TRUE}
 boxplot(dat1, main="raw data", las=1)
@@ -1410,25 +1497,32 @@ Thus, with many NA-values the number of 'complete' rows will be low or even 0 re
 Once the content of NA-values is above a customizable threshold, the data will be broken in smaller subsets with fewer groups of fewer columns,
  thus increasing the chances of finding 'complete' subsets of data which will be normalized first and added to other subsets in later steps.
 
+This approach relies on the **hypothesis** that *all data in a given line should be (aproximately) the same value* !
+Thus, this procedure is particularly well adopted to the case when _all_ samples are multiple replicate measurements of the _same_ sample.
 
-```{r rowNormalize1, echo=FALSE, eval=TRUE}
+
+```{r rowNormalize1, echo=TRUE}
 set.seed(2); AA <- matrix(rbinom(110, 10, 0.05), nrow=10)
 AA[,4:5] <- AA[,4:5] *rep(4:3, each=nrow(AA))
 
-(AA1 <- rowNormalize(AA))
+AA1 <- rowNormalize(AA)
+round(AA1, 2)
 ```
 
 Now, let's make this sparse and try normalizing:
 
-```{r rowNormalize2, echo=FALSE, eval=TRUE}
+```{r rowNormalize2, echo=TRUE}
 AC <- AA
 AC[which(AC <1)] <- NA
+
 (AC1 <- rowNormalize(AC))
-(AC3 <- rowNormalize(AC, refLines=1:5, omitNonAlignable=TRUE))
 ```
 
-This approach relies on the hypothesis that all data in a given line should be (aproximately) the same value.
-Thus, this procedure is particularly well adopted to the case when _all_ samples are multiple replicate measurements of the _same_ sample.
+Like with _normalizeThis()_ we can define some reference-lines (only these lines will be considered to determine normalization-factors)
+
+```{r rowNormalize3, echo=TRUE}
+(AC3 <- rowNormalize(AC, refLines=1:5, omitNonAlignable=TRUE))
+```
 
 Please note, that the iterative procedure for _sparse data_ may consume large amounts of computational resources, in particular when
 a small number of subgroups has been selected.
@@ -1441,7 +1535,7 @@ Sometimes one needs to obtain the coordinates of values/points of a matrix accor
 The standard approach using _which()_ gives only a _linearized_ index but not row/column, which is sufficient for replacing indexed values.
 If you need to know the true row/column indexes, you may use `coordOfFilt()`.
 
-```{r coordOfFilt1, echo=FALSE, eval=TRUE}
+```{r coordOfFilt1, echo=TRUE}
 set.seed(2021); ma1 <- matrix(sample.int(n=40, size=27, replace=TRUE), ncol=9)
 ## let's test which values are >37
 which(ma1 >37)      # doesn't tell which row & col
@@ -1578,6 +1672,36 @@ When extracting just the numeric part, unit names will get lost, though. Note, i
 mat1 <- matrix(1:8, nrow=2, dimnames=list(NULL, paste0(1:4,"-",6:9)))
 numPairDeColNames(mat1)
 ```
+
+
+### Automatic Determination Of Replicate Structure Based On Meta-Data
+
+In order to run statistical testing the user must know which sample should be considered replicate of whom.
+The function `()` aims to provide help by checking all column of a matrix of meta-data with the aim of identifying the replicate-status.
+
+To do so, all columns are examined how many groups of replicats they may design. Depending on the argumen _method_ various options for choosing automatically exist :
+The default _method="combAll"_ will select the column with the median number of groups (not counting all-different or all-same columns)).
+When using as _method="combAll"_ (ie combine all columns that are neither all-different nor all-same), there is risk all lines (samples) will be be considered different and no replicates remain.
+To avoid this situation the argument -method_ can be set to _"combNonOrth"_.
+Then, it will be checked if adding more columns will lead to complete loss of replicates, and -if so- concerned columns omitted.
+
+
+```{r replicateStructure1, echo=TRUE}
+## column a is all different, b is groups of 2,
+## c & d  are groups of 2 nut NOT 'same general' pattern as b
+strX <- data.frame(a=letters[18:11], b=letters[rep(c(3:1,4), each=2)],
+ c=letters[rep(c(5,8:6), each=2)], d=letters[c(1:2,1:3,3:4,4)],
+ e=letters[rep(c(4,8,4,7),each=2)], f=rep("z",8) )
+strX
+
+replicateStructure(strX[,1:2])
+replicateStructure(strX[,1:4], method="combAll")
+replicateStructure(strX[,1:4], method="combAll", exclNoRepl=FALSE)
+replicateStructure(strX[,1:4], method="combNonOrth", exclNoRepl=TRUE)
+replicateStructure(strX, method="lowest")
+```
+
+
 
 
 ## Working With Clustering  {#WorkingWithClustering}

@@ -43,7 +43,7 @@ This function returns a list with $col (column index relativ to \code{x}), $lev 
 This function was designed for mining annotation information organized in multiple columns to identify the grouping of multiple samples.
 }
 \details{
-Statistical tests requite specifying which samples should be considered as replicates.
+Statistical tests require specifying which samples should be considered as replicates of whom.
 In some cases, like the Sdrf-format, automatic mining of such annotation to indentify an experiment's underlying structure of replicates
 may be challanging, since the key information may not always be found in the same column.
 For this reason this function allows inspecting all columns of a matrix of data.frame to identify which colmns may serve describing groups of replicates.

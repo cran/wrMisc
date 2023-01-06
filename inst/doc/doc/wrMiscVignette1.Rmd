@@ -286,42 +286,6 @@ lrbind(lst2)
 ```
 
 
-### Merge Multiple Matrices From List
-
-When combining different datasets the function  `mergeMatrixList()` allows merging multiple matrices (or data.frames) into a single matrix.
-Two types of mode of operation are available : i) Returning only the common/shared elements (as defined by the rownames), this is default _mode='intersect'_ ;
-alternatively one may ii) fuse/merge all matrices together without any loss of data (using _mode='union'_, additional _NA_s may appear when a given rowname is absent in one of the input matrices).
-
-Furthermore, one may specifically select which columns should be used for fusing using the argument _useColumn_.
-
-
-```{r mergeMatrixList, echo=TRUE}
-mat1 <- matrix(11:18, ncol=2, dimnames=list(letters[3:6],LETTERS[1:2]))
-mat2 <- matrix(21:28, ncol=2, dimnames=list(letters[2:5],LETTERS[3:4]))
-mat3 <- matrix(31:38, ncol=2, dimnames=list(letters[c(1,3:4,3)],LETTERS[4:5]))
-#
-mergeMatrixList(list(mat1, mat2), useColumn="all")
-
-# with custom names for the individual matrices
-mergeMatrixList(list(m1=mat1, m2=mat2, mat3), mode="union", useColumn=2)
-```
-
-Similarly, separate entries may be merged using  `mergeMatrices()` :
-
-```{r mergeMatrices, echo=TRUE}
-mergeMatrices(mat1, mat2)
-
-mergeMatrices(mat1, mat2, mat3, mode="union", useColumn=2)
-
-## custom names for matrix-origin
-mergeMatrices(m1=mat1, m2=mat2, mat3, mode="union", useColumn=2)
-
-## flexible/custom selection of columns
-mergeMatrices(m1=mat1, m2=mat2, mat3, mode="union", useColumn=list(1,1:2,2))
-```
-
-
-
 ### Fuse Content Of List-Elements With Redundant (Duplicated) Names
 
 When list-elements have the same name, their content (of named numeric or character vectors) 
@@ -820,11 +784,11 @@ bb <- c("aa","dd","aa; bb; q","p; cc")
 ### Comparing Global Patterns
 
 In most programming languages it is fairly easy to compare _exact_ content of character vectors or factors with unordered levels.
-However, sometimes - due to semantic issues - some people may call a color 'purple' while others call it 'violet'.
+However, sometimes due to semantic issues some people may call a color 'purple' while others call it 'violet'.
 Thus, without using controled vocabulary the _exact_ terms may vary.
 
-Here, let's address the case, where no dictionaries of controled vocabulary are available for substituting equivalent terms.
-Thus, we'll compare 4 vectors of equal length and check if the words/letters used could be substituted to result in the first vector.
+Here, let's address the case, where no dictionaries are available for substituting equivalent terms.
+Thus, here we'll compare 4 vectors of equal length and check if the words/letters used could be substituted to give the first vector.
 Vectors _aa_ and _ab_ have the same global pattern, ie after repeating a word twice it moves to another word.
 Vectors _ac_ and _ad_ have different general patterns, either with alternating words or falling back to a word previsously used.
 
@@ -866,19 +830,16 @@ _\$allCols_ for documenting the global pattern in each column (whether it was se
 replicateStructure(bb)
 ```
 
-Besides, it is also possible to combine all columns if one considers they contribute complementary substructures of the overal annotation.
+Besides, it is also possible to combine all columns if one cosiders they cotribute complementary substructures of the overal annotation.
 
 ```{r compGlobPat5, echo=TRUE}
 replicateStructure(bb, method="combAll")
 ```
 However, when combining multiple columns it may happen -like in the example above- that finally no more lines remain being considered as replicates.
 
-This can also be found when one column describes the groups and another gives the order of the replicates therein.
+To overcome this problem, it is possible to look for non-orthogonal structures, ie to try excluding columns which (after combining) would suggest no replicates after combining all columns.
+This can also be found when one column describes the replicate groups and another gives the order of the replicates therein.
 However, for calling a (standard) statistical test it may be necessary exclude these replicate-numbers to designate the groups of replicates.
-
-To overcome the problem of loosing the understanding of replicate-structure when combining all factors, it is possible to look for non-orthogonal structures,
-ie to try excluding columns which (after combining) would suggest no replicates after combining all columns.
-See the example below :
 
 ```{r compGlobPat6, echo=TRUE}
 replicateStructure(bb, method="combNonOrth")
@@ -1092,7 +1053,7 @@ Please note, that with large vectors testing/checking a larger panel of enumerat
 In cases of such larger data-sets it may be more effective to first study the data and then run simple subsitions using _sub()_ targeted for this very case.
 
 
-### Order Matrix According To Reference
+### Order Matrix Accordinf To Reference
 
 The function `orderMatrToRef()` has the aim of facilitating brining a matrix of text/data in the order of a given reference (character vector).
 This function will try all columns of the input-matrix to see which gives the best coverage/ highest number of matches to the reference.
@@ -1110,14 +1071,14 @@ orderMatrToRef(mat3, paste0("__",letters[c(3,4,5,3,4)],c(1,3,5,1,3)))
 ```
 
 
-### Check for (Strict) Order
+## Check for (Strict) Order
 
 Thi function `checkStrictOrder()` was designed to scan each line of an (numeric) input matrix for up- down- or equal-development, ie the chang to the next value on the right.
 For example when working with a matrix of with 4 columns one can look 3 times a the neighbour value following to the right (in the same line), thus the output will mention 3 events (for each line).
 If _all counts_ are 'up' and 0 counts are 'down' or 'eq', the line follows a permanently increase (not necessarily linear), etc.
 
 In some automated procedures (where the numer of columns of initial input may vary) it may be easier to test if any 0 occur.
-For this reason the argument _invertCount_ was introduced, in this case a line with a '0' occurring characterizes a constant behaviour (for the respective column).
+For this reason the argument _invertCount_ was introduced, in this case a line wit a 0 accurring characterizes a constant behaviour (for the respective column).
 
 ```{r checkStrictOrder1, echo=TRUE}
 set.seed(2005); mat1 <- rbind(matrix(round(runif(40),1),nc=4), rep(1,4))
@@ -1133,8 +1094,6 @@ head(mat1)
 checkGrpOrder(mat1)
 checkGrpOrder(mat1, revRank=FALSE)    # only constant 'up' tested
 ```
-
-
 
 
 ## Working With Regressions    {#WorkingWithRegressions}

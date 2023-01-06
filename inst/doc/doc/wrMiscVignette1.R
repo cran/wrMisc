@@ -130,27 +130,6 @@ lst2
 # join list-elements (back) into single matrix
 lrbind(lst2)
 
-## ----mergeMatrixList, echo=TRUE-----------------------------------------------
-mat1 <- matrix(11:18, ncol=2, dimnames=list(letters[3:6],LETTERS[1:2]))
-mat2 <- matrix(21:28, ncol=2, dimnames=list(letters[2:5],LETTERS[3:4]))
-mat3 <- matrix(31:38, ncol=2, dimnames=list(letters[c(1,3:4,3)],LETTERS[4:5]))
-#
-mergeMatrixList(list(mat1, mat2), useColumn="all")
-
-# with custom names for the individual matrices
-mergeMatrixList(list(m1=mat1, m2=mat2, mat3), mode="union", useColumn=2)
-
-## ----mergeMatrices, echo=TRUE-------------------------------------------------
-mergeMatrices(mat1, mat2)
-
-mergeMatrices(mat1, mat2, mat3, mode="union", useColumn=2)
-
-## custom names for matrix-origin
-mergeMatrices(m1=mat1, m2=mat2, mat3, mode="union", useColumn=2)
-
-## flexible/custom selection of columns
-mergeMatrices(m1=mat1, m2=mat2, mat3, mode="union", useColumn=list(1,1:2,2))
-
 ## ----fuseCommonListElem, echo=TRUE--------------------------------------------
 val1 <- 10 +1:26
 names(val1) <- letters

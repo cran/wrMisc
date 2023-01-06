@@ -3,35 +3,39 @@
 #' \code{checkStrictOrder} tests lines of 'dat' (matrix of data.frame) for strict order (ascending, descending or constant), 
 #' each col of data is tested relative to the col on its left.
 #' @param dat matrix or data.frame
-#' @param invertCount (logical)
-#' @return matrix with counts of (non-)up pairs, (non-)down pairs, (non-)equal-pairs, if 'invertCount'=TRUE resulting 0 means that all columns are folowing the described characteristics (with variabale col-numbers easier to count)
-#' @seealso \code{\link[base]{order}}
+#' @param invertCount (logical) inverse counting (ie return 0 for all elememts in order)
+#' @param silent (logical) suppress messages
+#' @param debug (logical) display additional messages for debugging
+#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @return matrix with counts of up pairs, down pairs, equal-pairs, if 'invertCount'=TRUE all non-events are counted, ie a resulting 0 means that all columns are following the described characteristics (with variabale col-numbers easier to count)
+#' @seealso \code{\link[base]{order}}, \code{\link{checkGrpOrder}}   
 #' @examples
-#' set.seed(2005); mat <- matrix(round(runif(40),1),nc=4)
-#' checkStrictOrder(mat); mat[which(checkStrictOrder(mat)[,2]==0),]
+#' set.seed(2005); mat1 <- rbind(matrix(round(runif(40),1),nc=4), rep(1,4))
+#' checkStrictOrder(mat1); mat1[which(checkStrictOrder(mat1)[,2]==0),]
 #' @export
-checkStrictOrder <- function(dat,invertCount=TRUE){
-  testO <- array(NA,dim=c(nrow(dat),ncol(dat)-1,2))
-  testId <- matrix(NA,nrow=nrow(dat),ncol=ncol(dat)-1)
+checkStrictOrder <- function(dat, invertCount=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL){
+  fxNa <- wrMisc::.composeCallName(callFrom, newNa="checkStrictOrder")
+  testO <- array(NA, dim=c(nrow(dat), ncol(dat) -1, 2))
+  testId <- matrix(NA, nrow=nrow(dat), ncol=ncol(dat) -1)
   for(i in 1:(ncol(dat)-1)) {
      testO[,i,1] <- dat[,i] > dat[,i+1]
      testO[,i,2] <- dat[,i] < dat[,i+1]
      testId[,i] <- dat[,i] == dat[,i+1]
   }
-  if(invertCount) {testO <- !testO; testId <- !testId}
-  out <- cbind(up=rowSums(testO[,,2],na.rm=TRUE),down=rowSums(testO[,,1],na.rm=TRUE),eq=rowSums(testId,na.rm=TRUE))
+  if(isTRUE(invertCount)) {testO <- !testO; testId <- !testId}
+  out <- cbind(up=rowSums(testO[,,2], na.rm=TRUE), down=rowSums(testO[,,1], na.rm=TRUE), eq=rowSums(testId, na.rm=TRUE))
   rownames(out) <- rownames(dat)
   out }
   
 #' @export
-.firstMin <- function(x,positionOnly=FALSE) {
+.firstMin <- function(x, positionOnly=FALSE) {
   ## get (first) min of series
   ## for longer series of data rather use getMedOf1stValley()
   minPos <- which.min(x)                # no problem with NA
   if(positionOnly) minPos else x[minPos] }
 
 #' @export
-.medianSpecGrp <- function(x,grpNum,grpVal,sumMeth="median",callFrom=NULL){
+.medianSpecGrp <- function(x, grpNum, grpVal, sumMeth="median", callFrom=NULL){
   ## rescale data 'x' so that specific group 'grpNum' gets normalized to predefined value 'grpVal'
   ## in normal case x will be multiplied by 'grpVal' and devided by value obtained from 'grpNum'
   ## if summary of 'grpNum-positions' or 'grpVal' is 0, then grpVal will be attained by subtration of summary & adding grpVal

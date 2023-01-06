@@ -4,7 +4,14 @@
 \alias{checkGrpOrder}
 \title{checkGrpOrder}
 \usage{
-checkGrpOrder(x, rankExp = NULL, revRank = TRUE)
+checkGrpOrder(
+  x,
+  rankExp = NULL,
+  revRank = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{matrix or data.frame}
@@ -12,6 +19,12 @@ checkGrpOrder(x, rankExp = NULL, revRank = TRUE)
 \item{rankExp}{(numeric) expected order for values in columns, default 'rankExp' =1:ncol(x)}
 
 \item{revRank}{(logical) if 'revRank'=TRUE, the initial ranks & reversed ranks will be tested}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 vector of logical values
@@ -21,9 +34,9 @@ vector of logical values
 Used for comparing groups of measures with expected profile (simply by mataching expected order)
 }
 \examples{
-set.seed(2005); mat <- matrix(round(runif(40),1),ncol=4)
-checkGrpOrder(mat)
-checkGrpOrder(mat,c(1,4,3,2))
+set.seed(2005); mat1 <- rbind(matrix(round(runif(40),1),nc=4), rep(1,4))
+checkGrpOrder(mat1)
+checkGrpOrder(mat1,c(1,4,3,2))
 }
 \seealso{
 \code{\link[wrMisc]{checkGrpOrderSEM}}

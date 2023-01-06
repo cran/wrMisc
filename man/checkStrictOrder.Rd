@@ -4,24 +4,36 @@
 \alias{checkStrictOrder}
 \title{Check for strict (ascencing or descending) order}
 \usage{
-checkStrictOrder(dat, invertCount = TRUE)
+checkStrictOrder(
+  dat,
+  invertCount = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame}
 
-\item{invertCount}{(logical)}
+\item{invertCount}{(logical) inverse counting (ie return 0 for all elememts in order)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-matrix with counts of (non-)up pairs, (non-)down pairs, (non-)equal-pairs, if 'invertCount'=TRUE resulting 0 means that all columns are folowing the described characteristics (with variabale col-numbers easier to count)
+matrix with counts of up pairs, down pairs, equal-pairs, if 'invertCount'=TRUE all non-events are counted, ie a resulting 0 means that all columns are following the described characteristics (with variabale col-numbers easier to count)
 }
 \description{
 \code{checkStrictOrder} tests lines of 'dat' (matrix of data.frame) for strict order (ascending, descending or constant), 
 each col of data is tested relative to the col on its left.
 }
 \examples{
-set.seed(2005); mat <- matrix(round(runif(40),1),nc=4)
-checkStrictOrder(mat); mat[which(checkStrictOrder(mat)[,2]==0),]
+set.seed(2005); mat1 <- rbind(matrix(round(runif(40),1),nc=4), rep(1,4))
+checkStrictOrder(mat1); mat1[which(checkStrictOrder(mat1)[,2]==0),]
 }
 \seealso{
-\code{\link[base]{order}}
+\code{\link[base]{order}}, \code{\link{checkGrpOrder}}
 }

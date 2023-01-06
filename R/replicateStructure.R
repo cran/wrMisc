@@ -4,7 +4,7 @@
 #'
 #'
 #' @details
-#' Statistical tests requite specifying which samples should be considered as replicates.
+#' Statistical tests require specifying which samples should be considered as replicates of whom.
 #' In some cases, like the Sdrf-format, automatic mining of such annotation to indentify an experiment's underlying structure of replicates
 #' may be challanging, since the key information may not always be found in the same column.
 #' For this reason this function allows inspecting all columns of a matrix of data.frame to identify which colmns may serve describing groups of replicates.
@@ -148,7 +148,7 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
     colnames(st2) <- paste(colnames(y)[1], colnames(y)[2:ncol(y)], sep=sep)
     maxL <- apply(st2, 2, max)
     if(debug) {message(fxNa," -> fComNonOrt"); fComNonOrt <- list(y=y,oup=oup,tm=tm, st2=st2,maxL=maxL,x=x)}
-    if(any(maxL ==nrow(y))) st2 <- as.matrix(st2[,which(maxL < nrow(y))])
+    if(any(maxL ==nrow(y))) {useCo <- which(maxL < nrow(y)); st2 <- matrix(st2[,useCo], ncol=length(useCo), dimnames=list(rownames(st2), colnames(st2)[useCo]))}
     if(length(st2) >0) { if(TRUE) {maxP <- which.max(apply(st2, 2, max));
       coln <- which(colnames(y) %in% unlist(strsplit(names(maxP), split=sep)))
       refn <- if(identical(y, ref)) coln else match(colnames(y)[coln], colnames(ref))
@@ -204,7 +204,7 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
       chDu <- duplicated(tm2, fromLast=FALSE)
       if(any(chDu)) {tm2 <- tm2[which(!chDu)];
         ou3 <- matrix(ou3[,which(!chDu)], nrow=nrow(x), dimnames=list(NULL,colnames(ou3)[which(!chDu)]))}
-      if(debug) {message(fxNa,"fd4"); fd4 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
+      if(debug) {message(fxNa,"fd4 .."); fd4 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
 
       out <- if(ncol(ou3) <2) {
         if(debug) message(fxNa," single column for choice ..")
@@ -220,6 +220,8 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
         combAll=fCombAll(ou3, ref=x),
         combNonOrth=fComNonOrth(ou3, ref=x) )
     }
+  if(debug) {message(fxNa,"fd5"); fd5 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
+
   ## optional trim names to ou3$lev
   if(isTRUE(trimNames)) names(out$lev) <- trimRedundText(names(out$lev), spaceElim=TRUE, silent=silent, callFrom=fxNa, debug=debug)
   }                     ## finished replicateStructure
