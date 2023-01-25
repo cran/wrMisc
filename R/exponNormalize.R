@@ -15,8 +15,8 @@
 #' @param refLines (NULL or integer) optional subset of lines to be considered (only) when determining normalization factors
 #' @param rSquare (logical) if \code{TRUE}, add r-squared
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return matrix of normalized data
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This functuion returns a matrix of normalized data
 #' @seealso more eveolved than \code{\link[wrMisc]{normalizeThis}} with arugment set to 'exponent'
 #' @examples
 #' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),nc=10)
@@ -37,12 +37,12 @@
 #' plot(dat1[,2],dat1[,3],type="b",main="init",ylab="ref")
 #' plot(dat2c$datNor[,2],dat1[,3],type="b",main="norm 2",ylab="ref"); 
 #' @export
-exponNormalize <- function(dat,useExpon,dynExp=TRUE,nStep=20, startExp=1,simMeas="cor",refDat=NULL,refGrp=NULL,refLines=NULL,rSquare=FALSE,silent=FALSE,callFrom=NULL) {
+exponNormalize <- function(dat, useExpon, dynExp=TRUE, nStep=20, startExp=1, simMeas="cor", refDat=NULL, refGrp=NULL, refLines=NULL,rSquare=FALSE,silent=FALSE,callFrom=NULL) {
   fxNa <- .composeCallName(callFrom,newNa="exponNormalize")
   dimDat <- dim(dat)
   if(!is.matrix(dat)) dat <- as.matrix(dat)
-  if(is.null(refDat)) refDat <- matrix(rowMeans(if(length(refLines) < nrow(dat) & !is.null(refLines)) dat[refLines,] else dat,na.rm=TRUE),
-    ncol=1,dimnames=list(NULL,colnames(dat))) else { cat("adj 'refDat to matrix' \n")
+  if(is.null(refDat)) refDat <- matrix(rowMeans(if(length(refLines) < nrow(dat) & !is.null(refLines)) dat[refLines,] else dat, na.rm=TRUE),
+    ncol=1,dimnames=list(NULL,colnames(dat))) else { message(fxNa,"adj 'refDat to matrix' \n")
     if(length(dim(refDat)) <2) refDat <- as.matrix(as.numeric(refDat)) }
   if(is.null(refGrp)) refGrp <- rep(1,ncol(dat))
   if(length(refGrp) != ncol(dat)) message(fxNa," 'refGrp' (",length(refGrp),") doesn't fit to 'dat' (",ncol(dat)," cols)")
@@ -53,28 +53,28 @@ exponNormalize <- function(dat,useExpon,dynExp=TRUE,nStep=20, startExp=1,simMeas
   .sw <- function(useExpon,startExp,nStep) {     # function for defining new series of 'useExpon'
     meth <- paste("m",0 +(length(useExpon) >1) + 2*all(startExp <1),sep="")
     switch(meth,
-      m0=seq(useExpon,startExp,length.out=nStep),
-      m1=seq(useExpon[1],useExpon[2],length.out=nStep),
-      m2=seq(startExp,useExpon,length.out=nStep),
-      m3=seq(useExpon[1],useExpon[2],length.out=nStep) ) }
+      m0=seq(useExpon, startExp, length.out=nStep),
+      m1=seq(useExpon[1], useExpon[2], length.out=nStep),
+      m2=seq(startExp, useExpon, length.out=nStep),
+      m3=seq(useExpon[1], useExpon[2], length.out=nStep) ) }
   if(length(dim(useExpon)) >1 & dynExp & nStep >1) {    # diff/indep expon series for each col of data
     useExpon <- apply(useExpon,2,.sw,startExp,nStep)
     if(!silent) message(fxNa," column-specific exponent testing of ",nrow(useExpon)," x ",ncol(useExpon)," exponents")
   } else {
     if(nStep >1) useExpon <- .sw(useExpon,startExp,nStep)
     if(!silent) message(fxNa," static exponent series (length ",length(useExpon),")")}
-  if(!is.matrix(useExpon)) useExpon <- matrix(rep(useExpon,ncol(dat)),ncol=ncol(dat))
+  if(!is.matrix(useExpon)) useExpon <- matrix(rep(useExpon,ncol(dat)), ncol=ncol(dat))
   expoNor <- list()
-  for(i in 1:nrow(useExpon)) expoNor[[i]] <- dat^matrix(rep(useExpon[i,],each=nrow(dat)),ncol=ncol(dat))
-  corVal <- if(identical(simMeas,"cor")) sapply(expoNor,function(x) apply(x,2,stats::cor,y=refDat,use="complete.obs")) else {
+  for(i in 1:nrow(useExpon)) expoNor[[i]] <- dat^matrix(rep(useExpon[i,], each=nrow(dat)), ncol=ncol(dat))
+  corVal <- if(identical(simMeas,"cor")) sapply(expoNor, function(x) apply(x,2,stats::cor, y=refDat, use="complete.obs")) else {
     corVal <- NULL; message(fxNa," PROBLEM : unknown similarity measure !!")}
-  if(!is.matrix(corVal)) corVal <- matrix(corVal,ncol=ncol(dat))
+  if(!is.matrix(corVal)) corVal <- matrix(corVal, ncol=ncol(dat))
   if(all(dim(corVal) == dim(t(useExpon)))) corVal <- t(corVal)
-  dimnames(corVal) <- list(paste("exp",useExpon[,1],sep="_"),colnames(dat))
-  bestExpPo <- apply(corVal,2,which.max)
-  bestExp <- apply(rbind(bestExpPo,useExpon),2,function(x) x[-1][x[1]])
-  datNor <- matrix(nrow=nrow(dat),ncol=ncol(dat),dimnames=dimnames(dat))
+  dimnames(corVal) <- list(paste("exp",useExpon[,1],sep="_"), colnames(dat))
+  bestExpPo <- apply(corVal, 2, which.max)
+  bestExp <- apply(rbind(bestExpPo, useExpon), 2, function(x) x[-1][x[1]])
+  datNor <- matrix(nrow=nrow(dat), ncol=ncol(dat), dimnames=dimnames(dat))
   for(i in 1:ncol(dat)) datNor[,i] <- dat[,i]^bestExp[i]
   out <- list(bestExp=bestExp, datNor=datNor, allSimil = if(rSquare) corVal^2 else corVal)
   out }
-   
+    

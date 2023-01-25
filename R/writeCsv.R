@@ -71,7 +71,7 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
         filtThr <- sapply(filterCol[useCol],function(x) if(length(x>1)) x[2] else NA)
         filterCol <- sapply(filterCol[useCol],function(x) x[1])
         }
-      if(debug) {cat("..xxWriteC0\n")}
+      if(debug) {message(fxNa,"..xxWriteC0")}
       if(length(filterCol) >0) {
         for(i in 1:length(filterCol)) {                          
           chLogi <- TRUE                                         
@@ -93,14 +93,14 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
         chNA <- is.na(zz)
         if(any(chNA)) zz[which(chNA)] <- 0
         toNum <- colSums(nchar(zz)) <1
-        if(debug) {cat("..xxWriteC1b\n")}
+        if(debug) {message(fxNa,"..xxWriteC1b")}
         if(any(toNum)) {
           if(!silent) message(fxNa," adjusting ",sum(toNum)," column(s) with Euro comma-separator")
           dat[,chCols[which(toNum)]] <- as.numeric(sub(",",".",dat[,chCols[which(toNum)]]))
           datColCl[chCols[which(toNum)]] <- "numeric"
           chCols <- which(!datColCl %in% c("numeric","integer")) }                   # refresh
         ## locate & replace 'bad' characters interfering with tabular separation -> need multiple versions
-        if(debug) {cat("..xxWriteC2\n")}
+        if(debug) {message(fxNa,"..xxWriteC2")}
         if(length(chCols) >0) for(ty in expTy) {
           dat0 <- as.matrix(dat[,chCols])                                             # refresh
           replMat <- if(is.null(replMatr))  array(c(";"," ", ","," ", "\t"," "),            
@@ -111,7 +111,7 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
           locCh <- lapply(replMat[1,], grep,dat0)
           locCh <- locCh[which(sapply(locCh,length) >0)]                                            # indexes where substitution should take place
           if(length(locCh) >0) for(i in 1:length(locCh)) dat0[locCh[[i]]] <- gsub(replMat[1,i],replMat[2,i],dat0[locCh[[i]]])
-          if(debug) {cat("..xxWriteC3\n")}
+          if(debug) {message(fxNa,"..xxWriteC3")}
           if(length(expTy) >1) {datExp[[ty]] <- dat; datExp[[ty]][,chCols] <- dat0} else dat[,chCols] <- dat0 }}
       ## idea (future) -make optional non-redundant version ? allowing to replace completely .exportFilteredCSV()
       ##  prevent Excel trying SYLK format : replace 1st col from 'ID' to 'Id'
@@ -126,7 +126,7 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
         filename <- paste0(sub("\\.csv$","",filename),".",expTy,".csv")
         if("txt" %in% expTy) filename <- sub("\\.txt.\\csv$",".txt",filename)
         names(filename) <- expTy }
-      if(debug) {cat("..xxWriteC4\n")}
+      if(debug) {message(fxNa,"..xxWriteC4")}
       if(!silent & any(file.exists(filename))) message(fxNa,"file(s) ",pasteC(filename[which(file.exists(filename))],quo="'")," will be overwritten !")
       if( "US" %in% expTy) tryW <- try(utils::write.csv(as.matrix(format(if(length(datExp)>0) datExp$US else dat,digits=digits)), filename["US"], row.names=FALSE, quote=quote),silent=silent)
       if("txt" %in% expTy) tryW <- try(utils::write.table(as.matrix(format(if(length(datExp)>0) datExp$txt else dat,digits=digits)), filename["txt"], row.names=FALSE, quote=quote),silent=silent)

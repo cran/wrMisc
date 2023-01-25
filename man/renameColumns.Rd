@@ -4,7 +4,7 @@
 \alias{renameColumns}
 \title{Rename columns}
 \usage{
-renameColumns(refMatr, newName, silent = FALSE, callFrom = NULL)
+renameColumns(refMatr, newName, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{refMatr}{matrix (or data.frame) where column-names should be changed}
@@ -13,10 +13,12 @@ renameColumns(refMatr, newName, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppres messages}
 
+\item{debug}{(logical) additional messages for debugging}
+
 \item{callFrom}{(character) allows easier tracking of message(s) produced}
 }
 \value{
-matrix (or data.frame) with renamed columns
+This function returns a matrix (or data.frame) with renamed columns
 }
 \description{
 \code{renameColumns} renames columns of 'refMatr' using 2-column matrix (or data.frame) indicating old and new names (for replacement).

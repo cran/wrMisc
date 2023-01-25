@@ -1,21 +1,22 @@
-#' Organize data as separate list-entries
+#' Organize Data as Separate List-Entries
 #'
-#' \code{asSepList} allows reorganizing list into separate numeric vectors. For example, matrixes or data.frames will be split into separate columns 
+#' \code{asSepList} allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
 #' (differnt to \code{\link[wrMisc]{partUnlist}} which maintains the original structure). This function also works with lists of lists.
 #' This function may be helpful for reorganizing data for plots.
 #'
 #' @param y list to be separated/split in vectors
+#' @param minLen (integer) min length (or number of rows), as add'l element to eliminate arguments given without names when asSepList is called in vioplot2
 #' @param asNumeric (logical) to transform all list-elements in simple numeric vectors (won't work if some entries are character)
 #' @param exclElem (character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)
-#' @param fxArg depreciated, replaced by \code{exclElem}
-#' @param minLen (integer) min length (or number of rows), as add'l element to eliminate arguments given without names when asSepList is called in vioplot2
+#' @param sep (character) separator when combining name of list-element to colames
+#' @param fillNames (logical) add names for list-elements/ series when not given
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
 #' @return This function returns a list, partially unlisted to vectors
 #' @seealso \code{\link[wrMisc]{partUnlist}}, \code{\link[base]{unlist}}
 #' @examples
-#' bb <- list(fa=gl(2,2), c=31:33, L2=matrix(21:28,nc=2), 
+#' bb <- list(fa=gl(2,2), c=31:33, L2=matrix(21:28,nc=2),
 #'   li=list(li1=11:14, li2=data.frame(41:44)))
 #' asSepList(bb)
 #' ## multi data-frame examples
@@ -26,7 +27,84 @@
 #' cd <- list(e1=gl(3,2), e2=ca, e3=cb, e4=91:94, short=81:82, e6=letters[1:5])
 #' asSepList(cd)
 #' @export
-asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, silent=FALSE, callFrom=NULL, debug=FALSE) {
+asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillNames=TRUE, silent=FALSE, callFrom=NULL, debug=FALSE) {
+  ## convert all data-series of list (ie all list elements or columns) in separate list-elements (OK with list of lists) eg for plots
+  ## 'asNumeric'.. to transform all list-elements in simple numeric vectors (won't work if some entries are character)
+  ## 'minLen' .. min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2
+  ## 'fxArg' .. optinal, names to exclude if any (lazy matching) matches (to exclude other arguments be mis-interpreted as data, used in vioplot2)
+  fxNa <- .composeCallName(callFrom, newNa="asSepList")
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(!isTRUE(silent)) silent <- FALSE
+  namesY <- sub("[[:punct:]].*|[[:space:]].*|","",deparse(substitute(y)))   # reduce to alphanum content
+  if(length(y) >0) {
+    if(!inherits(y,"list")) {
+      y <- .asDF2(y)
+      chNam <- if(length(colnames(y)) <1) rep(TRUE, ncol(y)) else colnames(y) %in% ""
+      if(any(chNam)) colnames(y)[which(chNam)] <- paste0(namesY,sep,which(chNam))
+      y <- as.list(y)
+      if(debug) {message(fxNa,"aSL1  non-list concert to list of length ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,minLen=minLen) }
+    } else {
+      .matr2List <- function(z) as.list(as.data.frame(z))
+      chSubLi <- sapply(y, is.list) & !sapply(y, is.data.frame)
+      if(debug) {message(fxNa,"aSL1  list-entry; ini length of 'y' ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,chSubLi=chSubLi) }
+      w <- NULL
+      ## try to separate sub-lists
+      if(length(y) >0 & any(chSubLi)) {                        # run partUnlist() on all sub-lists
+        if(length(y)==1) { y <- .asDF2(y[[1]])
+          if(debug) {message(fxNa,"aSL1b")}
+          chNam <- if(length(colnames(y)) <1) rep(TRUE, ncol(y)) else colnames(y) %in% ""
+          if(any(chNam)) colnames(y)[which(chNam)] <- paste0(namesY,sep,which(chNam))
+          y <- as.list(y)
+        } else {
+          isLi <- sapply(y, inherits, "list")
+          chNam <- if(length(names(y)) >0) names(y) =="" else rep(FALSE, length(y))
+          if(any(chNam) & isTRUE(fillNames)) {newNa <- paste(namesY,which(chNam),sep=sep)
+            if(any(newNa %in% names(y))) newNa <- paste0(namesY,sep,"_",which(chNam))
+              names(y)[which(chNam)] <- newNa }
+          if(debug) {message(fxNa,"aSL2   ")}
+
+          if(any(isLi)) y <- partUnlist(y, silent=silent, debug=debug,callFrom=fxNa)  #[which(chSubLi)])
+          ## now need to separate matrix-columns (& check names)
+          iniDim <- lapply(y, ncol)
+          ch2d <- sapply(iniDim, function(x) length(x)==1)
+          if(any(ch2d)) {             ## contains matrix or data.frame, need to separate cols
+            w <- lapply(y[which(ch2d)], .matr2List)
+            w <- partUnlist(w, silent=silent,debug=debug,callFrom=fxNa)
+            names(w) <- paste0(rep(names(y)[which(ch2d)],unlist(iniDim[which(ch2d)])),sep, unlist(lapply(unlist(iniDim[which(ch2d)]), function(x) if(x >1) 1:x else ""))) }
+          y <- y[-which(ch2d)]                        # remove matrix parts
+          y[length(y) +(1:length(w))] <- w            # attach separated columns
+          names(y)[1 +length(y) -(length(w):1)] <- names(w)
+          if(debug) {message(fxNa,"aSL3   length of basic part ",length(y),"   length of matrix-part ",length(w))}
+
+          ## adjust order
+          newOr <- as.list(match(names(iniDim), names(y)))
+          chNa <- is.na(match(names(iniDim), names(y)))
+          if(any(chNa, na.rm=TRUE)) newOr[which(chNa)] <- lapply(paste0("^",names(iniDim)[which(is.na(match(names(iniDim), names(y))))],sep), grep, names(y))
+          y <- y[unlist(newOr)]
+          names(y) <- sub(paste0(sep,"$"),"", names(y))     # remove tailing sep from single-column matrices
+        }
+      }
+    }
+    if(debug) {message(fxNa,"aSL4   length of list output (befor minLen-filter) ",length(y))}
+    ## check length
+    chLe <- sapply(y, length) < minLen
+    if(any(chLe, na.rm=TRUE)) { y <- y[which(!chLe)]
+      if(all(chLe, na.rm=TRUE) & !silent) message(fxNa,"All elements of ',namesY,' below length-limit (",minLen,") - nothing remains") }
+    ## convert to numeric
+    if(isTRUE(asNumeric)) { chMode <- sapply(y, function(x) "numeric" %in% mode(x))
+      if(any(!chMode)) y[which(!chMode)] <- lapply(y, convToNum, callFrom=fxNa,silent=silent) }
+    if(debug) {message(fxNa,"aSL5   length of list output (after minLen-filter) ",length(y))}
+  } else if(debug(fxNa,"Empty input, nothing to do"))
+  if(debug) message(fxNa,"returning list of length ",length(y))
+  y }
+
+
+#' @export
+.asDF2 <- function(z) if(is.factor(z)) as.data.frame(as.character(z)) else as.data.frame(z)  # convert anything to data.frame-like
+
+
+#' @export
+.asSepListOld <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, silent=FALSE, callFrom=NULL, debug=FALSE) {
   ## convert all data-series of list (ie all list elements or columns) in separate list-elements (OK with list of lists) eg for plots
   ## 'asNumeric'.. to transform all list-elements in simple numeric vectors (won't work if some entries are character)
   ## 'minLen' .. min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2
@@ -37,8 +115,7 @@ asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, si
   f1 <- function(x,lim=1) if(length(dim(x)) ==2) ncol(x) >lim else FALSE   # locate elements with multiple cols
   if(is.matrix(y)) y <- list(y) else if(!is.list(y)) y <- as.list(y)
   chSubLi <- sapply(y, is.list) & !sapply(y, is.data.frame)
-  if(debug) {silent <- FALSE
-    message(fxNa," ini length of 'y' ",length(y)) }
+  if(debug) {message(fxNa,"aSL1  ini length of 'y' ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,chSubLi=chSubLi) }
   w <- NULL
   ## try to separate sub-lists
   if(length(y) >0 & any(chSubLi)) {                        # run partUnlist() on all sub-lists
@@ -55,7 +132,7 @@ asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, si
   ## check for conflicting names to 'exclElem'
   if(length(exclElem) >0 & length(y) >0) {
     chNa <- names(y) %in% exclElem
-    if(debug) message(fxNa,"head chNa ",pasteC(utils::head(chNa)))    # problem using .checkArgNa() ? 
+    if(debug) message(fxNa,"head chNa ",pasteC(utils::head(chNa)))    # problem using .checkArgNa() ?
     if(any(chNa)) { if(isFALSE(silent)) message(fxNa,"Reducing list from ",length(y)," to ",sum(!chNa,na.rm=TRUE))
       y <- y[which(!chNa)]} }
   ## filter minLen
@@ -64,13 +141,13 @@ asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, si
     chLe <- sapply(y[which(chCol)], nrow) < minLen
     if(any(chLe)) y[which(chCol)[which(chLe)]] <- NULL }
   chCol <- sapply(y, f1, 0)
-  if(any(chCol) & length(y) >0) { 
+  if(any(chCol) & length(y) >0) {
       chLe <- sapply(y, length) < minLen
       chDf <- sapply(y, is.data.frame)                          # need to correct in case of df
       if(any(chDf)) chLe[which(chDf)] <- sapply(y[which(chDf)],nrow) < minLen
-      if(any(chLe)) y[which(chLe)] <- NULL  
+      if(any(chLe)) y[which(chLe)] <- NULL
   } else y <- y[which(sapply(y,length) > minLen)]
-  if(length(y) <1 & isFALSE(silent)) message(fxNa," Note, NOTHING passed filtering for min ",minLen," lines/values")  
+  if(length(y) <1 & isFALSE(silent)) message(fxNa," Note, NOTHING passed filtering for min ",minLen," lines/values")
 
   ## split matrixes or data.frames in separate lists
   chCol <- sapply(y, f1)   # refresh
@@ -82,15 +159,10 @@ asSepList <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, si
       dimNa <- dimnames(x)
       if(is.null(dimNa[[2]])) colnames(x) <- dimNa[[2]] <- paste0(xNa,1:ncol(x))
       x <- as.list(as.data.frame(x))
-      if(any(xNa %in% names(y)) & nchar(xNa) >0) xNa <- paste0(xNa,"_2") 
+      if(any(xNa %in% names(y)) & nchar(xNa) >0) xNa <- paste0(xNa,"_2")
       y[length(y) +(1:length(x))] <- x
       names(y)[length(y) +1 -(length(x):1)] <- if(nchar(xNa) >0) paste(xNa,names(x),sep="_") else names(x)
       chCol <- sapply(y,f1) }}
   ## transform to numeric (if possible)
   if(isTRUE(asNumeric)  & length(y) >0) y <- lapply(y, convToNum, autoConv=TRUE)
   y }
-  
-#' @export
-.asDF2 <- function(z) { if(is.factor(z)) as.data.frame(as.character(z)) else {
-  if(length(dim(z))==2) as.data.frame(z) else as.data.frame(as.matrix(z)) }}   # convert anything to data.frame-like
-  

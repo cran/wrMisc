@@ -137,8 +137,8 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
     names(refn) <- colnames(y)
     tm <- if(ncol(y)==2) paste(y[,1],y[,2]) else apply(y, 1, paste, collapse=" ");
     nn <- match(tm, unique(tm))
-    if(debug) {message(fxNa," -> fCombAll"); fComb <- list(y=y,ref=ref,refn=refn, tm=tm,nn=nn)}
-    names(nn) <- if(ncol(y)==1) ref[,refn] else apply(ref[,refn],1,paste0,collapse="_")
+    if(debug) {message(fxNa," -> fCombAll"); fComb <- list(y=y,ref=ref,refn=refn,tm=tm,nn=nn)}
+    names(nn) <- if(ncol(y)==1) ref[,refn] else apply(ref[,refn], 1, paste0, collapse="_")
     list(col=refn, lev=nn, meth="comb all col") }
 
   fComNonOrth <- function(y, oup="min", ref=y) { if(debug) message(fxNa," -> fComNonOrth")

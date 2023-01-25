@@ -89,7 +89,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     if(length(refCluNo) <1) { refCluNo <- which(offSclu[,"refVa"] < stats::median(offSclu[,"refVa"],na.rm=TRUE) &
       abs(offSclu[,"cor"]) > 0.92 & offSclu[,"centerCV"] < cvThr[2] & offSclu[,"n"] >=minNPoints) }
   }
-  if(debug) message("  select clusters ",if(length(refCluNo) >0) paste(refCluNo,collapse=" ") else "(none)"," for refining")
+  if(debug) message(fxNa,"  select clusters ",if(length(refCluNo) >0) paste(refCluNo,collapse=" ") else "(none)"," for refining")
   if(length(refCluNo) >0) { for(j in refCluNo) {       
       newCluNo <- max(bestPart$cluster) +1
        ## this part may be further improved (.keepCenter1d may remove too much = split good clusters) 
@@ -104,10 +104,10 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     xyCor <- as.numeric(unlist(by(dat[filt1,1:2],cluN,function(x) {if(length(unique(x[,1])) >1 & length(unique(x[,2])) >1) stats::cor(x[,1],x[,2]) else 0} ))) 
     refVa <- (1 -abs(xyCor)) *offSclu[,"centerSd"]/ (offSclu[,"center"] *sqrt(offSclu[,"n"]))
     offSclu <- cbind(offSclu ,centerCV=abs(offSclu[,"centerSd"]/offSclu[,"center"]), cor=xyCor, refVa=refVa)
-    if(debug) message("  updated xyCor,offSclu ...")
+    if(debug) message(fxNa,"  updated xyCor,offSclu ...")
   }
   if(length(refCluNo) <1) {                  ## nothing found so far, rather choose big cluster with cor > 50%
-    if(debug) message("  nothing found so far, rather choose big cluster with cor > 50%")
+    if(debug) message(fxNa,"  nothing found so far, rather choose big cluster with cor > 50%")
     tmp3 <- which(offSclu[,"n"] >3)
     if(nrow(offSclu) ==1){ refCluNo <- 1 } else {                     # single cluster (no choice)
     if(length(tmp3) <2) refCluNo <- which.max(offSclu[,"n"]) else {   # all clusters smaller <4, choose largest
@@ -136,9 +136,9 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     offT[as.character(j),] <- c(n=length(sel), medOffS=stats::median(offS[filt1[sel]]),
       CVoffS=abs(stats::sd(offS[filt1[sel]])/mean(offS[filt1[sel]])), r=stats::cor(dat[filt1[sel],1],dat[filt1[sel],2]),
       neigbDist=.neigbDis(dat[filt1[which(bestPart$cluster==j)],1:2])/sum(bestPart$cluster==j),
-      CIlo=CI[1],CIhi=CI[2],CIov=NA,grade=NA,grade2=NA) }
+      CIlo=CI[1], CIhi=CI[2], CIov=NA, grade=NA, grade2=NA) }
   offT[,"grade"] <- signif(log(offT[,"n"])/15 + offT[,"r"] -10*offT[,"CVoffS"],3)    # 'grade' .. consider n,r & CVoffS; higher..better
-  if(debug) message("  offT created, columns ",paste(colnames(offT),collapse=" "))
+  if(debug) message(fxNa,"  offT created, columns ",paste(colnames(offT),collapse=" "))
   refCluSel <- which(refCluNo %in% rownames(offT)[which(offT[,"neigbDist"] <= neighbDiLim)])
   if(!is.null(neighbDiLim) & length(refCluSel) >0) refCluNo <- refCluNo[refCluSel]
   ## rank2 : rank of 'grade' among top-hits ('refCluNo'), here with 1 for highest=best 'grade'
@@ -148,7 +148,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     out <- list(offS=offT, clus=bestPart$cluster, index=lapply(refCluNo, function(x) which(bestPart$cluster==x)))
   } else out <- offT
   ## compare to lm fit                                            
-  if(debug) message("  ..ready to refine ",length(refCluNo)," groups by lm (conserve = ",is.list(out),")")
+  if(debug) message(fxNa,"  ..ready to refine ",length(refCluNo)," groups by lm (conserve = ",is.list(out),")")
   if(lmCompare) {for(i in 1:length(refCluNo)) {
     j <- refCluNo[i]
     dat2 <- as.data.frame(matrix(dat[filt1[which(bestPart$cluster==j)],1:2], ncol=2))
@@ -186,7 +186,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     }
   ## plot of dat
   if(displScat) {
-    if(debug) message("  ..displScat=",displScat)
+    if(debug) message(fxNa,"  ..displScat=",displScat)
     grpChar1 <- offT[,"neigbDist"]
     names(grpChar1) <- rownames(offT)   # names gets lost when just 1 line in offT
     tit <- paste("identification of linear groups with slope ",signif(coeff,3))
@@ -201,7 +201,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
       "   class grpHighl ",class(rownames(offT)),"   class datNa ",class(argNa))
     useClu <- which.max(offT[,"n"])
     useLi <- which(bestPart$cluster==useClu)
-     cat("  len useLi",length(useLi),"   useCol ",useCol,"\n")
+    if(debug) message(fxNa,"  len useLi",length(useLi),"   useCol ",useCol)
     graphics::plot(dat[,1],dat[,2], main=tit, pch=21, bg=useCol, xlab=colnames(dat)[1], ylab=colnames(dat)[2])
     graphics::legend("topleft",paste0("clu ",rownames(offT)," ,n=",offT[,1]), text.col=1, pch=21, col=1,pt.bg=useColPa,cex=0.8,xjust=0.5,yjust=0.5)        # as points
   }
@@ -263,7 +263,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   if(!isFALSE(cluChar)) cluChar <- TRUE
   out <- NULL  
   if(automClu) {
-    if(!requireNamespace("NbClust", quietly=TRUE)) { message("Package 'NbClust' not found ! Please install first from CRAN \n   setting 'automClu'=FALSE for using kmeans()")
+    if(!requireNamespace("NbClust", quietly=TRUE)) { message(fxNa,"Package 'NbClust' not found ! Please install first from CRAN \n   setting 'automClu'=FALSE for using kmeans()")
     automClu <- FALSE } }
   if(automClu) {
     cluAut <- try(NbClust::NbClust(dat, method="average",index="ccc"),silent=TRUE)     # cluster only best = smallest dist

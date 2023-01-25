@@ -44,10 +44,10 @@ Note: 'refGrp' not yet coded optimally to extract numeric part of character vect
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix of normalized data
+This functuion returns a matrix of normalized data
 }
 \description{
 This function normalizes 'dat' by optimizing exponent function (ie dat ^exp) to fit best to 'ref' (default: average of each line of 'dat').

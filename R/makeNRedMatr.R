@@ -11,7 +11,7 @@
 #' @param callFrom (character) allows easier tracking of message(s) produced
 #' @param silent (logical) suppress messages
 #' @param debug (logical) for bug-tracking: more/enhanced messages
-#' @return (numeric) matrix or data.frame with summarized data and add'l col with number of initial redundant lines
+#' @return This function returns a (numeric) matrix or data.frame with summarized data and add'l col with number of initial redundant lines
 #' @seealso simple/partial functionality in \code{\link{summarizeCols}},  \code{\link{checkSimValueInSer}}
 #' @examples
 #' t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],
@@ -21,7 +21,7 @@
 #' (xt3 <- makeNRedMatr(t3, summ="mean", iniID="ref"))
 #' (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxAbsOfRef")), iniID="ref"))
 #' @export
-makeNRedMatr <- function(dat,summarizeRedAs,iniID="iniID",retDataFrame=TRUE,callFrom=NULL,silent=FALSE,debug=FALSE) {
+makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, callFrom=NULL, silent=FALSE, debug=FALSE) {
   fxNa <- .composeCallName(callFrom,newNa="makeNRedMatr")
   maxLaArg <- c("maxOfRef","minOfRef","maxAbsOfRef")    
   summOpt <- c("median","mean","min","max","first","last",maxLaArg)   
@@ -63,7 +63,7 @@ makeNRedMatr <- function(dat,summarizeRedAs,iniID="iniID",retDataFrame=TRUE,call
     if(!silent) message(fxNa,"Argument 'summarizeRedAs' has to few elements, extening by ",sum(!iniIDcol) -length(summarizeRedAs)," elements")
     summarizeRedAs <- rep(summarizeRedAs,ceiling(sum(!iniIDcol)/length(summarizeRedAs)))[1:sum(!iniIDcol)]
     names(summarizeRedAs) <- colnames(dat)[which(!iniIDcol)] }}    
-  if(debug) {cat(" xxmakeNRedMatr1\n")}
+  if(debug) {message(fxNa," xxmakeNRedMatr1")}
   refID <- dat[,which(iniIDcol)]
   out <- matrix(NA,nrow=length(unique(refID)),ncol=ncol(dat),dimnames=list(unique(refID),colnames(dat)))       # initalize (for all summariz w/o special meth)
   if(any(summarizeRedAs %in% maxLaArg)) {                       ##  summarize all cols together (based on last col)      
@@ -94,12 +94,12 @@ makeNRedMatr <- function(dat,summarizeRedAs,iniID="iniID",retDataFrame=TRUE,call
   } }
   if(!silent) message(fxNa,"Summarize redundant based on col '",iniID,"'  using method(s) : ",pasteC(summarizeRedAs,quoteC="'"),
     if(any(summarizeRedAs %in% maxLaArg)) c(" and col '",names(summarizeRedAs)[1],"'")," yielding ",ncol(out)," cols")
-  if(debug) {cat(" xxGetRe3 \n")}
+  if(debug) {message(fxNa," xxGetRe3")}
   if(length(dim(tmp)) >1) { if(length(rownames(tmp)) >0) rownames(out) <- rownames(tmp)
     } else if(length(names(tmp)) >0) rownames(out) <- names(tmp) 
-  out <- cbind(out,tapply(dat[,1],dat[,which(iniIDcol)],length))
+  out <- cbind(out, tapply(dat[,1], dat[,which(iniIDcol)], length))
   colnames(out)[ncol(out)] <- if("nRedLi" %in% colnames(out)) paste(colnames(out)[rev(grep("^nRedLi",colnames(out)))[1]],"X",sep=".") else "nRedLi"
-  if(retDataFrame & mode(out)=="character") out <- convMatr2df(out,silent=silent)
+  if(retDataFrame & mode(out)=="character") out <- convMatr2df(out, silent=silent)
   out }
 
 #' @export

@@ -8,6 +8,7 @@ mergeMatrices(
   ...,
   mode = "intersect",
   useColumn = 1,
+  na.rm = TRUE,
   extrRowNames = FALSE,
   silent = FALSE,
   debug = FALSE,
@@ -20,6 +21,8 @@ mergeMatrices(
 \item{mode}{(character) allows choosing restricting to all common elements (\code{mode='intersect'}) or union  (\code{mode='union'})}
 
 \item{useColumn}{(integer, character or list) the column(s) to consider, may be \code{'all'} to use all, integer to select specific indexes or list of indexes or colnames for cutom-selection per matrix}
+
+\item{na.rm}{(logical) suppress \code{NA}s}
 
 \item{extrRowNames}{(logical) decide whether columns with all values different (ie no replicates or max divergency) should be excluded}
 

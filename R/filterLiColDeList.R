@@ -14,7 +14,7 @@
 #' @param ref (integer) index for designing the elment of 'lst' to take as reference for checking which other list-elements have suitable number of rows or columns
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return correct input (object of same class, same length)
+#' @return this function returns the correct(ed) input (object of same class, same length)
 #' @seealso \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} 
 #' @examples
 #' lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34, 
@@ -22,10 +22,7 @@
 #' ## here $m2 has more lines than $m1, and thus will be ignored when ref=1
 #' filterLiColDeList(lst1, useLines=2:3)
 #' filterLiColDeList(lst1, useLines="allNA", ref=4)
-#' 
-#' 
-#' 
-#' 
+#'  
 #' @export
 filterLiColDeList <- function(lst, useLines, useCols=NULL, ref=1, silent=FALSE, callFrom=NULL) {
   ## filter all list-elements matching number of lines from the 'ref'-th list-element
@@ -83,7 +80,7 @@ filterLiColDeList <- function(lst, useLines, useCols=NULL, ref=1, silent=FALSE, 
         if(!silent) message(fxNa,"'useCols' seems empty, nothing to do ...")
       } else {
         useEl <- sapply(dims, function(x) if(length(x) >1) x[2] else 0) == dims[[ref]][2]
-        if(any(useEl)) for(i in which(useEl)) {cat("i=",i,"\n"); lst[[i]] <- if(length(dims[[i]])==2) lst[[i]][,useCols] else lst[[i]][,useCols,]}
+        if(any(useEl)) for(i in which(useEl)) {message(fxNa,"i=",i); lst[[i]] <- if(length(dims[[i]])==2) lst[[i]][,useCols] else lst[[i]][,useCols,]}
         if(!silent) message(fxNa,"successfully filtered ",pasteC(names(lst)[which(useEl)],quoteC="'")," from ",dims[[ref]][2]," to ",length(useCols)," columns") } 
       ## check for single vectors matching ncol of ref (as long nrow not equal ncol of ref)
       chV <- sapply(dims, length)==0  & dims[[ref]][1]==dims[[ref]][2]

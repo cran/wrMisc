@@ -11,7 +11,8 @@ packageDownloadStat(
   figure = TRUE,
   log = "",
   silent = FALSE,
-  callFrom = NULL
+  callFrom = NULL,
+  debug = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ packageDownloadStat(
 \item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 This function retuns a matrix with download counts (or \code{NULL} if the web-site can't be accessed or the query-packages are not found there)

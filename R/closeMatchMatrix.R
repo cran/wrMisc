@@ -37,14 +37,14 @@
 #' (maA2 <- closeMatchMatrix(cloM2,cbind(id=names(a2),valA=81:87,a2),cbind(id=names(c2),
 #'   valC=91:99,c2),colM=3,colP=3,lim=FALSE,deb=FALSE)) 
 #' @export
-closeMatchMatrix <- function(closeMatch,predMatr,measMatr,prefMatch=c("^x","^y"),colPred=1,colMeas=1,limitToBest=TRUE,asDataFrame=FALSE,origNa=TRUE,silent=FALSE,callFrom=NULL,debug=FALSE){
+closeMatchMatrix <- function(closeMatch, predMatr, measMatr, prefMatch=c("^x","^y"), colPred=1, colMeas=1, limitToBest=TRUE, asDataFrame=FALSE, origNa=TRUE,silent=FALSE,callFrom=NULL,debug=FALSE){
   fxNa <- .composeCallName(callFrom,newNa="closeMatchMatrix")
-  namesMXY <- c(deparse(substitute(closeMatch)),deparse(substitute(predMatr)),deparse(substitute(measMatr)))
+  namesMXY <- c(deparse(substitute(closeMatch)), deparse(substitute(predMatr)), deparse(substitute(measMatr)))
   if(debug) silent <- FALSE
-  if(debug) {cat(".. xxidentToMatr2a\n")}
+  if(debug) {message(fxNa,".. xxidentToMatr2a\n")}
   if(length(closeMatch) <1) message(fxNa," INPUT EMPTY, NOTHING TO DO !!")
   if(length(dim(predMatr)) <2) {
-    predMatr <- cbind(id=if(is.null(names(predMatr))) 1:length(predMatr) else names(predMatr),predMatr)
+    predMatr <- cbind(id=if(is.null(names(predMatr))) 1:length(predMatr) else names(predMatr), predMatr)
     if(is.character(colPred)) colnames(predMatr)[2] <- colPred
     colPred <- 2
   } else if(!is.matrix(predMatr)) predMatr <- as.matrix(predMatr)
@@ -56,9 +56,9 @@ closeMatchMatrix <- function(closeMatch,predMatr,measMatr,prefMatch=c("^x","^y")
     if(colnames(predMatr)[1] != "id") {tmp <- colnames(predMatr)=="id"
       predMatr <- predMatr[,c(which(tmp),which(!tmp))]} 
   } else { colPred <- colPred +1 
-    predMatr <- cbind(id=if(is.null(rownames(predMatr))) 1:nrow(predMatr) else rownames(predMatr),predMatr)}  
+    predMatr <- cbind(id=if(is.null(rownames(predMatr))) 1:nrow(predMatr) else rownames(predMatr), predMatr)}  
   if(length(dim(measMatr)) <2) {
-    measMatr <- cbind(id=if(is.null(names(measMatr))) 1:length(measMatr) else names(measMatr),measMatr)
+    measMatr <- cbind(id=if(is.null(names(measMatr))) 1:length(measMatr) else names(measMatr), measMatr)
     if(is.character(colMeas)) colnames(measMatr)[2] <- colMeas
     colMeas <- 2 
   } else if(!is.matrix(measMatr)) measMatr <- as.matrix(measMatr)
@@ -77,7 +77,7 @@ closeMatchMatrix <- function(closeMatch,predMatr,measMatr,prefMatch=c("^x","^y")
   chCloMaN2 <- nchar(unlist(sapply(closeMatch,names))) 
   if(any(chCloMaN2 <1)) message(fxNa,txt[1],sum(chCloMaN2 <1)," out of ",sum(sapply(closeMatch,length))," indiv ",txt[2])   ##if(is.null(colnames(predMatr))) colnames(predMatr) <- "predMatr"
   nMatch <- sapply(closeMatch,length)
-  if(debug) {cat(".. xxidentToMatr2c\n")}
+  if(debug) {message(fxNa,".. xxidentToMatr2c\n")}
   ## main joining of predMatr & measMatr
   measNa <- sub(prefMatch[2],"",unlist(lapply(closeMatch,names)))         # names of measured (y) to each 'y'
   if(length(grep("[[:alpha:]]",measNa)) <1) measNa <- as.integer(measNa)        
@@ -107,28 +107,28 @@ closeMatchMatrix <- function(closeMatch,predMatr,measMatr,prefMatch=c("^x","^y")
       colnames(partP)[which(chNaP)] <- paste(colnames(partP)[which(chNaP)],"pred",sep=".")
       colnames(partM)[which(chNaM)] <- paste(colnames(partM)[which(chNaM)],"meas",sep=".") }
   }
-  out <- cbind(partP,partM)
+  out <- cbind(partP, partM)
   colMeas <- colMeas + ncol(partP) 
-  if(debug) {cat(".. xxidentToMatr2d\n")}   
+  if(debug) {message(fxNa,".. xxidentToMatr2d\n")}   
   chOrd <- order(as.character(out[,colMeas]))             # grouping done by measured mass; tapply will always sort by this alphabetically (so instead of repeated re-sorting...)
   if(!identical(chOrd,1:nrow(out))) out <- out[chOrd,]  
   ## add suppelemental info  (eg distance, if dist is closest, ...)
   if(nrow(out) <1) {if(!silent) message(fxNa," nothing left"); return(NULL)} else {
     di <- cbind(me=as.numeric(out[,colMeas]),pr=if(length(colPred) >0) as.numeric(out[,colPred]))
-    out <- cbind(out,disToPred=di[,2]-di[,1],ppmToPred=XYToDiffPpm(di[,2],di[,1],nSign=5,callFrom=fxNa),nByGrp=NA,isMin=NA,nBest=NA)    # note : ppm as normalized difference 1e6*(meas - ref)/ref
-    if(debug) {cat(".. xxidentToMatr2e\n")}
+    out <- cbind(out,disToPred=di[,2]-di[,1], ppmToPred=XYToDiffPpm(di[,2], di[,1], nSign=5, callFrom=fxNa), nByGrp=NA, isMin=NA, nBest=NA)    # note : ppm as normalized difference 1e6*(meas - ref)/ref
+    if(debug) {message(fxNa,".. xxidentToMatr2e\n")}
     ## inspect groups for multiple values
     ch1 <- table(out[,colPred])
     out[,ncol(out)-2] <- rep(ch1,ch1)                                   # nByGrp
-    tmp <- tapply(as.numeric(out[,"disToPred"]),out[,colPred],function(x) {if(length(unique(x))==1) rep(1,length(x)) else 0+(abs(x)==min(abs(x)))} )
+    tmp <- tapply(as.numeric(out[,"disToPred"]), out[,colPred], function(x) {if(length(unique(x))==1) rep(1,length(x)) else 0+(abs(x)==min(abs(x)))} )
     out[,"isMin"] <- unlist(tmp)
-    tmp <- tapply(as.integer(out[,"isMin"]),out[,colPred],sum)            # prepare nBest
+    tmp <- tapply(as.integer(out[,"isMin"]), out[,colPred], sum)            # prepare nBest
     out[,ncol(out)] <- rep(tmp,ch1)          # nBest
     ch3 <- out[,ncol(out)-1] =="0"
-    if(any(ch3)) out[which(ch3),ncol(out)] <- 0          # reset lines which are not best dist as nBest=0
+    if(any(ch3)) out[which(ch3), ncol(out)] <- 0          # reset lines which are not best dist as nBest=0
     chMax <- out[,ncol(out)-1] >0
     if(limitToBest & any(!chMax)) out <- out[which(chMax),]                                                            # filter & add col for nBest      
-    if(debug) { cat(".. xxidentToMatr2f \n")}
+    if(debug) { message(fxNa,".. xxidentToMatr2f \n")}
     ## re-sort 
     if(nrow(out) >1) {chOrd <- as.integer(order(out[,1]))    #out[,"id.predMatr"]
       out <- out[chOrd,]}   

@@ -30,7 +30,7 @@ makeNRedMatr(
 \item{debug}{(logical) for bug-tracking: more/enhanced messages}
 }
 \value{
-(numeric) matrix or data.frame with summarized data and add'l col with number of initial redundant lines
+This function returns a (numeric) matrix or data.frame with summarized data and add'l col with number of initial redundant lines
 }
 \description{
 \code{makeNRedMatr} takes matrix or data.frame 'dat' to summarize redundant lines (column argument \code{iniID}) along method specified in \code{summarizeRedAs} 

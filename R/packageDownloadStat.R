@@ -24,6 +24,7 @@
 #' @param log (character) set count-axis of figure to linear or log-scale (by setting \code{log="y"})
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging
 #' @return This function retuns a matrix with download counts (or \code{NULL} if the web-site can't be accessed or the query-packages are not found there)
 #' @seealso packages \href{https://CRAN.R-project.org/package=cranlogs}{cranlogs} and \href{https://CRAN.R-project.org/package=packageRank}{packageRank}
 #' @examples
@@ -35,7 +36,7 @@
 #'
 #' @export
 packageDownloadStat <- function(queryPackages=c("wrMisc","wrProteo","cif","bcv","FinCovRegularization"), countUrl="http://www.datasciencemeta.com/rpackages",
-  refQuant=(1:10)/10, figure=TRUE, log="", silent=FALSE, callFrom=NULL) {
+  refQuant=(1:10)/10, figure=TRUE, log="", silent=FALSE, callFrom=NULL, debug=FALSE) {
   ## get rank & downloads for all 10% tiles as well as queryPackages
   ## return matrix with 1st line as rank and 2nd as n.dowloads, if inclQuant=TRUE 12th col - end for queryPackages
   fxNa <- .composeCallName(callFrom, newNa="packageDownloadStat")

@@ -79,7 +79,7 @@ test2factLimma <- function(datMatr, fac1, fac2, testSynerg=TRUE, testOrientation
       if(any(!ch)) datFit$p.value[which(!ch),] <- 1- datFit$p.value[which(!ch),]/2        # !(A > B)  .. A <= B
     }
     if(length(addResults) <1) out <- datFit$p.value[,2] else { out <- datFit
-       cat(" addResults",addResults,"\n")
+      if(debug) message(fxNa," addResults",addResults)
       ## further inspect & correct values of 'addResults' ?
       if("Mval" %in% addResults) out$Mval <- (out$means[,1] - out$means[,2]) 
       if("FDR" %in% toupper(addResults)) out$FDR <- if(length(dim(out$p.value)) >1) {

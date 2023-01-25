@@ -4,10 +4,18 @@
 \alias{partUnlist}
 \title{Partial unlist of lists of lists}
 \usage{
-partUnlist(lst)
+partUnlist(lst, sep = "_", silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{lst}{list to be partially unlisted}
+\item{lst}{(list) main input, list to be partially unlisted}
+
+\item{sep}{(character, length=1) separator for names}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns a list with partially reduced nested structure

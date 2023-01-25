@@ -1,11 +1,13 @@
 #' Rename columns
 #'
 #' \code{renameColumns} renames columns of 'refMatr' using 2-column matrix (or data.frame) indicating old and new names (for replacement). 
+#' 
 #' @param refMatr matrix (or data.frame) where column-names should be changed
 #' @param newName (matrix of character) giving correspondence of old to new names (number of lines must match number of columns of 'refMatr')
 #' @param silent (logical) suppres messages
+#' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allows easier tracking of message(s) produced
-#' @return  matrix (or data.frame) with renamed columns
+#' @return  This function returns a matrix (or data.frame) with renamed columns
 #' @examples
 #' ma <- matrix(1:8,ncol=4,dimnames=list(1:2,LETTERS[1:4]))
 #' replBy1 <- cbind(new=c("dd","bb","z_"),old=c("D","B","zz"))
@@ -15,24 +17,25 @@
 #' renameColumns(ma,replBy2)
 #' renameColumns(ma,replBy3)
 #' @export
-renameColumns <- function(refMatr,newName,silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="renameColumns")
+renameColumns <- function(refMatr, newName, silent=FALSE, debug=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="renameColumns")
   if(length(dim(refMatr)) <2) stop("expecting matrix or data.frame")
   msg <- "expecting matrix with 2 cols ('old','new')"
   if(length(dim(newName)) !=2) stop(msg) else if(ncol(newName) <2) stop(msg)
   if(is.null(colnames(newName))) { colNe <- 1:2
-  } else { colNe <- match(c("old","new"),colnames(newName)) #;  cat(" colNe ini ",colNe,"\n")
+  } else { colNe <- match(c("old","new"),colnames(newName)) 
+    if(debug)  message(fxNa," colNe ini ",colNe)
     if(is.na(colNe[1])) colNe[1] <- (1:ncol(newName))[if(is.na(colNe[2])) -2 else -1*colNe[2]][1]
     if(is.na(colNe[2])) colNe[2] <- (1:ncol(newName))[-1*colNe[1]][1] }
   newName <- newName[,colNe]
-  replLi <- naOmit(match(colnames(refMatr),newName[,1]))
+  replLi <- naOmit(match(colnames(refMatr), newName[,1]))
   if(length(replLi) <1) { if(!silent) message(fxNa," no names matching for replacing dat, nothing to do !")
   } else {
     colnames(refMatr)[match(newName[replLi,1],colnames(refMatr))] <- newName[replLi,2] }
   refMatr }
 
 #' @export
-.keepFiniteCol <- function(dat,silent=FALSE,msgStart=NULL,callFrom=NULL){
+.keepFiniteCol <- function(dat, msgStart=NULL, silent=FALSE,callFrom=NULL){
   ## remove all columns where all data are not finite
   fxNa <- .composeCallName(callFrom,newNa=".keepFiniteCol")
   tmp <- colSums(is.finite(dat))
@@ -43,7 +46,7 @@ renameColumns <- function(refMatr,newName,silent=FALSE,callFrom=NULL){
   dat }
 
 #' @export
-.removeEmptyCol <- function(dat,fromBackOnly=TRUE,searchFields=c(""," ","NA.",NA),silent=FALSE,callFrom=NULL){
+.removeEmptyCol <- function(dat, fromBackOnly=TRUE, searchFields=c(""," ","NA.",NA), silent=FALSE,callFrom=NULL){
   ## search for (empty) columns conaining only entries defined in 'searchFields' and remove such columns
   ## if 'fromBackOnly' =TRUE .. only tailing empty columns will be removed (other columns with "empty" entries in middle will be kept)
   ## if ''=TRUE columns containing all NAs will be excluded as well

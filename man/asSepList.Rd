@@ -2,14 +2,15 @@
 % Please edit documentation in R/asSepList.R
 \name{asSepList}
 \alias{asSepList}
-\title{Organize data as separate list-entries}
+\title{Organize Data as Separate List-Entries}
 \usage{
 asSepList(
   y,
-  asNumeric = TRUE,
   minLen = 4,
+  asNumeric = TRUE,
   exclElem = NULL,
-  fxArg = NULL,
+  sep = "_",
+  fillNames = TRUE,
   silent = FALSE,
   callFrom = NULL,
   debug = FALSE
@@ -18,13 +19,15 @@ asSepList(
 \arguments{
 \item{y}{list to be separated/split in vectors}
 
-\item{asNumeric}{(logical) to transform all list-elements in simple numeric vectors (won't work if some entries are character)}
-
 \item{minLen}{(integer) min length (or number of rows), as add'l element to eliminate arguments given without names when asSepList is called in vioplot2}
+
+\item{asNumeric}{(logical) to transform all list-elements in simple numeric vectors (won't work if some entries are character)}
 
 \item{exclElem}{(character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)}
 
-\item{fxArg}{depreciated, replaced by \code{exclElem}}
+\item{sep}{(character) separator when combining name of list-element to colames}
+
+\item{fillNames}{(logical) add names for list-elements/ series when not given}
 
 \item{silent}{(logical) suppress messages}
 
@@ -36,12 +39,12 @@ asSepList(
 This function returns a list, partially unlisted to vectors
 }
 \description{
-\code{asSepList} allows reorganizing list into separate numeric vectors. For example, matrixes or data.frames will be split into separate columns 
+\code{asSepList} allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
 (differnt to \code{\link[wrMisc]{partUnlist}} which maintains the original structure). This function also works with lists of lists.
 This function may be helpful for reorganizing data for plots.
 }
 \examples{
-bb <- list(fa=gl(2,2), c=31:33, L2=matrix(21:28,nc=2), 
+bb <- list(fa=gl(2,2), c=31:33, L2=matrix(21:28,nc=2),
   li=list(li1=11:14, li2=data.frame(41:44)))
 asSepList(bb)
 ## multi data-frame examples

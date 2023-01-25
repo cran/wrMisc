@@ -34,12 +34,12 @@ findSimilFrom2sets(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{debug}{(logical) for bug-tracking: more/enhanced messages}
 }
 \value{
-matrix (predMatr) with add'l columns for index to and 'grp' (group of similar values (1-to-many)), 'nGrp' (n of grp), 'isBest' or 'nBest', 'disToMeas' (distance/difference between pair) &  'ppmToPred' (distance in ppm)
+This function returns a matrix (predMatr) with add'l columns for index to and 'grp' (group of similar values (1-to-many)), 'nGrp' (n of grp), 'isBest' or 'nBest', 'disToMeas' (distance/difference between pair) &  'ppmToPred' (distance in ppm)
 }
 \description{
 \code{findSimilFrom2sets} compares to vectors or matrixes and returns combined view including only all close (by \code{\link[wrMisc]{findCloseMatch}}).

@@ -1488,7 +1488,7 @@ boxplot(no4, main="slope normalization", las=1)
 
 The standard approach for normalizing relies on consisting all columns as collections of data who's distribution is not supposed to change.
 In some cases/projects we may want to formulate a much more 'aggressive' hypothesis : We consider the content of all columns strictly as the same.
-For example this may be the case when comparing with tehcnical replicates only.
+For example this may be the case when comparing with technical replicates only.
 In such cases one may use the function `rowNormalize()` which tries to find the average or mean optimal within-line normalization factor.
 
 Besides, an additional mode of operation for _sparse data_ has been added :

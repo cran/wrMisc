@@ -28,7 +28,7 @@ set to \code{NULL} for no filtering; if '\code{allNA}' all lines composed unique
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-correct input (object of same class, same length)
+this function returns the correct(ed) input (object of same class, same length)
 }
 \description{
 Filter all elements of list (or S3-object) according to criteria designed to one selected reference-element of the list.
@@ -44,10 +44,7 @@ lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34,
 ## here $m2 has more lines than $m1, and thus will be ignored when ref=1
 filterLiColDeList(lst1, useLines=2:3)
 filterLiColDeList(lst1, useLines="allNA", ref=4)
-
-
-
-
+ 
 }
 \seealso{
 \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}}

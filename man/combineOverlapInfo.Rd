@@ -32,7 +32,7 @@ combineOverlapInfo(
 
 \item{maxOverl}{(integer) if NULL no limit or max limit of group/clu size (avoid condensing too many neighbour points to single cloud)}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{debug}{(logical) additional messages for debugging}
 
