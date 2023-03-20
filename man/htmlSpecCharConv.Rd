@@ -4,12 +4,16 @@
 \alias{htmlSpecCharConv}
 \title{Html special character conversion}
 \usage{
-htmlSpecCharConv(txt, callFrom = NULL)
+htmlSpecCharConv(txt, silent = FALSE, callFrom = NULL, debug = FALSE)
 }
 \arguments{
 \item{txt}{character vector inclusing special characters}
 
-\item{callFrom}{(character) allow easier tracking of message produced}
+\item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 This function returns a corrected character vector adopted for html display

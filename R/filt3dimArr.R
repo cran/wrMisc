@@ -1,32 +1,65 @@
-#' Filter a three-dimensional array of numeric data
+#' Filter three-dimensional array of numeric data
 #'
-#' Filtering of 3-dim array ('x') : filter column 'filtCrit' as 'larger as' (according to 'filtTy') 'filtVal' 
+#' Filtering of matrix or (3-dim) array \code{x} : filter column according to \code{filtCrit} (eg 'inf') and threshold \code{filtVal}
+#'
 #' and extract/display all col matching 'displCrit'.
 #'
 #' @param x array (3-dim) of numeric data
+#' @param filtVal (numeric, length=1) for testing inferior/superor/equal condition
+#' @param filtTy  (character, length=1) which type of testing to perform (may be 'eq','inf','infeq','sup','supeq', '>', '<', '>=', '<=', '==')
 #' @param filtCrit (character, length=1) which column-name consider when filtering filter with 'filtVal' and 'filtTy'
-#' @param filtVal (numeric) for testing inferior/superor/equal condition 
-#' @param filtTy  (character) which type of testing to perform ('eq','inf','infeq','sup','supeq', '>', '<', '>=', '<=', '==')
 #' @param displCrit (character) column-name(s) to display
-#' @return list of filtered matrixes (by 3rd dim)
+#' @param silent (logical) suppress messages
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging
+#' @seealso \code{\link{filterList}}; \code{\link{filterLiColDeList}};
+#' @return This function returns a list of filtered matrixes (by 3rd dim)
 #' @examples
-#' arr1 <- array(1:24,dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
-#'   paste("col",1:3,sep=""),c("ch1","ch2")))
+#' arr1 <- array(11:34, dim=c(4,3,2), dimnames=list(c(LETTERS[1:4]),
+#'   paste("col",1:3,sep=""), c("ch1","ch2")))
 #' filt3dimArr(arr1,displCrit=c("col1","col2"),filtCrit="col2",filtVal=7)
 #' @export
-filt3dimArr <- function(x,filtCrit,filtVal,filtTy=">",displCrit=NULL){
-  if(length(dim(x)) != 3) stop("expecting 3 array as input for x")
-  if(is.character(displCrit)) if(any(!displCrit %in% colnames(x))) stop(" can't find 'displCrit' in colnames of 'x'")
-  if(is.character(filtCrit)) if(any(!filtCrit %in% colnames(x))) stop(" can't find 'filtCrit' in colnames of 'x'")
+filt3dimArr <- function(x, filtVal, filtTy=">", filtCrit=NULL, displCrit=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="filt3dimArr")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(length(dim(x)) != 3) stop("Expecting 3-dim array as input for 'x'")
+  if(debug) message(fxNa,"f3d1")
+  if(is.character(displCrit) && length(displCrit) >0) { chCrit <- match(displCrit, colnames(x))
+    if(any(is.na(chCrit))) stop("Can't find (",sum(is.na(chCrit)),") 'displCrit' in colnames of 'x'") else displCrit <- chCrit}
+  if(is.character(filtCrit) && length(filtCrit) >0) { chCrit <- match(filtCrit, colnames(x))
+    if(any(is.na(chCrit))) stop("Can't find (",sum(is.na(chCrit)),") 'filtCrit' in colnames of 'x'") else filtCrit <- chCrit}
+  if(length(filtCrit) <1) filtCrit <- 1:ncol(x)
+  if(length(displCrit) <1) displCrit <- 1:ncol(x)
   if(length(displCrit) <1) displCrit <- colnames(x)
+  if(length(filtTy) <1) filtTy <- ">" else filtTy <- filtTy[1]
+  if(!(filtTy %in% c("inf","infeq","sup","supeq","eq",">",">=","<","<=","=="))) {
+    stop("cannot identify type of filter specified") }
   ##
   out <- list()
-  out[[1]] <- x[.filterSw(x[,filtCrit,1],">",filtVal,indexRet=TRUE),displCrit,1]
-  if(dim(x)[3] >1) for(i in 2:(dim(x)[3])) out[[i]] <- x[.filterSw(x[,filtCrit,i],">",filtVal,indexRet=TRUE),displCrit,i]
+  out[[1]] <- x[.filterSw(x[,filtCrit,1], fiTy=filtTy, checkVa=filtVal, indexRet=TRUE), displCrit,1]  # start with 1st di
+  if(dim(x)[3] >1) for(i in 2:(dim(x)[3])) out[[i]] <- x[.filterSw(x[,filtCrit,i], fiTy=filtTy, checkVa=filtVal, indexRet=TRUE), displCrit, i]
   out }
 
+
+#' Filter 3-dim array of numeric data (main)
+#'
+#' Filtering of matrix or array \code{x} (may be 3-dim array) according to \code{fiTy} and \code{checkVa}
+#'
+#'
+#' @param x array (3-dim) of numeric data
+#' @param fiTy  (character) which type of testing to perform ('eq','inf','infeq','sup','supeq', '>', '<', '>=', '<=', '==')
+#' @param checkVa (logical) s
+#' @param indexRet (logical) if \code{TRUE} (default) rather return index numbers than filtered values
+#' @seealso  \code{\link{filt3dimArr}}; \code{\link{filterList}}; \code{\link{filterLiColDeList}};
+#' @return This function returns either index (position within 'x') or concrete (filtered) result
+#' @examples
+#' arr1 <- array(11:34, dim=c(4,3,2), dimnames=list(c(LETTERS[1:4]),
+#'   paste("col",1:3,sep=""),c("ch1","ch2")))
+#' filt3dimArr(arr1,displCrit=c("col1","col2"),filtCrit="col2",filtVal=7)
+#' .filterSw(arr1, fiTy="inf", checkVa=7)
 #' @export
-.filterSw <- function(x,fiTy,checkVa,indexRet=TRUE){
+.filterSw <- function(x, fiTy, checkVa, indexRet=TRUE){
   ## filterswitch function : filter values of 'x' to satisfy 'check' (vector of FALSE or TRUE)
   ## 'indexRet' .. if TRUE rather return index numbers than filtered values
   ## returns either index (position within 'x') or concrete (filtered) result
@@ -52,4 +85,4 @@ filt3dimArr <- function(x,filtCrit,filtVal,filtTy=">",displCrit=NULL){
       inf = x[which(x < checkVa)],
       infeq = x[which(x <= checkVa)] )
   } }
-   
+  

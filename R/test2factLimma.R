@@ -40,7 +40,7 @@ test2factLimma <- function(datMatr, fac1, fac2, testSynerg=TRUE, testOrientation
     warning(fxNa,"You need to install package 'limma' first from Bioconductor")}
   if(doTest) {    
     msg1 <- " 'datMatr' should have the same number of cols as length of fac1 & fac2 !"
-    if(ncol(datMatr) != length(fac1) | ncol(datMatr) != length(fac2)) stop(msg1)
+    if(ncol(datMatr) != length(fac1) || ncol(datMatr) != length(fac2)) stop(msg1)
     datDesign <- if(isTRUE(testSynerg)) try(stats::model.matrix(~ fac1 * fac2),silent=TRUE) else try(stats::model.matrix(~ fac1 + fac2), silent=TRUE)
     if(inherits(datDesign, "try-error")) { doTest <- FALSE; message(fxNa," Problem with model.matrix(), please check your factors !")
     } else if(debug) message(fxNa,"design matrix has ",nrow(datDesign)," rows and ",ncol(datDesign),"  cols")

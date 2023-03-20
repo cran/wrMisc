@@ -12,7 +12,8 @@
 #' @param filt1 (logical or numerical) filter criteria for 1st of 'useCol' , if numeric then select all lines of dat less than max of filt1
 #' @param filt2 (logical or numerical) filter criteria for 2nd of 'useCol' , if numeric then select all lines of dat less than max of filt2
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return lm object (or NULL if no data left)
 #' @seealso \code{\link[stats]{lm}}
 #' @examples
@@ -31,8 +32,11 @@
 #' plot(function(x) coef(reg2)[2]+ (coef(reg2)[2]*x^2),xlim=c(1,70))
 #' points(mat2[which(mat2[,3]=="2"),1:2],col=2)
 #' @export
-lmSelClu <- function(dat,useCol=1:2,clu="max",regTy="lin",filt1=NULL,filt2=NULL,silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="lmSelClu")
+lmSelClu <- function(dat, useCol=1:2, clu="max", regTy="lin", filt1=NULL, filt2=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="lmSelClu")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  
   regTyOpt <- c("lin","sqNor","res", "inv","invRes","norRes","sqNorRes","parb","parbRes")
   msgE <- " Argument 'dat' should matrix or data.frame with at least 3 numeric columns (including column called 'clu')"
   if(length(dim(dat)) != 2) stop(msgE)
@@ -44,7 +48,7 @@ lmSelClu <- function(dat,useCol=1:2,clu="max",regTy="lin",filt1=NULL,filt2=NULL,
   if(identical(clu,"max")) {
     clu <- as.numeric(names(which.max(table(dat[,cluCol[1]])))) }
   msg2 <- paste(" Argument 'regTy' should be either ",pasteC(regTyOpt))
-  if(length(regTy) !=1 | sum(regTy %in% regTyOpt) !=1) stop(msg2)
+  if(length(regTy) !=1 || sum(regTy %in% regTyOpt) !=1) stop(msg2)
   lmColNa <- colnames(dat)[-1*cluCol][useCol]
   if(!is.null(filt1)) dat <-  dat[if(is.logical(filt1)) filt1 else {
     which(dat[,lmColNa[1]] > min(filt1) & dat[,lmColNa[1]] < max(filt1,na.rm=TRUE))},]

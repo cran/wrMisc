@@ -57,6 +57,16 @@ convMatr2df <- function(mat, addIniNa=TRUE, duplTxtSep="_", silent=FALSE, callFr
     if(!silent) message(fxNa,"Can't convert object of class ",pasteC(class(mat), quoteC="'")," to data.frame, returning NULL") }
   mat }
 
+#' Check if vector may be numeric content
+#'
+#' This function allows to checking if a given vector may be numeric content
+#' 
+#' @param x (numeric vector) main input
+#' @param pattern (character)  custom pattern to check
+#' @return This functions returns a logical/boolean vector for each of the elements of 'x'
+#' @seealso  \code{\link[base]{numeric}}; \code{\link{convMatr2df}}
+#' @examples
+#' .mayBeNum(c(3:6))
 #' @export
 .mayBeNum <- function(x, pattern=NULL) {
   ## test if values of (simple) char vector may be numeric; return index of suitable values

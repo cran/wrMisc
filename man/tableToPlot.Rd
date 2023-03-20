@@ -33,11 +33,13 @@ tableToPlot(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-NULL (no R-object returned), print 'plot' in current device only
+This function returns NULL (no R-object returned), print 'plot' in current device only
 }
 \description{
-\code{tableToPlot} prints all columns of matrix in plotting region for easier inclusion to reports (default values are set to work for output as A4-sized pdf).
-This function was made for integrating listings of text to graphical output to devices like \code{png}, \code{jpeg} or \code{pdf}. 
+This function prints all columns of matrix in plotting region for easier inclusion to reports (default values are set to work for output as A4-sized pdf).
+It was made for integrating listings of text to graphical output to devices like \code{png}, \code{jpeg} or \code{pdf}.
+}
+\details{
 This function was initially designed for listings with small/medium 1st col (eg couner or index), 2nd & 3rd col small and long 3rd col (like file paths).
 Obviously, the final number of lines one can pack and still read correctly into the graphical output depends on the size of the device 
 (on a pdf of size A4 one can pack up to apr. 11O lines). 

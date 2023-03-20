@@ -16,7 +16,8 @@
 correctToUnique <- function(x, sep="_", atEnd=TRUE, maxIter=4, NAenum=TRUE, silent=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="correctToUnique")
   chNA <- is.na(x)
-  if(NAenum & any(chNA)) x[which(chNA)] <- "NA"
+  if(length(NAenum) >1) NAenum <- as.logical(NAenum[1])
+  if(NAenum && any(chNA)) x[which(chNA)] <- "NA"
   dupR <- duplicated(x, fromLast=FALSE)
   dupL <- duplicated(x, fromLast=TRUE) 
   anyDu <- anyDx <- dupL | dupR
@@ -37,14 +38,30 @@ correctToUnique <- function(x, sep="_", atEnd=TRUE, maxIter=4, NAenum=TRUE, sile
     if(!finished) {                                           
       xTab <- table(xIni[anyDu])[rank(unique(xIni[anyDu]))]    
       if(any(xTab >maxIter)) for(i in names(xTab)[which(xTab > maxIter)]) {
-        z <- which(x==i); x[z] <- if(atEnd) paste(x[z],(maxIter+1):xTab[which(names(xTab)==i)],sep=sep) else paste((maxIter+1):xTab[i],x[z],sep=sep)}}}
+        z <- which(x==i); x[z] <- if(atEnd) paste(x[z],(maxIter +1):xTab[which(names(xTab)==i)],sep=sep) else paste((maxIter +1):xTab[i],x[z],sep=sep)}}}
   x }
 
-.uniqueWName <- function(x, silent=TRUE, splitSameName=TRUE, callFrom=NULL){
+#' Check regression arguments
+#'
+#' This function is an enhanced version of \code{unique}, names of elements are maintained
+#' 
+#' @param x (numeric or character vector) main input
+#' @param splitSameName (logical)
+#' @param silent (logical) suppress messages
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging
+#' @return vector like input
+#' @seealso  \code{\link[base]{unique}}
+#' @examples
+#' aa <- c(a=11, b=12,a=11,d=14, c=11)
+#' .uniqueWName(aa)
+#' .uniqueWName(aa[-1]) # value repeated but different name
+#' @export
+.uniqueWName <- function(x, splitSameName=TRUE, silent=TRUE, debug=FALSE, callFrom=NULL){
   ## enhanced version of unique(): return unique of vector 'x' with names (if multiple names fit to same value of 'x', use 1st of names)
   ## assumes that names of 'x' are redundant to value of 'x'
   ## 'splitSameName' .. allows keeping different names, even if with same value in 'x' (which would disappear with unique(x))
-  fxNa <- .composeCallName(callFrom,newNa=".uniqueWName")
+  fxNa <- .composeCallName(callFrom, newNa=".uniqueWName")
   argNa <- deparse(substitute(x))
   inv <- FALSE
   if(length(unique(x)) < length(unique(names(x))))  {
@@ -54,11 +71,11 @@ correctToUnique <- function(x, sep="_", atEnd=TRUE, maxIter=4, NAenum=TRUE, sile
       names(tmp) <- x
       x <- tmp
       inv <- TRUE
-    } else if(!silent) message(fxNa,"names of  '",argNa,"' don't fit to its values, ",
+    } else if(!silent) message(fxNa,"Names of  '",argNa,"' don't fit to its values, ",
       "result not representative, rather use argument 'splitSameName'=TRUE")
   }
   out <- sapply(unique(x), function(z) x[which(x==z)[1]])
-  if(is.character(x)) names(out) <- substr(names(out),nchar(out)+2,nchar(names(out)))
+  if(is.character(x)) names(out) <- substr(names(out), nchar(out) +2, nchar(names(out)))
   if(inv){
     tmp <- names(out)
     names(tmp) <- out

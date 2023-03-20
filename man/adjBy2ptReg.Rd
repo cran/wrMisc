@@ -4,7 +4,15 @@
 \alias{adjBy2ptReg}
 \title{Linear rescaling of numeric vertor or matrix}
 \usage{
-adjBy2ptReg(dat, lims, regrTo = c(0.1, 0.9), refLines = NULL, callFrom = NULL)
+adjBy2ptReg(
+  dat,
+  lims,
+  regrTo = c(0.1, 0.9),
+  refLines = NULL,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{numeric vector, matrix or data.frame}
@@ -15,10 +23,14 @@ adjBy2ptReg(dat, lims, regrTo = c(0.1, 0.9), refLines = NULL, callFrom = NULL)
 
 \item{refLines}{(NULL or integer) optional subselection of lines of dat (will be used internal as refDat)}
 
-\item{callFrom}{(character) for better tracking of use of functions}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix with normalized values
+This function returns a matrix (of same dimensions as inlut matrix) with normalized values
 }
 \description{
 \code{adjBy2ptReg} takes data within window defined by 'lims' and determines linear transformation so that these points get the regression characteristics 'regrTo', 
@@ -29,8 +41,8 @@ In other words, this function performs 'linear rescaling', by adjusting (normali
 \examples{
 set.seed(2016); dat1 <- round(runif(50,0,100),1)
 ## extreme values will be further away :
-adjBy2ptReg(dat1,lims=list(c(5,9),c(60,90)))
-plot(dat1,adjBy2ptReg(dat1,lims=list(c(5,9),c(60,90))))
+adjBy2ptReg(dat1,lims=list(c(5,9), c(60,90)))
+plot(dat1, adjBy2ptReg(dat1, lims=list(c(5,9),c(60,90))))
 }
 \seealso{
 \code{\link{normalizeThis}}

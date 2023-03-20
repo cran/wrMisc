@@ -13,21 +13,35 @@
 #' head(rowGrpMeans(dat1, gr=gl(4, 3, labels=LETTERS[1:4])[2:11]))
 #' @export
 rowGrpMeans <- function(x, grp, na.rm=TRUE){
-  if(!is.matrix(x) & !is.data.frame(x)) stop(" 'x' should be data.frame or matrix")
+  if(!is.matrix(x) && !is.data.frame(x)) stop(" 'x' should be data.frame or matrix")
   if(length(dim(x)) !=2) stop(" 'x' should be data.frame or matrix of 2 dimensions")
   if(length(grp) != ncol(x)) stop(" 'grp' should be of length of number of cols in 'x'")
-  if(length(grp) <1 | sum(is.na(grp)) == length(grp)) stop(" 'grp' appears to be empty or all NAs")
+  if(length(grp) <1 || all(is.na(grp))) stop(" 'grp' appears to be empty or all NAs")
   if(!is.factor(grp)) grp <- as.factor(grp)
   if(!is.matrix(x)) x <- matrix(as.matrix(x), nrow=nrow(x), dimnames=if(length(dim(x)) >1) dimnames(x) else list(names(x),NULL))
-  if(length(na.rm) !=1 | !is.logical(na.rm)) na.rm <- TRUE
+  if(length(na.rm) !=1 || !is.logical(na.rm)) na.rm <- TRUE
   ## main
   out <- .rowGrpMeans(x, grp, na.rm=na.rm) 
   chNan <- is.nan(out)
   if(any(chNan)) out[which(chNan)] <- NA
   out }
  
+#' row group mean (main)
+#'
+#' This function calculates CVs for matrix with multiple groups of data, ie one CV for each group of data. 
+#' 
+#' @param x numeric matrix where relplicates are organized into separate columns
+#' @param grp (factor) defining which columns should be grouped (considered as replicates)
+#' @param na.replVa (numeric) value to replace \code{NA} values
+#' @param na.rm (logical) remove all \code{NA} values 
+#' @return This function returns a matrix of mean values per row and group of replicates
+#' @seealso \code{\link{rowGrpCV}}, \code{\link{rowCVs}}, \code{\link{arrayCV}}, \code{\link{replPlateCV}}
+#' @examples
+#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
+#' grp1 <- gl(4,3,labels=LETTERS[1:4])[2:11]
+#' head(.rowGrpMeans(dat1, grp1))
 #' @export
-.rowGrpMeans <- function(x,grp, na.replVa=NULL, na.rm=TRUE){
+.rowGrpMeans <- function(x, grp, na.replVa=NULL, na.rm=TRUE){
   ## determine means of rows conditional as (multiple) groups
   ## NAs (eg from counting data) can be replaced by specified value 'na.replVa', eg 0)
   ## 'grp' expected as factor !!

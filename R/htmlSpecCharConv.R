@@ -4,15 +4,20 @@
 #' Note : The package \href{https://CRAN.R-project.org/package=stringi}{stringi} is required for the conversions (the input will get returned if \code{stringi} is not available).
 #' Currently only the 16 most common special characters are implemented.
 #' @param txt character vector inclusing special characters
-#' @param callFrom (character) allow easier tracking of message produced
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a corrected character vector adopted for html display
 #' @seealso tables on \url{https://www.htmlhelp.com/reference/html40/entities/latin1.html},  \url{https://www.degraeve.com/reference/specialcharacters.php},  \url{https://ascii.cl/htmlcodes.htm}
 #' @examples
 #' (x <- stringi::stri_unescape_unicode("\\u00b5\\u003d\\u0061\\u0062"))
 #' htmlSpecCharConv(x)
 #' @export
-htmlSpecCharConv <- function(txt, callFrom=NULL) {
+htmlSpecCharConv <- function(txt, silent=FALSE, callFrom=NULL, debug=FALSE) {
   fxNa <- .composeCallName(callFrom, newNa="htmlSpecCharConv")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   if(!requireNamespace("stringi", quietly=TRUE)) {
     message(fxNa,"Package 'stringi' needed for conversion not found ! Please install from CRAN. Returning initial 'txt'")
   } else {

@@ -15,13 +15,13 @@ renameColumns(refMatr, newName, silent = FALSE, debug = FALSE, callFrom = NULL)
 
 \item{debug}{(logical) additional messages for debugging}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 This function returns a matrix (or data.frame) with renamed columns
 }
 \description{
-\code{renameColumns} renames columns of 'refMatr' using 2-column matrix (or data.frame) indicating old and new names (for replacement).
+This function renames columns of 'refMatr' using 2-column matrix (or data.frame) indicating old and new names (for replacement).
 }
 \examples{
 ma <- matrix(1:8,ncol=4,dimnames=list(1:2,LETTERS[1:4]))

@@ -4,7 +4,14 @@
 \alias{multiCharReplace}
 \title{Multiple replacement of entire character elements in simple vector, matrix or data.frame}
 \usage{
-multiCharReplace(mat, repl, convTo = NULL, silent = FALSE, callFrom = NULL)
+multiCharReplace(
+  mat,
+  repl,
+  convTo = NULL,
+  silent = FALSE,
+  debug = TRUE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{(character vector, matrix or data.frame) main data}
@@ -15,13 +22,15 @@ multiCharReplace(mat, repl, convTo = NULL, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns an object of same dimension as input (with replaced content)
 }
 \description{
-This functions allows multiple types of replacements of entire character elements in simple vector, matrix or data.frame. 
+This functions allows multiple types of replacements of entire character elements in simple vector, matrix or data.frame.
 In addtion, the result may be optionally directly transformed to logical or numeric
 }
 \examples{
@@ -31,7 +40,7 @@ multiCharReplace(x1, cbind(old=c("bc","efg"), new=c("BBCC","EF")))
 x2 <- c("High","n/a","High","High","Low")
 multiCharReplace(x2, cbind(old=c("n/a","Low","High"), new=c(NA,FALSE,TRUE)),convTo="logical")
 
-# works also to replace numeric content : 
+# works also to replace numeric content :
 x3 <- matrix(11:16, ncol=2)
 multiCharReplace(x3, cbind(12:13,112:113))
 }

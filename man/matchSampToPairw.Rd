@@ -4,7 +4,14 @@
 \alias{matchSampToPairw}
 \title{Match names to concatenated pairs of names}
 \usage{
-matchSampToPairw(grpNa, pairwNa, sep = NULL, silent = FALSE, callFrom = NULL)
+matchSampToPairw(
+  grpNa,
+  pairwNa,
+  sep = NULL,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{grpNa}{(character) the names of the groups of replicates (ie conditions) used to test}
@@ -15,7 +22,9 @@ matchSampToPairw(grpNa, pairwNa, sep = NULL, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 matrix of 2 columns with inidices of \code{sampNa} with \code{pairwNa} as rows

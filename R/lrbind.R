@@ -5,7 +5,8 @@
 #' Simple vectors (as list-elements) will be considered as sigle lines for attaching.
 #' @param lst (list, composed of multiple matrix or data.frames or simple vectors) main input (each list-element should have same number of columns, numeric vectors will be converted to number of columns of other columns/elements)
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns (depending on input) a matrix or data.frame
 #' @seealso \code{rbind} in \code{\link[base]{cbind}}
 #' @examples
@@ -13,8 +14,12 @@
 #'   11:13, matrix(51:56, ncol=3))
 #' lrbind(lst1)
 #' @export
-lrbind <- function(lst, silent=FALSE, callFrom=NULL) {
+lrbind <- function(lst, silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="lrbind")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(debug) message(fxNa,"lrb1")
+    
   argN <- deparse(substitute(lst))
   if(!isTRUE(silent)) silent <- FALSE
   chDf <- sapply(lst, inherits, "data.frame")
@@ -32,7 +37,7 @@ lrbind <- function(lst, silent=FALSE, callFrom=NULL) {
   ldim <- rbind(ldim, c(1, ldim[3, -1*ncol(ldim)] +1))
   for(i in 1:ncol(ldim)) outm[ldim[4,i]:ldim[3,i],] <- lst[[i]]
   lstColn <- unlist(sapply(lst, colnames))
-  if(!is.null(lstColn)) if(length(unique(lstColn)) ==ldim[2,1] & !silent) message(fxNa,"Col-names not homogenous or partially absent in ",argN)
+  if(!is.null(lstColn)) if(length(unique(lstColn)) ==ldim[2,1] && !silent) message(fxNa,"Col-names not homogenous or partially absent in ",argN)
   colnames(outm) <- colnames(lst[[1]])
   lstRown <- unlist(sapply(lst, rownames))
   if(!is.null(lstRown)) if(length(unique(lstRown)) ==ldim[3, ncol(ldim)]) {

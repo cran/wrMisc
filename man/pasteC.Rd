@@ -16,10 +16,10 @@ pasteC(..., collapse = ", ", lastCol = " and ", quoteC = "")
 \item{quoteC}{character to use for citing with quotations (default "")}
 }
 \value{
-character vector of length=1 of the concatenated input/values.
+This function returns a character vector of truncated versions of intpup \code{txt}
 }
 \description{
-\code{pasteC} is a variant of \code{\link[base]{paste}} for convenient use of paste-collapse and separation of last element to paste (via 'lastCol').
+This function is a variant of \code{\link[base]{paste}} for convenient use of paste-collapse and separation of last element to paste (via 'lastCol').
 This function was mode for more human like enumeriating in output and messages.
 If multiple arguments are given without names they will all be concatenated, if they contain names lazy evaluation for names will be tried
 (with preference to longest match to argument names).

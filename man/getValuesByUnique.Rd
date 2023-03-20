@@ -9,6 +9,7 @@ getValuesByUnique(
   datUniq = NULL,
   asIndex = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -21,7 +22,9 @@ getValuesByUnique(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 vector of length \code{dat} with imposed values, or index values if \code{asIndex=TRUE}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rowGrpCV.R
 \name{rowGrpCV}
 \alias{rowGrpCV}
-\title{row group CV}
+\title{Row group CV}
 \usage{
 rowGrpCV(x, grp, means = NULL, listOutp = FALSE)
 }
@@ -16,15 +16,15 @@ rowGrpCV(x, grp, means = NULL, listOutp = FALSE)
 \item{listOutp}{(logical) if TRUE, provide output as list with $CV, $mean and $n}
 }
 \value{
-matrix of CV values
+This function returns a matrix of CV values
 }
 \description{
-\code{rowGrpCV} calculates CVs for matrix with multiple groups of data, ie one CV for each group of data. 
+This function calculates CVs for matrix with multiple groups of data, ie one CV for each group of data. 
 Groups are specified as columns of 'x' in 'grp' (so length of grp should match number of columns of 'x', NAs are allowed)
 }
 \examples{
 set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
-head(rowGrpCV(dat1,gr=gl(4,3,labels=LETTERS[1:4])[2:11]))
+head(rowGrpCV(dat1, gr=gl(4,3,labels=LETTERS[1:4])[2:11]))
 }
 \seealso{
 \code{\link{rowCVs}}, \code{\link{arrayCV}},  \code{\link{replPlateCV}}

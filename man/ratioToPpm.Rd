@@ -4,7 +4,14 @@
 \alias{ratioToPpm}
 \title{Convert ratio to ppm}
 \usage{
-ratioToPpm(x, y = NULL, nSign = NULL, silent = FALSE, callFrom = NULL)
+ratioToPpm(
+  x,
+  y = NULL,
+  nSign = NULL,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(numeric) main input}
@@ -13,15 +20,17 @@ ratioToPpm(x, y = NULL, nSign = NULL, silent = FALSE, callFrom = NULL)
 
 \item{nSign}{(numeric) number of significan digits}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-numeric vector of ppm values
+This function returns a numeric vector of ppm values
 }
 \description{
-\code{ratioToPpm} transforms ratio 'x' to ppm (parts per million). 
+This function transforms ratio 'x' to ppm (parts per million). 
 If 'y' not given (or different length as 'x'), then 'x' is assumed as ratio otherise rations are constructed as x/y is used lateron.
 Does additional checking : negative values not expected - will be made absolute !
 }

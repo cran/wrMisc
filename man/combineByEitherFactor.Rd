@@ -11,11 +11,12 @@ combineByEitherFactor(
   nByGrp = FALSE,
   convergeMax = TRUE,
   callFrom = NULL,
+  debug = FALSE,
   silent = FALSE
 )
 }
 \arguments{
-\item{mat}{input matrix}
+\item{mat}{main input matrix}
 
 \item{refC1}{(integer) column-number of 'mat' to use as 1st set}
 
@@ -23,26 +24,28 @@ combineByEitherFactor(
 
 \item{nByGrp}{(logical) add last col with n by group}
 
-\item{convergeMax}{(logical) if TRUE, run 2 add'l iteartive steps to search convergence to stable result}
+\item{convergeMax}{(logical) if \code{TRUE}, run 2 add'l iteartive steps to search convergence to stable result}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 
-\item{silent}{(logical) suppres messages}
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{silent}{(logical) suppress messages}
 }
 \value{
-matrix containing both selected columns plus additional column(s) indicating group-number of the pair-wise combination 
+This function returns a matrix containing both selected columns plus additional column(s) indicating group-number of the pair-wise combination 
 (and optional the total n by group)
 }
 \description{
 This function aims to address the situation when two somehow different groupins (of the same data) exist and need to be joined.
 It is not necessary that both alternative groupings use the same labels, neither.
 \code{combineByEitherFactor} adds new (last) column named 'grp' to input matrix representing the combined factor 
-relative to 2 specified columns from input matrix 'mat' (via 'refC1','refC2'). Optionally, the output may be 
+relative to 2 specified columns from input matrix  \code{mat} (via 'refC1','refC2'). Optionally, the output may be 
 sorted and a column giving n per factor-level may be added. 
-The function treats selected columns of 'mat' 
-as pairwise combination of 2 elements (that may occur multiple times over all lines of 'mat')
+The function treats selected columns of  \code{mat} 
+as pairwise combination of 2 elements (that may occur multiple times over all lines of  \code{mat})
 and sorts/organizes all instances of such combined elements (ie from both selected columns) as repeats of a given group,
-who's class number is given in output column 'grp', the (total) number of repeats may be displayed in column 'nGrp' (nByGrp=TRUE).
+who's class number is given in output column 'grp', the (total) number of repeats may be displayed in column 'nGrp' ( \code{nByGrp=TRUE}).
 If groups are overlapping (after re-ordering), an iterative process of max 3x2 passes will be launched after initial matching.
 Works on numeric as well as character input.
 }
@@ -54,6 +57,6 @@ combineByEitherFactor(nq,1,2,nBy=TRUE); combineByEitherFactor(nq,1,2,nBy=FALSE)
 combineByEitherFactor(nq,1,2,conv=FALSE); combineByEitherFactor(nq,1,2,conv=TRUE)
 ##
 mm <- rep(c("a","b","c","d","e"),c(3,4,2,3,1)); pp <- rep(c("m","n","o","p","q"),c(2,2,2,2,5))
-combineByEitherFactor(cbind(mm,pp),1,2,con=FALSE,nBy=TRUE);
-combineByEitherFactor(cbind(mm,pp),1,2,con=TRUE,nBy=TRUE) 
+combineByEitherFactor(cbind(mm,pp), 1, 2, con=FALSE, nBy=TRUE)
+combineByEitherFactor(cbind(mm,pp), 1, 2, con=TRUE, nBy=TRUE) 
 }

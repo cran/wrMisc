@@ -21,7 +21,7 @@
 #' (xt3 <- makeNRedMatr(t3, summ="mean", iniID="ref"))
 #' (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxAbsOfRef")), iniID="ref"))
 #' @export
-makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, callFrom=NULL, silent=FALSE, debug=FALSE) {
+makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom,newNa="makeNRedMatr")
   maxLaArg <- c("maxOfRef","minOfRef","maxAbsOfRef")    
   summOpt <- c("median","mean","min","max","first","last",maxLaArg)   
@@ -31,7 +31,7 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
   if(debug) silent <- FALSE       
   if(length(dim(dat)) <1) stop(txt) else if(nrow(dat) <2) return(dat)
   if(all(!chSuMeth)) stop(fxNa,"Value(s) ",pasteC(utils::head(chSuMeth),quoteC="'")," in argument 'summarizeRedAs' not valid")  
-  if(any(!chSuMeth) & !silent) message(fxNa,"TROUBLE ahead ? Some methods specified in 'summarizeRedAs' seem not valid")  
+  if(any(!chSuMeth) && !silent) message(fxNa,"TROUBLE ahead ? Some methods specified in 'summarizeRedAs' seem not valid")  
   iniColNa <- colnames(dat)
   txt <- "'iniID' must be single column name of 'dat' !"
   if(length(iniID) !=1) stop(fxNa,txt) else if(is.na(iniID)) stop(fxNa,txt)
@@ -41,7 +41,7 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
   sumRedMode <- rep("",sum(!iniIDcol))                                        # need to know which col is numeric when treating each col individually
   for(i in which(!iniIDcol)) sumRedMode[i] <- mode(dat[,i])  
   if(sum(summarizeRedAs %in% maxLaArg,na.rm=TRUE) >0) {                          # has special methods (limit to those)
-    if(!silent & length(summarizeRedAs) >1) message(fxNa,"Canot use all ",length(summarizeRedAs),
+    if(!silent && length(summarizeRedAs) >1) message(fxNa,"Canot use all ",length(summarizeRedAs),
       " methods specified in 'summarizeRedAs', only 1 method can be applied, using 1st of special methods") 
     summarizeRedAs <- summarizeRedAs[which(summarizeRedAs %in% maxLaArg)]
     if(sum(names(summarizeRedAs) %in% colnames(dat),na.rm=TRUE) >0) {            # (col) names identified
@@ -53,10 +53,10 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
       if(!silent) message(fxNa,"Which column to use with '",summarizeRedAs,"' not specified, using last numeric '",colnames(dat)[lastNum],"'")
       names(summarizeRedAs) <- colnames(dat)[lastNum] }
   } else if(length(summarizeRedAs) < ncol(dat)) {         
-    if(length(summarizeRedAs) >1 & !silent) message(fxNa,"Too few (",length(summarizeRedAs),") methods specified, recycling methods")
+    if(length(summarizeRedAs) >1 && !silent) message(fxNa,"Too few (",length(summarizeRedAs),") methods specified, recycling methods")
     summarizeRedAs <- rep(summarizeRedAs,ncol(dat))[1:(ncol(dat))]
   }
-  if(any(summarizeRedAs %in% maxLaArg) & sum(names(summarizeRedAs) %in% colnames(dat)>0,na.rm=TRUE)) {
+  if(any(summarizeRedAs %in% maxLaArg) && sum(names(summarizeRedAs) %in% colnames(dat)>0,na.rm=TRUE)) {
     tm2 <- which.min(!colnames(dat) %in% names(summarizeRedAs))                                     # which col of data as key
     summarizeRedAs <- summarizeRedAs[which.min(!names(summarizeRedAs) %in% colnames(dat)[tm2])]     # need short 'summarizeRedAs' with 'maxLast'(or simil)  
   } else { if(length(summarizeRedAs) < sum(!iniIDcol)) {
@@ -80,7 +80,7 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
     colnames(out) <- colnames(dat) 
   } else { if(length(unique(summarizeRedAs)) >1) { for(i in which(!iniIDcol)) {              # various summarization methods defined for each col ...
       ## key for grouping : iniIDcol    key for summarizing : which(sumRefCo) 
-      tmp <- tapply(dat[,i],refID,function(x) if(is.numeric(x) & !all(is.na(x))) .summarizeCols(x,me=summarizeRedAs[i]) else .sortMid(x))
+      tmp <- tapply(dat[,i], refID, function(x) if(is.numeric(x) & !all(is.na(x))) .summarizeCols(x,me=summarizeRedAs[i]) else .sortMid(x))
       out[,i] <- tmp }
     if(!silent) message(fxNa,"Various summarization methods appear, run col by col")      
     } else {                                                     # all summerizatio by same mode, run batch for numeric & batch for character
@@ -99,11 +99,21 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
     } else if(length(names(tmp)) >0) rownames(out) <- names(tmp) 
   out <- cbind(out, tapply(dat[,1], dat[,which(iniIDcol)], length))
   colnames(out)[ncol(out)] <- if("nRedLi" %in% colnames(out)) paste(colnames(out)[rev(grep("^nRedLi",colnames(out)))[1]],"X",sep=".") else "nRedLi"
-  if(retDataFrame & mode(out)=="character") out <- convMatr2df(out, silent=silent)
+  if(retDataFrame && "character" %in% mode(out)) out <- convMatr2df(out, silent=silent)
   out }
 
+#' Choose most frequent or middle of sorted vector
+#'
+#' This function chooses the (first) most frequent or  middle of sorted vector
+#'
+#' @param x (numeric) main input 
+#' @param retVal (logical) return value of most frequent, if \code{FALSE} return index of (1st) 'x' for most frequent
+#' @return This function returns a numeric verctor
+#' @seealso simple/partial functionality in \code{\link{summarizeCols}},  \code{\link{checkSimValueInSer}}
+#' @examples
+#' .sortMid(11:14)
 #' @export
-.sortMid <- function(x,retVal=TRUE) {
+.sortMid <- function(x, retVal=TRUE) {
   ##  choose (1st) most frequent or (if all equal) middle of sorted vector 
   ## 'x' .. character vector; return single 'representative' element
   ## 'retVal'.. return value of most frequent, if FALSE return index of (1st) 'x' for most frequent

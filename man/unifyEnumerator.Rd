@@ -40,6 +40,7 @@ The aim of this function is to provide help in automatically harmonizing enumera
 When data have same grouped setup/design, many times this is reflected in their names, eg 'A_sample1', 'A_sample2' and 'B_sample1'.
 However, human operators may use multiple similar (but not identical) ways of expressing the same meanin, eg writng 'A_Samp_1'.
 This function allows testing a panel of different extensions of enumerators and (if recognized) to replace them by a user-defined standard text/enumerator.
+Please note that the more recent function \code{\link{rmEnumeratorName}} offers better/more flexible options.
 }
 \details{
 This function has been developed for matching series of the same samples passing in parallel through different evaluation software (see R package wrProteo).
@@ -64,5 +65,5 @@ unifyEnumerator(c("ab-1","c3-2","dR3"), strin=FALSE);
 
 }
 \seealso{
-\code{\link[base]{grep}} or sub, etc
+\code{\link{rmEnumeratorName}} for better/more flexible options; \code{\link[base]{grep}} or \code{sub()}, etc if exact and consistent patterns are known
 }

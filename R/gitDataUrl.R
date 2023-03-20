@@ -9,7 +9,8 @@
 #' @param replTxt (NULL or matrix) adjust/ custom-modify search- and replacement items; should be matrix with 2 columns, 
 #'  the 1st colimn entries will be used as 'search-for' and the 2nd as 'replace by' fro each row. 
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return corrected urlName
 #' @seealso  \code{\link[base]{sub}}; 
 #' @examples
@@ -20,10 +21,11 @@
 #' 
 #' 
 #' @export
-gitDataUrl <- function(urlName, replTxt=NULL, silent=FALSE, callFrom=NULL) {
+gitDataUrl <- function(urlName, replTxt=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## convert urlName from git that tabular data can be read correctly, ie remove '/blob/' & change start to 'raw.githubusercontent.com'
   fxNa <- .composeCallName(callFrom, newNa="gitDataUrl")
   if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(length(urlName) <1) { if(!silent) message(fxNa,"'urlName' is empty, nothing to do")
   } else {
     if((any(length(dim(replTxt)) !=2, dim(replTxt) < 1:2))) replTxt <- rbind(

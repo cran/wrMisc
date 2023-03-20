@@ -19,12 +19,4 @@ convColorToTransp <- function(color,alph=1){
   col1 <- grDevices::col2rgb(color,alpha=TRUE)
   col1[4,] <- rep(alph,ncol(col1))[1:ncol(col1)]
   apply(col1,2,function(x) grDevices::rgb(x[1],x[2],x[3],alpha=x[4],maxColorValue=255)) }
-
-#' @export
-.convColorToTransp <- function(color,alph=1){
-  .Deprecated("convColorToTransp")
-  if(any(alph <1)) alph <- round(alph*100)
-  col1 <- grDevices::col2rgb(color,alpha=TRUE)
-  col1[4,] <- rep(alph,ncol(col1))[1:ncol(col1)]
-  apply(col1,2,function(x) grDevices::rgb(x[1],x[2],x[3],alpha=x[4],maxColorValue=255)) }  
-  
+    

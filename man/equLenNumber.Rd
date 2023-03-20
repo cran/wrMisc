@@ -4,14 +4,16 @@
 \alias{equLenNumber}
 \title{Equal character-length number}
 \usage{
-equLenNumber(x, silent = FALSE, callFrom = NULL)
+equLenNumber(x, silent = FALSE, callFrom = NULL, debug = FALSE)
 }
 \arguments{
 \item{x}{(caracter) input vector}
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 character vector formated as equal number of characters per value

@@ -14,6 +14,7 @@ uniqCountReport(
   sizeTo = NULL,
   clockwise = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -36,7 +37,9 @@ uniqCountReport(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 vector with counts of n (total), nUnique (wo any repeated), nHasRepeated (first of repeated), nRedundant), optional figure

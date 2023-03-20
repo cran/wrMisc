@@ -8,24 +8,29 @@
 #' @param sep (character) separator to add before counter when making non-redundant version
 #' @param onlyCorrectToUnique (logical) if TRUE, return only vector of non-redundant 
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return list with $init, $nRed, $nrLst
 #' @seealso For simple correction use \code{\link{correctToUnique}}
 #' @examples
 #' treatTxtDuplicates(c("li0",NA,rep(c("li2","li3"),2)))
 #' correctToUnique(c("li0",NA,rep(c("li2","li3"),2)))
 #' @export
-treatTxtDuplicates <- function(x,atEnd=TRUE,sep="_",onlyCorrectToUnique=FALSE,silent=FALSE,callFrom=NULL) {
+treatTxtDuplicates <- function(x, atEnd=TRUE, sep="_", onlyCorrectToUnique=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom,newNa="treatTxtDuplicates")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(debug) message(fxNa, "tTDA1")
+
   if(length(dim(x)) >1) { if(!silent) message(fxNa," expecting simple (text) vector as 'x' but got class ",class(x))
     x <- if(is.list(x)) unlist(x) else as.character(x) }
   xIni <- x
   if(any(is.na(x))) x[which(is.na(x))] <- "NA"
-  out <- correctToUnique(x,sep=sep,atEnd=atEnd)
+  out <- correctToUnique(x, sep=sep, atEnd=atEnd)
   if(!onlyCorrectToUnique) {
-    anyDu <- duplicated(x,fromL=FALSE) | duplicated(x,fromL=TRUE)
+    anyDu <- duplicated(x, fromL=FALSE) | duplicated(x, fromL=TRUE)
     if(any(anyDu)) { nrLst <- sapply(unique(x),function(z) which(x %in% z))
       if(!is.list(nrLst)) nrLst <- as.list(as.data.frame(nrLst))
       } else {nrLst <- as.list(1:length(x)); names(nrLst) <- x}
-  list(init=xIni,nRed=out,nrLst=nrLst)} else out }
+  list(init=xIni, nRed=out, nrLst=nrLst)} else out }
        

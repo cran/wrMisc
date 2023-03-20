@@ -4,7 +4,14 @@
 \alias{sumNAperGroup}
 \title{Count number of NAs per sub-set of columns}
 \usage{
-sumNAperGroup(x, grp, asRelative = FALSE)
+sumNAperGroup(
+  x,
+  grp,
+  asRelative = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{matrix or data.frame which may contain \code{NA}s}
@@ -12,9 +19,15 @@ sumNAperGroup(x, grp, asRelative = FALSE)
 \item{grp}{factor describing which column of 'dat' belongs to which group}
 
 \item{asRelative}{(logical) return as count of \code{NA}s per row and group}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-integer vector with count of \code{NA}s per group
+This function returns an integer vector with count of \code{NA}s per group
 }
 \description{
 This function will count the number of \code{NA}s per group (defined by argument \code{grp}) while summing over all lines of a matrix or data.frame.

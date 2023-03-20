@@ -4,7 +4,14 @@
 \alias{standardW}
 \title{Standardize (scale) data}
 \usage{
-standardW(mat, byColumn = FALSE, na.rm = TRUE)
+standardW(
+  mat,
+  byColumn = FALSE,
+  na.rm = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{(matrix, data.frame or array) data that need to get standardized.}
@@ -12,9 +19,15 @@ standardW(mat, byColumn = FALSE, na.rm = TRUE)
 \item{byColumn}{(logical) if \code{TRUE} the function will be run independently over all columns such as as \code{apply(mat,2,standardW)}}
 
 \item{na.rm}{(logical) if \code{NA}s in the data don't get ignored via this argument, the output will be all \code{NA}}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-vector of rescaled data (in dimensions as input)
+This functions retruns a vector of rescaled data (in dimensions as input)
 }
 \description{
 This functions work similar to \code{\link[base]{scale}}, however, it evaluates the entire input and not column-wise (and independeltly as \code{scale} does). 

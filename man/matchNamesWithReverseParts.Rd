@@ -4,7 +4,14 @@
 \alias{matchNamesWithReverseParts}
 \title{Value Matching with optional reversing of sub-parts of non-matching elements}
 \usage{
-matchNamesWithReverseParts(x, y, sep = "-", silent = FALSE, callFrom = NULL)
+matchNamesWithReverseParts(
+  x,
+  y,
+  sep = "-",
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(character) first vector for match}
@@ -15,7 +22,9 @@ matchNamesWithReverseParts(x, y, sep = "-", silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 index for matching (integer) x to y

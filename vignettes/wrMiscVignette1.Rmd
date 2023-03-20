@@ -1074,11 +1074,50 @@ keepCommonText(txt2, side="center")
 ```
 
 
-### Unify Enumerators
+### Manipulating Enumerator-Extensions
 
 Human operators may have many ways to write enumerators like 'xx_sample_1', 'xx_Sample_2', 'xx_s3', 'xx_4', etc.
 Many times you may find such text as names or column-names for measures underneith.
-The aim of `unifyEnumerator()` is to provide help in automatically harmonizing enumerators at the end of sample-names.
+
+The functions presented below will work only if _consistent numerators_, ie (text +) digit-character(s) are at the end of all character-strings to be treated.
+
+Please note, that with large vectors testing/checking a larger panel of enumerator-abreviations may result in slower performance.
+In cases of such larger data-sets it may be more effective to first study the data and then run simple subsitions using _sub()_ targeted for this very case.
+
+
+#### Remove/Modify Enumerators
+
+The aim of this function consists in identifying a _common_ pattern for terminal enumeratos (ie at end of words/character strings) and to subsequently modify or remove them.
+As separator-symbols and separator-words are given indedently all combinations thereof may be tested.
+Furthermore the user has the choice to (automatically) all truncated versions of separator-words (eg _Sam_ instead of _Sample_).
+
+As basic setting `rmEnumeratorName()` allows to identify and then modify a _common_ terminal enumerator from all elements of a character string :
+```{r rmEnumeratorName1, echo=TRUE}
+xx <- c("hg_Re1","hjRe2_Re2","hk-Re3_Re33")
+rmEnumeratorName(xx)
+rmEnumeratorName(xx, newSep="--")
+rmEnumeratorName(xx, incl="anyCase")
+```
+
+Furthermore, this function allows scanning a matrix of text-data and to perform similar operations to the _first_ column found containing a  _common_ terminal enumerator.
+
+```{r rmEnumeratorName2, echo=TRUE}
+xy <- cbind(a=11:13, b=c("11#11","2_No2","333_samp333"), c=xx)
+rmEnumeratorName(xy)
+rmEnumeratorName(xy,incl=c("anyCase","trim2","rmEnumL"))
+```
+
+If you which to remove/subsitute mutiple types of enumerators the function \code{rmEnumeratorName} must be run independently, see last example below.
+
+```{r rmEnumeratorName3, echo=TRUE}
+xz <- cbind(a=11:13, b=c("23#11","4#2","567#333"), c=xx)
+apply(xz, 2, rmEnumeratorName, sepEnum=c("","_"), newSep="_", silent=TRUE)
+```
+
+
+#### Unify Enumerators
+
+The (slightly older) function `unifyEnumerator()` offers less options, in particular the potential separator-words must be given explicitly, only lower/upper-case may be kept flexible.
 
 ```{r unifyEnumerator1, echo=TRUE}
 unifyEnumerator(c("ab-1","ab-2","c-3"))
@@ -1086,10 +1125,6 @@ unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
 unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 ```
 
-This function will work only, if the numerator, ie digit-character(s) are ate the end of the character-string.
-
-Please note, that with large vectors testing/checking a larger panel of enumerator-abreviations may result in slower performance.
-In cases of such larger data-sets it may be more effective to first study the data and then run simple subsitions using _sub()_ targeted for this very case.
 
 
 ### Order Matrix According To Reference

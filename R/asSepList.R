@@ -99,70 +99,15 @@ asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillN
   y }
 
 
+#' Convert anything to data.frame
+#'
+#' This function allows converting anything to data.frame
+#' 
+#' @param z (numeric vector, factor, matrix or list) main input
+#' @return data.frame
+#' @seealso  \code{\link[base]{as.data.frame}}
+#' @examples
+#' .asDF2(c(3:6))
 #' @export
 .asDF2 <- function(z) if(is.factor(z)) as.data.frame(as.character(z)) else as.data.frame(z)  # convert anything to data.frame-like
-
-
-#' @export
-.asSepListOld <- function(y, asNumeric=TRUE, minLen=4, exclElem=NULL, fxArg=NULL, silent=FALSE, callFrom=NULL, debug=FALSE) {
-  ## convert all data-series of list (ie all list elements or columns) in separate list-elements (OK with list of lists) eg for plots
-  ## 'asNumeric'.. to transform all list-elements in simple numeric vectors (won't work if some entries are character)
-  ## 'minLen' .. min length (or number of rows), as add'l element to eliminate arguments given wo names when asSepList is called in vioplot2
-  ## 'fxArg' .. optinal, names to exclude if any (lazy matching) matches (to exclude other arguments be mis-interpreted as data, used in vioplot2)
-  fxNa <- .composeCallName(callFrom, newNa="asSepList")
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
-  if(!isTRUE(silent)) silent <- FALSE
-  f1 <- function(x,lim=1) if(length(dim(x)) ==2) ncol(x) >lim else FALSE   # locate elements with multiple cols
-  if(is.matrix(y)) y <- list(y) else if(!is.list(y)) y <- as.list(y)
-  chSubLi <- sapply(y, is.list) & !sapply(y, is.data.frame)
-  if(debug) {message(fxNa,"aSL1  ini length of 'y' ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,chSubLi=chSubLi) }
-  w <- NULL
-  ## try to separate sub-lists
-  if(length(y) >0 & any(chSubLi)) {                        # run partUnlist() on all sub-lists
-    for(i in 1:sum(chSubLi)) {
-      w <- partUnlist(y[which(chSubLi)[i]])
-      iniNa <- names(y[which(chSubLi)[i]])
-      y <- y[-which(chSubLi)[i]]           # remove orig
-      if(nchar(iniNa) >0) names(w) <- paste(iniNa, 1:length(w), sep="_")
-      y[length(y) +1:length(w)] <- w  } }
-  ## depreciate fxArg  (v 1.6.2)
-  if(length(fxArg) >0) {
-    if(isFALSE(silent)) message(fxNa, "Argument 'fxArg' is depreciated, please use argument 'exclElem'")
-  }
-  ## check for conflicting names to 'exclElem'
-  if(length(exclElem) >0 & length(y) >0) {
-    chNa <- names(y) %in% exclElem
-    if(debug) message(fxNa,"head chNa ",pasteC(utils::head(chNa)))    # problem using .checkArgNa() ?
-    if(any(chNa)) { if(isFALSE(silent)) message(fxNa,"Reducing list from ",length(y)," to ",sum(!chNa,na.rm=TRUE))
-      y <- y[which(!chNa)]} }
-  ## filter minLen
-  chCol <- sapply(y, f1)
-  if(any(chCol) & length(y) >0) {                                  # has multi-col
-    chLe <- sapply(y[which(chCol)], nrow) < minLen
-    if(any(chLe)) y[which(chCol)[which(chLe)]] <- NULL }
-  chCol <- sapply(y, f1, 0)
-  if(any(chCol) & length(y) >0) {
-      chLe <- sapply(y, length) < minLen
-      chDf <- sapply(y, is.data.frame)                          # need to correct in case of df
-      if(any(chDf)) chLe[which(chDf)] <- sapply(y[which(chDf)],nrow) < minLen
-      if(any(chLe)) y[which(chLe)] <- NULL
-  } else y <- y[which(sapply(y,length) > minLen)]
-  if(length(y) <1 & isFALSE(silent)) message(fxNa," Note, NOTHING passed filtering for min ",minLen," lines/values")
-
-  ## split matrixes or data.frames in separate lists
-  chCol <- sapply(y, f1)   # refresh
-  if(any(chCol)) if(length(y)==1) y <- as.list(as.data.frame(y[[1]])) else {
-    while(any(chCol)) {
-      i <- which(chCol)[1]
-      x <- y[[i]]; xNa <- names(y)[i];
-      y <- y[-i]
-      dimNa <- dimnames(x)
-      if(is.null(dimNa[[2]])) colnames(x) <- dimNa[[2]] <- paste0(xNa,1:ncol(x))
-      x <- as.list(as.data.frame(x))
-      if(any(xNa %in% names(y)) & nchar(xNa) >0) xNa <- paste0(xNa,"_2")
-      y[length(y) +(1:length(x))] <- x
-      names(y)[length(y) +1 -(length(x):1)] <- if(nchar(xNa) >0) paste(xNa,names(x),sep="_") else names(x)
-      chCol <- sapply(y,f1) }}
-  ## transform to numeric (if possible)
-  if(isTRUE(asNumeric)  & length(y) >0) y <- lapply(y, convToNum, autoConv=TRUE)
-  y }
+  

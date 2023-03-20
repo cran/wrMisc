@@ -538,6 +538,21 @@ keepCommonText(txt1, side="center")       # computationally easier
 txt2 <- c("abcd_abc_kjh", "bcd_abc123", "cd_abc_po")
 keepCommonText(txt2, side="center")       
 
+## ----rmEnumeratorName1, echo=TRUE---------------------------------------------
+xx <- c("hg_Re1","hjRe2_Re2","hk-Re3_Re33")
+rmEnumeratorName(xx)
+rmEnumeratorName(xx, newSep="--")
+rmEnumeratorName(xx, incl="anyCase")
+
+## ----rmEnumeratorName2, echo=TRUE---------------------------------------------
+xy <- cbind(a=11:13, b=c("11#11","2_No2","333_samp333"), c=xx)
+rmEnumeratorName(xy)
+rmEnumeratorName(xy,incl=c("anyCase","trim2","rmEnumL"))
+
+## ----rmEnumeratorName3, echo=TRUE---------------------------------------------
+xz <- cbind(a=11:13, b=c("23#11","4#2","567#333"), c=xx)
+apply(xz, 2, rmEnumeratorName, sepEnum=c("","_"), newSep="_", silent=TRUE)
+
 ## ----unifyEnumerator1, echo=TRUE----------------------------------------------
 unifyEnumerator(c("ab-1","ab-2","c-3"))
 unifyEnumerator(c("ab-R1","ab-R2","c-R3"))

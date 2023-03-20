@@ -11,7 +11,8 @@
 #' @param useF (character) two specific factor-leves of \code{MAfac} that will be used/extracted
 #' @param isLog (logical) tell if data is already log2 (will be considered when computing M and A values)
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return limma-type "MAList" containing M and A values
 #' @seealso \code{\link{test2factLimma}}, for creating RG-lists within limma: \code{MA.RG} in \code{\link[limma]{normalizeWithinArrays}}
 #' @examples
@@ -19,11 +20,14 @@
 #'   dimnames=list(letters[c(1:5,3:4,6:4)], c("AA1","BB1","AA2","BB2")))
 #' makeMAList(t4, gl(2,2,labels=c("R","G")))
 #' @export
-makeMAList <- function(mat, MAfac, useF=c("R","G"), isLog=TRUE, silent=FALSE, callFrom=NULL){
+makeMAList <- function(mat, MAfac, useF=c("R","G"), isLog=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL){
   ## extract sets of data-pairs (like R & G series) and MA objects as MA-List object (eg for ratio oriented analysis) according to 'MAfac'
   ## 'MAfac' .. factor
   ## require(limma)
-  fxNa <- .composeCallName(callFrom, newNa="makeMAList")  
+  fxNa <- .composeCallName(callFrom, newNa="makeMAList")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+    
   chPa <- requireNamespace("limma", quietly=TRUE)
   if(!chPa) {return(NULL); warning(fxNa,"Package 'limma' not found ! Please install from Bioconductor")
   } else {
@@ -35,8 +39,20 @@ makeMAList <- function(mat, MAfac, useF=c("R","G"), isLog=TRUE, silent=FALSE, ca
     if(inherits(out, "try-error")) {warning("UNABLE to run limma::MA.RG() '!"); out <- NULL}
     out } }
 
+
+#' Search character-string and cut either before or after 
+#'
+#' This function extracts/cuts text-fragments out of \code{txt} following specific anchors defined by arguments \code{cutFrom} and \code{cutTo}.
+#'
+#' @param dat (matrix or data.frame) main input
+#' @param ty (character) type of ratio (eg 'log2')
+#' @param colNaSep (character) separator 
+#' @return This function returns a numeric vector
+#' @seealso  \code{\link{makeMAList}}, \code{\link[base]{grep}} 
+#' @examples
+#' .allRatios(matrix(11:14, ncol=2))
 #' @export
-.allRatios <- function(dat,ty="log2",colNaSep="_") {
+.allRatios <- function(dat, ty="log2", colNaSep="_") {
   ## calculate all (log2-)ratios between (entire) indiv columns of 'dat' (matrix or data.frame)
   ## return matrix with ratios (betw columns of dat)
   out <- matrix(nrow=nrow(dat), ncol=choose(ncol(dat),2))
@@ -48,6 +64,19 @@ makeMAList <- function(mat, MAfac, useF=c("R","G"), isLog=TRUE, silent=FALSE, ca
   if(identical(ty,"log")) out <- log(out)
   out }
 
+#' Calculate ratios for each column to each column of reference-matrix
+#'
+#' This function calculates ratio(s) for each column of matrix 'x' versus all/each column(s) of matrix 'y' (reference)
+#'
+#' @param x (matrix or data.frame) main input1
+#' @param y (matrix or data.frame) main input2
+#' @param asLog2 (logical)
+#' @param sumMeth (character) method
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a numeric vector or matrix in dimension of 'x' (so far summarize all ratios from mult division from mult ref cols as mean or median )
+#' @seealso  \code{\link{makeMAList}}, \code{\link[base]{grep}} 
+#' @examples
+#' .allRatioMatr1to2(matrix(11:14, ncol=2), matrix(21:24, ncol=2))
 #' @export
 .allRatioMatr1to2 <- function(x, y, asLog2=TRUE, sumMeth="mean", callFrom=NULL){
   ## calculate ratio(s) for each column of matrix 'x' versus all/each column(s) of matrix 'y' (reference)
@@ -73,8 +102,18 @@ makeMAList <- function(mat, MAfac, useF=c("R","G"), isLog=TRUE, silent=FALSE, ca
   out <- if(length(out) >1) matrix(unlist(out), nrow=nrow(x), dimnames=xDimNa) else out[[1]]
   out }
 
+#' Get A value for each group of replicates
+#'
+#' This function calculates the 'A' value (ie group mean) for each group of replicates (eg for MA-plot)
+#'
+#' @param dat (matrix or data.frame) main input
+#' @param grp (factor) grouping of replicates
+#' @return This function returns a numeric vector
+#' @seealso  \code{\link{makeMAList}}
+#' @examples
+#' .getAmean(matrix(11:18, ncol=4), gl(2,2))
 #' @export
-.getAmean <- function(dat,grp) {
+.getAmean <- function(dat, grp) {
   ## get A value (ie group mean) for each group of replicates (eg for MA-plot)
   ## NOTE : this fx is redundant; does about the same as .rowGrpMeans() !
   if(length(levels(grp)) <2) stop(" problem: 'grp' as factor should have at least 2 levels")
@@ -84,9 +123,32 @@ makeMAList <- function(mat, MAfac, useF=c("R","G"), isLog=TRUE, silent=FALSE, ca
   for(i in 1:length(levels(grp))) out[,i] <- rowMeans(dat[,which(grp==levels(grp)[i])],na.rm=TRUE)
   out }
 
+#' Get A value for each group of replicates based on comp
+#'
+#' This function calculates the 'A' value (ie group mean) for each group of replicates (eg for MA-plot)
+#' \code{comp} is matrix telling which groups to use/compare, assuming that dat are already group-means)
+#'
+#' @param dat (matrix or data.frame) main input
+#' @param comp (matrix) tells which groups to use/compare, assuming that dat are already group-means)
+#' @return This function returns a numeric vector
+#' @seealso  \code{\link{makeMAList}}
+#' @examples
+#' .getAmean(matrix(11:18, ncol=4), gl(2,2))
 #' @export
-.getAmean2 <- function(dat,comp) as.matrix(apply(comp,1,function(co,x) rowMeans(x[,co],na.rm=TRUE),dat))   # transform dat to A-values for MA-plot (comp is matrix telling which groups to use/compare, assuming that dat are already group-means)
+.getAmean2 <- function(dat, comp) as.matrix(apply(comp, 1, function(co,x) rowMeans(x[,co],na.rm=TRUE),dat))   # transform dat to A-values for MA-plot (comp is matrix telling which groups to use/compare, assuming that dat are already group-means)
 
+
+#' Get M value for each group of replicates based on comp
+#'
+#' This function calculates the 'M' value (ie log-ratio) for each group of replicates based on comp (eg for MA-plot)
+#' \code{comp} is matrix telling which groups to use/compare, assuming that dat are already group-means)
+#'
+#' @param dat (matrix or data.frame) main input
+#' @param comp (matrix) tells which groups to use/compare, assuming that dat are already group-means)
+#' @return This function returns a numeric vector
+#' @seealso  \code{\link{makeMAList}}
+#' @examples
+#' .getAmean(matrix(11:18, ncol=4), gl(2,2))
 #' @export
-.getMvalue2 <- function(dat,comp) as.matrix(apply(comp,1,function(co,x) diff(t(x[,co])),dat))      # transform dat to M-values  ; comp : matrix (2 columns) indicating which columns should be compared
+.getMvalue2 <- function(dat, comp) as.matrix(apply(comp, 1, function(co,x) diff(t(x[,co])),dat))      # transform dat to M-values  ; comp : matrix (2 columns) indicating which columns should be compared
   

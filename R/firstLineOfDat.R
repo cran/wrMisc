@@ -6,15 +6,19 @@
 #' @param dat (matrix or data.frame) main input
 #' @param refCol (integer) column number of reference-column
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allosw easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return matrix (same number of columns as input)
 #' @seealso \code{\link{firstOfRepeated}}, \code{\link[base]{unique}}, \code{\link[base]{duplicated}} 
 #' @examples
 #' (mat1 <- matrix(c(1:6,rep(1:3,1:3)),ncol=2,dimnames=list(letters[1:6],LETTERS[1:2])))
 #' firstLineOfDat(mat1)
 #' @export
-firstLineOfDat <- function(dat,refCol=2,silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="firstLineOfDat")
+firstLineOfDat <- function(dat, refCol=2, silent=FALSE, debug=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="firstLineOfDat")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   msg <- " expecting matrix or data.frame with >= 2 columns"
   if(length(dim(dat)) <2) stop(msg)
   if(ncol(dat) < 2) stop(" expecting matrix or data.frame with >= 2 columns")
@@ -24,7 +28,7 @@ firstLineOfDat <- function(dat,refCol=2,silent=FALSE,callFrom=NULL){
     refCol <- ncol(dat) }
   .getFirst <- function(x) x[1]     # value at 1st position
   useCol <- (1:ncol(dat))[-1*refCol]
-  useLi <- tapply(1:nrow(dat),as.factor(dat[,refCol]),.getFirst)
-  out <- if(length(useLi) >1) dat[useLi,] else matrix(dat[useLi,],ncol=ncol(dat),dimnames=list(rownames(dat)[useLi],colnames(dat)))
+  useLi <- tapply(1:nrow(dat), as.factor(dat[,refCol]), .getFirst)
+  out <- if(length(useLi) >1) dat[useLi,] else matrix(dat[useLi,], ncol=ncol(dat), dimnames=list(rownames(dat)[useLi],colnames(dat)))
   out }
    

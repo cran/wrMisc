@@ -103,8 +103,8 @@ no2 <- normalizeThis(dat1, refGrp=1:3, meth="trimMean", trim=0.4)
 no3 <- normalizeThis(dat1, refGrp=1:3, meth="median")
 no4 <- normalizeThis(dat1, refGrp=1:3, meth="slope", quantFa=c(0.2,0.8))
 dat1[c(1:10,91:100),]
-cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE),use="complete.obs")             # high
-cor(dat1[,4],rowMeans(dat1[,1:2],na.rm=TRUE),use="complete.obs")             # bad
+cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE), use="complete.obs")             # high
+cor(dat1[,4],rowMeans(dat1[,1:2],na.rm=TRUE), use="complete.obs")             # bad
 cor(dat1[c(1:10,91:100),4],rowMeans(dat1[c(1:10,91:100),1:2],na.rm=TRUE),use="complete.obs")
 cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 }

@@ -10,6 +10,7 @@ replicateStructure(
   sep = "__",
   exclNoRepl = TRUE,
   trimNames = FALSE,
+  includeOther = FALSE,
   silent = FALSE,
   callFrom = NULL,
   debug = FALSE
@@ -18,16 +19,18 @@ replicateStructure(
 \arguments{
 \item{x}{(matrix or data.frame) the annotation to inspect; each column is supposed to describe another set of annoation/metadata for the rows of \code{x} (min 1 row and 1 column),}
 
-\item{method}{(character, length=1) the procedure to choose column(s) with properties of information, may be \code{highest} (max number of levels)
-\code{lowest} (min number of levels), \code{median} (median of all options for number of levels),
+\item{method}{(character, length=1) the procedure to choose column(s) with properties of information, may be \code{highest} or \code{max} (max number of levels)
+\code{lowest} or \code{min} (min number of levels), \code{median} (median of all options for number of levels),
 \code{combAll} (combine all columns of \code{x}) or \code{combNonOrth} (combine only non-orthogonal columns of \code{x}, to avoid avoid n lines with n levels);
 lazy evluation of the argument is possible}
 
-\item{sep}{(character) separator used when any method combining multiple columns (eg combAll, combNonOrth)  is chosen (should not appear anywhere in \code{x})}
+\item{sep}{(character) separator used when a method combining multiple columns (eg combAll, combNonOrth)  is chosen (should not appear anywhere in \code{x})}
 
 \item{exclNoRepl}{(logical) decide whether columns with all values different (ie no replicates or max divergency) should be excluded}
 
 \item{trimNames}{(logical) optional trimming of names in \code{x} by removing redundant heading and tailing text}
+
+\item{includeOther}{(logical) include $allCols with pattern of (all) other columns}
 
 \item{silent}{(logical) suppress messages}
 
@@ -40,7 +43,8 @@ This function returns a list with $col (column index relativ to \code{x}), $lev 
   $meth (note of method finally used) and $allCols with general replicate structure of all columns of  \code{x}
 }
 \description{
-This function was designed for mining annotation information organized in multiple columns to identify the grouping of multiple samples.
+This function was designed for mining annotation information organized in multiple columns to identify the (potential) grouping of multiple samples, ie to determine factor levels.
+The argument \code{method} allows further finetuning if high or low number of groups should be preferred, if multiple columns may be combined, or to choose a particular custom column for desiganting factor levels.
 }
 \details{
 Statistical tests require specifying which samples should be considered as replicates of whom.
@@ -67,6 +71,7 @@ replicateStructure(strX[,1:4], method="combAll")
 replicateStructure(strX[,1:4], method="combAll", exclNoRepl=FALSE)
 replicateStructure(strX[,1:4], method="combNonOrth", exclNoRepl=TRUE)
 replicateStructure(strX, method="lowest")
+replicateStructure(strX, method=3, includeOther=TRUE)   # custom choice of 3rd column
 
 
 

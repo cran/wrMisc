@@ -9,9 +9,9 @@ makeNRedMatr(
   summarizeRedAs,
   iniID = "iniID",
   retDataFrame = TRUE,
-  callFrom = NULL,
   silent = FALSE,
-  debug = FALSE
+  debug = FALSE,
+  callFrom = NULL
 )
 }
 \arguments{
@@ -23,11 +23,11 @@ makeNRedMatr(
 
 \item{retDataFrame}{(logical) if TRUE, check if text-columns may be converted to data.frame with numeric}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
-
 \item{silent}{(logical) suppress messages}
 
 \item{debug}{(logical) for bug-tracking: more/enhanced messages}
+
+\item{callFrom}{(character) allows easier tracking of message(s) produced}
 }
 \value{
 This function returns a (numeric) matrix or data.frame with summarized data and add'l col with number of initial redundant lines

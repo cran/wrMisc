@@ -10,6 +10,7 @@ partialDist(
   overLap = TRUE,
   method = "euclidean",
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -22,12 +23,14 @@ partialDist(
 
 \item{method}{'character' name of method passed to \code{dist}}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-matrix (not of class 'dist')
+This function returns a matrix with partial distances (not of class 'dist' object)
 }
 \description{
 \code{partialDist} calculates distance matrix like \code{dist} for 1- or 2-dim data, but only partially, ie only cases of small distances.
@@ -36,8 +39,8 @@ it allows to overcome memory-problems with larger data (and faster execution wit
 }
 \examples{
 set.seed(2016); mat3 <- matrix(runif(300),nr=30)
-round(dist(mat3),1)
-round(partialDist(mat3,gr=3),1)
+round(dist(mat3), 1)
+round(partialDist(mat3, gr=3), 1)
 }
 \seealso{
 \code{\link[stats]{dist}}

@@ -12,6 +12,7 @@ numPairDeColNames(
   columLabel = "conc",
   sortByAbsRatio = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -29,6 +30,8 @@ numPairDeColNames(
 \item{sortByAbsRatio}{(logical) optional sorting of output by (absolute) log-ratios (most extreme ratios on top)}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

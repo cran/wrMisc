@@ -7,13 +7,21 @@
 #' @param dep (numeric vector, matrix or data.frame) explanatory or dependent variable, if matrix or data.frame the 1st column will be used, if 'y'=\code{NULL} the 2nd column will be used as 'y'  
 #' @param y (numeric vector) independent variable (the value that should get estimated based on 'dep')
 #' @param asVect (logical) return numeric vector (Intercept, slope, p.intercept, p.slope) or matrix or results 
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return numeric vector (Intercept, slope, p.intercept, p.slope), or if \code{asVect}==\code{TRUE} as matrix (p.values in 2nd column)
 #' @seealso \code{\link[stats]{lm}}
 #' @examples
 #' linRegrParamAndPVal(c(5,5.1,8,8.2),gl(2,2))
 #' @export
-linRegrParamAndPVal <- function(dep,y=NULL,asVect=TRUE) {
+linRegrParamAndPVal <- function(dep, y=NULL, asVect=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## fit linear regression and return parameters, including p-values from Anova
+  fxNa <- .composeCallName(callFrom, newNa="linRegrParamAndPVal")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(debug) message(fxNa,"lRP1")
+  
   msg <- "'dep' and 'y' should be numeric vectors of equal length, or 'dep' may be matrix where the 1st column will be used as 'dep' and the secod as 'y'" 
   if(length(dim(dep)) ==2) {                         
     if(ncol(dep) >1 & length(y) <1) {dF <- as.data.frame(dep[,1:2]); colnames(dF) <- c("x","y")

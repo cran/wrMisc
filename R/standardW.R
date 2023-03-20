@@ -7,7 +7,10 @@
 #' @param mat (matrix, data.frame or array) data that need to get standardized.
 #' @param byColumn (logical) if \code{TRUE} the function will be run independently over all columns such as as \code{apply(mat,2,standardW)}  
 #' @param na.rm (logical) if \code{NA}s in the data don't get ignored via this argument, the output will be all \code{NA} 
-#' @return vector of rescaled data (in dimensions as input)
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This functions retruns a vector of rescaled data (in dimensions as input)
 #' @seealso \code{\link[base]{scale}} 
 #' @examples
 #' dat <- matrix(2*round(runif(100),2), ncol=4)
@@ -23,11 +26,16 @@
 #' mean(dat2); sd(dat2)
 #' 
 #' @export
-standardW <- function(mat, byColumn=FALSE, na.rm=TRUE) {   
+standardW <- function(mat, byColumn=FALSE, na.rm=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {   
   ## standardize as entire matrix (ie not column-wise, relative differences in row get thus conserved), specific cols may be selected
   ## used to be standEntMatr
+  fxNa <- .composeCallName(callFrom, newNa="standardW")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(debug) message(fxNa,"sW1")
+
   if(is.data.frame(mat)) mat <- as.matrix(mat)
-  if(byColumn & length(dim(mat) >1)) { std <- function(x) (mat -mean(x, na.rm=na.rm))/stats::sd(x, na.rm=na.rm) 
+  if(byColumn && length(dim(mat) >1)) { std <- function(x) (mat -mean(x, na.rm=na.rm))/stats::sd(x, na.rm=na.rm) 
     if(length(dim(mat)) ==2) apply(mat, 2, std) else {if(length(dim(mat)) ==3) apply(mat, 2:3, std) }
   } else (mat -mean(mat, na.rm=na.rm)) /stats::sd(mat, na.rm=na.rm)
 }

@@ -53,15 +53,15 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
   ## Example : There are 4 independent drawings of a variable number of letters from the alphabet.
   ## Note double-repeats may be quite frequent and are eliminated by default, triple- (and higher) repeats are kept.
   ## if multiple ways of making sets of 'nCombin' vetors exist, summary statistics will be added in 3rd dimension of resulting array
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="combineAsN")
+  fxNa <- .composeCallName(callFrom, newNa="combineAsN")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   reqPa <- c("utils","wrMisc")
   chPa <- sapply(reqPa, requireNamespace, quietly=TRUE)
   if(any(!chPa)) stop("package(s) '",paste(reqPa[which(!chPa)], collapse="','"),"' not found ! Please install first from CRAN")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   ## sanity checks
   if(length(lev) <1) { if(length(names(lst)) >0) { lev <- substr(names(lst),1,1)
-      if(!silent) message(fxNa,"Note : Argument 'lev' is missing; trying to recuperate as 1st character of names of 'lst' :  ",wrMisc::pasteC(utils::head(lev,7),quoteC="'"), if(length(lev) >7) "...")
+      if(!silent) message(fxNa,"Note : Argument 'lev' is missing; trying to recuperate as 1st character of names of 'lst' :  ",pasteC(utils::head(lev,7),quoteC="'"), if(length(lev) >7) "...")
     } else stop("Argument 'lev' (for levels of list-elements) MUST be provided when 'lst' has no names !")}
 
   if(length(lst) != length(lev)) stop("Length of 'lst' and 'lev' must match !   Was ",length(lst)," and ",length(lev)," !")
@@ -76,7 +76,7 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
     if(!silent) message(fxNa,"'nCombin' has NA, resetting to default")}
 
   if(any(sapply(c("all","def"), identical, nCombin))) nCombin <- length(levels(as.factor(lev)))
-  if(length(lst) <2 | nCombin <2) { datOK <- FALSE; if(!silent) message(fxNa,"Nothing to do")
+  if(length(lst) <2 || nCombin <2) { datOK <- FALSE; if(!silent) message(fxNa,"Nothing to do")
   } else datOK <- TRUE
 
   if(datOK & nCombin ==2 & remDouble) { remDouble <- FALSE
@@ -85,8 +85,8 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
   if(datOK) {
     ## check levels
     levNo <- try(suppressWarnings(as.numeric(unique(lev))), silent=TRUE)          # level-indexes
-    if(inherits(levNo, "try-error") | any(is.na(levNo))) levNo <- unique(suppressWarnings(as.numeric(as.factor(lev))))
-    if(debug) message(fxNa," levNo (",class(levNo),")  = ",wrMisc::pasteC(levNo))
+    if(inherits(levNo, "try-error") || any(is.na(levNo))) levNo <- unique(suppressWarnings(as.numeric(as.factor(lev))))
+    if(debug) message(fxNa," levNo (",class(levNo),")  = ",pasteC(levNo))
     if(nCombin > length(lev) -1) { nCombin <- length(lev) -1
       if(!silent) message(fxNa," Argument 'nCombin' is too high for given data, re-setting to ",nCombin)
     }
@@ -100,7 +100,7 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
     } else {
       ## MAIN, prepare matrix of combin
       ## Setup combinations to try
-      if(isTRUE(remDouble) & length(unique(levNo)) >1) { nCombin <- min(nCombin, length(levels(as.factor(lev))), na.rm=TRUE)
+      if(isTRUE(remDouble) && length(unique(levNo)) >1) { nCombin <- min(nCombin, length(levels(as.factor(lev))), na.rm=TRUE)
         if(!silent) message(fxNa," argument 'nCombin' combined to 'remDouble'=TRUE  is too high for given data, re-setting to ",nCombin)}
       combOfN <- utils::combn((1:length(lst)), nCombin)              # the combinations (all) ..
       ## prepare separator for names of combinations
@@ -137,12 +137,12 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
       ## which contain repeated combinations of groups: calculate sd & derivatives, organize as array
       if(any(dupNa)) {
         grTy <- unique(colnames(comCou2))
-        sumMatr <- function(x) { avX <- rowMeans(x); sdX <- wrMisc::rowSds(x); c(nAv=avX, sem=sdX/sqrt(ncol(x)), CI=apply(x, 1, confInt), sd=sdX)}   # seems OK
+        sumMatr <- function(x) { avX <- rowMeans(x); sdX <- rowSds(x); c(nAv=avX, sem=sdX/sqrt(ncol(x)), CI=apply(x, 1, confInt), sd=sdX)}   # seems OK
 
         comCou3 <- sapply(grTy, function(x) { y <- comCou2[,which(colnames(comCou2) %in% x)]; if(length(dim(y)) >1) sumMatr(y) else c(y, rep(NA,length(y)*3))} )
         if(length(dim(comCou3)) <2) comCou3 <- matrix(comCou3, ncol=1, dimnames=list(NULL, colnames(comCou2)))
         allNa <- colnames(comCou3)
-        faRep <- wrMisc::findRepeated(colnames(comCou3), nonRepeated=TRUE)     # correct object (note: all colnames are already different)
+        faRep <- findRepeated(colnames(comCou3), nonRepeated=TRUE)     # correct object (note: all colnames are already different)
         out <- array(NA, dim=c(nrow(comCou2), length(faRep$rep) +length(faRep$nonrep), 4), dimnames=list(rownames(comCou2), allNa,c("n","sem","CI","sd")))
           #isMult <- match(names(faRep$rep), allNa)   # needed ?
         if(debug) {message(fxNa,"cA3g")}

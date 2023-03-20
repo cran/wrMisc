@@ -9,6 +9,7 @@ organizeAsListOfRepl(
   inspNChar = 0,
   byDim = 3,
   silent = TRUE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -21,10 +22,12 @@ organizeAsListOfRepl(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-list of arrays (typically 1st and 2nd dim for specific genes/objects, 3rd for different measures associated with)
+This function returns a list of arrays (typically 1st and 2nd dim for specific genes/objects, 3rd for different measures associated with)
 }
 \description{
 Organize array of all data ('arrIn', long table) into list of (replicate-)arrays (of similar type/layout) based on dimension number 'byDim' of 'arrIn' (eg 2nd or 3rd dim).
@@ -33,6 +36,9 @@ Default will search for '_' separator or trim from end if not found in the relev
 }
 \examples{
 arr1 <- array(1:24,dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
-  paste("col",1:3,sep=""),c("ch1","ch2")))
+  paste("col",1:3,sep=""), c("ch1","ch2")))
 organizeAsListOfRepl(arr1)
+}
+\seealso{
+\code{\link[base]{array}}
 }

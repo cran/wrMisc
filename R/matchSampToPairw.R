@@ -19,7 +19,8 @@
 #' @param pairwNa (character) the names of pairwise-testing (ie 'concatenated' \code{sampNa}
 #' @param sep (character) if not \code{NULL} the characters given will be used via \code{stringsplit} 
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return matrix of 2 columns with inidices of \code{sampNa} with \code{pairwNa} as rows
 #' @seealso (for running multiple pair-wise test) \code{\link{moderTestXgrp}}, \code{\link[base]{grep}}, \code{\link[base]{strsplit}}
 #' @examples
@@ -30,15 +31,17 @@
 #' pairwNa2 <- c("abc-efg","abcc-hij","abc-hij","abc-hijj","zz-zz","efg-hij")
 #' matchSampToPairw(grpNa1, pairwNa2) 
 #' @export
-matchSampToPairw <- function(grpNa, pairwNa, sep=NULL, silent=FALSE, callFrom=NULL) {
+matchSampToPairw <- function(grpNa, pairwNa, sep=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## return index of grpNa for each pairwNa
   fxNa <- .composeCallName(callFrom, newNa="matchSampToPairw")
   if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  
   chPw <- duplicated(pairwNa)
-  if(any(chPw)) {if(!silent) message(fxNa," some entries of 'pairwNa' are duplicated, removing")
+  if(any(chPw)) {if(!silent) message(fxNa,"Some entries of 'pairwNa' are duplicated, removing")
     pairwNa <- pairwNa[-which(chPw)]} 
   chNa <- duplicated(grpNa)
-  if(any(chNa)) {if(!silent) message(fxNa," some entries of 'grpNa' are duplicated, removing")
+  if(any(chNa)) {if(!silent) message(fxNa,"Some entries of 'grpNa' are duplicated, removing")
     grpNa <- grpNa[-which(chNa)]} 
   if(length(grpNa) <2) stop("Insufficient 'grpNa' furnished") 
   if(length(pairwNa) <1) stop("Insufficient 'pairwNa' furnished")

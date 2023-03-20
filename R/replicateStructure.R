@@ -1,6 +1,7 @@
 #' Search and Select Groups of Replicates
 #'
-#' This function was designed for mining annotation information organized in multiple columns to identify the grouping of multiple samples.
+#' This function was designed for mining annotation information organized in multiple columns to identify the (potential) grouping of multiple samples, ie to determine factor levels.
+#' The argument \code{method} allows further finetuning if high or low number of groups should be preferred, if multiple columns may be combined, or to choose a particular custom column for desiganting factor levels.
 #'
 #'
 #' @details
@@ -19,16 +20,17 @@
 #'
 #'
 #' @param x (matrix or data.frame) the annotation to inspect; each column is supposed to describe another set of annoation/metadata for the rows of \code{x} (min 1 row and 1 column),
-#' @param method (character, length=1) the procedure to choose column(s) with properties of information, may be \code{highest} (max number of levels)
-#'   \code{lowest} (min number of levels), \code{median} (median of all options for number of levels),
+#' @param method (character, length=1) the procedure to choose column(s) with properties of information, may be \code{highest} or \code{max} (max number of levels)
+#'   \code{lowest} or \code{min} (min number of levels), \code{median} (median of all options for number of levels),
 #'   \code{combAll} (combine all columns of \code{x}) or \code{combNonOrth} (combine only non-orthogonal columns of \code{x}, to avoid avoid n lines with n levels);
 #'   lazy evluation of the argument is possible
-#' @param sep (character) separator used when any method combining multiple columns (eg combAll, combNonOrth)  is chosen (should not appear anywhere in \code{x})
+#' @param sep (character) separator used when a method combining multiple columns (eg combAll, combNonOrth)  is chosen (should not appear anywhere in \code{x})
 #' @param exclNoRepl (logical) decide whether columns with all values different (ie no replicates or max divergency) should be excluded
 #' @param trimNames (logical) optional trimming of names in \code{x} by removing redundant heading and tailing text
+#' @param includeOther (logical) include $allCols with pattern of (all) other columns
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a list with $col (column index relativ to \code{x}), $lev (abstract labels of level),
 #'   $meth (note of method finally used) and $allCols with general replicate structure of all columns of  \code{x}
 #' @seealso  \code{\link[base]{duplicated}}, uses \code{\link{trimRedundText}}
@@ -44,38 +46,53 @@
 #' replicateStructure(strX[,1:4], method="combAll", exclNoRepl=FALSE)
 #' replicateStructure(strX[,1:4], method="combNonOrth", exclNoRepl=TRUE)
 #' replicateStructure(strX, method="lowest")
+#' replicateStructure(strX, method=3, includeOther=TRUE)   # custom choice of 3rd column
 #'
 #'
 #'
 #' @export
-replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, trimNames=FALSE, silent=FALSE, callFrom=NULL, debug=FALSE) {
+replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, trimNames=FALSE, includeOther=FALSE, silent=FALSE, callFrom=NULL, debug=FALSE) {
   ##
   fxNa <- .composeCallName(callFrom, newNa="replicateStructure")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
-  out <- ou3 <- NULL              # initialize
+  out <- ou3 <- str1 <- NULL              # initialize
 
   datOK <- all(length(x) >0 & length(dim(x)) >0)
   if(debug) message(fxNa,"ini datOK  ",datOK)
   ## check for unique colnames
-  if(datOK) { iniColNa <- colnames(x)
+  if(datOK) {
+    chMe <- TRUE
+    if(length(method) <1) { chMe <- FALSE; method <- "median"} else if(length(method) >1)  method <- method[1]
+    if(is.na(method)) { chMe <- FALSE; method <- "median" }
+    if(!chMe && !silent) message(fxNa, "Invalid entry for 'method', setting to default, ie 'median'")
+    iniColNa <- colnames(x)
     chColN <- duplicated(colnames(x), fromLast=FALSE)
     if(any(chColN)) { if(!silent) message(fxNa,"Need to correct redundant colnames !!!")}
-  } else if(!silent) message(fxNa,"invalid entry for 'x' .. should be matrix or data.frame (min 1 row, 1 column) .. returning NULL")
+  } else if(!silent) message(fxNa,"Invalid entry for 'x' .. should be matrix or data.frame (min 1 row, 1 column) .. returning NULL")
   ## single available/given .. shortcut
-  if(datOK) { if(ncol(x)==1) { datOK <- FALSE
-    if(debug) message(fxNa,"single column available/relevant .. shortcut")
-    nn <- match(x[,1], unique(x[,1]))
-    names(nn) <- x[,1]
-    coln <- 1
-    names(coln) <- colnames(x)
-    out <- list(col=coln, lev=nn, meth="single informative")
-  } else if(datOK & nrow(x)==1) { ou3 <- list(col=1, lev=1, meth="single row")
-    if(!silent) message(fxNa,"Note : Only single line with levels, ie single group wo any replicates")
-    datOK <- FALSE } }
+  if(datOK) { if(any(dim(x) ==1)) { datOK <- FALSE
+      if(debug) message(fxNa,"Single column or single line available/relevant .. shortcut")
+      if(nrow(x) ==1) {
+        out <- list(col=1, lev=1, meth="single row")
+        if(!silent) message(fxNa,"Note : Only single line with levels, ie single group wo any replicates")
+      } else {
+        nn <- match(as.character(x), unique(as.character(x)))
+        names(nn) <- if(ncol(x)==1) x[,1] else x[1,]
+        coln <- 1
+        names(coln) <- colnames(x)
+        out <- list(col=coln, lev=nn, meth="single informative") } }
+  }
+
+  ## check argument 'method' : check for costom choice of column
+  if(datOK && length(out) <1 && grepl("^[[:digit:]]+$", method)) {
+    colNo <- as.integer(method)
+    out <- list(col=colNo, lev=match(x[,colNo], unique(x[,colNo])), meth="custom column") }
+  if(debug) {message(fxNa,"fd0"); fd0 <- list(x=x,method=method,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK,out=out)}
+
   ## check argument 'method'
-  if(datOK) {
-    methOpt <- c("highest","lowest","median","combAll","combNonOrth")
+  if(datOK && length(out) <1) {
+    methOpt <- c("highest","lowest","min","median","combAll","combNonOrth")
   	msg <- c("  'method' should designate one of the following options ",pasteC(methOpt,quoteC="'"),"; setting to default")
     if(identical(method,"min")) method <- "lowest"
     if(identical(method,"max")) method <- "highest"
@@ -91,81 +108,80 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
     if(chMe2) { method <- "median"; chMeth <- 3
       warning(fxNa,"Unable to match argument 'method' to any of the options ",pasteC(methOpt,quoteC="'"),msg)}
     method <- methOpt[chMeth]
-  }
-  ## check separator
-  if(length(sep) != 1) { sep <- "__"
-    warning(fxNa," Argument 'sep' must be character and of length =1; resetting to default")}
-  if(nchar(sep) <1) { sep <- "__"
-    warning(fxNa," Argument sep=\"\" may lead to incorrect comparisons, resetting to default")}
-  chSep <- grep(sep, x)
-  if(length(chSep) >0) warning(fxNa," BEWARE, the annotation data do contain ",length(chSep)," instances of '",
-    sep,"' ! The results of combined searches may be incorrect. Please consider using a different separator")
 
-  ##
-  if(debug) {message(fxNa,"fd0"); fd0 <- list(x=x,ou3=ou3,method=method,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK)}
+    ## check separator
+    if(length(sep) != 1) { sep <- "__"
+      warning(fxNa," Argument 'sep' must be character and of length =1; resetting to default")}
+    if(nchar(sep) <1) { sep <- "__"
+      warning(fxNa," Argument sep=\"\" may lead to incorrect comparisons, resetting to default")}
+    chSep <- grep(sep, x)
+    if(length(chSep) >0) warning(fxNa," BEWARE, the annotation data do contain ",length(chSep)," instances of '",
+      sep,"' ! The results of combined searches may be incorrect. Please consider using a different separator")
 
-  ## utility functions
-  chStru <- function(y, debug) {   # check duplication structure of vector
-    dup <- duplicated(y)
-    out <- -1
-    if(sum(dup) <1) out <- if(isTRUE(exclNoRepl)) 0 else 1:length(y)     # all unique
-    if(sum(dup) == length(y) -1) out <- 1                                # all duplic
-    if(any(out < 0)) out <- match(y, unique(y))
-    if(debug) message(fxNa," -> chStru : ",wrMisc::pasteC(out))
-    out }
-  fMin <- function(y, ref=y) { coln <- which.min(apply(y, 2, max, na.rm=TRUE));
-    if(debug) {message(fxNa," -> fMin   colnames y", colnames(y),"\n"); fMi <- list(y=y,coln=coln, ref=ref)}
-    refn <- if(identical(y, ref)) coln else which(colnames(y)[coln]==colnames(ref))
-    nn <- y[,coln]; names(nn) <- ref[,refn];
-    names(refn) <- colnames(y)[coln]
-    list(col=refn, lev=nn, meth="single min col")}
-  fMax <- function(y, ref=y) { coln <- which.max(apply(y, 2, max, na.rm=TRUE));
-    if(debug) {message(fxNa," -> fMax   colnames y", colnames(y),"\n"); fMa <- list(y=y,coln=coln, ref=ref)}
-    refn <- if(identical(y, ref)) coln else which(colnames(y)[coln]==colnames(ref))
-    nn <- y[,coln]; names(nn) <- ref[,refn];
-    names(refn) <- colnames(y)[coln]
-    list(col=refn, lev=nn, meth="single max col")}
-  fMed <- function(y, ref=y) { zz <- apply(y, 2, max, na.rm=TRUE);
-    coln <- which(zz==stats::median(if((ncol(y) %% 2) ==0) c(zz[1],zz) else zz))[1];
-    if(debug) {message(fxNa," -> fMed   colnames y", colnames(y),"\n"); fMe <- list(y=y,zz=zz,coln=coln, ref=ref)}
-    refn <- if(identical(y, ref)) coln else which(colnames(y)[coln]==colnames(ref))
-    names(refn) <- colnames(y)[coln]
-    nn <- y[,coln]; names(nn) <- ref[,refn]
-    list(col=refn, lev=nn, meth="single median col")}
-  fCombAll <- function(y, ref=y) {   # uses debug
-    refn <- if(identical(y, ref)) 1:ncol(y) else match(colnames(y), colnames(ref))
-    names(refn) <- colnames(y)
-    tm <- if(ncol(y)==2) paste(y[,1],y[,2]) else apply(y, 1, paste, collapse=" ");
-    nn <- match(tm, unique(tm))
-    if(debug) {message(fxNa," -> fCombAll"); fComb <- list(y=y,ref=ref,refn=refn,tm=tm,nn=nn)}
-    names(nn) <- if(ncol(y)==1) ref[,refn] else apply(ref[,refn], 1, paste0, collapse="_")
-    list(col=refn, lev=nn, meth="comb all col") }
+    ##
+    if(debug) {message(fxNa,"fd1"); fd1 <- list(x=x,ou3=ou3,method=method,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK,out=out)}
 
-  fComNonOrth <- function(y, oup="min", ref=y) { if(debug) message(fxNa," -> fComNonOrth")
-    tm <- if(ncol(y)==2) as.matrix(paste(y[,1], y[,2])) else {
-      if(ncol(y)==3) cbind(paste(y[,1],y[,2]), paste(y[,1],y[,3])) else apply(y[,-1], 2, paste,y[,1])}      # pairwise groups/combin
-    st2 <- as.matrix(apply(tm, 2, function(z) match(z, unique(z))))                # levels of pairwise combin
-    colnames(st2) <- paste(colnames(y)[1], colnames(y)[2:ncol(y)], sep=sep)
-    maxL <- apply(st2, 2, max)
-    if(debug) {message(fxNa," -> fComNonOrt"); fComNonOrt <- list(y=y,oup=oup,tm=tm, st2=st2,maxL=maxL,x=x)}
-    if(any(maxL ==nrow(y))) {useCo <- which(maxL < nrow(y)); st2 <- matrix(st2[,useCo], ncol=length(useCo), dimnames=list(rownames(st2), colnames(st2)[useCo]))}
-    if(length(st2) >0) { if(TRUE) {maxP <- which.max(apply(st2, 2, max));
-      coln <- which(colnames(y) %in% unlist(strsplit(names(maxP), split=sep)))
-      refn <- if(identical(y, ref)) coln else match(colnames(y)[coln], colnames(ref))
+    ## utility functions
+    chStru <- function(y, debug) {   # check duplication structure of vector
+      dup <- duplicated(y)
+      out <- -1
+      if(sum(dup) <1) out <- if(isTRUE(exclNoRepl)) 0 else 1:length(y)     # all unique
+      if(sum(dup) == length(y) -1) out <- 1                                # all duplic
+      if(any(out < 0)) out <- match(y, unique(y))
+      if(debug) message(fxNa," -> chStru : ",pasteC(out))
+      out }
+    fMin <- function(y, ref=y) { coln <- which.min(apply(y, 2, max, na.rm=TRUE));
+      if(debug) {message(fxNa," -> fMin   colnames y", colnames(y),"\n"); fMi <- list(y=y,coln=coln, ref=ref)}
+      refn <- if(identical(y, ref)) coln else which(colnames(y)[coln]==colnames(ref))
+      nn <- y[,coln]; names(nn) <- ref[,refn];
       names(refn) <- colnames(y)[coln]
-      nn <- st2[,maxP]; names(nn) <- if(length(refn)==1) ref[,refn] else {
-        if(length(refn)==2) paste(ref[,refn[1]],ref[,refn[2]],sep="_") else apply(ref[,refn], 1, paste0, collapse="_")}
-      out <- list(col=refn, lev=nn, meth="combNonOrth col" )}
-    } else out <- fMax(y)
-    out }
+      list(col=refn, lev=nn, meth="single min col")}
+    fMax <- function(y, ref=y) { coln <- which.max(apply(y, 2, max, na.rm=TRUE));
+      if(debug) {message(fxNa," -> fMax   colnames y", colnames(y),"\n"); fMa <- list(y=y,coln=coln, ref=ref)}
+      refn <- if(identical(y, ref)) coln else which(colnames(y)[coln]==colnames(ref))
+      nn <- y[,coln]; names(nn) <- ref[,refn];
+      names(refn) <- colnames(y)[coln]
+      list(col=refn, lev=nn, meth="single max col")}
+    fMed <- function(y, ref=y) { zz <- apply(y, 2, max, na.rm=TRUE);
+      coln <- which(zz==stats::median(if((ncol(y) %% 2) ==0) c(zz[1],zz) else zz))[1];
+      if(debug) {message(fxNa," -> fMed   colnames y", colnames(y),"\n"); fMe <- list(y=y,zz=zz,coln=coln, ref=ref)}
+      refn <- if(identical(y, ref)) coln else which(colnames(y)[coln]==colnames(ref))
+      names(refn) <- colnames(y)[coln]
+      nn <- y[,coln]; names(nn) <- ref[,refn]
+      list(col=refn, lev=nn, meth="single median col")}
+    fCombAll <- function(y, ref=y) {   # uses debug
+      refn <- if(identical(y, ref)) 1:ncol(y) else match(colnames(y), colnames(ref))
+      names(refn) <- colnames(y)
+      tm <- if(ncol(y)==2) paste(y[,1],y[,2]) else apply(y, 1, paste, collapse=" ");
+      nn <- match(tm, unique(tm))
+      if(debug) {message(fxNa," -> fCombAll"); fComb <- list(y=y,ref=ref,refn=refn,tm=tm,nn=nn)}
+      names(nn) <- if(ncol(y)==1) ref[,refn] else apply(ref[,refn], 1, paste0, collapse="_")
+      list(col=refn, lev=nn, meth="comb all col") }
 
-  ## get generalized pattern of replicates
-  if(datOK) {
+    fComNonOrth <- function(y, oup="min", ref=y) { if(debug) message(fxNa," -> fComNonOrth")
+      tm <- if(ncol(y)==2) as.matrix(paste(y[,1], y[,2])) else {
+        if(ncol(y)==3) cbind(paste(y[,1],y[,2]), paste(y[,1],y[,3])) else apply(y[,-1], 2, paste,y[,1])}      # pairwise groups/combin
+      st2 <- as.matrix(apply(tm, 2, function(z) match(z, unique(z))))                # levels of pairwise combin
+      colnames(st2) <- paste(colnames(y)[1], colnames(y)[2:ncol(y)], sep=sep)
+      maxL <- apply(st2, 2, max)
+      if(debug) {message(fxNa," -> fComNonOrt"); fComNonOrt <- list(y=y,oup=oup,tm=tm, st2=st2,maxL=maxL,x=x)}
+      if(any(maxL ==nrow(y))) {useCo <- which(maxL < nrow(y)); st2 <- matrix(st2[,useCo], ncol=length(useCo), dimnames=list(rownames(st2), colnames(st2)[useCo]))}
+      if(length(st2) >0) { if(TRUE) {maxP <- which.max(apply(st2, 2, max));
+        coln <- which(colnames(y) %in% unlist(strsplit(names(maxP), split=sep)))
+        refn <- if(identical(y, ref)) coln else match(colnames(y)[coln], colnames(ref))
+        names(refn) <- colnames(y)[coln]
+        nn <- st2[,maxP]; names(nn) <- if(length(refn)==1) ref[,refn] else {
+          if(length(refn)==2) paste(ref[,refn[1]],ref[,refn[2]],sep="_") else apply(ref[,refn], 1, paste0, collapse="_")}
+        out <- list(col=refn, lev=nn, meth="combNonOrth col" )}
+      } else out <- fMax(y)
+      out }
+
+    ## get generalized pattern of replicates
     str1 <- apply(x, 2, chStru, debug=debug)
     chStr <- if(is.matrix(str1)) rep(nrow(str1) <nrow(x), ncol(x)) else {sapply(str1, length) < nrow(x)}
     ## develop more to recuperate replicates after enumerarators ?
 
-    if(debug) {message(fxNa,"fd1"); fd1 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK)}
+    if(debug) {message(fxNa,"fd2"); fd2 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK)}
     if(all(chStr)) {
       if(exclNoRepl) {
         if(debug) message(fxNa,"None of the columns have any replicates, setting exclNoRepl=FALSE")
@@ -174,13 +190,13 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
         chStr <- sapply(str1, length) < nrow(x)
       } else warning(fxNa,"Can't find replicates for any of the columns !! ")
     }
-    if(debug) {message(fxNa,"fd2"); fd2 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK,chStr=chStr)}
+    if(debug) {message(fxNa,"fd3"); fd3 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK,chStr=chStr)}
     ## had removing all replicated instances, but this will create list if str1 is matrix with uneven number of replicates per column !
     if(length(dim(str1)) <1 & any(chStr, na.rm=TRUE) & !all(chStr, na.rm=TRUE)) str1 <- str1[which(!chStr)]
 
     if(is.list(str1)) str1 <- as.matrix(as.data.frame(str1))
     if(length(dim(str1)) <2 & length(str1) >0) str1 <- matrix(unlist(str1), ncol=ncol(x), dimnames=dimnames(x))
-    if(debug) {message(fxNa,"fd3"); fd3 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK,chStr=chStr)}
+    if(debug) {message(fxNa,"fd4"); fd4 <- list(x=x,method=method,ou3=ou3,str1=str1,sep=sep,exclNoRepl=exclNoRepl,datOK=datOK,chStr=chStr)}
     if(!isTRUE(exclNoRepl)) {              ## check if single col at max levels may serve as shortcut
       chMax <- sapply(str1, max, na.rm=TRUE) ==nrow(x)
       if(any(chMax)) { datOK <- FALSE
@@ -188,10 +204,11 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
         names(coln) <- colnames(str1)[coln]
         nn <- 1:nrow(x)
         names(nn) <- str1[,coln]
-        out <- list(col=coln, lev=nn, meth="(shortcut, first) single col at max divergence", allCols=str1) } }
+        out <- list(col=coln, lev=nn, meth="(shortcut, first) single col at max divergence", allCols=str1) }
+    }
   }
 
-  if(datOK) {
+  if(datOK && length(str1) >0) {
     ## remove non-useful, obtain matrix of indexes
     if(is.list(str1)) { chLe <- sapply(str1, length)
       if(any(chLe) <2) if(sum(duplicated(chLe[which(chLe >1)])) == sum(chLe >1) -1) {
@@ -204,7 +221,7 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
       chDu <- duplicated(tm2, fromLast=FALSE)
       if(any(chDu)) {tm2 <- tm2[which(!chDu)];
         ou3 <- matrix(ou3[,which(!chDu)], nrow=nrow(x), dimnames=list(NULL,colnames(ou3)[which(!chDu)]))}
-      if(debug) {message(fxNa,"fd4 .."); fd4 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
+      if(debug) {message(fxNa,"fd5 .."); fd5 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
 
       out <- if(ncol(ou3) <2) {
         if(debug) message(fxNa," single column for choice ..")
@@ -220,10 +237,12 @@ replicateStructure <- function(x, method="median", sep="__", exclNoRepl=TRUE, tr
         combAll=fCombAll(ou3, ref=x),
         combNonOrth=fComNonOrth(ou3, ref=x) )
     }
-  if(debug) {message(fxNa,"fd5"); fd5 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
+    if(debug) {message(fxNa,"fd6"); fd6 <- list(x=x,method=method,out=out,ou3=ou3,tm2=tm2,str1=str1,chDu=chDu,sep=sep,exclNoRepl=exclNoRepl)}
+  }
 
+  ## optional include all patterns
+  if(datOK && length(out) >0 && isTRUE(includeOther) && !"allCols" %in% names(out)) out$allCols <- apply(x, 2, function(y) match(y, unique(y)))
   ## optional trim names to ou3$lev
-  if(isTRUE(trimNames)) names(out$lev) <- trimRedundText(names(out$lev), spaceElim=TRUE, silent=silent, callFrom=fxNa, debug=debug)
-  }                     ## finished replicateStructure
+  if(datOK && length(out) >0 && isTRUE(trimNames)) names(out$lev) <- trimRedundText(names(out$lev), spaceElim=TRUE, silent=silent, callFrom=fxNa, debug=debug)
   out }
-
+  

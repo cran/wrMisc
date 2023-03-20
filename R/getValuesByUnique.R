@@ -12,7 +12,8 @@
 #' @param datUniq (numeric or character) will be used to impose values on \code{dat}, must have names that should match names (at least partially) from \code{dat}
 #' @param asIndex (logical) if \code{TRUE} index values will be returned instead of replacing values
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return vector of length \code{dat} with imposed values, or index values if \code{asIndex=TRUE}
 #' @seealso \code{\link[base]{unique}}, \code{\link{findRepeated}}, \code{\link{correctToUnique}}, \code{\link{treatTxtDuplicates}}
 #' @examples
@@ -25,9 +26,12 @@
 #' cbind(ini=dat,firstOfRep=getValuesByUnique(dat,datUniq),
 #'   indexUniq=getValuesByUnique(dat,datUniq,asIn=TRUE))
 #' @export
-getValuesByUnique <- function(dat,datUniq=NULL,asIndex=FALSE,silent=FALSE,callFrom=NULL) {
+getValuesByUnique <- function(dat, datUniq=NULL, asIndex=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## main
-  fxNa <- .composeCallName(callFrom,newNa="getValuesByUnique")
+  fxNa <- .composeCallName(callFrom, newNa="getValuesByUnique")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   if(length(dat) <1 | is.null(names(dat))) stop("'dat' must be vector of length >0 with names; no names nothing to do")
   if(length(datUniq) >0) if(is.null(names(datUniq))) {
     if(!silent) message(fxNa," 'datUniq' has no names; unable to use ! (using default instead)")

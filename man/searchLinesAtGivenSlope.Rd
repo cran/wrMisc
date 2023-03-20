@@ -21,7 +21,7 @@ searchLinesAtGivenSlope(
 )
 }
 \arguments{
-\item{dat}{matrix or data.frame}
+\item{dat}{matrix or data.frame, main input}
 
 \item{coeff}{(numeric) slope to consider}
 
@@ -58,6 +58,9 @@ This functions returns a matrix of line-characteristics  (or if indexPoints is \
 \examples{
 set.seed(2016); ra1 <- runif(300)
  dat1 <- cbind(x=round(c(1:100+ra1[1:100]/5,4*ra1[1:50]),1),
-  y=round(c(1:100+ra1[101:200]/5,4*ra1[101:150]),1))
+  y=round(c(1:100+ra1[101:200]/5, 4*ra1[101:150]), 1))
 (li1 <- searchLinesAtGivenSlope(dat1, coeff=1))
+}
+\seealso{
+\code{\link[stats]{lm}}
 }

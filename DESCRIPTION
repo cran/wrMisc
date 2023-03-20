@@ -1,5 +1,5 @@
 Package: wrMisc
-Version: 1.11.1
+Version: 1.12.0
 Title: Analyze Experimental High-Throughput (Omics) Data
 Authors@R: person("Wolfgang", "Raffelsberger", email = "w.raffelsberger@gmail.com", role = c("aut", "cre"))
 Author: Wolfgang Raffelsberger [aut, cre]
@@ -24,6 +24,6 @@ License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.2.2
 NeedsCompilation: no
-Packaged: 2023-01-24 12:49:57 UTC; wraff
+Packaged: 2023-03-20 17:48:14 UTC; wraff
 Repository: CRAN
-Date/Publication: 2023-01-25 09:20:02 UTC
+Date/Publication: 2023-03-20 18:20:03 UTC

@@ -17,7 +17,7 @@
 #' unlist(li4, rec=FALSE)
 #' @export
 partUnlist <- function(lst, sep="_", silent=FALSE, debug=FALSE, callFrom=NULL) {
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="partUnlist")
+  fxNa <- .composeCallName(callFrom, newNa="partUnlist")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   notL <- !sapply(lst, inherits, "list")  

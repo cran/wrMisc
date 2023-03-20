@@ -11,6 +11,7 @@ extrSpcText(
   missingAs = NA,
   exclFromTag = TRUE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -26,6 +27,8 @@ extrSpcText(
 \item{exclFromTag}{(logical) to exclude text given in 'cutFrom' from result}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

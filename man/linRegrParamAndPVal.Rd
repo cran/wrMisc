@@ -4,7 +4,14 @@
 \alias{linRegrParamAndPVal}
 \title{Fit linear regression, return parameters and p-values}
 \usage{
-linRegrParamAndPVal(dep, y = NULL, asVect = TRUE)
+linRegrParamAndPVal(
+  dep,
+  y = NULL,
+  asVect = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dep}{(numeric vector, matrix or data.frame) explanatory or dependent variable, if matrix or data.frame the 1st column will be used, if 'y'=\code{NULL} the 2nd column will be used as 'y'}
@@ -12,6 +19,12 @@ linRegrParamAndPVal(dep, y = NULL, asVect = TRUE)
 \item{y}{(numeric vector) independent variable (the value that should get estimated based on 'dep')}
 
 \item{asVect}{(logical) return numeric vector (Intercept, slope, p.intercept, p.slope) or matrix or results}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 numeric vector (Intercept, slope, p.intercept, p.slope), or if \code{asVect}==\code{TRUE} as matrix (p.values in 2nd column)

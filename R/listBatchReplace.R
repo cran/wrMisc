@@ -5,20 +5,24 @@
 #' @param searchValue (character, length=1) 
 #' @param replaceBy (character, length=1)
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a corrected list
 #' @seealso basic replacement \code{sub} in \code{\link[base]{grep}}
 #' @examples
 #' lst1 <- list(aa=1:4, bb=c("abc","efg","abhh","effge"), cc=c("abdc","efg"))
 #' listBatchReplace(lst1, search="efg", repl="EFG", sil=FALSE)
 #' @export
-listBatchReplace <- function(lst,searchValue,replaceBy,silent=FALSE,callFrom=NULL){
+listBatchReplace <- function(lst, searchValue, replaceBy, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="listBatchReplace")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  
   msg1 <- " 'searchValue' and 'replaceBy' should be vectors"
-  if(length(searchValue) <1 | length(replaceBy) <1) stop(fxNa,msg1)
-  if(length(lst) <1 | !inherits(lst, "list")) stop(fxNa," 'lst' should be list with at least 1 element")
+  if(length(searchValue) <1 || length(replaceBy) <1) stop(fxNa,msg1)
+  if(length(lst) <1 || !inherits(lst, "list")) stop(fxNa," 'lst' should be list with at least 1 element")
   outNa <- names(lst)
-  if(length(searchValue) ==1 & length(replaceBy) ==1){
+  if(length(searchValue) ==1 && length(replaceBy) ==1){
     out <- lapply(lst, function(x) {x[x==searchValue] <- replaceBy; x})
   } else {
     if(length(searchValue) ==length(replaceBy)) {

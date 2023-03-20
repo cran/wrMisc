@@ -15,6 +15,8 @@ mergeSelCol3(
   useAll = FALSE,
   setRownames = TRUE,
   newSuff = c(".x", ".y", ".z"),
+  silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -35,14 +37,18 @@ mergeSelCol3(
 
 \item{useAll}{(logical) use all lines (will produce NAs when given identifyer not found un 2nd group of data)}
 
-\item{setRownames}{if TRUE, will use values of col used as 'by' as rownames instead of showing as add'l col in output}
+\item{setRownames}{if \code{TRUE}, will use values of col used as 'by' as rownames instead of showing as add'l col in output}
 
 \item{newSuff}{(character) prefix (argument 'suffixes' in \code{merge})}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-data.frame
+This function returns a data.frame containing the merged columns
 }
 \description{
 successive merge of selected columns out of 3 matrix or data.frames.
@@ -51,11 +57,11 @@ Output-cols will get additions specified in newSuff (default '.x' and '.y')
 }
 \examples{
 mat1 <- matrix(c(1:7,letters[1:7],11:17),ncol=3,dimnames=list(LETTERS[1:7],c("x1","x2","x3")))
-mat2 <- matrix(c(1:6,c("b","a","e","f","g","k"),31:36),ncol=3,
+mat2 <- matrix(c(1:6,c("b","a","e","f","g","k"),31:36), ncol=3,
   dimnames=list(LETTERS[11:16],c("y1","x2","x3")))
-mat3 <- matrix(c(1:6,c("c","a","e","b","g","k"),51:56),ncol=3,
+mat3 <- matrix(c(1:6,c("c","a","e","b","g","k"),51:56), ncol=3,
   dimnames=list(LETTERS[11:16],c("z1","x2","x3")))
-mergeSelCol3(mat1,mat2,mat3,selC=c("x2","x3"))
+mergeSelCol3(mat1, mat2, mat3, selC=c("x2","x3"))
 }
 \seealso{
 \code{\link[base]{merge}}, \code{\link{mergeSelCol}}

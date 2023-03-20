@@ -29,6 +29,7 @@
 #' @param xLabLas (integer) \code{las}-type orientation of x-axis labels (set to 2 for vertical axix-labels)
 #' @param cexLab (numeric) \code{cex}-type for size of text in x & y axis labels (will be passed to \code{cex.lab} in \code{plot()})
 #' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a list with $coef (coefficients), $name (as/from input \code{rowNa}), $startLev the best starting level) 
 #' @seealso \code{\link{moderTestXgrp}} for single comparisons, \code{\link[base]{order}}  
@@ -51,9 +52,12 @@
 #' 
 #' @export
 linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, lisNa=c(raw="raw",annot="annot",datImp="datImp"), plotGraph=TRUE, 
-  tit=NULL, pch=c(1,3), cexLeg=0.95, cexSub=0.85, xLab=NULL, yLab=NULL, cexXAxis=0.85, cexYAxis=0.9, xLabLas=1, cexLab=1.1, silent=FALSE, callFrom=NULL)  {
+  tit=NULL, pch=c(1,3), cexLeg=0.95, cexSub=0.85, xLab=NULL, yLab=NULL, cexXAxis=0.85, cexYAxis=0.9, xLabLas=1, cexLab=1.1, silent=FALSE, debug=FALSE, callFrom=NULL)  {
   ##  test for linear models with option to start form multiple later levels (ie omitting some of the early levels)
   fxNa <- .composeCallName(callFrom, newNa="linModelSelect")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   argNa <- c(deparse(substitute(rowNa)), deparse(substitute(dat)), deparse(substitute(expect)))
   quantCol <- c("blue","tan2","grey")       # figure: 1st for 'used in regression', 2nd for 'not-used', 3rd for 'NA/imputed'
   legLab <- c("used in regresssion","not used","NA/imputed,used","NA/imputed,not used")  # for figure legend ..
@@ -73,20 +77,20 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
       if(lisNa[2] %in% names(lisNa) & lisNa[2] %in% names(dat)) if(annoColNa[2] %in% colnames(dat[[lisNa[2]]])) hasAnn <- TRUE
       chLi <- lisNa %in% names(dat)
       if(all(!chLi)) stop("None of the list-elements given in 'lisNa' were found in 'dat' !")
-      if(any(!chLi)) message(fxNa," Trouble ahead : The elements ",pasteC(lisNa[which(!chLi)], quoteC="'")," not found !!")
+      if(any(!chLi)) message(fxNa,"Trouble ahead : The elements ",pasteC(lisNa[which(!chLi)], quoteC="'")," not found !!")
       if(length(grep("^[[:digit:]]$", rowNa)) >0) {                     # is index
         linNo <- as.integer(rowNa)
         rowNa <- dat[[lisNa[2]]][rowNa,annoColNa[1]]
       } else {
         linNo <- if(hasAnn) which(dat[[lisNa[2]]][,annoColNa[1]] == rowNa) else which(rownames(dat[[lisNa[1]]]) ==rowNa)  
-        if(length(linNo) >1) { if(!silent) message(fxNa," name specified in argument 'lisNa' not unique, using first")
+        if(length(linNo) >1) { if(!silent) message(fxNa,"Name specified in argument 'lisNa' not unique, using first")
           linNo <- linNo[1] } 
         }
       dat1 <- dat[[lisNa[3]]][linNo,]                       # get imputed data
     } else { 
       ## simple matrix data
       linNo <- which(rownames(dat) %in% rowNa)
-      if(length(linNo) !=1 & !silent) message(fxNa," Note : ",length(linNo)," lines of 'dat' matched to '",rowNa,"' ! (can use only 1st)")
+      if(length(linNo) !=1 && !silent) message(fxNa," Note : ",length(linNo)," lines of 'dat' matched to '",rowNa,"' ! (can use only 1st)")
       if(length(linNo) >1) linNo <- linNo[1]
       dat1 <- dat[linNo,]}
       
@@ -119,35 +123,37 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
       if(any(!usedP)) { useCol[which(!usedP)] <- quantCol[2]    # color used for not-used  
         pch1[which(!usedP)] <- pch[2] }                         # symbol used for not-used  
       
-      chNa <- is.list(dat) & lisNa[1] %in% names(dat)
+      chNa <- is.list(dat) && lisNa[1] %in% names(dat)
       if(any(chNa)) chNa <- is.na(dat[[lisNa[1]]][linNo,])
       hasNa <- any(chNa)
       legCol <- quantCol[if(hasNa) c(1:3,3) else 1:2]
       legPch <- pch[if(hasNa) c(1,2,1,2) else 1:2]
       if(hasNa) {useCol[which(chNa)] <- quantCol[3]} else {legLab <- legLab[1:2]}
-      if(length(tit) <1) {tit <- if(hasAnn) dat[[lisNa[2]]][linNo, annoColNa[2]] else paste0(rowNa," (from ",argNa[2],")")}
+      if(length(tit) <1) { tit <- if(hasAnn) dat[[lisNa[2]]][linNo, annoColNa[2]] else paste0(rowNa," (from ",argNa[2],")")}
       if(length(yLab) <1) yLab <- "measured"
       if(length(xLab) <1) xLab <- "expected"
       if(logExpect) xLab <- paste0(xLab," (log-scale)")
       ## main plot
-      graphics::plot(quant ~ conc, data=dat1, col=useCol, main=tit,ylab=yLab, xlab=xLab, las=1, pch=pch1, cex.lab=cexLab, col.axis="white", cex.axis=0.3,tck=0)   
-      graphics::mtext(paste0("best regr starting at level ",bestReg," (ie ",sort(unique(expect))[bestReg],"),  slope=",signif(slopeAndP[1,bestReg],3),
-        ",  p=",signif(slopeAndP[2,bestReg],2)), cex=cexSub, col=quantCol[1])
-      ## use crt= for rotating text on bottom ? ... crt works only for text()
-      graphics::mtext(at=(unique(dat1[,1])), signif(if(logExpect) 2^(unique(dat1[,1])) else unique(dat1[,1]),3), side=1, las=xLabLas,col=1,cex=cexXAxis)    # set las to vertical ?
-      graphics::abline(lm0[[bestReg]], lty=2, col=quantCol[1])
-      graphics::axis(side=2, las=1, col=1, tick=TRUE, cex.axis=cexYAxis)                                         # left axis
-      ptBg <- quantCol
-      chPch <- pch %in% c(21:25)
-      if(any(chPch)) { quantCol[which(chPch)] <- grDevices::rgb(0.2,0.2,0.2,0.4) }    
-      chPa <- requireNamespace("wrGraph", quietly=TRUE)
-      if(!chPa) { message(fxNa,": package 'wrGraph' not installed for searching optimal placement of legend")
-        legLoc <- "bottomright"
-      } else legLoc <- try(wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc, silent=TRUE)
-      if(inherits(legLoc, "try-error")) { legLoc <- "bottomright"
-         message(fxNa,"Did not succeed in determining optimal legend location")}
-      tmp <- try(graphics::legend(legLoc, legLab, pch=legPch, col=legCol, text.col=legCol, pt.bg=ptBg, cex=cexLeg, xjust=0.5,yjust=0.5), silent=TRUE)        # as points
-      if("try-error" %in% class(tmp)) message(fxNa,"NOTE : Unable to add legend !  ",as.character(tmp))
+      chG <- try(graphics::plot(quant ~ conc, data=dat1, col=useCol, main=tit,ylab=yLab, xlab=xLab, las=1, pch=pch1, cex.lab=cexLab, col.axis="white", cex.axis=0.3,tck=0), silent=TRUE)
+      if(inherits(chG, "try-error")) message(fxNa,"UNABLE to draw figure !!") else {       
+        graphics::mtext(paste0("best regr starting at level ",bestReg," (ie ",sort(unique(expect))[bestReg],"),  slope=",signif(slopeAndP[1,bestReg],3),
+          ",  p=",signif(slopeAndP[2,bestReg],2)), cex=cexSub, col=quantCol[1])
+        ## use crt= for rotating text on bottom ? ... crt works only for text()
+        graphics::mtext(at=(unique(dat1[,1])), signif(if(logExpect) 2^(unique(dat1[,1])) else unique(dat1[,1]),3), side=1, las=xLabLas,col=1,cex=cexXAxis)    # set las to vertical ?
+        graphics::abline(lm0[[bestReg]], lty=2, col=quantCol[1])
+        graphics::axis(side=2, las=1, col=1, tick=TRUE, cex.axis=cexYAxis)                                         # left axis
+        ptBg <- quantCol
+        chPch <- pch %in% c(21:25)
+        if(any(chPch)) { quantCol[which(chPch)] <- grDevices::rgb(0.2,0.2,0.2,0.4) }    
+        chPa <- requireNamespace("wrGraph", quietly=TRUE)
+        if(!chPa) { message(fxNa,": package 'wrGraph' not installed for searching optimal placement of legend")
+          legLoc <- "bottomright"
+        } else legLoc <- try(wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc, silent=TRUE)
+        if(inherits(legLoc, "try-error")) { legLoc <- "bottomright"
+           message(fxNa,"Did not succeed in determining optimal legend location")}
+        tmp <- try(graphics::legend(legLoc, legLab, pch=legPch, col=legCol, text.col=legCol, pt.bg=ptBg, cex=cexLeg, xjust=0.5,yjust=0.5), silent=TRUE)        # as points
+        if("try-error" %in% class(tmp)) message(fxNa,"NOTE : Unable to add legend !  ",as.character(tmp))
+      }  
     }
     list(coef=stats::coef(summary(lm0[[bestReg]])), name=rowNa, startLev=bestReg) }}
     

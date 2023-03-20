@@ -4,7 +4,14 @@
 \alias{addBeforFileExtension}
 \title{Add text before file-extension}
 \usage{
-addBeforFileExtension(x, add, sep = "_")
+addBeforFileExtension(
+  x,
+  add,
+  sep = "_",
+  silent = FALSE,
+  callFrom = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{x}{main character vector}
@@ -12,6 +19,12 @@ addBeforFileExtension(x, add, sep = "_")
 \item{add}{character vector to be added}
 
 \item{sep}{(character) separator between 'x' & 'add' (character, length 1)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 modified character vector

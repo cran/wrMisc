@@ -13,6 +13,7 @@ findCloseMatch(
   maxFitShort = 100,
   sortMatch = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -33,10 +34,12 @@ findCloseMatch(
 
 \item{silent}{(logical) suppress messages}
 
+\item{debug}{(logical) display additional messages for debugging}
+
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-list with close matches of 'x' to given 'y', the numeric value dependes on 'sortMatch' (if FASLE then always value of 'y' otherwise of longest of x&y)
+This function returns a list with close matches of 'x' to given 'y', the numeric value dependes on 'sortMatch' (if FASLE then always value of 'y' otherwise of longest of x&y)
 }
 \description{
 \code{findCloseMatch} finds close matches (similar values) between two numeric vectors ('x','y') based on method 'compTy' and threshold 'limit'. 
@@ -48,19 +51,19 @@ list with close matches of 'x' to given 'y', the numeric value dependes on 'sort
 \examples{
 aa <- 11:14 ; bb <- c(13.1,11.5,14.3,20:21)
 findCloseMatch(aa,bb,com="diff",lim=0.6)
-findCloseMatch(c(a=5,b=11,c=12,d=18),c(G=2,H=11,I=12,J=13)+0.5,comp="diff",lim=2)
-findCloseMatch(c(4,5,11,12,18),c(2,11,12,13,33)+0.5,comp="diff",lim=2)
-findCloseMatch(c(4,5,11,12,18),c(2,11,12,13,33)+0.5,comp="diff",lim=2,sort=FALSE)
-.compareByDiff(list(c(a=10,b=11,c=12,d=13),c(H=11,I=12,J=13,K=33)+0.5),limit=1)   #'  return matrix
+findCloseMatch(c(a=5,b=11,c=12,d=18),c(G=2,H=11,I=12,J=13)+0.5, comp="diff", lim=2)
+findCloseMatch(c(4,5,11,12,18),c(2,11,12,13,33)+0.5, comp="diff", lim=2)
+findCloseMatch(c(4,5,11,12,18),c(2,11,12,13,33)+0.5, comp="diff", lim=2, sort=FALSE)
+.compareByDiff(list(c(a=10,b=11,c=12,d=13),c(H=11,I=12,J=13,K=33)+0.5),limit=1) #' return matrix
 
 a2 <- c(11:20); names(a2) <- letters[11:20]
 b2 <- c(25:5)+c(rep(0,5),(1:10)/50000,rep(0,6)); names(b2) <- LETTERS[25:5]
-which(abs(b2-a2[8]) < a2[8]*1e-6*5)                                          #'  find R=18 : no10
-findCloseMatch(a2,b2,com="ppm",lim=5)                                        #'  find Q,R,S,T
-findCloseMatch(a2,b2,com="ppm",lim=5,asI=TRUE)                               #'  find Q,R,S,T
-findCloseMatch(b2,a2,com="ppm",lim=5,asI=TRUE,sort=FALSE)
-findCloseMatch(a2,b2,com="ratio",lim=1.000005)                               #'  find Q,R,S,T
-findCloseMatch(a2,b2,com="diff", lim=0.00005)                                #'  find S,T
+which(abs(b2-a2[8]) < a2[8]*1e-6*5)                                     #'  find R=18 : no10
+findCloseMatch(a2, b2, com="ppm", lim=5)                                #'  find Q,R,S,T
+findCloseMatch(a2, b2, com="ppm", lim=5,asI=TRUE)                       #'  find Q,R,S,T
+findCloseMatch(b2, a2, com="ppm", lim=5,asI=TRUE,sort=FALSE)
+findCloseMatch(a2, b2, com="ratio", lim=1.000005)                       #'  find Q,R,S,T
+findCloseMatch(a2, b2, com="diff", lim=0.00005)                         #'  find S,T
 }
 \seealso{
 \code{\link{checkSimValueInSer}} and (from this package) \code{.compareByDiff}, for convient output \code{\link{countCloseToLimits}}

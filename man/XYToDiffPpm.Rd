@@ -4,7 +4,7 @@
 \alias{XYToDiffPpm}
 \title{Express difference as ppm}
 \usage{
-XYToDiffPpm(x, y, nSign = NULL, silent = FALSE, callFrom = NULL)
+XYToDiffPpm(x, y, nSign = NULL, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{(numeric) typically for measured variable}
@@ -13,15 +13,17 @@ XYToDiffPpm(x, y, nSign = NULL, silent = FALSE, callFrom = NULL)
 
 \item{nSign}{(integer) number of significant digits in output}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-numeric vector of (ratio-) ppm values
+This function returns a numeric vector of (ratio-) ppm values
 }
 \description{
-\code{XYToDiffPpm} transforms offset (pariwise-difference) between 'x' & 'y' to ppm (as normalized difference ppm, parts per million, ie (x-y)/y ).
+This function transforms offset (pariwise-difference) between 'x' & 'y' to ppm (as normalized difference ppm, parts per million, ie (x-y)/y ).
 This type of expressiong differences is used eg in mass-spectrometry.
 }
 \examples{

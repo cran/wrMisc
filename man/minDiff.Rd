@@ -4,7 +4,15 @@
 \alias{minDiff}
 \title{Minimum distance/difference between values}
 \usage{
-minDiff(x, digSig = 3, ppm = TRUE, initOrder = TRUE, callFrom = NULL)
+minDiff(
+  x,
+  digSig = 3,
+  ppm = TRUE,
+  initOrder = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(numeric) vector to search minimum difference}
@@ -15,21 +23,26 @@ minDiff(x, digSig = 3, ppm = TRUE, initOrder = TRUE, callFrom = NULL)
 
 \item{initOrder}{(logical) return matrix so that 'x' matches exactely 2nd col of output}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix
+This function returns a matrix
 }
 \description{
-\code{minDiff} aims to find the min distance (ie closest point) to any other x (numeric value), ie intra 'x' and
+This function aims to find the min distance (ie closest point) to any other x (numeric value), ie intra 'x' and
  returns matrix with 'index','value','dif','ppm','ncur','nbest','best'.
 At equal distance to lower & upper neighbour point, the upper (following) point is chosen (as single best).
 In case of multiple ex-aequo distance returns 1st of multiple, may be different at various repeats.
 }
 \examples{
-set.seed(2017); aa <- 100*c(0.1+round(runif(20),2),0.53,0.53)
-minDiff(aa); minDiff(aa,initO=TRUE,ppm=FALSE); .minDif(unique(aa))
+set.seed(2017); aa <- 100*c(0.1 +round(runif(20),2),0.53,0.53)
+minDiff(aa); 
+minDiff(aa,initO=TRUE,ppm=FALSE); .minDif(unique(aa))
 }
 \seealso{
-\code{\link[stats]{dist}}
+\code{\link[base]{diff}}
 }

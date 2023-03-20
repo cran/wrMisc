@@ -1,10 +1,10 @@
 #' Unify Enumerators
-#'
+#' 
 #' The aim of this function is to provide help in automatically harmonizing enumerators at the end of sample-names.
 #' When data have same grouped setup/design, many times this is reflected in their names, eg 'A_sample1', 'A_sample2' and 'B_sample1'.
 #' However, human operators may use multiple similar (but not identical) ways of expressing the same meanin, eg writng 'A_Samp_1'.
 #' This function allows testing a panel of different extensions of enumerators and (if recognized) to replace them by a user-defined standard text/enumerator.
-#'
+#' Please note that the more recent function \code{\link{rmEnumeratorName}} offers better/more flexible options.
 #'
 #' @details
 #' This function has been developed for matching series of the same samples passing in parallel through different evaluation software (see R package wrProteo).
@@ -31,7 +31,7 @@
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
 #' @return This function returns a character vector of same length as input \code{x}, with it's content as adjusted enumerators
-#' @seealso \code{\link[base]{grep}} or sub, etc
+#' @seealso \code{\link{rmEnumeratorName}} for better/more flexible options; \code{\link[base]{grep}} or \code{sub()}, etc if exact and consistent patterns are known
 #' @examples
 #' unifyEnumerator(c("ab-1","ab-2","c-3"))
 #' unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
@@ -52,8 +52,8 @@ unifyEnumerator <- function(x, refSep="_", baseSep=c("\\-","\\ ","\\."), suplEnu
   chBa <- if(stringentMatch) chBa==length(x) else chBa >0
   chRe <- length(grep(refSep, x))                                                                                    # check if ref occur at all, no matter if with digit or not..
   chRe <- if(stringentMatch) chRe==length(x) else chRe >0
-  if(debug) message(fxNa,"uE1b ",wrMisc::pasteC(chBa), "   chRe ",wrMisc::pasteC(chRe))
-  if(any(chBa,chRe)) { baseSep <- if(any(chBa)) baseSep[which(chBa)] else NULL
+  if(debug) message(fxNa,"uE1b ",pasteC(chBa), "   chRe ",pasteC(chRe))
+  if(any(chBa, chRe)) { baseSep <- if(any(chBa)) baseSep[which(chBa)] else NULL
     if(debug) {message(fxNa,"uE2") ; uE2 <- list(x=x,refSep=refSep,baseSep=baseSep,suplEnu=suplEnu,chBa=chBa,chRe=chRe)}
     ## test enumerators
     if(length(suplEnu) >0) {
@@ -82,4 +82,4 @@ unifyEnumerator <- function(x, refSep="_", baseSep=c("\\-","\\ ","\\."), suplEnu
     x
   } else  {if(debug) message(fxNa,"uE4b"); x}    # no need to change, baseSep doesn't occur
 }
-  
+   

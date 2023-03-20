@@ -4,7 +4,13 @@
 \alias{levIndex}
 \title{Transform (factor) levels into index}
 \usage{
-levIndex(dat, byOccurance = TRUE, silent = FALSE, callFrom = NULL)
+levIndex(
+  dat,
+  byOccurance = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{(numeric or character vector or factor) main input}
@@ -13,7 +19,9 @@ levIndex(dat, byOccurance = TRUE, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 matrix with mean values

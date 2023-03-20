@@ -12,14 +12,14 @@ rowCVs(dat, autoconvert = NULL)
 \item{autoconvert}{(NULL or character) allows converting simple vectors in matrix of 1 row (autoconvert="row")}
 }
 \value{
-(numeric) vector with CVs for each row of 'dat'
+This function returns a (numeric) vector with CVs for each row of 'dat'
 }
 \description{
-\code{rowCVs} returns CV for values in each row (using speed optimized standard deviation).
+This function returns CV for values in each row (using speed optimized standard deviation).
 Note : NaN values get replaced by NA.
 }
 \examples{
-set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
+set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)),ncol=10)
 head(rowCVs(dat1))
 }
 \seealso{

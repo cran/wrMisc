@@ -123,11 +123,31 @@ mergeMatrixList <- function(matLst, mode="intersect", useColumn=1, na.rm=TRUE, e
 }
 
 
+#' Merge Multiple Matrices (main)
+#'
+#' This function allows merging of multiple matrix-like objects from an initial list.
+#'
+#' @param inpL (list containing matrices or data.frames) main input (multiple matrix or data.frame objects)
+#' @param mode (character) allows choosing restricting to all common elements (\code{mode='intersect'}) or union  (\code{mode='union'})
+#' @param useColumn (integer, character or list) the column(s) to consider, may be \code{'all'} to use all, integer to select specific indexes or list of indexes or colnames for cutom-selection per matrix
+#' @param extrRowNames (logical) decide whether columns with all values different (ie no replicates or max divergency) should be excluded
+#' @param na.rm (logical) suppress \code{NA}s
+#' @param argL (list of arguments)
+#' @param silent (logical) suppress messages
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging
+#' @return This function returns a matrix containing all selected columns of the input matrices to fuse
+#' @seealso \code{\link{mergeMatrixList}},  \code{\link[base]{merge}},  \code{\link{mergeMatrices}} for separate entries
+#' @examples
+#' mat1 <- matrix(11:18, ncol=2, dimnames=list(letters[3:6],LETTERS[1:2]))
 #' @export
 .mergeMatrices <- function(inpL, mode="intersect", useColumn=1, extrRowNames=FALSE, na.rm=TRUE, argL=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## merge n matrix (or data.frame) entries, either as all shared lines or as all united/get common lines
   ## inpL (list) main input : list of matrices
   fxNa <- .composeCallName(callFrom, newNa=".mergeMatrices")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  
   out <- NULL
   chLe <- sapply(inpL, length)
   if(all(chLe >0)) {
@@ -145,7 +165,7 @@ mergeMatrixList <- function(matLst, mode="intersect", useColumn=1, na.rm=TRUE, e
 
     if(debug) {message(fxNa,"mNM1"); mNM1 <- list(inpL=inpL, out=out,useColumn=useColumn,extrRowNames=extrRowNames,chLe=chLe,chDi=chDi,inpL=inpL)}
 
-  if(all(chLe >0) & sum(duplicated(chDi), na.rm=TRUE)==length(inpL) -1)  {   # all valid entries
+  if(all(chLe >0) && sum(duplicated(chDi), na.rm=TRUE)==length(inpL) -1)  {   # all valid entries
 
     if(debug) {message(fxNa,"mNM1a") }
     ## final column-names
@@ -206,7 +226,7 @@ mergeMatrixList <- function(matLst, mode="intersect", useColumn=1, na.rm=TRUE, e
 
     } else {        ## suppose mode='union'
       doSort=TRUE
-        if(debug) {message("mNM4"); mNM4 <- list(inpL=inpL, out=out,useColumn=useColumn,chDi=chDi,chDi=chDi,useColNa=useColNa)}
+        if(debug) {message("mNM4"); mNM4 <- list(inpL=inpL, out=out, useColumn=useColumn,chDi=chDi,chDi=chDi,useColNa=useColNa)}
       ## get all rownames
       useLi <- unlist(lapply(inpL, rownames))
       useLi <- if(doSort) unique(sort(useLi)) else unique(useLi)
@@ -217,12 +237,12 @@ mergeMatrixList <- function(matLst, mode="intersect", useColumn=1, na.rm=TRUE, e
       chNa <- is.na(uCol)
       if(any(chNa)) { stop("Invalid content of argument 'useColumn'") }
       if(length(useColumn) >1) names(uCol) <- if(is.list(useColumn)) rep(names(inpL), sapply(useColumn, length)) else rep(names(inpL), each=length(useColumn))
-        if(debug) {message("mNM4b"); mNM4b <- list(inpL=inpL, out=out,useColumn=useColumn,chDi=chDi,chDi=chDi,useColNa=useColNa)}
+        if(debug) {message("mNM4b"); mNM4b <- list(inpL=inpL, out=out, useColumn=useColumn,chDi=chDi,chDi=chDi,useColNa=useColNa)}
 
       out <- matrix(NA, nrow=length(useLi), ncol=length(uCol), dimnames=list(useLi, paste0(names(uCol),".",uCol)))
       ## 1st matr
       out[match(rownames(inpL[[1]]), useLi), which(names(uCol) %in% names(inpL)[1])] <- as.matrix(inpL[[1]][,if(is.list(useColumn)) useColumn[[1]] else useColumn])
-        if(debug) {message("mNM4c"); mNM4c <- list(inpL=inpL, out=out,useColumn=useColumn,chDi=chDi,chDi=chDi,useColNa=useColNa)}
+        if(debug) {message("mNM4c"); mNM4c <- list(inpL=inpL, out=out, useColumn=useColumn, chDi=chDi,chDi=chDi,useColNa=useColNa)}
 
       ## remaining matrices
       if(length(inpL) >1) {
@@ -234,4 +254,4 @@ mergeMatrixList <- function(matLst, mode="intersect", useColumn=1, na.rm=TRUE, e
     }
   } else if(!silent) message(fxNa,"Invalid entries, all ",length(inpL)," elements must have 2 dimensions")
   out }
-  
+    

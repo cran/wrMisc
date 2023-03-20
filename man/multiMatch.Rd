@@ -11,6 +11,7 @@ multiMatch(
   sep2 = NULL,
   method = "byX",
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -26,6 +27,8 @@ multiMatch(
 \item{method}{(character) mode of operation: 'asIndex' to return index of y (those hwo have matches) with names of x (which x are the correpsonding match)}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }

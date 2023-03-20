@@ -4,7 +4,14 @@
 \alias{listBatchReplace}
 \title{Replacements in list}
 \usage{
-listBatchReplace(lst, searchValue, replaceBy, silent = FALSE, callFrom = NULL)
+listBatchReplace(
+  lst,
+  searchValue,
+  replaceBy,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{lst}{input-list to be used for replacing}
@@ -15,7 +22,9 @@ listBatchReplace(lst, searchValue, replaceBy, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns a corrected list

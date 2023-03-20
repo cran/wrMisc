@@ -7,7 +7,10 @@
 #' @param x matrix or data.frame which may contain \code{NA}s
 #' @param grp factor describing which column of 'dat' belongs to which group
 #' @param asRelative (logical) return as count of \code{NA}s per row and group
-#' @return integer vector with count of \code{NA}s per group
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns an integer vector with count of \code{NA}s per group
 #' @seealso \code{\link[base]{NA}}, filter \code{NA}s by line \code{\link{presenceFilt}}
 #' @examples
 #' mat <- matrix(1:25, ncol=5) 
@@ -16,11 +19,16 @@
 #' sumNAperGroup(mat, rep(1:2,c(3,2)), asRelative=TRUE)
 #' 
 #' @export
-sumNAperGroup <- function(x, grp, asRelative=FALSE) {
+sumNAperGroup <- function(x, grp, asRelative=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## count number of NAs per set of columns defined by grp
+  fxNa <- .composeCallName(callFrom, newNa="sumNAperGroup")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   if(length(dim(x)) <2) stop("Argument 'x' should be matrix or data.frame")
   if(length(grp) != ncol(x)) stop("Length of argument 'x' should match number of columns in 'x'")
   if(is.data.frame(x)) x <- as.matrix(x)
+  if(debug) message(fxNa,"sNAG1")
   grpLev <- unique(naOmit(grp))
   out <- as.integer(by(t(x), grp, function(y) sum(is.na(y))))[rank(grpLev)]
   names(out) <- grpLev

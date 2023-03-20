@@ -4,7 +4,14 @@
 \alias{firstOfRepLines}
 \title{Reduce to first occurance of repeated lines}
 \usage{
-firstOfRepLines(mat, outTy = "ind", useCol = NULL, callFrom = NULL)
+firstOfRepLines(
+  mat,
+  outTy = "ind",
+  useCol = NULL,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{initial matrix to treat}
@@ -13,7 +20,11 @@ firstOfRepLines(mat, outTy = "ind", useCol = NULL, callFrom = NULL)
 
 \item{useCol}{(integer) custom choice of which columns to paste/concatenate}
 
-\item{callFrom}{(character) allows easier tracking of messages produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index

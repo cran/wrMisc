@@ -9,7 +9,8 @@
 #' @param y (character) second vector for match
 #' @param sep (character) separator between elements
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return index for matching (integer) x to y
 #' @seealso \code{\link[base]{match}} 
 #' @examples
@@ -20,7 +21,7 @@
 #' match(tx1,tx1)  
 #' matchNamesWithReverseParts(tx1,tx2)
 #' @export
-matchNamesWithReverseParts <- function(x,y,sep="-",silent=FALSE,callFrom=NULL) {
+matchNamesWithReverseParts <- function(x, y, sep="-", silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom,newNa="matchNamesWithReverseParts")
   if(length(x) <1) stop(" Nothing to do, 'x' seems empty")
   if(length(y) <1) stop(" Nothing to do, 'y' seems empty")
@@ -29,10 +30,11 @@ matchNamesWithReverseParts <- function(x,y,sep="-",silent=FALSE,callFrom=NULL) {
     sup <- which(is.na(ma1))
     x2 <- strsplit(x[sup],sep)
     chX <- sapply(x2,length)
-    if(any(chX <2)& !silent) message(fxNa," Can't find separator ('",sep,"') in  ",sum(chX <2)," elements of 'x'")
-    if(any(chX >2) & !silent) message(fxNa," BEWARE, results may be different to expected !  Separator ('",
+    if(any(chX <2) && !silent) message(fxNa,"Can't find separator ('",sep,"') in  ",sum(chX <2)," elements of 'x'")
+    if(any(chX >2) && !silent) message(fxNa,"BEWARE, results may be different to expected !  Separator ('",
       sep,"') occurs more than once in ",sum(chX >2)," elements of 'x'")
     x2 <- sapply(x2,function(z) if(length(z) >1) paste(z[2],z[1],sep=sep) else z)
     x[sup] <- x2
     ma1 <- match(x,y) } 
   ma1 }
+   

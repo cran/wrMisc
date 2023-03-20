@@ -14,10 +14,10 @@ rowGrpSums(x, grp, na.rm = TRUE)
 \item{na.rm}{(logical) a logical value indicating whether \code{NA}-values should be stripped before the computation proceeds.}
 }
 \value{
-This function a matrix with sum values
+This function a matrix with row/group sum values
 }
 \description{
-This function calculates column-sums for matrix with multiple groups of data, ie similar to \code{rowSums} but one summed value for each line and group of data.
+This function calculates row-sums for matrix with multiple groups of data, ie similar to \code{rowSums} but one summed value for each line and group of data.
 Groups are specified as columns of 'x' in 'grp' (so length of grp should match number of columns of 'x', NAs are allowed).
 }
 \examples{

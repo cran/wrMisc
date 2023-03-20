@@ -29,6 +29,7 @@ summarizeCols <- function(matr, meth="median", silent=FALSE, debug=FALSE, callFr
   fxNa <- .composeCallName(callFrom, newNa="summarizeCols")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  
   argOpt <- c("median","mean","aver","average","min","max","maxOfRef","minOfRef","maxAbsOfRef","firstLi","lastLi","first","last")
   argOpt <- c(argOpt,paste(argOpt,"Complete",sep=""),"Null")  
   txt <- c("Argument '","' should be "," seeting to first/default (meth='median')")
@@ -54,8 +55,21 @@ summarizeCols <- function(matr, meth="median", silent=FALSE, debug=FALSE, callFr
   } else out <- .summarizeCols(matr,meth)}  
   out }
   
+#' Summarize columns of matrix (or data.frame) 'x' using apply (main)
+#'
+#' This function summarizes columns of matrix (or data.frame) 'x' using apply
+#' Note, it cannot handle character entries !  (all results will be NA)
+#' 
+#'  
+#' @param x data.frame matrix of data to be summarized by comlumn 
+#' @param me (character, length=1) summarization method (eg 'maxLast','minLast','maxLast','maxAbsLast', 'minLast', 'medianComplete' or 'meanComplete')
+#' @param vectAs1row (logical) if TRUE will interprete non-matrix 'x' as matrix with 1 row (correct effect of automatic conversion when extracting 1 line) 
+#' @return vector with summary for each column
+#' @seealso \code{summarizeCols} 
+#' @examples
+#' t1 <- matrix(round(runif(30,1,9)), nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]  
 #' @export
-.summarizeCols <- function(x,me=c("median","medianComplete","mean","meanComplete","aver","average","min","max","maxOfRef","minOfRef",
+.summarizeCols <- function(x, me=c("median","medianComplete","mean","meanComplete","aver","average","min","max","maxOfRef","minOfRef",
   "maxAbsOfRef","lastLi","last","firstComplete","first","firstLi","summary"),vectAs1row=TRUE) {
   ## summarize columns of matrix (or data.frame) 'x' using apply
   ## CANNOT handle character entries !  (all results will be NA)
@@ -67,16 +81,16 @@ summarizeCols <- function(matr, meth="median", silent=FALSE, debug=FALSE, callFr
   ## me='summary' will return matrix instead of vector !! (eah col for init cols of 'x')
   if(me=="med") me <- "median" 
   if(me %in% c("av","aver","average")) me <- "mean"                                   # synonyms ..
-  if(length(dim(x)) <2) x <- if(vectAs1row) matrix(x,nrow=1,dimnames=list(NULL,names(x))) else as.matrix(x)
-  if(length(grep("Complete",me)) >0) {                                              # reduce x to complete rows only 
+  if(length(dim(x)) <2) x <- if(vectAs1row) matrix(x, nrow=1, dimnames=list(NULL,names(x))) else as.matrix(x)
+  if(length(grep("Complete", me)) >0) {                                              # reduce x to complete rows only 
     compl <- which(rowSums(is.na(x)) <1)
     me <- sub("Complete","",me)                                                    # term 'Complete' disappears from me ...
     if(length(compl) <1) me <- "Null"                                              # this way output will be NULL if 0 lines wo NAs
-    x <- if(length(compl) >1) x[compl,] else if(length(compl) ==1) matrix(x[compl,],nrow=1,dimnames=list(rownames(x)[compl],colnames(x)))}
+    x <- if(length(compl) >1) x[compl,] else if(length(compl) ==1) matrix(x[compl,], nrow=1, dimnames=list(rownames(x)[compl],colnames(x)))}
   switch(me, maxOfRef=x[which.max(x[,ncol(x)]),], minOfRef=x[which.min(x[,ncol(x)]),],
     maxAbsOfRef=x[which.max(abs(x[,ncol(x)])),], Null=NULL,
-    median=apply(x,2,stats::median,na.rm=TRUE), mean=colMeans(x,na.rm=TRUE),
-    max=apply(x,2,max,na.rm=TRUE), min=apply(x,2,min,na.rm=TRUE),
-    summary=apply(x,2,summary),
+    median=apply(x, 2, stats::median, na.rm=TRUE), mean=colMeans(x, na.rm=TRUE),
+    max=apply(x, 2, max,na.rm=TRUE), min=apply(x, 2, min, na.rm=TRUE),
+    summary=apply(x, 2, summary),
     lastLi= x[nrow(x),], last= x[nrow(x),], firstLi= x[1,], first=x[1,])}
          

@@ -10,8 +10,6 @@ stableMode(
   finiteOnly = TRUE,
   bandw = NULL,
   rangeSign = 1:6,
-  nCl = NULL,
-  histLike = NULL,
   silent = FALSE,
   callFrom = NULL,
   debug = FALSE
@@ -29,10 +27,6 @@ Using "binning" mode the search will be refined if either 80 percent of values i
 very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" you will finally loose advantage of histLike-type search of mode !}
 
 \item{rangeSign}{(integer) only used when \code{method="binning"}: range of numbers used as number of significant values}
-
-\item{nCl}{(integer) depreciated argument, please use \code{bandw} instead}
-
-\item{histLike}{(logical) depreciated, please use argument \code{method} instead}
 
 \item{silent}{(logical) suppress messages}
 

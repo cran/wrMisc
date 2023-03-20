@@ -37,7 +37,10 @@ orderMatrToRef <- function(mat, ref, addRef=TRUE, listReturn=TRUE, silent=FALSE,
   ## return list $grep (matched matrix), $col best colum
   ## idea : also use trimRedundText() ?
   fxNa <- .composeCallName(callFrom, newNa="orderMatrToRef")   # was '.compToRef'
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   out <- NULL              # initialize
+
   ## check for simple solution
   ch1 <- colSums(matrix(mat %in% ref, ncol=ncol(mat)))==nrow(mat)
   if(any(ch1)) {
@@ -56,7 +59,7 @@ orderMatrToRef <- function(mat, ref, addRef=TRUE, listReturn=TRUE, silent=FALSE,
     #if(is.list(lR)) lT <- sapply(gR, sapply, length) else if(length(dim(lR)) <2) lR <- matrix(lR, nrow=1,dimnames=list(NULL, names(lR)))
     if(is.list(lR)) warning(fxNa, " Trouble ahead, can't make matrix/vector of counts from grep in each col of mat in ref")
     if(debug) {message(fxNa,"..cTR1"); cTR1 <- list(mat=mat,ref=ref,leM=leM,leR=leR,gM=gM,lM=lM,gR=gR,lR=lR)}
-    ##                         leM=leM,leR=leR,gM=gM,lM=lM,lR=lR,gR=gR,
+    ##                         
     if(any(lM >0, lR >0)) {           # some (perfect or partial) solutions
       chM1 <- apply(lM, 2, function(x) all(x==1))
       chR1 <- apply(lR, 2, function(x) all(x==1))
@@ -77,7 +80,7 @@ orderMatrToRef <- function(mat, ref, addRef=TRUE, listReturn=TRUE, silent=FALSE,
           multX <- unique(names(newGr[which(sapply(out$ord, length) >1)]))   # names of all multi-hit
           for(i in 1:length(multX)) newGr[which(names(newGr)==multX[i])] <- out$ord[[multX[i]]]
           out$ord <- newGr
-          if(debug) message(fxNa," newGr ",wrMisc::pasteC(newGr))
+          if(debug) message(fxNa," newGr ",pasteC(newGr))
         } else {warning(fxNa,"Impossible to find complete solution, returning NULL")}
       }
       if(debug) { message(fxNa,"..cTR2"); cTR2 <- list(mat=mat,ref=ref,leM=leM,leR=leR,gM=gM,lM=lM,gR=gR,lR=lR,out=out)}

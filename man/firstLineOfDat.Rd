@@ -4,7 +4,7 @@
 \alias{firstLineOfDat}
 \title{Filter matrix to keep only first of repeated lines}
 \usage{
-firstLineOfDat(dat, refCol = 2, silent = FALSE, callFrom = NULL)
+firstLineOfDat(dat, refCol = 2, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(matrix or data.frame) main input}
@@ -13,7 +13,9 @@ firstLineOfDat(dat, refCol = 2, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allosw easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 matrix (same number of columns as input)

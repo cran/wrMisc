@@ -4,7 +4,7 @@
 \alias{listGroupsByNames}
 \title{Organize values into list and sort by names}
 \usage{
-listGroupsByNames(x, sep = ".", silent = FALSE, callFrom = NULL)
+listGroupsByNames(x, sep = ".", silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{(list) main input}
@@ -13,7 +13,9 @@ listGroupsByNames(x, sep = ".", silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 matrix or data.frame

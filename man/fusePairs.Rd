@@ -23,19 +23,19 @@ fusePairs(
 
 \item{maxFuse}{(integer, default NULL) maximal number of groups/clusters}
 
-\item{debug}{(logical) for bug-tracking: more/enhanced messages and intermediate objects written in global name-space}
+\item{debug}{(logical) display additional messages for debugging}
 
 \item{silent}{(logical) suppress messages}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-vector with cluster-numbers
+This function returns a vector with cluster-numbers
 }
 \description{
 Fuse previously identified pairs to 'clusters', return vector with cluster-numbers.
 }
 \examples{
-daPa <- matrix(c(1:5,8,2:6,9),ncol=2)
-fusePairs(daPa,maxFuse=4)
+daPa <- matrix(c(1:5,8,2:6,9), ncol=2)
+fusePairs(daPa, maxFuse=4)
 }

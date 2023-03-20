@@ -41,6 +41,17 @@ colorAccording2 <- function(x, gradTy="rainbow", nStartOmit=NULL, nEndOmit=NULL,
     logGray=transpGraySca(0, 1, nSteps=sum(!is.na(x)), transp=alpha)[stFro:upTo][ind]
     ) }
     
+#' Automatic choice of colors
+#'
+#' This function allows to do automatic choice of colors: if single-> grey, if few -> RColorBrewer, if many : gradient green -> grey/red
+#' 
+#' @param nGrp (numeric vector) main input
+#' @param paired (logical)
+#' @param alph (numeric vector) 
+#' @return character vector with color codes
+#' @seealso  \code{\link[grDevices]{rgb}}; \code{\link{colorAccording2}}
+#' @examples
+#' .chooseGrpCol(4)	
 #' @export
 .chooseGrpCol <- function(nGrp, paired=FALSE, alph=0.2) {
   ## automatic choice of colors: if single-> grey, if few -> RColorBrewer, if many : gradient green -> grey/red
@@ -48,7 +59,7 @@ colorAccording2 <- function(x, gradTy="rainbow", nStartOmit=NULL, nEndOmit=NULL,
   ## requires (RColorBrewer)
   finCol <- grDevices::rgb(0.2,0.2,0.2, alpha=alph)                                  # dark grey
   if(nGrp >1 & nGrp < (9+4*paired)) {
-    if(paired) { #chPa <- try(find.package("RColorBrewer"), silent=TRUE)
+    if(paired) {
       chPa <- requireNamespace("RColorBrewer", quietly=TRUE)
       if(!chPa) stop("package 'RColorBrewer' not found !  Please install first from CRAN")}
       finCol <- if(paired) RColorBrewer::brewer.pal(12,"Paired")[c(5:6,1:4,7:12)] else RColorBrewer::brewer.pal(8,"Accent")[c(6,5,1:3,4,7:8)]   # red, blue,green,purple,orange,yellow,brown,grey
@@ -58,4 +69,4 @@ colorAccording2 <- function(x, gradTy="rainbow", nStartOmit=NULL, nEndOmit=NULL,
     finCol <- grDevices::rgb(seq(0,0.9,length.out=nGrp), seq(0.9,0,length.out=nGrp), 0.2, alpha=alph)
   }
   finCol }
-    
+      

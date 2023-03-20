@@ -2,30 +2,50 @@
 % Please edit documentation in R/filt3dimArr.R
 \name{filt3dimArr}
 \alias{filt3dimArr}
-\title{Filter a three-dimensional array of numeric data}
+\title{Filter three-dimensional array of numeric data}
 \usage{
-filt3dimArr(x, filtCrit, filtVal, filtTy = ">", displCrit = NULL)
+filt3dimArr(
+  x,
+  filtVal,
+  filtTy = ">",
+  filtCrit = NULL,
+  displCrit = NULL,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{array (3-dim) of numeric data}
 
+\item{filtVal}{(numeric, length=1) for testing inferior/superor/equal condition}
+
+\item{filtTy}{(character, length=1) which type of testing to perform (may be 'eq','inf','infeq','sup','supeq', '>', '<', '>=', '<=', '==')}
+
 \item{filtCrit}{(character, length=1) which column-name consider when filtering filter with 'filtVal' and 'filtTy'}
 
-\item{filtVal}{(numeric) for testing inferior/superor/equal condition}
-
-\item{filtTy}{(character) which type of testing to perform ('eq','inf','infeq','sup','supeq', '>', '<', '>=', '<=', '==')}
-
 \item{displCrit}{(character) column-name(s) to display}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-list of filtered matrixes (by 3rd dim)
+This function returns a list of filtered matrixes (by 3rd dim)
 }
 \description{
-Filtering of 3-dim array ('x') : filter column 'filtCrit' as 'larger as' (according to 'filtTy') 'filtVal' 
+Filtering of matrix or (3-dim) array \code{x} : filter column according to \code{filtCrit} (eg 'inf') and threshold \code{filtVal}
+}
+\details{
 and extract/display all col matching 'displCrit'.
 }
 \examples{
-arr1 <- array(1:24,dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
-  paste("col",1:3,sep=""),c("ch1","ch2")))
+arr1 <- array(11:34, dim=c(4,3,2), dimnames=list(c(LETTERS[1:4]),
+  paste("col",1:3,sep=""), c("ch1","ch2")))
 filt3dimArr(arr1,displCrit=c("col1","col2"),filtCrit="col2",filtVal=7)
+}
+\seealso{
+\code{\link{filterList}}; \code{\link{filterLiColDeList}};
 }

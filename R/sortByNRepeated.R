@@ -30,10 +30,10 @@ sortByNRepeated <- function(x, y=NULL, z=NULL, filterIntraRep=TRUE, silent=TRUE,
   ## make list of common occurances sorted by number of repeats based on list of character-entries/words (eg peptide sequ) or up to 3 separate character vectors
   ## the name of output indicates number onf times all elements of the vector are repeated
   ## for 4 sets of data provide 'x' in form of list conatining all data
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="sortByNRepeated")
+  fxNa <- .composeCallName(callFrom, newNa="sortByNRepeated")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
-  if(length(x) >1 & is.list(x)) {
+  if(length(x) >1 && is.list(x)) {
     if(length(y) >0) x[length(x) +1] <- unlist(y)
     if(length(z) >0) x[length(x) +1] <- unlist(z)
   } else {x <- list(x=x, y=y, z=z); rm(y,z)}
@@ -41,7 +41,7 @@ sortByNRepeated <- function(x, y=NULL, z=NULL, filterIntraRep=TRUE, silent=TRUE,
   if(debug) { message(fxNa,"sBYN1   list-elements >0 ",pasteC(chLe))}
 
   ## remove empty list-elements
-  if(!all(!chLe) & any(!chLe)) { x <- x[which(chLe)]
+  if(!all(!chLe) && any(!chLe)) { x <- x[which(chLe)]
     if(debug) message(fxNa,"Removing ",sum(!chLe)," empty entries (out of ",length(x),")")
     chLe <- sapply(x, length) >0 }
   if(debug) {message(fxNa,"sBYN2   length of list-elements >0 ",pasteC(sapply(x,length))) }

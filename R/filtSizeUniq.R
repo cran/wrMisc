@@ -12,7 +12,8 @@
 #' @param byProt (logical) if \code{TRUE} organize output as list (by names of input, eg protein-names) - if 'lst' was named list
 #' @param inclEmpty (logical) optional including empty list-elements when all elements have been filtered away - if 'lst' was named list 
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return list of filtered input
 #' @seealso \code{\link{correctToUnique}}, \code{\link[base]{unique}}, \code{\link[base]{duplicated}}
 #' @examples
@@ -21,9 +22,12 @@
 #' filtSizeUniq(list(A="a",B=c("b","bb","c"),D=c("dd","d","ddd","c")),ref=c(letters[c(1:26,1:3)],
 #'   "dd","dd","bb","ddd"),filtUn=TRUE,minSi=NULL)  # a,b,c,dd repeated 
 #' @export
-filtSizeUniq <- function(lst,ref=NULL,minSize=6,maxSize=36,filtUnique=TRUE,byProt=TRUE,inclEmpty=TRUE,silent=FALSE,callFrom=NULL) {
+filtSizeUniq <- function(lst, ref=NULL, minSize=6, maxSize=36, filtUnique=TRUE, byProt=TRUE, inclEmpty=TRUE,silent=FALSE,debug=FALSE, callFrom=NULL) {
   ## filter protein sequences for size/length and for unique
   fxNa <- .composeCallName(callFrom,newNa="filtSizeUniq")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   chNa <- grep("\\.$", names(utils::head(lst)))                                   # check for attached tailing '.'
   if(!is.list(lst)) {byProt <- FALSE; inclEmpty <- FALSE}
   if(length(chNa) <= min(2,length(lst))) names(lst) <- paste(names(lst),".",sep="")
@@ -64,6 +68,17 @@ filtSizeUniq <- function(lst,ref=NULL,minSize=6,maxSize=36,filtUnique=TRUE,byPro
   }
   pep }
   
+#' Filter for size
+#' 
+#' This function aims to filter for size
+#'
+#' @param x main inpuy
+#' @param minSize (integer) minimum number of characters, if \code{NULL} set to 0
+#' @param maxSize (integer) maximum number of characters
+#' @return list of filtered input
+#' @seealso \code{\link{filtSizeUniq}}; \code{\link{correctToUnique}}, \code{\link[base]{unique}}, \code{\link[base]{duplicated}}
+#' @examples
+#' aa <- 1:10
 #' @export
-.filtSize <- function(x,minSize=5,maxSize=36) {nCha <- nchar(x); x[which(nCha >= minSize & nCha <= maxSize)]}      # filter by size (no of characters)
+.filtSize <- function(x, minSize=5, maxSize=36) {nCha <- nchar(x); x[which(nCha >= minSize & nCha <= maxSize)]}      # filter by size (no of characters)
    

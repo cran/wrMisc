@@ -108,31 +108,52 @@ readCsvBatch <- function(fileNames=NULL, path=".", fileFormat="Eur", checkFormat
   dat } else NULL }
 
 
+#' Inspect 'matr' and check if 1st line can be used/converted as header
+#'
+#' This function inspects 'matr' and check if 1st line can be used/converted as header.
+#' If colnames of 'matr' are either NULL or 'V1',etc the 1st row will be tested if it contains any of the elements (if not, 1st line won't be used as new colnames)
+#' If 'numericCheck'=TRUE, all columns will be tested if they can be converted to numeric
+#' 
+#' @param matr (matrix or data.frame) main input to be instected
+#' @param headNames (character) column-names t look for
+#' @param numericCheck (logical) allows reducing complexity by drawing for very long x or y
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a matrix vector or data.frame similar to input
+#' @seealso  \code{\link[utils]{head}} for looking at first few lines
+#' @examples
+#' ma1 <- matrix(letters[1:6], ncol=3, dimnames=list(NULL,c("ab","Plate","Well")))
+#' .inspectHeader(ma1) 
+#' 
 #' @export
-.inspectHeader <- function(matr, headNames=c("Plate","Well","StainA"), numericCheck=TRUE, silent=FALSE, callFrom=NULL){
+.inspectHeader <- function(matr, headNames=c("Plate","Well","StainA"), numericCheck=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL){
   ## inspect 'matr' and check if 1st line can be used/converted as header
   ## if colnames of 'matr' are either NULL or 'V1',etc the 1st row will be tested if it contains any of the elements (if not, 1st line won't be used as new colnames)
   ## if'numericCheck'=TRUE, all columns will be tested if they can be converted to numeric
   extr1stLine <- TRUE
   fxNa <- .composeCallName(callFrom, newNa=".inspectHeader")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   msg <- character()
   if(!is.null(colnames(matr))) {if(identical(colnames(matr), paste0("V",1:ncol(matr)))) extr1stLine <- FALSE}
   if(extr1stLine & sum(tolower(headNames) %in% tolower(as.matrix(matr[1,]))) <1) extr1stLine <- FALSE
   if(extr1stLine) {
-    chNewNa <- length(matr[1,])==length(unique(matr[1,]))
-    if(!chNewNa) message(fxNa," transferring text to now column-names, but they are not unique !")
+    chNewNa <- length(matr[1,]) ==length(unique(matr[1,]))
+    if(!chNewNa && !silent) message(fxNa,"Transferring text to now column-names, but they are not unique !")
     matr <- as.data.frame(matr)
     colnames(matr) <- matr[1,]
     matr <- matr[-1,] }
   if(numericCheck) {
     ## try to locate 1st column that can be used as rownames (before removing text-content of non-nuleric columns)
     rowNa <- rownames(matr)
-    if(is.null(rowNa) | identical(rowNa,as.character(1:nrow(matr)))) {
-      chUniq <- apply(matr, 2, function(x) length(unique(x))==length(x))
+    if(is.null(rowNa) || identical(rowNa,as.character(1:nrow(matr)))) {
+      chUniq <- apply(matr, 2, function(x) length(unique(x)) ==length(x))
       if(any(chUniq)) rowNa <- matr[,which(chUniq)[1]]
     }
     ## extract numerical values only (text will be converted to NA)
-    matr <- apply(matr, 2 ,convToNum, spaceRemove=TRUE, convert=c(NA,"allChar"), remove=NULL,sciIncl=TRUE,euroStyle=TRUE,callFrom=fxNa,silent=silent)
+    matr <- apply(matr, 2, convToNum, spaceRemove=TRUE, convert=c(NA,"allChar"), remove=NULL,sciIncl=TRUE,euroStyle=TRUE,callFrom=fxNa,silent=silent)
     rownames(matr) <- rowNa }
   matr }
    

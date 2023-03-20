@@ -7,7 +7,8 @@
 #' @param dat (numeric or character vector or factor) main input 
 #' @param byOccurance (logical) toogle if lowest index should be based on alphabetical order or on order of input
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return matrix with mean values
 #' @seealso \code{\link{rowSds}}, \code{\link[base]{colSums}}
 #' @examples
@@ -19,10 +20,13 @@
 #' levIndex(fa1)
 #' levIndex(fa1, byOccurance=FALSE)
 #' @export
-levIndex <- function(dat, byOccurance=TRUE, silent=FALSE, callFrom=NULL) {
+levIndex <- function(dat, byOccurance=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## transform levels into index
   ## based on https://stackoverflow.com/questions/50898623/how-to-replace-multiple-values-at-once
   fxNa <- .composeCallName(callFrom, newNa="levIndex")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   if(length(dat) <1) { out <- NULL; if(!silent) message(fxNa, "'dat' seems to be empty")
   } else {
     out <- as.integer(as.factor(dat))

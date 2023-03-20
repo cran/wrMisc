@@ -12,6 +12,7 @@ lmSelClu(
   filt1 = NULL,
   filt2 = NULL,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -30,7 +31,9 @@ lmSelClu(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 lm object (or NULL if no data left)

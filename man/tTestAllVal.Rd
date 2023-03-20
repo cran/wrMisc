@@ -4,7 +4,15 @@
 \alias{tTestAllVal}
 \title{t.test on all individual values against all other values}
 \usage{
-tTestAllVal(x, alph = 0.05, alternative = "two.sided", p.adj = NULL)
+tTestAllVal(
+  x,
+  alph = 0.05,
+  alternative = "two.sided",
+  p.adj = NULL,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{matrix or data.frame}
@@ -14,9 +22,15 @@ tTestAllVal(x, alph = 0.05, alternative = "two.sided", p.adj = NULL)
 \item{alternative}{(character) will be passed to \code{t.test} as argument 'alternative', may be "two.sided",..}
 
 \item{p.adj}{(character) multiple test correction : may be NULL (no correction), "BH","BY","holm","hochberg" or "bonferroni"  (but not 'fdr' since this may be confounded with local false discovery rate), see \code{\link[stats]{p.adjust}}}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-numeric vector with p-values or FDR (depending on argument \code{p.adj})
+This function returns a numeric vector with p-values or FDR (depending on argument \code{p.adj})
 }
 \description{
 Run t.test on each indiv value of x against all its neighbours (=remaining values of same vector) in order to test if tis value is likely to belong to vector x. 

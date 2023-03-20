@@ -23,6 +23,7 @@ linModelSelect(
   xLabLas = 1,
   cexLab = 1.1,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -63,6 +64,8 @@ $datImp (the main quantitation data to use) and $annot for displaying the corres
 \item{cexLab}{(numeric) \code{cex}-type for size of text in x & y axis labels (will be passed to \code{cex.lab} in \code{plot()})}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

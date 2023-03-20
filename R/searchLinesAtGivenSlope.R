@@ -3,7 +3,8 @@
 #' \code{searchLinesAtGivenSlope} searchs among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
 #'  ie search optimal (slope-) offset parameter(s) for (regression) line(s) with given slope ('coef').
 #'  Note: larger data-sets : segment residuals to 'coeff' & select most homogenous
-#' @param dat matrix or data.frame
+#' 
+#' @param dat matrix or data.frame, main input
 #' @param coeff (numeric) slope to consider
 #' @param filtExtr (integer) lower & upper quantile values, remove points with extreme deviation to offset=0, (if single value: everything up to or after will be used)
 #' @param minMaxDistThr (logical) optional minumum and maximum distance threshold
@@ -16,11 +17,12 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) for bug-tracking: more/enhanced messages
 #' @param callFrom (character) allow easier tracking of messages produced
+#' @seealso \code{\link[stats]{lm}}
 #' @return This functions returns a matrix of line-characteristics  (or if indexPoints is \code{TRUE} then list (line-characteristics & index & lm-results)
 #' @examples
 #' set.seed(2016); ra1 <- runif(300)
 #'  dat1 <- cbind(x=round(c(1:100+ra1[1:100]/5,4*ra1[1:50]),1),
-#'   y=round(c(1:100+ra1[101:200]/5,4*ra1[101:150]),1))
+#'   y=round(c(1:100+ra1[101:200]/5, 4*ra1[101:150]), 1))
 #' (li1 <- searchLinesAtGivenSlope(dat1, coeff=1))
 #' @export
 searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistThr=NULL, lmCompare=TRUE, indexPoints=TRUE,
@@ -43,8 +45,8 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   if(!isTRUE(silent)) silent <- FALSE
   if(!isTRUE(debug)) debug <- FALSE
   if(debug) silent <- FALSE
-  if(identical(filtExtr,c(0,1))) filtExtr <- NULL
-  if(is.numeric(filtExtr)) {                ## remove extreme points (needed for all appoaches ??)
+  if(identical(filtExtr, c(0,1))) filtExtr <- NULL
+  if(is.numeric(filtExtr)) {                 ## remove extreme points (needed for all appoaches ??)
     if(length(filtExtr) !=2) filtExtr <- sort(c(filtExtr, if(filtExtr[1] <0.5) 1 else 0)[1:2])
     offSL <- stats::quantile(offS, filtExtr, na.rm=TRUE)           #
     filt1 <- which(offS > offSL[1] & offS < offSL[2])
@@ -69,7 +71,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   for(j in as.numeric(names(cluTab))[which(cluTab > max(2,minNPoints))]) {
     cluLi <- which(bestPart$cluster==j)
     disIni[[j]] <- .neigbDis(dat[filt1[cluLi],1:2], asSum=FALSE)
-    tmp <- dat[filt1[cluLi[order(rowMeans(dat[filt1[cluLi],1:2],na.rm=TRUE))]],1:2]
+    tmp <- dat[filt1[cluLi[order(rowMeans(dat[filt1[cluLi],1:2], na.rm=TRUE))]], 1:2]
     extrPtDis[j] <- sqrt(sum((tmp[1,] -tmp[length(cluLi)])^2 ))
   }
   if(debug) message(fxNa,"   ",sum(!is.na(extrPtDis))," out of ",length(extrPtDis)," distances calultated")
@@ -79,21 +81,21 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   offSclu <- cbind(offSclu, meanNeigbDi=sapply(disIni,mean,na.rm=TRUE,trim=0.2), maxSpread=extrPtDis)
   if(debug) message(fxNa,"   'offSclu' columns: ",paste(colnames(offSclu),collapse=" "))
   ## now refine best clusters (either by ratio overallSpread/meanNeighbDist, or by CV & cor)
-  if(bestCluByDistRat & sum(cluTab >minNPoints) >1) {
-    refRat <- mean(offSclu[,"meanNeigbDi"]/offSclu[,"maxSpread"],trim=0.2,na.rm=TRUE)
+  if(bestCluByDistRat && sum(cluTab >minNPoints) >1) {
+    refRat <- mean(offSclu[,"meanNeigbDi"]/offSclu[,"maxSpread"], trim=0.2, na.rm=TRUE)
     refCluNo <- which(offSclu[,"meanNeigbDi"]/offSclu[,"maxSpread"] < refRat & offSclu[,"n"] >=minNPoints)
     if(length(refCluNo) <1) { message(fxNa,"Cannot find decent clusters with 'bestCluByDistRat' ") }
   } else  {
-    refCluNo <- which(offSclu[,"refVa"] < stats::median(offSclu[,"refVa"],na.rm=TRUE) &
-      abs(offSclu[,"cor"]) > 0.95 & offSclu[,"centerCV"] < cvThr[1] & offSclu[,"n"] >=minNPoints)
-    if(length(refCluNo) <1) { refCluNo <- which(offSclu[,"refVa"] < stats::median(offSclu[,"refVa"],na.rm=TRUE) &
-      abs(offSclu[,"cor"]) > 0.92 & offSclu[,"centerCV"] < cvThr[2] & offSclu[,"n"] >=minNPoints) }
+    refCluNo <- which(offSclu[,"refVa"] < stats::median(offSclu[,"refVa"],na.rm=TRUE) &&
+      abs(offSclu[,"cor"]) > 0.95 && offSclu[,"centerCV"] < cvThr[1] & offSclu[,"n"] >=minNPoints)
+    if(length(refCluNo) <1) { refCluNo <- which(offSclu[,"refVa"] < stats::median(offSclu[,"refVa"],na.rm=TRUE) &&
+      abs(offSclu[,"cor"]) > 0.92 && offSclu[,"centerCV"] < cvThr[2] & offSclu[,"n"] >=minNPoints) }
   }
   if(debug) message(fxNa,"  select clusters ",if(length(refCluNo) >0) paste(refCluNo,collapse=" ") else "(none)"," for refining")
   if(length(refCluNo) >0) { for(j in refCluNo) {       
       newCluNo <- max(bestPart$cluster) +1
        ## this part may be further improved (.keepCenter1d may remove too much = split good clusters) 
-      tmp <- .keepCenter1d(offS[filt1[which(bestPart$cluster==j)]], core="veryhigh", keepOnly=FALSE, displPlot=FALSE, silent=silent,callFrom=fxNa)   # want display of hist-refinement?
+      tmp <- .keepCenter1d(offS[filt1[which(bestPart$cluster==j)]], core="veryhigh", keepOnly=FALSE, displPlot=FALSE, silent=silent, callFrom=fxNa)   # want display of hist-refinement?
       if(!silent) message(fxNa,"Split clu no  ",j," in main (n=",length(tmp$keep),") and fragm clu ",
         newCluNo," (n=",length(tmp$drop),")")
       bestPart$cluster[which(bestPart$cluster==j)[tmp$drop]] <- newCluNo }
@@ -101,7 +103,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     cluN <- bestPart$cluster
     offSclu <- cbind(n=table(cluN), center=tapply(offS[filt1], cluN, mean, na.rm=TRUE), centerSd=tapply(offS[filt1], cluN, stats::sd, na.rm=TRUE))
     ## set cor to 0 if cor can't get caluclated due to indentical values in one of the colums
-    xyCor <- as.numeric(unlist(by(dat[filt1,1:2],cluN,function(x) {if(length(unique(x[,1])) >1 & length(unique(x[,2])) >1) stats::cor(x[,1],x[,2]) else 0} ))) 
+    xyCor <- as.numeric(unlist(by(dat[filt1,1:2],cluN,function(x) {if(length(unique(x[,1])) >1 && length(unique(x[,2])) >1) stats::cor(x[,1],x[,2]) else 0} ))) 
     refVa <- (1 -abs(xyCor)) *offSclu[,"centerSd"]/ (offSclu[,"center"] *sqrt(offSclu[,"n"]))
     offSclu <- cbind(offSclu ,centerCV=abs(offSclu[,"centerSd"]/offSclu[,"center"]), cor=xyCor, refVa=refVa)
     if(debug) message(fxNa,"  updated xyCor,offSclu ...")
@@ -142,7 +144,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   refCluSel <- which(refCluNo %in% rownames(offT)[which(offT[,"neigbDist"] <= neighbDiLim)])
   if(!is.null(neighbDiLim) & length(refCluSel) >0) refCluNo <- refCluNo[refCluSel]
   ## rank2 : rank of 'grade' among top-hits ('refCluNo'), here with 1 for highest=best 'grade'
-  offT[match(refCluNo,rownames(offT)),"grade2"] <- (nrow(offT) +1 -rank(offT[,"grade"]))[match(refCluNo,rownames(offT))]
+  offT[match(refCluNo, rownames(offT)),"grade2"] <- (nrow(offT) +1 -rank(offT[,"grade"]))[match(refCluNo, rownames(offT))]
   if(indexPoints) {
     if(length(filt0) >0) bestPart$cluster[filt0] <- NA
     out <- list(offS=offT, clus=bestPart$cluster, index=lapply(refCluNo, function(x) which(bestPart$cluster==x)))
@@ -164,10 +166,10 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
       c("(Intercept)","slope","pInterc","pSlope","residSE","Rsqu")))
     if(inherits(tryLm, "try-error")) message(" Problem making regression on group",refCluNo[i],"") else if(is.list(out)) {
       tmp <- if(inherits(tryLm, "rlm")) {
-        c(2*stats::pt(-abs(stats::coef(summary(tryLm))[,3]), df=length(stats::residuals(tryLm))-1), stats::cor(tryLm$qr$qr[,1],tryLm$qr$qr[,2])^2)
+        c(2*stats::pt(-abs(stats::coef(summary(tryLm))[,3]), df=length(stats::residuals(tryLm))-1), stats::cor(tryLm$qr$qr[,1], tryLm$qr$qr[,2])^2)
         } else c(stats::coef(summary(tryLm))[,4], summary(tryLm)$adj.r.squared)
-      if(any(tmp[1:2] ==0)) tmp[which(tmp[1:2]==0)] <- 1e-320            # avoid p=0 ...
-      out$lmSum[i,] <- c(stats::coef(tryLm),tmp[1:2], summary(tryLm)$sigma,tmp[3])
+      if(any(tmp[1:2] ==0, na.rm=TRUE)) tmp[which(tmp[1:2]==0)] <- 1e-320            # avoid p=0 ...
+      out$lmSum[i,] <- c(stats::coef(tryLm), tmp[1:2], summary(tryLm)$sigma,tmp[3])
     } }
     names(out$lm) <- refCluNo }
   useColPa <- if(nrow(offT) <8) 2:nrow(offT) else grDevices::rainbow(1.2*nrow(offT))[1+(1:nrow(offT))]
@@ -176,13 +178,14 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   if(displHist) {
     if(displScat) if(all(graphics::par()$mfrow <2)) {graphics::layout(matrix(1:2, ncol=2)) ; message(" adjusting layout for 2 images")}  
     cluBor <- matrix(unlist(by(offS,bestPart$cluster,range)), byrow=TRUE, ncol=2)
-    his <- graphics::hist(offS, breaks="FD", main="hist of residuals to given slope")
-    graphics::mtext(paste(nrow(cluBor),"(best) clusters shown as grey/color boxes according to mean neighbour-point distance"),cex=0.8)
-    yPos <- c(-0.03*max(his$counts),-0.005*max(his$counts))
-    tmp <- unique(as.numeric(cluBor))
-    graphics::rect(min(cluBor[,1]), mean(yPos), max(cluBor[,2]), yPos[2],col=grDevices::grey(0.95), border=grDevices::grey(0.7))
-    graphics::segments(tmp,mean(yPos), tmp, yPos[2],col=grDevices::grey(0.7))
-    graphics::rect(cluBor[refCluNo,1], yPos[1], cluBor[refCluNo,2], yPos[2], col=useColPa,border=useColPa[refCluNo]) 
+    his <- try(graphics::hist(offS, breaks="FD", main="hist of residuals to given slope"), silent=TRUE)
+    if(inherits(his, "try-error")) message(fxNa,"UNABLE to plot histogram figure !") else {
+      graphics::mtext(paste(nrow(cluBor),"(best) clusters shown as grey/color boxes according to mean neighbour-point distance"),cex=0.8)
+      yPos <- c(-0.03*max(his$counts),-0.005*max(his$counts))
+      tmp <- unique(as.numeric(cluBor))
+      graphics::rect(min(cluBor[,1]), mean(yPos), max(cluBor[,2]), yPos[2],col=grDevices::grey(0.95), border=grDevices::grey(0.7))
+      graphics::segments(tmp,mean(yPos), tmp, yPos[2],col=grDevices::grey(0.7))
+      graphics::rect(cluBor[refCluNo,1], yPos[1], cluBor[refCluNo,2], yPos[2], col=useColPa,border=useColPa[refCluNo]) } 
     }
   ## plot of dat
   if(displScat) {
@@ -191,7 +194,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     names(grpChar1) <- rownames(offT)   # names gets lost when just 1 line in offT
     tit <- paste("identification of linear groups with slope ",signif(coeff,3))
     if(!all(unique(bestPart$cluster) %in% rownames(offT))) {
-      cluNa <- data.frame(clu=unique(bestPart$cluster), xx=NA,stringsAsFactors=FALSE)
+      cluNa <- data.frame(clu=unique(bestPart$cluster), xx=NA, stringsAsFactors=FALSE)
       tmp <- data.frame(clu=rownames(offT), offT, stringsAsFactors=FALSE)
       tmp <- merge(tmp, cluNa, by="clu", all=TRUE)
       grpChar1 <- tmp[,"neigbDist"]
@@ -202,13 +205,28 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     useClu <- which.max(offT[,"n"])
     useLi <- which(bestPart$cluster==useClu)
     if(debug) message(fxNa,"  len useLi",length(useLi),"   useCol ",useCol)
-    graphics::plot(dat[,1],dat[,2], main=tit, pch=21, bg=useCol, xlab=colnames(dat)[1], ylab=colnames(dat)[2])
-    graphics::legend("topleft",paste0("clu ",rownames(offT)," ,n=",offT[,1]), text.col=1, pch=21, col=1,pt.bg=useColPa,cex=0.8,xjust=0.5,yjust=0.5)        # as points
+    chG <- try(graphics::plot(dat[,1], dat[,2], main=tit, pch=21, bg=useCol, xlab=colnames(dat)[1], ylab=colnames(dat)[2]), silent=TRUE)
+    if(inherits(chG, "try-error"))  message(fxNa,"UNABLE to plot scatter figure !") else {
+      graphics::legend("topleft",paste0("clu ",rownames(offT)," ,n=",offT[,1]), text.col=1, pch=21, col=1, pt.bg=useColPa,cex=0.8,xjust=0.5,yjust=0.5)}        # as points
   }
   out }
 
+#' Calculate residues of (2-dim) linear model 'lMod'-prediction of/for 'dat'
+#'
+#' This function calculates residues of (2-dim) linear model 'lMod'-prediction of/for 'dat' (using 2nd col of 'useCol' )
+#'  (indexing in 'dat', matrix or data.frame with min 2 cols), using 1st col of 'useCol' as 'x'.
+#' It may be used for comparing/identifying data close to regression  (eg re-finding data on autoregression line in FT-ICR)
+#' 
+#' @param dat matrix or data.frame, main input
+#' @param lMod linear model, only used to extract coefficients offset & slope
+#' @param regTy (character) type of regression model
+#' @param useCol (integer) columns to use
+#' @return This function returns a numeric vector of residues (for each line of dat)
+#' @seealso \code{\link{searchLinesAtGivenSlope}}
+#' @examples
+#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
 #' @export
-.predRes <- function(dat, lMod, regTy="lin", useCol=1:2, filt1=NULL, filt2=NULL){
+.predRes <- function(dat, lMod, regTy="lin", useCol=1:2){
   ## calculate residues of (2-dim) linear model 'lMod'-prediction of/for 'dat' (using 2nd col of 'useCol' )
   ##  (indexing in 'dat', matrix or data.frame with min 2 cols), using 1st col of 'useCol' as 'x'
   ## used for comparing/identifying data close to regression  (eg re-finding data on autoregression line in FT-ICR)
@@ -232,6 +250,17 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     other=NULL)
   }
 
+#' Compare 'dat' to confindence interval of linare model 'lMod' (eg from lm())
+#'
+#' This function allows to compare 'dat' to confindence interval of linare model 'lMod' (eg from lm())
+#' 
+#' @param dat matrix or data.frame, main input
+#' @param lMod linear model, only used to extract coefficients offset & slope
+#' @param level (numeric) alpha threshold for linear model
+#' @return This function returns a logical vector for each value in 2nd col of 'dat' if INSIDE confid interval
+#' @seealso \code{\link{searchLinesAtGivenSlope}}
+#' @examples
+#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
 #' @export
 .checkLmConfInt <- function(dat, lMod, level=0.95){
   ## compare 'dat' to confindence interval of linare model 'lMod' (eg from lm())
@@ -247,12 +276,28 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     up2=stats::confint(lMod,level=level)[2,1]*dat[,1] +stats::confint(lMod,level=level)[1,2],
     lo1=stats::confint(lMod,level=level)[2,2]*dat[,1] +stats::confint(lMod,level=level)[1,2],
     lo2=stats::confint(lMod,level=level)[2,2]*dat[,1] +stats::confint(lMod,level=level)[1,1])
-  moRa <- t(apply(mod,1,range))
+  moRa <- t(apply(mod, 1, range))
   out <- if(chResForm) dat[,2] -dat[,1] >= moRa[,1] & dat[,2] -dat[,1] <= moRa[,2] else NULL
   out }
 
+#' Segment (1-dim vector) 'dat' into clusters
+#'
+#' This function allows aegmenting (1-dim vector) 'dat' into clusters.
+#' If 'automClu=TRUE ..' first try automatic clustering, if too few clusters, run km with length(dat)^0.3 clusters
+#' This function requires the package NbClust to be installed.
+#' 
+#' @param dat matrix or data.frame, main input
+#' @param automClu (logical) run atomatic clustering
+#' @param cluChar (logical) to display cluster characteristics
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns clustering (class index) or (if 'cluChar'=TRUE) list with clustering and cluster-characteristics
+#' @seealso \code{\link{searchLinesAtGivenSlope}}
+#' @examples
+#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
 #' @export
-.insp1dimByClustering <- function(dat, automClu=TRUE, cluChar=TRUE, silent=FALSE, callFrom=NULL){
+.insp1dimByClustering <- function(dat, automClu=TRUE, cluChar=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL){
   ## Segment (1-dim vector) 'dat' into clusters
   ## if 'automClu=TRUE ..' first try automatic clustering, if too few clusters, run km with length(dat)^0.3 clusters
   ## 'cluChar' .. to display cluster characteristics
@@ -266,13 +311,13 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     if(!requireNamespace("NbClust", quietly=TRUE)) { message(fxNa,"Package 'NbClust' not found ! Please install first from CRAN \n   setting 'automClu'=FALSE for using kmeans()")
     automClu <- FALSE } }
   if(automClu) {
-    cluAut <- try(NbClust::NbClust(dat, method="average",index="ccc"),silent=TRUE)     # cluster only best = smallest dist
+    cluAut <- try(NbClust::NbClust(dat, method="average", index="ccc"),silent=TRUE)     # cluster only best = smallest dist
     if(inherits(cluAut, "try-error")) { warning(fxNa,"Failed to run NbClust::NbClust(); ignoring  'automClu'")
       automClu <- FALSE }
   if(automClu) {    
     out <- cluAut$Best.partition
     if(length(table(out)) < ceiling(length(dat)^0.16)) {
-      if(!silent) message(" autom clustering proposed only ",length(table(out))," clusters -> impose ",ceiling(length(dat)^0.3))
+      if(!silent) message(" Automatic clustering proposed only ",length(table(out))," clusters -> impose ",ceiling(length(dat)^0.3))
       automClu <- FALSE } }   # insufficient number of clusters -> run kmeans
   if(!automClu) {
     nClu <- ceiling(length(dat)^0.4)
@@ -284,8 +329,25 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     out <- list(cluster=out, cluChar=cbind(n=table(out), center=ctrClu, centerSd=sdClu, centerCV=abs(sdClu/ctrClu))) } }
   out }
 
+
+#' Refine/filter 'dat1' (1dim dataset, eg cluster) with aim of keeping center of data
+#'
+#' This function allows to refine/filter 'dat1' (1dim dataset, eg cluster) with aim of keeping center of data.
+#' It is done based on most freq class of histogramm keep/filter data if 'core' (% of volume) are within 'core' (%) range 
+#' 
+#' @param dat1 simple numeric vector
+#' @param core numeric vactor (betw 0 and 1) for fraction of data to keep; if null trimmedMean/max hist occurance will be used, limited within 30-70 perent; may also be 'high' or 'low' for forcing low (20-60percent) or high (75-99) percent of data to retain
+#' @param keepOnly (logical) 
+#' @param displPlot (logical) show plot of hist & boundaries
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns the index of values retained or if 'keepOnly' return list with 'keep' index and 'drop' index
+#' @seealso \code{\link{searchLinesAtGivenSlope}}
+#' @examples
+#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
 #' @export
-.keepCenter1d <- function(dat1, core=NULL, keepOnly=TRUE, displPlot=FALSE, silent=TRUE, callFrom=NULL) {
+.keepCenter1d <- function(dat1, core=NULL, keepOnly=TRUE, displPlot=FALSE, silent=TRUE, debug=FALSE, callFrom=NULL) {
   ## refine/filter 'dat1' (1dim dataset, eg cluster) with aim of keeping center of data
   ## based on most freq class of histogramm keep/filter data if 'core' (% of volume) are within 'core' (%) range
   ##  or adopt to non-symmetric if most freq class is close to either end of distribution
@@ -298,17 +360,17 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   ## return index of values retained or if 'keepOnly' return list with 'keep' index and 'drop' index
   fxNa <- .composeCallName(callFrom, newNa=".keepCenter1d")
   lim4cor <- c(0.3,0.7)
-  if(identical(core,"high")) {
+  if(identical(core, "high")) {
     lim4cor <- c(0.75,0.99)    # upper & lower limits for automatic determination of 'core' (ie % of values to keep)
     core <- NULL }
-  if(identical(core,"low")) {
+  if(identical(core, "low")) {
     lim4cor <- c(0.2,0.6)      # upper & lower limits for automatic determination of 'core' (ie % of values to keep)
     core <- NULL }
-  dat1 <- signif(naOmit(dat1),5)
-  if(length(unique(dat1))==1)  {
-    if(!silent) message(fxNa," all (slightly rounded) values identical ! (keep all)")
+  dat1 <- signif(naOmit(dat1), 5)
+  if(length(unique(dat1)) ==1)  {
+    if(!silent) message(fxNa,"All (slightly rounded) values identical ! (keep all)")
     out <- 1:length(dat1)
-    return(if(keepOnly) out else list(keep=out,drop=NULL))
+    return(if(keepOnly) out else list(keep=out, drop=NULL))
   } else {
     his1 <- graphics::hist(dat1, breaks="FD", plot=FALSE)
     maxPo <- which(his1$counts==max(his1$counts, na.rm=TRUE))     # position of peak(s), ie mode based on hist
@@ -317,8 +379,8 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
       if(any(diff(maxPo)) >1) { if(!silent) message(fxNa," (multiple) non-neighbour peaks in hist")
          maxVa <- maxPo[round(stats::median(maxPo))] } }
     ## refine 'mode' in double resolution in +- 2 hist-classes range
-    refWi <- 2.5*(his1$mids[2]-his1$mids[1])
-    useBr <- seq(maxVa -refWi,maxVa +refWi,length.out=11)
+    refWi <- 2.5*(his1$mids[2] -his1$mids[1])
+    useBr <- seq(maxVa -refWi, maxVa +refWi, length.out=11)
     tab <- table(cut(dat1[dat1 > maxVa -refWi &  dat1 < maxVa +refWi], breaks=useBr))
     useP <- which(tab==max(tab))
     if(length(useP) >1) useP <- if(length(useP) %% 2 >0) stats::median(useP) else stats::median(useP[-1])
@@ -328,41 +390,42 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     ## note: fully tested against NAs
     ## automatic bandwidth ('core'=NULL) : based on ration max histogram class height / trimmed mean of heights
     if(is.null(core)) {
-      core <- round(10*mean(his1$counts,trim=0.25)/his1$counts[which.max(his1$counts)],3) # sharp peak ->low ratio, small core fraction
+      core <- round(10*mean(his1$counts, trim=0.25)/his1$counts[which.max(his1$counts)], 3)   # sharp peak ->low ratio, small core fraction
       if(!silent) message(fxNa,"Proposed value for core ",core,"    trim mean ",
-        signif(mean(his1$counts,trim=0.25),3),"   max ",signif(his1$counts[which.max(his1$counts)],3))
+        signif(mean(his1$counts, trim=0.25), 3),"   max ",signif(his1$counts[which.max(his1$counts)], 3))
       core <- round(sort(c(lim4cor, core))[2],3) }          # keep proposed 'core' within limits
     .chSD <- function(x,y) {med <- stats::median(x,na.rm=TRUE); which(x > med -y*stats::sd(x,na.rm=TRUE) & x < med +y*stats::sd(x,na.rm=TRUE))}
     if(identical(core,"veryhigh")) {  
       core <- 0.9                         # must have some value for later use ..
-      out <- .chSD(dat1,y=1)
-      if(length(out) < length(dat1)*core) {out <- .chSD(dat1,y=1.5) }
-      if(length(out) < length(dat1)*core) {out <- .chSD(dat1,y=2) }
-      useQu <- c(sum(dat1 > min(dat1[out]),na.rm=TRUE),sum(dat1 > max(dat1[out]),na.rm=TRUE))/length(dat1)
-      quaVa <- signif(stats::quantile(dat1,useQu),4)
+      out <- .chSD(dat1, y=1)
+      if(length(out) < length(dat1)*core) {out <- .chSD(dat1, y=1.5) }
+      if(length(out) < length(dat1)*core) {out <- .chSD(dat1, y=2) }
+      useQu <- c(sum(dat1 > min(dat1[out]) ,na.rm=TRUE), sum(dat1 > max(dat1[out]), na.rm=TRUE))/length(dat1)
+      quaVa <- signif(stats::quantile(dat1, useQu), 4)
     } else {
-      centrQu <- which(abs(dat1-maxVa) ==min(abs(dat1-maxVa)))
+      centrQu <- which(abs(dat1 -maxVa) ==min(abs(dat1 -maxVa)))
       useQu <- maxQu +c(-1,1)*core/2                           # boundaries of range around mode
-      if(core/2 > min(maxQu,1-maxQu)) {
-        useQu <- if(useQu[1] <0) c(0,core) else c(1-core,1)}
-      quaVa <- signif(stats::quantile(dat1,useQu),4)
+      if(core/2 > min(maxQu,1 -maxQu)) {
+        useQu <- if(useQu[1] <0) c(0,core) else c(1 -core,1)}
+      quaVa <- signif(stats::quantile(dat1, useQu), 4)
       ## examine boders if assymetric (but not due to fact of touching range of data), if too assym bring most far closer
-      offSe <- abs(quaVa-maxVa)
+      offSe <- abs(quaVa -maxVa)
       offSe <- offSe > 1.3*sum(offSe)/length(offSe)
-      if(any(offSe) & !(any(useQu %in% c(0,1)))) {
+      if(any(offSe) && !(any(useQu %in% c(0,1)))) {
         quaVa <- .bringToCtr(quaVa, maxVa)
         useQu[which(offSe)] <- sum(dat1 >= quaVa[which(offSe)])/length(dat1)  }
       quaVa <- signif(quaVa,4)
-      if(any(offSe) & !(any(useQu %in% c(0,1))) & !silent)  message(fxNa,
+      if(any(offSe) && !(any(useQu %in% c(0,1))) && !silent)  message(fxNa,
         "  ..new modified borders ",paste(quaVa,collapse=" "))  # result not ideal ?
       out <- which(dat1 >= quaVa[1] & dat1 <= quaVa[2])
     }
     if(length(out) > length(dat1)*core & !silent) message(fxNa,"Keep ",
       round(length(out) -length(dat1)*core)," more elements than ",round(100*core),"%")
     if(displPlot) {
-      graphics::plot(his1, col=grDevices::grey(0.8),border=grDevices::grey(0.7))
-      graphics::mtext(paste("n=",length(dat1)),cex=0.8)
-      graphics::abline(v=sort(c(quaVa,maxVa)), lty=c(2,1,2), col=grDevices::grey(0.4))}
+      chG <- try(graphics::plot(his1, col=grDevices::grey(0.8),border=grDevices::grey(0.7)), silent=TRUE)
+      if(inherits(chG, "try-error")) message(fxNa,"UNABLE to draw plot !") else {
+        graphics::mtext(paste("n=",length(dat1)), cex=0.8)
+        graphics::abline(v=sort(c(quaVa,maxVa)), lty=c(2,1,2), col=grDevices::grey(0.4))}}
     if(!keepOnly) out <- list(keep=out, drop=(1:length(dat1))[-out], limits=useQu)
     out }
     }

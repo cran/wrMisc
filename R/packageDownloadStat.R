@@ -43,7 +43,7 @@ packageDownloadStat <- function(queryPackages=c("wrMisc","wrProteo","cif","bcv",
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   inclQuant <- length(refQuant) >0
-  chPa <- length(naOmit(queryPackages)) >0 & (is.character(queryPackages) | is.numeric(queryPackages))
+  chPa <- length(naOmit(queryPackages)) >0 && (is.character(queryPackages) | is.numeric(queryPackages))
   datOK <- FALSE
   paNa <- paRa <- nDownl <- NULL                    # intialize (just in case)
   if(chPa) {
@@ -59,7 +59,7 @@ packageDownloadStat <- function(queryPackages=c("wrMisc","wrProteo","cif","bcv",
     if(!inherits(txt, "try-error") & length(txt) >1) {
       ## check argument refQuant
       if(any(length(refQuant) < 1, identical(refQuant,NA), isFALSE(refQuant))) {refQuant <- 1; inclQuant <- FALSE}        # minimal setting
-      if(inclQuant & length(txt) <900) { inclQuant <- FALSE
+      if(inclQuant && length(txt) <900) { inclQuant <- FALSE
         if(!silent) message(fxNa,"Too few data for adding reference centile values/packages")
       }
       if(!is.numeric(refQuant)) refQuant <- (1:10)/10

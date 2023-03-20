@@ -25,6 +25,7 @@ range(dat)
 dat1 <- scaleXY(dat, 1,100)
 range(dat1)
 summary(dat1)
+
 ## scale for each column individually
 dat2 <- apply(dat, 2, scaleXY, 1, 100)
 range(dat2)

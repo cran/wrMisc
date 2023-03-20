@@ -35,8 +35,11 @@
 #'   returnOut=TRUE, filename=fiNa[2]))
 #'
 #' @export
-writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", filename=NULL, quote=FALSE, filterCol=NULL, replMatr=NULL, returnOut=FALSE,SYLKprevent=TRUE,digits=22,silent=FALSE,debug=FALSE,callFrom=NULL) {
-  fxNa <- .composeCallName(callFrom,newNa="writeCsv")
+writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", filename=NULL, quote=FALSE, filterCol=NULL, replMatr=NULL, returnOut=FALSE, SYLKprevent=TRUE, digits=22, silent=FALSE,debug=FALSE,callFrom=NULL) {
+  fxNa <- .composeCallName(callFrom, newNa="writeCsv")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   argN <- deparse(substitute(input))
   doWrite <- TRUE
   if(!requireNamespace("utils", quietly=TRUE)) { doWrite <- FALSE
@@ -64,10 +67,10 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
       if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"unkown format for 'expTy', setting to 'Eur'")}
       ## FILTERING  (independent to expTy)
       ## check if 'filterCol' in dat
-      if(is.list(filterCol) & length(filterCol) >0) {
+      if(is.list(filterCol) && length(filterCol) >0) {
         useCol <- sapply(filterCol,function(x) x[1])
         useCol <- which(useCol %in% colnames(dat))
-        if(!silent & length(useCol)<1) message(fxNa," none of the columns from 'filterCol' found in ",inPutFi)
+        if(!silent && length(useCol)<1) message(fxNa," none of the columns from 'filterCol' found in ",inPutFi)
         filtThr <- sapply(filterCol[useCol],function(x) if(length(x>1)) x[2] else NA)
         filterCol <- sapply(filterCol[useCol],function(x) x[1])
         }
@@ -76,7 +79,7 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
         for(i in 1:length(filterCol)) {                          
           chLogi <- TRUE                                         
           ## this may be further deveoped: check if column has usable logical content
-          chLi <- if(is.na(filtThr[i]) & chLogi) which(dat[,filterCol[i]]) else which(dat[,filterCol[i]] < filtThr[i])
+          chLi <- if(is.na(filtThr[i]) && chLogi) which(dat[,filterCol[i]]) else which(dat[,filterCol[i]] < filtThr[i])
           if(length(chLi) <nrow(dat) & length(chLi) >0) dat <- dat[chLi,] else if(length(chLi) <1) {
             message(fxNa," filtering for ",filterCol[i]," nothing left !!")
             dat <- NULL; return(NULL) }}
@@ -89,14 +92,14 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
         chCols <- which(!datColCl %in% c("numeric","integer"))
         dat0 <- as.matrix(dat[,chCols])
         ## first try to locate numeric cols with bad separator (digit+comma+digit)
-        zz <- sub("^[[:digit:]]+,[[:digit:]]+$|^[[:digit:]]+\\.[[:digit:]]+$|^,[[:digit:]]+$|^\\.[[:digit:]]+$","",dat0)     # no need to test for digits only wo separators
+        zz <- sub("^[[:digit:]]+,[[:digit:]]+$|^[[:digit:]]+\\.[[:digit:]]+$|^,[[:digit:]]+$|^\\.[[:digit:]]+$","", dat0)     # no need to test for digits only wo separators
         chNA <- is.na(zz)
         if(any(chNA)) zz[which(chNA)] <- 0
         toNum <- colSums(nchar(zz)) <1
         if(debug) {message(fxNa,"..xxWriteC1b")}
         if(any(toNum)) {
           if(!silent) message(fxNa," adjusting ",sum(toNum)," column(s) with Euro comma-separator")
-          dat[,chCols[which(toNum)]] <- as.numeric(sub(",",".",dat[,chCols[which(toNum)]]))
+          dat[,chCols[which(toNum)]] <- as.numeric(sub(",",".", dat[,chCols[which(toNum)]]))
           datColCl[chCols[which(toNum)]] <- "numeric"
           chCols <- which(!datColCl %in% c("numeric","integer")) }                   # refresh
         ## locate & replace 'bad' characters interfering with tabular separation -> need multiple versions
@@ -108,8 +111,8 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
           if(length(dim(replMat)) >2) {
             chTy <- ty %in% dimnames(replMat)[[3]]                    
             replMat <- as.matrix(if(!chTy) replMat[,,1] else replMat[,,which(ty==dimnames(replMat)[[3]])])}  # matrix with characters to test for (1st line) & 2nd line for replacing
-          locCh <- lapply(replMat[1,], grep,dat0)
-          locCh <- locCh[which(sapply(locCh,length) >0)]                                            # indexes where substitution should take place
+          locCh <- lapply(replMat[1,], grep, dat0)
+          locCh <- locCh[which(sapply(locCh, length) >0)]                                            # indexes where substitution should take place
           if(length(locCh) >0) for(i in 1:length(locCh)) dat0[locCh[[i]]] <- gsub(replMat[1,i],replMat[2,i],dat0[locCh[[i]]])
           if(debug) {message(fxNa,"..xxWriteC3")}
           if(length(expTy) >1) {datExp[[ty]] <- dat; datExp[[ty]][,chCols] <- dat0} else dat[,chCols] <- dat0 }}

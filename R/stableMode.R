@@ -18,8 +18,7 @@
 #' @param bandw (integer) only used when \code{method="binning"} or  \code{method="density"} : defines the number of points to look for density or number of classes used; 
 #'  very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" you will finally loose advantage of histLike-type search of mode !
 #' @param rangeSign (integer) only used when \code{method="binning"}: range of numbers used as number of significant values
-#' @param nCl (integer) depreciated argument, please use \code{bandw} instead
-#' @param histLike (logical) depreciated, please use argument \code{method} instead
+
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allows easier tracking of messages produced
 #' @param debug (logical) additional messages for debugging 
@@ -29,11 +28,11 @@
 #' set.seed(2012); dat <- round(c(rnorm(50), runif(100)),3)
 #' stableMode(dat)
 #' @export
-stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSign=1:6, nCl=NULL, histLike=NULL, silent=FALSE, callFrom=NULL, debug=FALSE) {
+stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSign=1:6, silent=FALSE, callFrom=NULL, debug=FALSE) {
   ## stable mode  
   fxNa <- .composeCallName(callFrom, newNa="stableMode")
-  if(length(histLike) > 0) message(fxNa, "Argument 'histLike' is depreciated, please use argument 'method' instead !")
   if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   ## prepare data: treat NA or non-finite values
   if(finiteOnly) { chFin <- is.finite(x)
     if(all(!chFin)) x <- NULL else if(any(!chFin)) {x <- x[which(chFin)]
@@ -46,7 +45,7 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
   } else if(length(unique(x)) == 1) {
     method <- NULL
     return(x[1])
-    if(!silent &  length(x) >1) message(fxNa, "All values are the same (= mode)") }
+    if(!silent && length(x) >1) message(fxNa, "All values are the same (= mode)") }
   if(identical(method, "dens"))  method <- "density"
   if(identical(method, "bin")) method <- "binning"
   if(identical(method, "histLike")) {
@@ -55,7 +54,7 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
   out <- NULL
   isNum <- is.numeric(x)
   ## check type of input
-  if(any(sapply(c("BBmisc","density","binning"), identical, method)) & !isNum) {    
+  if(any(sapply(c("BBmisc","density","binning"), identical, method)) && !isNum) {    
     chNum <- try(as.numeric(if(is.factor(x)) as.character(x) else x), silent=TRUE)
     if(inherits(chNum, "try-error")) {
       if(!silent) message(fxNa,"Note : Input is NOT numeric, not compatible with method chosen, thus setting method='mode' !")
@@ -101,9 +100,8 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
   }
   ## binning
   if(identical(method, "binning")) {
-    if(length(nCl) >0) message(fxNa,"Method='binning', argument 'nCl' is depreciated and will be ignored, please use 'bandw' instead !")
     if(!all(length(bandw) >0, is.numeric(bandw))) bandw <- ceiling(sqrt(length(x)))
-    if(70 * bandw > length(x) & !silent)  message(fxNa,"Method='binning', value of 'bandw'=", bandw, " may be too high for good functioning !")
+    if(70 * bandw > length(x) && !silent)  message(fxNa,"Method='binning', value of 'bandw'=", bandw, " may be too high for good functioning !")
     xRa <- range(x[which(is.finite(x))])
     frq <- table(cut(x, breaks = seq(xRa[1], xRa[2], length.out = bandw)))
     che <- max(frq, na.rm=TRUE) > c(0.5, 0.8) * length(x)
@@ -113,7 +111,7 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
       mxF <- signif(seq(xRa[1], xRa[2], length.out = bandw)[c(max(mxF -3, 1), min(mxF +3, bandw))], 4)
       frq <- table(cut(x, breaks = seq(mxF[1], mxF[2], length.out = bandw)))
     } else {
-      if(che[1] & sum(frq < length(x)/5000) > 0.5 * bandw) {
+      if(che[1] && sum(frq < length(x)/5000) > 0.5 * bandw) {
         if(!silent) message(fxNa, ">50% of values in class no ", 
           which.max(frq), " & >50% of other classes almost empty, refining result")
         useBr <- range(which(frq > 0.05 * length(x))) +c(-1, 1)

@@ -10,6 +10,7 @@ treatTxtDuplicates(
   sep = "_",
   onlyCorrectToUnique = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -24,7 +25,9 @@ treatTxtDuplicates(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 list with $init, $nRed, $nrLst

@@ -58,7 +58,7 @@ keepCommonText <- function(txt, minNchar=1, side="center", hiResol=TRUE, silent=
   out <- lastOK <- NULL                      # initialize
   txOK <- TRUE
   ## check of input
-  if(length(txt) <1 | all(is.na(txt))) { txOK <- FALSE; out <- NA
+  if(length(txt) <1 || all(is.na(txt))) { txOK <- FALSE; out <- NA
     if(!silent) message(fxNa,"Empty or all NA input, no common text possible")
   }
   if(txOK) {
@@ -66,22 +66,22 @@ keepCommonText <- function(txt, minNchar=1, side="center", hiResol=TRUE, silent=
     if(any(chNa)) txt <- txt[which(!chNa)]
     if(length(txt)==1) { out <- txt                          # length=1 .. full text
       if(debug) message(fxNa,"Single (valid) vector-element")}
-    if(length(txt) >0 & length(out) <1) { chSame <- all(sapply(txt[-1], function(x) x==txt[1]))     # all the same no need for extensive testing
+    if(length(txt) >0 && length(out) <1) { chSame <- all(sapply(txt[-1], function(x) x==txt[1]))     # all the same no need for extensive testing
       if(all(chSame)) { out <- out[1]
         if(!silent) message(fxNa,"All text identical") } }
     nChar <- nchar(txt)
-    if(length(out) <1 & any(nChar <1)) { out <- ""
+    if(length(out) <1 && any(nChar <1)) { out <- ""
       if(!silent) message(fxNa,"Some text elements are empty, no common text possible")}   
     if(debug) {message(fxNa,"kCT1"); kCT1 <- list(txt=txt,side=side,minNchar=minNchar,out=out,chSame=chSame,nChar=nChar,hiResol=hiResol)}  
 
     ## search at terminal positions
-    if(length(txt) >0 & any(c("left","terminal") %in% side)) {
+    if(length(txt) >0 && any(c("left","terminal") %in% side)) {
       txTr <- .trimRight(txt, minNchar=minNchar, silent=silent, callFrom=fxNa)
       if(nchar(txt[1]) > nchar(txTr[1])) { out <- txt <- sub(txTr[1],"",txt[1])
         nChar <- nchar(txt)}             # update
       if(debug) {message(fxNa,"kCT1a")}
     }
-    if(length(txt) >0 & any(c("right","terminal") %in% side)) {
+    if(length(txt) >0 && any(c("right","terminal") %in% side)) {
       txTr <- .trimLeft(txt, minNchar=minNchar, silent=silent, callFrom=fxNa)
       if(nchar(txt[1]) > nchar(txTr[1])) out <- sub(txTr[1],"",txt[1])    #
       nChar <- nchar(txt)                # update
@@ -91,21 +91,21 @@ keepCommonText <- function(txt, minNchar=1, side="center", hiResol=TRUE, silent=
   if(debug) {message(fxNa,"kCT2"); kCT2 <- list(txt=txt,side=side,minNchar=minNchar,out=out,chSame=chSame,nChar=nChar,hiResol=hiResol)}  
   
   ## search anywhere (incl center)
-  if(length(txt) >0 & any(c("center","any") %in% side)) {
+  if(length(txt) >0 && any(c("center","any") %in% side)) {
     ch1 <- min(nChar, na.rm=TRUE)
     if(ch1 -1 > minNchar) {                       # sufficient characters in all instances
-      if(!hiResol & !silent) message(fxNa,"Please note that using the argument hiResol=FALSE, the optimal solution may not be found, you may check if the result can be further extended") 
+      if(!hiResol && !silent) message(fxNa,"Please note that using the argument hiResol=FALSE, the optimal solution may not be found, you may check if the result can be further extended") 
       ch2 <- txt[which.min(nChar)]
       kMer <- 2
       kMerIni <- kMer    ## first round
-      stSpl <- seq(1, ch1-kMer+1, by=if(hiResol) 1 else kMer)
+      stSpl <- seq(1, ch1 -kMer +1, by=if(hiResol) 1 else kMer)
       words <- unique(substr(rep(ch2, length(stSpl)), stSpl, stSpl+kMer-1))
       ch3 <- sapply(lapply(words, grep, txt[-which.min(nChar)]), length) == length(txt) -1
       lastOK <- if(any(ch3)) list(kMer=kMer,words=words, ch3=ch3) else NULL
       ## now searh for longer if any matches found above
-      while(any(ch3) & kMer < ch1 -2) { kMer <- kMer +2
-        stSpl <- seq(1, ch1-kMer+1, by=if(hiResol) 1 else kMer)
-        words <- unique(substr(rep(ch2, length(stSpl)), stSpl, stSpl+kMer-1))
+      while(any(ch3) && kMer < ch1 -2) { kMer <- kMer +2
+        stSpl <- seq(1, ch1 -kMer +1, by=if(hiResol) 1 else kMer)
+        words <- unique(substr(rep(ch2, length(stSpl)), stSpl, stSpl +kMer -1))
         if(debug) message(fxNa,"Increase kMer from ",kMer -2," to ",kMer,";  testing ",length(words)," character-chains")
         ch3 <- sapply(lapply(words, grep, txt[-which.min(nChar)]), length) == length(txt) -1
         if(any(ch3)) lastOK <- list(kMer=kMer,words=words, ch3=ch3)

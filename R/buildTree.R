@@ -115,15 +115,25 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
     list(paths=out, usedNodes=sort(names(chSup)[which(!chSup)]), tree=setX ) 
   } }
 
-  #' @export
+#' Grow tree
+#'
+#' This function allows growing tree-like structures (data.tree objects)
+#' 
+#' @param tm (list) main input, $disDat .. matrix with integer start & end sites for fragments; $lo (logical) which fragments may be grown; $start (integer) index for which line of $disDat to start; $it numeric version of $lo; $preN for previous tree objects towards root; $iter for iterator (starting at 1))
+#' @param setX .. data.tree object (main obj from root)
+#' @param addToObj .. data.tree object (branch on which to add new branches/nodes) 
+#' @return list
+#' @seealso  \code{\link{buildTree}}
+#' @examples
+#' .datSlope(c(3:6))
+#' @export
   .growTree <- function(tm, setX, addToObj=NULL) {
     ## grow tree 'setX' based on 'tm' 
     ## 'tm' .. list ($disDat .. matrix with integer start & end sites for fragments; $lo (logical) which fragments may be grown; $start (integer) index for which line of $disDat to start; $it numeric version of $lo; $preN for previous tree objects towards root; $iter for iterator (starting at 1))
     ## 'setX' .. data.tree object (main obj from root)
     ## 'addToObj' .. data.tree object (branch on which to add new branches/nodes)
-    #addToObj <- if(tm$iter==1 & length(addToObj) >0) addToObj else paste0("b",tm$it[j],"_",j)
     newNodeNa <- paste0("b",0,"_",tm$disDat[tm$start,1])
-    namesX <- deparse(substitute(setX))      #deparse(substitute(tm)))            # name of tree-object (typically 'setX'  )
+    namesX <- deparse(substitute(setX))                   # name of tree-object (typically 'setX'  )
     assign(newNodeNa, get(namesX)$AddChild(rownames(tm$disDat)[tm$start], len=tm$disDat[tm$start,3]))      # add new 1st level branch to '_Root_'
     if(any(tm$lo)) tm$preN[which(tm$lo)] <- newNodeNa
     while(any(tm$lo)) {        # need to grow further ..
@@ -136,7 +146,7 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
       if(any(tm0)) {z <- which(tm0);                        
         tm$lo[z] <- TRUE                                        # set to-do status for children
         tm$it[z] <- tm$it[j]+1                                  # tree-level 
-        tm$preN[z] <- paste0("b",tm$it[j],"_",j)          # report (prev)name of node
+        tm$preN[z] <- paste0("b",tm$it[j],"_",j)                # report (prev)name of node
         reOrd <- c(z,which(!tm0))                               # need to change order to treat children next (for treatig correctly branched trees)
         tm$lo <- tm$lo[reOrd]
         tm$it <- tm$it[reOrd]
@@ -144,4 +154,4 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
         tm$disDat <- tm$disDat[reOrd,] }    
     }
     tm }
-   
+     

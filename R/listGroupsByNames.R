@@ -5,7 +5,8 @@
 #' @param x (list) main input
 #' @param sep (character) separator (note that typcal separators may need to be protected, only automatically added for '.')
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return matrix or data.frame
 #' @seealso \code{rbind} in \code{\link[base]{cbind}}
 #' @examples
@@ -13,15 +14,19 @@
 #' ser1 <- 1:6; names(ser1) <- c("AA","BB","AA.1","CC","AA.b","BB.e")
 #' listGroupsByNames(ser1)
 #' @export
-listGroupsByNames <- function(x,sep=".",silent=FALSE,callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="listGroupsByNames")
+listGroupsByNames <- function(x, sep=".", silent=FALSE, debug=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="listGroupsByNames")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(debug) message(fxNa,"lGNB1")
+
   if(length(sep) <1) sep <- "\\."
   if(length(sep) >1) {if(!silent) message(fxNa,"'sep' should be character of length 1"); sep <- sep[1]}
   if(sep %in% c(".")) sep <- paste("\\",sep,sep="")
   if(length(names(x)) <1) { message(fxNa," no names found in 'x' !!")
-    names(x) <- spl <- sapply(strsplit(as.character(x),sep),function(y) y[1])
+    names(x) <- spl <- sapply(strsplit(as.character(x), sep), function(y) y[1])
   } else spl <- strsplit(names(x),sep)
-  ex1st <- sapply(spl,function(x) x[1])
+  ex1st <- sapply(spl, function(x) x[1])
   if(length(ex1st) > length(unique(ex1st))) {
     out <- lapply(unique(ex1st),function(y) which(ex1st==y))
     out <- lapply(out,function(y) c(x[y]))

@@ -4,7 +4,7 @@
 \alias{matr2list}
 \title{Transform columns of matrix to list of vectors}
 \usage{
-matr2list(mat, concSym = ".", silent = FALSE, callFrom = NULL)
+matr2list(mat, concSym = ".", silent = FALSE, debug = TRUE, callFrom = NULL)
 }
 \arguments{
 \item{mat}{(matrix) main input}
@@ -12,6 +12,8 @@ matr2list(mat, concSym = ".", silent = FALSE, callFrom = NULL)
 \item{concSym}{(character) symbol for concatenating: concatenation of named vectors in list names as colname(s)+'concSym'+rowname}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

@@ -11,7 +11,6 @@
 #' @param outFormat (character) may be 'matrix' for tabular output, 'all' as list with matrix and list of node-names
 #' @param remOrphans (logical) remove networks consisting only of 2 connected edges
 #' @param remRevPairs (logical) remove duplicate edges due to reverse massping (eg A - B and B - A); NOTE : use only when edges don't have orientation !   
-#' @param reverseCheck (logical) depreciated
 #' @param elemNa (character) used only for messages
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of message(s) produced
@@ -42,13 +41,14 @@
 #' 
 #' 
 #' @export
-filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=TRUE, outFormat="matrix", remOrphans=TRUE, remRevPairs=TRUE, reverseCheck=TRUE, elemNa="genes", silent=FALSE, callFrom=NULL, debug=FALSE) {
+filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=TRUE, outFormat="matrix", remOrphans=TRUE, remRevPairs=TRUE, elemNa="genes", silent=FALSE, callFrom=NULL, debug=FALSE) {
   ##
   fxNa <- .composeCallName(callFrom, newNa="filterNetw")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(any(sapply(c("mat","matr","matrix","all"), identical, outFormat))) {asMatrix <- TRUE} else {asMatrix <- FALSE}
   if(length(names(lst)) <1) stop("Invalid format of 'lst' : has NO names")
+
   ## check input list for duplicate queries
   lstNa <- names(lst)
   chDu <- duplicated(lstNa, fromLast=FALSE)
@@ -81,14 +81,14 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
     filtCol <- 2; message(fxNa, msg,"; setting to 2")} }
 
   ## check input format if filtering can be applied (reset 'limInt' to NULL if can't be used) 
-  if(length(limInt)==1 & is.numeric(limInt) & !any(is.na(limInt))) {           # valid threshod for filtering
+  if(length(limInt)==1 && is.numeric(limInt) && !any(is.na(limInt))) {           # valid threshod for filtering
     chDimQ <- all(sapply(chDim, function(x) x[2]) >1) 
     if(!chDimQ) { limInt <- sandwLim <- NULL
       if(!silent) message(fxNa,"Data have no second column with numeric data for filtering, ignoring 'limInt' and 'sandwLim'")     
   } } else limInt <- NULL 
   if(debug) message(fxNa,"fiNe3,  check input format if filtering can be applied")
   ## check if reverse-(direct)mapping has same score - only if .filterNetw is not launched (.filterNetw does this check, too)
-  if(remRevPairs & !asMatrix & all(chQ)) {    # run only if no conversion to matrix, otherwise do this check after lrbind()
+  if(remRevPairs && !asMatrix && all(chQ)) {    # run only if no conversion to matrix, otherwise do this check after lrbind()
     sepCha <- "__"
     chRe <- cbind(pri=rep(names(lst), sapply(lst,nrow)), sec=lrbind(lst) )
     chR2 <- paste(chRe[,2], chRe[,1], sep=sepCha) %in% paste(chRe[,1], chRe[,2], sep=sepCha) 
@@ -101,7 +101,7 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
         pasteC(sub(sepCha,"& ", names(tmp2)[utils::head(which(!tmp2))])),")")
   } }
   ## filter all for thresh limInt, subseq filter sandwLim, establish list of all connected nodes
-  if(all(chQ) & length(limInt)==1 & is.numeric(limInt) & !any(is.na(limInt))) {           # valid threshod for filtering
+  if(all(chQ) && length(limInt)==1 && is.numeric(limInt) && !any(is.na(limInt))) {           # valid threshod for filtering
     lst <- lapply(lst, function(x) x[which(if(!isFALSE(filterAsInf)) x[,filtCol] <= limInt else x[,filtCol] >= limInt),])
     chDi <- sapply(lst, function(x) length(dim(x)) <2)
     if(any(chDi)) lst[which(chDi)] <- lapply(lst[which(chDi)], function(x) matrix(x, nrow=1, dimnames=list(NULL,colNa)))  # reset to matrix-type if lost at filtering  
@@ -114,9 +114,9 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
     if(debug) { message(fxNa,"fiNe6,  check for possible sandwLim filter")}
   } else sandwLim <- NULL
   ## extract 2nd nodes, apply sandwLim (if applicable) 
-  lst <- lapply(lst, function(x) if(length(sandwLim) <1 | ncol(x) <2) x[which(x[,1] %in% useID$query),] else x[which(x[,1] %in% useID$query | 
+  lst <- lapply(lst, function(x) if(length(sandwLim) <1 || ncol(x) <2) x[which(x[,1] %in% useID$query),] else x[which(x[,1] %in% useID$query | 
       if(!isFALSE(filterAsInf)) x[,filtCol] <= sandwLim else x[,filtCol] >= sandwLim ),])
-  chDi <- sapply(lst, function(x) length(x) >0 & length(dim(x)) <2)    # in case of list of matrixes, some may become simple vectors due to indexing
+  chDi <- sapply(lst, function(x) length(x) >0 && length(dim(x)) <2)    # in case of list of matrixes, some may become simple vectors due to indexing
   if(any(chDi)) lst[which(chDi)] <- lapply(lst[which(chDi)], function(x) matrix(x, nrow=1, dimnames=list(NULL,colNa)))  # reset to matrix-type if lost at filtering  
       
   all2nd <- unlist(lapply(lst, function(x) x[,1]), use.names=FALSE)  # extr 2nd node IDs (after add'l filtering)       
@@ -155,7 +155,7 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
       lst <- cbind(lst, toSandw=if(is.data.frame(lst)) isSandw else as.numeric(isSandw))
       if(!isFALSE(remRevPairs)) {
         te1x <- apply(as.matrix(lst[,c(1,filtCol)]), 1, sort)      ## need to sort le/ri !!
-        lst <- lst[which(!duplicated(paste(te1x[1,],te1x[2,]), fromLast=FALSE)),]      # corrected for duplicate pairs
+        lst <- lst[which(!duplicated(paste(te1x[1,], te1x[2,]), fromLast=FALSE)),]      # corrected for duplicate pairs
       }
     } else {
       ## prepare output as list
@@ -167,7 +167,24 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
   }
   if(any(sapply(c("all"), identical, outFormat))) lst <- list(useID=useID, netw=lst) 
   lst }
-  
+
+ 
+#' Filter nodes & edges for extracting networks (main)
+#'  
+#' This function allows extracting and filtering network-data based on fixed threshold (\code{limInt}) and add sandwich-nodes (nodes inter-connecting initial nodes) out of node-based queries.
+#' 
+#' 
+#' @param lst (list, composed of multiple matrix or data.frames ) main input (each list-element should have same number of columns)
+#' @param remOrphans (logical) remove networks consisting only of 2 connected edges
+#' @param reverseCheck (logical) 
+#' @param filtCol (integer, length=1) which column of \code{lst} should be usd to filter using thresholds \code{limInt} and \code{sandwLim}
+#' @param silent (logical) suppress messages
+#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) display additional messages for debugging
+#' @return This function returns a matrix or data.frame
+#' @seealso \code{\link{filterNetw}} and other CRAN package dedeicated to networks
+#' @examples
+#' ab <- 1:10  
 #' @export  
 .filterNetw <- function(lst, remOrphans=TRUE, reverseCheck=TRUE, filtCol=2, callFrom=NULL, silent=FALSE, debug=FALSE) {
   ##
@@ -177,7 +194,7 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
   names(lstLe) <- names(lst)
   ## transform list to matrix/data.frame
   lst <- lrbind(lst, silent=TRUE)
-  if(any(dim(lst) <1) & length(dim(lst)) <2) stop("Invalid input format ! Bizzare, lrbind() did NOT manage to produce a matrix or data.frame")
+  if(any(dim(lst) <1) && length(dim(lst)) <2) stop("Invalid input format ! Bizzare, lrbind() did NOT manage to produce a matrix or data.frame")
   colnames(lst)[1] <- "Node2"
   if(ncol(lst) >1) colnames(lst)[2] <- "edgeScore" 
   
@@ -191,7 +208,7 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
     tmp <- paste(tmp[1,], tmp[2,], sep=sepCha)
     names(tmp) <- rownames(chRe)
     ## check for consistent score with reverse pairs
-    if(reverseCheck & ncol(lst) >2) {
+    if(reverseCheck && ncol(lst) >2) {
       tmp2 <- by(as.matrix(chRe), tmp, function(x) length(unique(x[,3])) ==1)
       if(any(!tmp2)) warning(fxNa,"Reverse value for ",sum(!tmp2)," pairs incoherent !! (",
         pasteC(sub(sepCha,"& ", names(tmp2)[utils::head(which(!tmp2))])),")")

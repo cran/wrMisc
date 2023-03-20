@@ -272,6 +272,17 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
         fxNa," cannot figure out how to convert '",colnames(out)[naOmit(useCol)[1]],"' to logical !") }}
   out }
   
+#' Convert/standardize names of 'query' to standard names from 'ref' 
+#'
+#' This function converts/standardizes names of 'query' to standard names from 'ref' (list of possible names (char vect) where names define standardized name).
+#' It takes 'query' as character vector and return character vecor (same length as 'query') with 'converted/corrected' names
+#' 
+#' @param query (matrix or data.frame, min 2 columns) main input
+#' @param ref (list) list of multiple possible names associated to given group, reference name for each group is name of list
+#' @param partMatch (logical) allows partial matching (ie name of 'ref' must be in head of 'query')
+#' @return This function returns a character vector
+#' @examples
+#' daPa <- matrix(c(1:5,8,2:6,9), ncol=2)
 #' @export
 .convertNa <- function(query,ref,partMatch=TRUE){
   ## convert/standardize names of 'query' to standard names from 'ref' (list of possible names (char vect) where names define standardized name)
@@ -284,7 +295,7 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
   } else {
     se <- sapply(ref,function(x) {unique(unlist(sapply(paste("^",x,sep=""),grep,query)))})
     out <- rep(NA,length(query))
-     #cat(" pos ",unlist(se),"  insert ",rep(names(se),sapply(se,length)),"\n")
+     ##cat(" pos ",unlist(se),"  insert ",rep(names(se),sapply(se,length)),"\n")
     out[unlist(se)] <- rep(names(se),sapply(se,length)) }  #unlist(se)  
   out }
                   

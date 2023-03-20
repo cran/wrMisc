@@ -10,6 +10,7 @@
 #' @param sep2 (character, length=1) optional separator used when \code{method="matched"} to concatenate all indexes of \code{y} for column \code{y.allInd}
 #' @param method (character) mode of operation: 'asIndex' to return index of y (those hwo have matches) with names of x (which x are the correpsonding match)
 #' @param silent (logical) suppress messages
+#' @param debug (logical) display additional messages for debugging
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #'
 #' @details
@@ -44,48 +45,53 @@
 #' (match4 <- multiMatch(aa, bb, method=c("byTag","filter")))   # match bb to aa
 #' 
 #' @export
-multiMatch <- function(x, y, sep="; ", sep2=NULL, method="byX", silent=FALSE, callFrom=NULL) {
+multiMatch <- function(x, y, sep="; ", sep2=NULL, method="byX", silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## for finding common in multiple to multiple matching (eg c("aa; bb", "cc")  vs c("bb; ab","dd"))
   ## tells which x (names of output) was found matching (at least by 1 subunit) to which (part of) y, names of y tell which x (index)
   ## note: multiple matches are ignored (only 1st match reported)
   fxNa <- .composeCallName(callFrom, newNa="multiMatch")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   doMa <- TRUE
-  if(length(x) <1) {doMa <- FALSE; if(!silent) message(fxNa,"argument 'x' is empty, nothing to do !")}
-  if(length(y) <1) {doMa <- FALSE; if(!silent) message(fxNa,"argument 'y' is empty, nothing to do !")}
+  if(length(x) <1) {doMa <- FALSE; if(!silent) message(fxNa,"Argument 'x' is empty, nothing to do !")}
+  if(length(y) <1) {doMa <- FALSE; if(!silent) message(fxNa,"Argument 'y' is empty, nothing to do !")}
   out <- outF <- NULL
   if(doMa) {
     if(is.list(x)) {xL <- x; x <- sapply(x, paste, collapse=sep)} else xL <- strsplit(x, sep)
     if(is.list(y)) {yL <- y; y <- sapply(y, paste, collapse=sep)} else yL <- strsplit(y, sep)
     names(xL) <- 1:length(x)
     yV <- unlist(yL)
-    names(yV) <- rep(1:length(y), sapply(yL,length))
+    names(yV) <- rep(1:length(y), sapply(yL, length))
     if(length(sep2) !=1) sep2 <- sep
+    if(debug) {message(fxNa," doMa=",doMa,"   mM1")} 
     
     ## 'asIndex' .. return list (length matches x) where values indicate index of which y is matched by which elment of x (after split)
     ## check each x; determine  that in 3rd x 'aa' matches to 1st of 1st y; in 4th x 'aa' 
-    out <- lapply(xL, function(z) {w <- match(yV,z); v <- !is.na(w); if(any(!v)) { v <- yV[which(v)]; u <- as.integer(names(v)); names(u) <- v;
+    out <- lapply(xL, function(z) {w <- match(yV, z); v <- !is.na(w); if(any(!v)) { v <- yV[which(v)]; u <- as.integer(names(v)); names(u) <- v;
       chDu <- duplicated(paste(names(u),u)); if(any(chDu)) u <- u[which(!chDu)]; u } else NULL })
     
     ## filter1 : filter to most frequent (or first of same freq)
-    if(length(grep("^filter",method)) >0 & !"byTag" %in% method) out <- outF <- lapply(out, function(z) if(length(z) >1) z[which(z ==names(which.max(table(z))) )] else z)    
+    if(length(grep("^filter",method)) >0 && !"byTag" %in% method) out <- outF <- lapply(out, function(z) if(length(z) >1) z[which(z ==names(which.max(table(z))) )] else z)    
+    if(debug) {message(fxNa," method=",method,"   mM2")} 
 
     ## by isolated tag/ID
-    if("byTag" %in% method) { nLi <- sapply(out,length); tmp <- rep(nLi,nLi)
+    if("byTag" %in% method) { nLi <- sapply(out, length); tmp <- rep(nLi,nLi)
       mat <- cbind(x.Ind=as.integer(names(tmp)), yInd=unlist(out))
-      rownames(mat) <- as.character(unlist(sapply(out,names)))
+      rownames(mat) <- as.character(unlist(sapply(out, names)))
       chNa <- is.na(mat[,2])
       if(any(chNa)) mat <- mat[which(!chNa),]
       mat <- mat[order(rownames(mat), mat[,1]),]
-      if(length(grep("^filter",method)) >0) {
+      if(length(grep("^filter", method)) >0) {
         xV <- unlist(xL)
-        tmX <- tapply(mat[,1], rownames(mat), function(z) c(IndBest=z[which.max(z)], n=length(unique(z)), allInd=paste(unique(z),collapse=sep2)))
-        tmY <- tapply(mat[,2], rownames(mat), function(z) c(IndBest=z[which.max(z)], n=length(unique(z)), allInd=paste(unique(z),collapse=sep2)))
+        tmX <- tapply(mat[,1], rownames(mat), function(z) c(IndBest=z[which.max(z)], n=length(unique(z)), allInd=paste(unique(z), collapse=sep2)))
+        tmY <- tapply(mat[,2], rownames(mat), function(z) c(IndBest=z[which.max(z)], n=length(unique(z)), allInd=paste(unique(z), collapse=sep2)))
         tmp <- cbind(matrix(unlist(tmX), nrow=length(tmX), byrow=TRUE), matrix(unlist(tmY), nrow=length(tmY), byrow=TRUE))
-        dimnames(tmp) <- list(sort(unique(rownames(mat))), paste(rep(c("x","y"),each=3),rep(c("IndBest","n","AllInd"),2),sep="."))
+        dimnames(tmp) <- list(sort(unique(rownames(mat))), paste(rep(c("x","y"), each=3),rep(c("IndBest","n","AllInd"),2), sep="."))
         mat <- data.frame(x.IndBest=as.integer(tmp[,1]), x.n=as.integer(tmp[,2]), x.AllInd=tmp[,3], 
           y.IndBest=as.integer(tmp[,4]), x.n=as.integer(tmp[,5]), y.AllInd=tmp[,6])
       }
       out <- mat }
+    if(debug) {message(fxNa,"  mM3")} 
     if("byX" %in% method) { 
       df1 <- data.frame(x=x,x.Ind=1:length(x), TagBest=NA, y.IndBest=NA, y.IndAll=NA, y.Match=NA, y.Adj=NA)
       nLi <- sapply(out,length)
@@ -99,7 +105,7 @@ multiMatch <- function(x, y, sep="; ", sep2=NULL, method="byX", silent=FALSE, ca
       df1[which(nLi >0),"y.Adj"] <- df1[which(nLi >0),"x"]
       if(length(grep("^filter", method)) >0) df1 <- df1[which(!is.na(df1[,"TagBest"])),]      
       out <- df1 }
-    if(is.list(out) & length(grep("^filter", method)) >0) out <- out[which(sapply(out,length) >0)]  
+    if(is.list(out) && length(grep("^filter", method)) >0) out <- out[which(sapply(out,length) >0)]  
   }      
   out }   
      

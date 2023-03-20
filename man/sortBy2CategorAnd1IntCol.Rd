@@ -11,6 +11,7 @@ sortBy2CategorAnd1IntCol(
   findNeighb = TRUE,
   decreasing = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -27,13 +28,15 @@ sortBy2CategorAnd1IntCol(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-sorted matrix (same dimensions as 'mat')
+This function returns a sorted matrix (same dimensions as 'mat')
 }
 \description{
-\code{sortBy2CategorAnd1IntCol} sorts matrix 'mat' subsequently by categorical and numerical columns of 'mat',
+This function sorts matrix 'mat' subsequently by categorical and numerical columns of 'mat',
  ie lines with identical values for categor are sorted by numeric value.
 }
 \examples{

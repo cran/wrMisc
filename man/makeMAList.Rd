@@ -10,6 +10,7 @@ makeMAList(
   useF = c("R", "G"),
   isLog = TRUE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -24,7 +25,9 @@ makeMAList(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of messages produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 limma-type "MAList" containing M and A values

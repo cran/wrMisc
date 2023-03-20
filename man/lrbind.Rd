@@ -4,14 +4,16 @@
 \alias{lrbind}
 \title{rbind on lists}
 \usage{
-lrbind(lst, silent = FALSE, callFrom = NULL)
+lrbind(lst, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{lst}{(list, composed of multiple matrix or data.frames or simple vectors) main input (each list-element should have same number of columns, numeric vectors will be converted to number of columns of other columns/elements)}
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns (depending on input) a matrix or data.frame

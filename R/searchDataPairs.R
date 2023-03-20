@@ -41,6 +41,6 @@ searchDataPairs <- function(dat, disThr=0.01, byColumn=TRUE, normRange=TRUE, alt
     data.frame(samp1=rownames(dat)[chk[,2]], samp2=rownames(dat)[chk[,1]],
     pcIdent=round(100*apply(chk, 1, function(x) sum(dat[x[1],]==dat[x[2],],na.rm=TRUE)/ncol(dat)),1),
     relDist=signif(as.numeric(di)[which(di < disThr)],4))}
-  if(nrow(chN) >0 & realDupsOnly) chN <- chN[chN$pcIdent ==100,]
+  if(nrow(chN) >0 && realDupsOnly) chN <- chN[chN$pcIdent ==100,]
   chN }
     

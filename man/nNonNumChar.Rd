@@ -10,14 +10,14 @@ nNonNumChar(txt)
 \item{txt}{character vector to be treated}
 }
 \value{
-numeric vector with  numer of non-numeric characters (ie not '.' or 0-9))
+This function returns a numeric vector with  numer of non-numeric characters (ie not '.' or 0-9))
 }
 \description{
 \code{nNonNumChar} counts number of non-numeric characters.
 Made for positive non-scientific values (eg won't count neg-sign, neither Euro comma ',')
 }
 \examples{
-nNonNumChar("a1b "); sapply(c("aa","12ab","a1b2","12","0.5"),nNonNumChar)
+nNonNumChar("a1b "); sapply(c("aa","12ab","a1b2","12","0.5"), nNonNumChar)
 }
 \seealso{
 \code{\link[base]{nchar}}

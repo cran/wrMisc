@@ -4,17 +4,21 @@
 \alias{cutArrayInCluLike}
 \title{Cut 3-dim array in list of matrixes (or arrays) similar to organizing into clusters}
 \usage{
-cutArrayInCluLike(dat, cluOrg, callFrom = NULL)
+cutArrayInCluLike(dat, cluOrg, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{array (3 dim)}
 
 \item{cluOrg}{(factor) organization of lines to clusters}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-list of matrixes (or arrays)
+This function retruns a list of matrixes (or arrays)
 }
 \description{
 \code{cutArrayInCluLike} cuts 'dat' (matrix,data.frame or 3-dim array) in list (of appended lines) according to 'cluOrg', 

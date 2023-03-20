@@ -10,16 +10,27 @@
 #' set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
 #' head(rowGrpSds(dat1, gr=gl(4,3,labels=LETTERS[1:4])[2:11]))
 #' @export
-rowGrpSds <- function(x,grp){
+rowGrpSds <- function(x, grp){
   ## return Sd for within-row subgroup of data 'x' (matrix or data.frame)
-  if(is.null(ncol(x))) stop("data should be matrix or data.frame with multiple columns !") else {
-    if(ncol(x) < 2) stop("data should be matrix or data.frame with at least 2 columns !")}
-  if(length(grp) !=ncol(x)) stop("length of (factor) 'grp' and number of cols in 'x' don't match !")
-  .rowGrpSds(x,grp) }
+  if(is.null(ncol(x))) stop("Data should be matrix or data.frame with multiple columns !") else {
+    if(ncol(x) < 2) stop("Data should be matrix or data.frame with at least 2 columns !")}
+  if(length(grp) != ncol(x)) stop("Length of (factor) 'grp' and number of cols in 'x' don't match !")
+  .rowGrpSds(x, grp) }
 
+#' row group sd (main)
+#'
+#' This function calculates sd for matrix with multiple groups of data, ie one sd for each group of data. 
+#' 
+#' @param x numeric matrix where relplicates are organized into separate columns
+#' @param grp (factor) defining which columns should be grouped (considered as replicates)
+#' @return This function returns a matrix of sd values per row and group of replicates
+#' @seealso \code{\link{rowGrpCV}}, \code{\link{rowCVs}}, \code{\link{arrayCV}}, \code{\link{replPlateCV}}
+#' @examples
+#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
+#' grp1 <- gl(4,3,labels=LETTERS[1:4])[2:11]
+#' head(.rowGrpSds(dat1, grp1))
 #' @export
-.rowGrpSds <- function(x,grp){
-  ##
+.rowGrpSds <- function(x, grp){
   ## return (entire col of) NA if only single col for spec group
   grpM <- unique(naOmit(as.character(grp)))
   out <- matrix(nrow=nrow(x), ncol=length(grpM), dimnames=list(rownames(x),grpM))

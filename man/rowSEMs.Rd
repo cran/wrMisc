@@ -10,10 +10,10 @@ rowSEMs(dat)
 \item{dat}{matrix or data.frame}
 }
 \value{
-numeric vector with SEM values
+This function returns a numeric vector with SEM values
 }
 \description{
-\code{rowSEMs} speed optimized SEM (standard error of the mean) for each row.
+This function speed optimized SEM (standard error of the mean) for each row.
 The function takes a matrix or data.frame and treats each row as set of data for SEM; NAs are ignored from data.
 Note: NaN instances will be transformed to NA
 }

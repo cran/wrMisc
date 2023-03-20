@@ -4,7 +4,13 @@
 \alias{gitDataUrl}
 \title{Convert ulr-name for reading in raw-mode}
 \usage{
-gitDataUrl(urlName, replTxt = NULL, silent = FALSE, callFrom = NULL)
+gitDataUrl(
+  urlName,
+  replTxt = NULL,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{urlName}{(charachter) main url-address}
@@ -14,7 +20,9 @@ the 1st colimn entries will be used as 'search-for' and the 2nd as 'replace by' 
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 corrected urlName

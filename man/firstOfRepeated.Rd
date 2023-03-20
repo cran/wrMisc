@@ -4,10 +4,14 @@
 \alias{firstOfRepeated}
 \title{Find first of repeated elements}
 \usage{
-firstOfRepeated(x, callFrom = NULL)
+firstOfRepeated(x, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{(charcter or numeric) main input}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }

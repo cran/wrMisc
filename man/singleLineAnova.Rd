@@ -4,7 +4,15 @@
 \alias{singleLineAnova}
 \title{2-factorial Anova on single line of data}
 \usage{
-singleLineAnova(dat, fac1, fac2, inclInteraction = TRUE)
+singleLineAnova(
+  dat,
+  fac1,
+  fac2,
+  inclInteraction = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{numeric vector}
@@ -14,17 +22,23 @@ singleLineAnova(dat, fac1, fac2, inclInteraction = TRUE)
 \item{fac2}{(character or factor) vector describing grouping elements of dat for second factor, must be of same langth as fac1}
 
 \item{inclInteraction}{(logical) decide if factor-interactions (eg synergy) should be included to model}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-(uncorrected) p for factor 'Pr(>F)' (see \code{\link[stats]{aov}})
+This function returns the (uncorrected) p for factor 'Pr(>F)' (see \code{\link[stats]{aov}})
 }
 \description{
-\code{singleLineAnova} runs 2-factorial Anova on a single line of data (using \code{\link[stats]{aov}} from package \code{stats}) 
+This function runs 2-factorial Anova on a single line of data (using \code{\link[stats]{aov}} from package \code{stats}) 
 using a model with two factors (without factor-interaction) and extracts the correpsonding p-value.
 }
 \examples{
 set.seed(2012); dat <- round(runif(8),1)
-singleLineAnova(dat,gl(2,4),rep(1:2,4))
+singleLineAnova(dat, gl(2,4),rep(1:2,4))
 }
 \seealso{
 \code{\link[stats]{aov}}, \code{\link[stats]{anova}}; for repeated tests using the  package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} including \code{\link[limma]{lmFit}} and \code{eBayes} see \code{\link{test2factLimma}}

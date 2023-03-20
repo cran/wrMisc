@@ -10,6 +10,7 @@ ratioAllComb(
   maxLim = 10000,
   isLog = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -22,12 +23,11 @@ ratioAllComb(
 
 \item{isLog}{(logical) adjust ratio calculation to log-data}
 
-\item{silent}{(logical) suppress (less important) messages}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
-}
-\value{
-This function returns a (numeric) vector with all ratios
 }
 \description{
 This function calculates all possible pairwise ratios between all individual calues of x and y, or samples up to a maximum number of combinations.

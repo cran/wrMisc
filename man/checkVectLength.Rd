@@ -9,6 +9,7 @@ checkVectLength(
   expeL = 1,
   stopOnProblem = FALSE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -19,16 +20,18 @@ checkVectLength(
 
 \item{stopOnProblem}{(logical) continue on problems with message or stop (as error message)}
 
-\item{silent}{(logical) suppress messages if \code{TRUE}}
+\item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-\code{NULL} (produces only optional message if length is OK or error-message if length is not OK)
+This function returns \code{NULL}; it produces either error-message if length is not OK or optional message if length is OK
 }
 \description{
 \code{checkVectLength} checks argument 'x' for expected length 'expeL' and return either message or error when expectation not met. 
-Used for parameter ('sanity') checking in other user front-end functions.
+May be used for parameter ('sanity') checking in other user front-end functions.
 }
 \examples{
 aa <- 1:5; checkVectLength(aa,exp=3)

@@ -13,6 +13,7 @@ filtSizeUniq(
   byProt = TRUE,
   inclEmpty = TRUE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -33,7 +34,9 @@ filtSizeUniq(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 list of filtered input
