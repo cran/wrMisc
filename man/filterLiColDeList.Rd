@@ -10,13 +10,14 @@ filterLiColDeList(
   useCols = NULL,
   ref = 1,
   silent = FALSE,
-  callFrom = NULL
+  callFrom = NULL,
+  debug = FALSE
 )
 }
 \arguments{
 \item{lst}{(list or S3 object) main input}
 
-\item{useLines}{(integer, logcial or character) vector to assign lines to keep when filtering along lines; 
+\item{useLines}{(integer, logcial or character) vector to assign lines to keep when filtering along lines;
 set to \code{NULL} for no filtering; if '\code{allNA}' all lines composed uniquely of \code{NA} values will be removed.}
 
 \item{useCols}{(integer, logcial or character) vector for filtering columns; set to \code{NULL} for no filtering; if '\code{allNA}' all columns uniquely \code{NA} values will be removed}
@@ -25,10 +26,12 @@ set to \code{NULL} for no filtering; if '\code{allNA}' all lines composed unique
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
-this function returns the correct(ed) input (object of same class, same length)
+This function returns the correct(ed) input (object of same class, of same length)
 }
 \description{
 Filter all elements of list (or S3-object) according to criteria designed to one selected reference-element of the list.
@@ -39,12 +42,12 @@ If the reference element has same number of rows and columns simple (1-dimension
 This function is used eg in package wrProteo to simultaneaously filter raw and transformed data.
 }
 \examples{
-lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34, 
+lst1 <- list(m1=matrix(11:18,ncol=2), m2=matrix(21:30,ncol=2), indR=31:34,
   m3=matrix(c(21:23,NA,25:27,NA),ncol=2))
 ## here $m2 has more lines than $m1, and thus will be ignored when ref=1
 filterLiColDeList(lst1, useLines=2:3)
 filterLiColDeList(lst1, useLines="allNA", ref=4)
- 
+
 }
 \seealso{
 \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}}

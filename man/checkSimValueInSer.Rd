@@ -4,25 +4,40 @@
 \alias{checkSimValueInSer}
 \title{Check for similar values in series}
 \usage{
-checkSimValueInSer(x, ppm = 5, sortX = TRUE)
+checkSimValueInSer(
+  x,
+  ppm = 5,
+  sortX = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{numeric vector}
 
-\item{ppm}{(numeric) ppm-range for considering as similar}
+\item{ppm}{(numeric, length=1) ppm-range for considering as similar}
 
 \item{sortX}{(logical) allows speeding up function when set to FALSE, for large data that are already sorted}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-logical vector : FALSE for each entry of 'x' if value inside of ppm range to neighbour
+This function returns a logical vector : \code{TRUE} for each entry of \code{x} where at least one neighbour is inside of ppm distance/range
 }
 \description{
-\code{checkSimValueInSer} checks all values of 'x' for similar values outside/within (relative) range of 'ppm' (ie ambiguous within given range).
-Return logical vector : FALSE for each entry of 'x' if value inside of ppm range to neighbour
+This function checks all values of 'x' for similar neighbour values within (relative) range of 'ppm' (ie parts per milion as measure of distance).
+By default values will be sorted internally, so if a given value of \code{x} has anywhere in  \code{x}  another value close enough, this will be detected.
+However, if \code{sortX=FALSE} only the values next to left and right will be considered.
+Return logical vector : FALSE for each entry of 'x' if value inside of ppm range to neighbour (of sorted values)
 }
 \examples{
 va1 <- c(4:7,7,7,7,7,8:10)+(1:11)/28600; checkSimValueInSer(va1)
-cbind(va=va1,simil=checkSimValueInSer(va1))
+data.frame(va=sort(va1),simil=checkSimValueInSer(va1))
 }
 \seealso{
 similar with more options \code{\link{withinRefRange}}

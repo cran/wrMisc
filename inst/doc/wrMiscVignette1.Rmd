@@ -15,7 +15,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ## Introduction
+
 This package contains a collection of various (low-level) tools which may be of general interest. 
 These functions were accumulated over a number of years of data-wrangling when treating high-throughput data from biomedical applications.
 Besides, these functions are further used/integrated in more specialized functions dedicated to specific applications in the packages [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag). 
@@ -89,15 +91,17 @@ packageVersion("wrMisc")
 ```
 
 
+
 ## Speed Optimized Functions In The Package wrMisc
 
 In high-throughput experiments in biology (like transcriptomics, proteomics etc...) many different features get measured a number if times (different samples like patients or evolution of a disease). The resulting data typically contain many (independent) rows (eg >1000 different genes or proteins who's abundance was measured) and much fewer columns that may get further organized in groups of replicates. 
 As R is a versatile language, multiple options exist for assessing the global characteristics of such data, some are more efficient on a computational point of view.
 In order to allow fast treatment of very large data-sets some tools have been re-designed for optimal performance.
 
+
 ### Assessing Basic Information About Variability (for matrix)
 
-Many mesurement techniques applied in high throughput manner suffer from precision.
+Many measurement techniques applied in high throughput manner suffer from precision.
 This means, the same measurements taken twice in a row (ie repeated on the same subject) will very likely not give an identical result. 
 For this reason it is common practice to make replicate measurements to i) estimate mean (ie representative) values and ii) asses the factors contributing to the variablity observed.
 Briefly, technical replicates represent the case where multiple read-outs of the very same sample are generated and the resulting variability is associated to technical issues during the process of taking measures. Biological replicates represent independant samples and reflect therefore the varibility a given parameter may have in a certain population of individuals.
@@ -450,7 +454,7 @@ cutArrayInCluLike(arr1, cluOrg=c(2,1,2,1))
 Let's cut by filtering along the 3rd dimension for all lines where column 'col2' is >7, and then display only the content of columns 'col1' and 'col2' (using `filt3dimArr()`):
 
 ```{r filt3dimArr, echo=TRUE}
-filt3dimArr(arr1,displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=">")
+filt3dimArr(arr1, displCrit=c("col1","col2"), filtCrit="col2", filtVal=7, filtTy=">")
 ```
 
 
@@ -892,10 +896,13 @@ and thus may be in a pragmatic view get considered and treated as 'about the sam
 The simplest approach would be to round values and then look for identical values. 
 The functions presented here (like `checkSimValueInSer()`) offer this type of search in a convenient way.
 
+Of course the user must define a threshold for how similar may retained as positive (in the the logical vector returned).
+With the function _checkSimValueInSer()_ this threshod must be given as [ppm](https://simple.wikipedia.org/wiki/Parts_per_million) (parts per million).
+
 ```{r checkSimValueInSer, echo=TRUE}
-va1 <- c(4:7,7,7,7,7,8:10) +(1:11)/28600
-checkSimValueInSer(va1)
-cbind(va=va1, simil=checkSimValueInSer(va1))
+va1 <- c(4:7,7,7,7,7,8:10) + (1:11)/28600
+checkSimValueInSer(va1, ppm=5)
+data.frame(va=sort(va1), simil=checkSimValueInSer(va1))
 ```
 
 
@@ -1127,6 +1134,68 @@ unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 
 
 
+### Adjust Decimal Prefixes And Extact Numeric+Unit Part
+
+The function `adjustUnitPrefix()` provides help extracting the numeric part of character vectors and allows adjusting to a single million-unit type.
+This can be used to convert a vector of mixed prefixes like  'z','a','f','p','n','u' and 'm' (note: the 'u' is used for 'micro').
+The output is a numeric vector with numeric+unit as names.
+
+```{r adjustUnitPrefix1, echo=TRUE}
+adjustUnitPrefix(c("10.psec","2 fsec"), unit="sec")
+```
+In the example below you can see that additional text (to the right of the digit+unit) get's stripped off.
+```{r adjustUnitPrefix2, echo=TRUE}
+adjustUnitPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
+```
+
+
+
+### Merging Multiple Named Vectors To Matrix
+
+The function `mergeVectors()` allows merging for multiple named vectors (each element needs to be named).
+Basically, all elements carrying the same name across different input-vectors will be aligned in the same column of the output (input-vectors appear as lines).
+Different to _merge()_ which allows merging only 2 data.frames, here multiple vectors may be merge at once.
+
+```{r mergeVectors1, echo=TRUE}
+x1 <- c(a=1, b=11, c=21)
+x2 <- c(b=12, c=22, a=2)
+x3 <- c(a=3, d=43)
+mergeVectors(vect1=x1, vect2=x2, vect3=x3)
+```
+
+```{r mergeVectors2, echo=TRUE}
+mergeVectors(vect1=x1, vect2=x2, vect3=x3, inclInfo=TRUE)   # return list with additional info
+```
+
+In the example below we'll add another vector _without_ named elements.
+As you can see a message tells the this vector was been ignored/omitted.
+
+```{r mergeVectors3, echo=TRUE}
+x4 <- 41:44            # no names - not conform for merging and will be ignored
+mergeVectors(x1, x2, x3, x4)
+```
+
+
+
+### Match All Lines of Matrix To Reference Note
+
+This function allows adjusting the order of lines of a matrix \code{mat} to a reference character-vector \code{ref},
+even when initial direct matching of character-strings using \code{match} is not possible/successful.
+In this case, various variants of using \code{grep} will be used to see if unambiguous matching is possible of characteristic parts of the text.
+All columns of \code{mat} will be tested an the column giving the bes resuts will be used.
+
+```{r matchMatrixLinesToRef1, echo=TRUE}
+## Note : columns b and e allow non-ambigous match, not all elements of e are present in a
+mat0 <- cbind(a=c("mvvk","axxd","bxxd","vv"),b=c("iwwy","iyyu","kvvh","gxx"), c=rep(9,4),
+  d=c("hgf","hgf","vxc","nvnn"), e=c("_vv_","_ww_","_xx_","_yy_"))
+matchMatrixLinesToRef(mat0[,1:4], ref=mat0[,5])
+matchMatrixLinesToRef(mat0[,1:4], ref=mat0[1:3,5], inclInfo=TRUE)
+
+matchMatrixLinesToRef(mat0[,-2], ref=mat0[,2], inclInfo=TRUE)   # needs 'reverse grep'
+```
+
+
+
 ### Order Matrix According To Reference
 
 The function `orderMatrToRef()` has the aim of facilitating brining a matrix of text/data in the order of a given reference (character vector).
@@ -1143,6 +1212,31 @@ orderMatrToRef(mat2, paste0(letters[c(3,4,5,3,4)],c(1,3,5,1,4)))
 mat3 <- matrix(paste0(letters[rep(c(1,1,2,2,3),3) +rep(0:2,each=5)], c(rep(1:5,2),1,1,3,3,5 )), ncol=3)
 orderMatrToRef(mat3, paste0("__",letters[c(3,4,5,3,4)],c(1,3,5,1,3)))
 ```
+
+
+### Value Matching With Option For Concatenated Terms
+
+Sometimes we need to match terms in concatenated tables.
+The function `concatMatch()` was designed to behave similar to _match()_  but also allowing to serach among concatenated terms and some further text-simplifications.
+
+```{r concatMatch1, echo=TRUE}
+## simple example without concatenations or text-extensions
+x0 <- c("ZZ","YY","AA","BB","DD","CC","D")
+tab0 <- c("AA","BB,E","CC","FF,U")
+match(x0, tab0)
+concatMatch(x0, tab0)         # same result as match(), but with names
+
+## now let's construct somthing similar but with concatenations and text-extensions
+x1 <- c("ZZ","YY","AA","BB-2","DD","CCdef","Dxy")            # modif of single ID (no concat)
+tab1 <- c("AA","WW,Vde,BB-5,E","CCab","FF,Uef")
+match(x1, tab1)                   # match finds only the 'simplest' case (ie "AA")
+concatMatch(x1, tab1)             # finds all hits as in example above
+
+x2 <- c("ZZ,Z","YY,Y","AA,Z,Y","BB-2","DD","X,CCdef","Dxy")  # conatenated in 'x'
+tab2 <- c("AA","WW,Vde,BB-5,E","CCab,WW","FF,UU")
+concatMatch(x2, tab2)               # concatenation in both 'x' and 'table'
+```
+
 
 
 ### Check for (Strict) Order
@@ -1292,7 +1386,7 @@ te4[,,1]           # the counts part only
 
 ## Import/Export
 
-### Batch-Reading Of Csv Files
+### Batch-Reading Of CSV Files
 
 Some software do produce a series of csv files, where a large experiment/data-set get recorded as multiple files.
 The function `readCsvBatch()` was designed for reading multiple csv files of exactly the same layout and to join their content.
@@ -1333,10 +1427,10 @@ str(allTxt)
 
 Sometimes were may get confronted with data which look like 'incomplete' tables. 
 In such cases some rows do not contain as many elements/columns as other columns. 
-Files with this type of data pose a problem for `read.table()` (from the _utils_ package).
+Files with this type of data may pose a problem for `read.table()` (from the _utils_ package).
 In some cases using the argument _fill=TRUE_ may allow to overcome this problem.
-The function _readVarColumns()_ (from this package) was designed to provide better help in such cases.
-Basically each line is read and parsed separately, the user should check/decide on the separator to be used.
+The function _readVarColumns()_ (from this package) was designed to provide better help in such odd cases.
+Basically, each line is read and parsed separately, the user should check/decide on the separator to be used.
 
 The example below lists people's names in different locations, some locations have more persons ... 
 Sometimes exporting such data will generate shorter lines in locations with fewer elements (here 'London') and no additional separators will get added (to mark all empty fields) towards the end.
@@ -1348,6 +1442,9 @@ fiNa <- "Names1.tsv"
 datAll <- readVarColumns(fiName=file.path(path1,fiNa), sep="\t")
 str(datAll)
 ```
+
+In this example _readVarColumns()_ would give a warning (and column-names are not recognized), if you use the argument _header=TRUE_ you'll get an error and nothing gets read.
+
 
 
 ### Converting Url For Reading Tabulated Data From GitHub
@@ -1367,6 +1464,8 @@ The example below shows how this is used in the function _readSampleMetaData()_ 
 dataPxd <- try(read.delim(gitDataUrl(url1), sep='\t', header=TRUE))
 str(dataPxd)
 ```
+
+---
 
 
 
@@ -1418,7 +1517,7 @@ All decisions of which approach to use should be data-driven.
 
 #### Filter For Each Group Of Columns For Sufficient Data As Non-NA
 
-filter for each group of columns for sufficient data as non-NA
+Filter for each group of columns for sufficient data as non-NA
 The function `presenceGrpFilt()` allows to
 
 ```{r presenceGrpFilt1, echo=TRUE}

@@ -21,7 +21,8 @@ partUnlist <- function(lst, sep="_", silent=FALSE, debug=FALSE, callFrom=NULL) {
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   notL <- !sapply(lst, inherits, "list")  
-  if(all(notL)) { if(!silent) message(fxNa,"input is not list of lists, nothing to do")
+  if(debug) message(fxNa," pU1")
+  if(all(notL)) { if(!silent) message(fxNa,"Input is not list of lists, nothing to do")
     return(lst)
   } else {
     ## lst is list of list(s)

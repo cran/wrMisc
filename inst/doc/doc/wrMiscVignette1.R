@@ -451,9 +451,9 @@ replicateStructure(bb, method="combAll")
 replicateStructure(bb, method="combNonOrth")
 
 ## ----checkSimValueInSer, echo=TRUE--------------------------------------------
-va1 <- c(4:7,7,7,7,7,8:10) + (1:11)/28600
-checkSimValueInSer(va1, ppm=5)
-data.frame(va=sort(va1), simil=checkSimValueInSer(va1))
+va1 <- c(4:7,7,7,7,7,8:10) +(1:11)/28600
+checkSimValueInSer(va1)
+cbind(va=va1, simil=checkSimValueInSer(va1))
 
 ## ----findCloseMatch1, echo=TRUE-----------------------------------------------
 aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.1,5)
@@ -558,11 +558,9 @@ unifyEnumerator(c("ab-1","ab-2","c-3"))
 unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
 unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 
-## ----adjustUnitPrefix1, echo=TRUE---------------------------------------------
-adjustUnitPrefix(c("10.psec","2 fsec"), unit="sec")
-
-## ----adjustUnitPrefix2, echo=TRUE---------------------------------------------
-adjustUnitPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
+## ----adjustDecPrefix1, echo=TRUE----------------------------------------------
+adjustDecPrefix(c("10.psec","2 fsec"), unit="sec")
+adjustDecPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
 
 ## ----mergeVectors1, echo=TRUE-------------------------------------------------
 x1 <- c(a=1, b=11, c=21)
@@ -570,11 +568,16 @@ x2 <- c(b=12, c=22, a=2)
 x3 <- c(a=3, d=43)
 mergeVectors(vect1=x1, vect2=x2, vect3=x3)
 
-## ----mergeVectors2, echo=TRUE-------------------------------------------------
 mergeVectors(vect1=x1, vect2=x2, vect3=x3, inclInfo=TRUE)   # return list with additional info
 
+## ----mergeVectors2, echo=TRUE-------------------------------------------------
+x11 <- c(Noa=1, Numberb=11, Samplec=21)
+x12 <- c(Nob=12, Numberc=22, Samplea=2)
+x13 <- c(Numbera=3, d=43)
+mergeVectors(vect1=x11, vect2=x12, vect3=x13)
+
 ## ----mergeVectors3, echo=TRUE-------------------------------------------------
-x4 <- 41:44            # no names - not conform for merging and will be ignored
+x4 <- 41:44     # no names - not conform for merging
 mergeVectors(x1, x2, x3, x4)
 
 ## ----matchMatrixLinesToRef1, echo=TRUE----------------------------------------

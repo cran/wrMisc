@@ -8,8 +8,9 @@ mergeVectors(
   ...,
   namePrefix = "x.",
   NAto0 = FALSE,
-  callFrom = NULL,
-  silent = FALSE
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
 )
 }
 \arguments{
@@ -19,16 +20,18 @@ mergeVectors(
 
 \item{NAto0}{(logical) optional replacemet of \code{NA}s by 0}
 
-\item{callFrom}{(character) allow easier tracking of message produced}
+\item{silent}{(logical) suppress messages}
 
-\item{silent}{(logical) suppres messages}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix of merged values
+This function returns a matrix of merged values
 }
 \description{
-This function allows merging for multiple simple named vectors (each element needs to be named).
-Basically, all elements carrying the same name across different input-vectors will be ailgned in the same coumn of the output (input-vectors appear as lines).
+This function allows merging for multiple named vectors (each element needs to be named).
+Basically, all elements carrying the same name across different input-vectors will be aligned in the same column of the output (input-vectors appear as lines).
 If vectors are not given using a name (see first example below), they will be names 'x.1' etc (see argument \code{namePrefix}).
 }
 \details{

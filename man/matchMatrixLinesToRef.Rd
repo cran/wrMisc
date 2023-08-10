@@ -15,7 +15,7 @@ matchMatrixLinesToRef(
 )
 }
 \arguments{
-\item{mat}{(matrix or data.frame) main input, all columns of of \code{mat} will be tested for (partial) matching of \code{ref}}
+\item{mat}{(matrix or data.frame) main input, all columns of \code{mat} will be tested for (partial) matching of \code{ref}}
 
 \item{ref}{(character, length must match ) reference for trying to match each of the columns of  \code{mat}}
 

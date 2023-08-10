@@ -896,13 +896,10 @@ and thus may be in a pragmatic view get considered and treated as 'about the sam
 The simplest approach would be to round values and then look for identical values. 
 The functions presented here (like `checkSimValueInSer()`) offer this type of search in a convenient way.
 
-Of course the user must define a threshold for how similar may retained as positive (in the the logical vector returned).
-With the function _checkSimValueInSer()_ this threshod must be given as [ppm](https://simple.wikipedia.org/wiki/Parts_per_million) (parts per million).
-
 ```{r checkSimValueInSer, echo=TRUE}
-va1 <- c(4:7,7,7,7,7,8:10) + (1:11)/28600
-checkSimValueInSer(va1, ppm=5)
-data.frame(va=sort(va1), simil=checkSimValueInSer(va1))
+va1 <- c(4:7,7,7,7,7,8:10) +(1:11)/28600
+checkSimValueInSer(va1)
+cbind(va=va1, simil=checkSimValueInSer(va1))
 ```
 
 
@@ -1136,16 +1133,12 @@ unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 
 ### Adjust Decimal Prefixes And Extact Numeric+Unit Part
 
-The function `adjustUnitPrefix()` provides help extracting the numeric part of character vectors and allows adjusting to a single million-unit type.
-This can be used to convert a vector of mixed prefixes like  'z','a','f','p','n','u' and 'm' (note: the 'u' is used for 'micro').
-The output is a numeric vector with numeric+unit as names.
+The function `adjustDecPrefix()` provides help extracting the numeric part of character vectors and allows adjusting to a single million-unit type.
+This can be used to convert a vector of mixed prefixes like  'z','a','f','p','n','u' and 'm' (note the 'u' is used for 'micro').
 
-```{r adjustUnitPrefix1, echo=TRUE}
-adjustUnitPrefix(c("10.psec","2 fsec"), unit="sec")
-```
-In the example below you can see that additional text (to the right of the digit+unit) get's stripped off.
-```{r adjustUnitPrefix2, echo=TRUE}
-adjustUnitPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
+```{r adjustDecPrefix1, echo=TRUE}
+adjustDecPrefix(c("10.psec","2 fsec"), unit="sec")
+adjustDecPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
 ```
 
 
@@ -1154,6 +1147,7 @@ adjustUnitPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
 
 The function `mergeVectors()` allows merging for multiple named vectors (each element needs to be named).
 Basically, all elements carrying the same name across different input-vectors will be aligned in the same column of the output (input-vectors appear as lines).
+If _match()_ is not successful, the function will try _grep()_ to find matches.
 Different to _merge()_ which allows merging only 2 data.frames, here multiple vectors may be merge at once.
 
 ```{r mergeVectors1, echo=TRUE}
@@ -1161,17 +1155,21 @@ x1 <- c(a=1, b=11, c=21)
 x2 <- c(b=12, c=22, a=2)
 x3 <- c(a=3, d=43)
 mergeVectors(vect1=x1, vect2=x2, vect3=x3)
-```
 
-```{r mergeVectors2, echo=TRUE}
 mergeVectors(vect1=x1, vect2=x2, vect3=x3, inclInfo=TRUE)   # return list with additional info
 ```
 
-In the example below we'll add another vector _without_ named elements.
-As you can see a message tells the this vector was been ignored/omitted.
+Furthermore, when merging is (still) not successful, common enumerator-names will be stripped to enhance chances of better merging.
+
+```{r mergeVectors2, echo=TRUE}
+x11 <- c(Noa=1, Numberb=11, Samplec=21)
+x12 <- c(Nob=12, Numberc=22, Samplea=2)
+x13 <- c(Numbera=3, d=43)
+mergeVectors(vect1=x11, vect2=x12, vect3=x13)
+```
 
 ```{r mergeVectors3, echo=TRUE}
-x4 <- 41:44            # no names - not conform for merging and will be ignored
+x4 <- 41:44     # no names - not conform for merging
 mergeVectors(x1, x2, x3, x4)
 ```
 
@@ -1386,7 +1384,7 @@ te4[,,1]           # the counts part only
 
 ## Import/Export
 
-### Batch-Reading Of CSV Files
+### Batch-Reading Of Csv Files
 
 Some software do produce a series of csv files, where a large experiment/data-set get recorded as multiple files.
 The function `readCsvBatch()` was designed for reading multiple csv files of exactly the same layout and to join their content.
@@ -1427,10 +1425,10 @@ str(allTxt)
 
 Sometimes were may get confronted with data which look like 'incomplete' tables. 
 In such cases some rows do not contain as many elements/columns as other columns. 
-Files with this type of data may pose a problem for `read.table()` (from the _utils_ package).
+Files with this type of data pose a problem for `read.table()` (from the _utils_ package).
 In some cases using the argument _fill=TRUE_ may allow to overcome this problem.
-The function _readVarColumns()_ (from this package) was designed to provide better help in such odd cases.
-Basically, each line is read and parsed separately, the user should check/decide on the separator to be used.
+The function _readVarColumns()_ (from this package) was designed to provide better help in such cases.
+Basically each line is read and parsed separately, the user should check/decide on the separator to be used.
 
 The example below lists people's names in different locations, some locations have more persons ... 
 Sometimes exporting such data will generate shorter lines in locations with fewer elements (here 'London') and no additional separators will get added (to mark all empty fields) towards the end.
@@ -1442,9 +1440,6 @@ fiNa <- "Names1.tsv"
 datAll <- readVarColumns(fiName=file.path(path1,fiNa), sep="\t")
 str(datAll)
 ```
-
-In this example _readVarColumns()_ would give a warning (and column-names are not recognized), if you use the argument _header=TRUE_ you'll get an error and nothing gets read.
-
 
 
 ### Converting Url For Reading Tabulated Data From GitHub
@@ -1464,8 +1459,6 @@ The example below shows how this is used in the function _readSampleMetaData()_ 
 dataPxd <- try(read.delim(gitDataUrl(url1), sep='\t', header=TRUE))
 str(dataPxd)
 ```
-
----
 
 
 
@@ -1517,7 +1510,7 @@ All decisions of which approach to use should be data-driven.
 
 #### Filter For Each Group Of Columns For Sufficient Data As Non-NA
 
-Filter for each group of columns for sufficient data as non-NA
+filter for each group of columns for sufficient data as non-NA
 The function `presenceGrpFilt()` allows to
 
 ```{r presenceGrpFilt1, echo=TRUE}

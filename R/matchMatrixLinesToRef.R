@@ -13,7 +13,7 @@
 #'
 #' If \code{addRef=TRUE}, the reference will be included as additional column to the results, too.
 #'
-#' @param mat (matrix or data.frame) main input, all columns of of \code{mat} will be tested for (partial) matching of \code{ref}
+#' @param mat (matrix or data.frame) main input, all columns of \code{mat} will be tested for (partial) matching of \code{ref}
 #' @param ref (character, length must match ) reference for trying to match each of the columns of  \code{mat}
 #' @param addRef (logical), if \code{TRUE} the content of \code{ref} will be added to  \code{mat} as additional column
 #' @param inclInfo (logical) allows returning list with new matrix and additional information
@@ -75,12 +75,12 @@ matchMatrixLinesToRef <- function(mat, ref, addRef=TRUE, inclInfo=FALSE, silent=
     } else {
       if(any(chIdenCol, na.rm=TRUE)) {
         matElim <- if(sum(chIdenCol) >1) mat[,which(chIdenCol)] else matrix(mat[,which(chIdenCol)], ncol=1, dimnames=list(rownames(mat), colnames(mat)[which(chIdenCol)]))
-        mat <- mat[,which(!chIdenCol)]
+        matRe <- mat[,which(!chIdenCol)]
         if(debug) message(fxNa,"Removing ",sum(chIdenCol), "columns of all identical values (have no value for distinguishing lines)")}
-      if(debug) {message(fxNa,"mML1"); mML1 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
+      if(debug) {message(fxNa,"mML1"); mML1 <- list(mat=mat,matRe=matRe,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
 
       ## try simple match
-      sMa <- apply(mat, 2, function(x) match(ref, x))
+      sMa <- apply(matRe, 2, function(x) match(ref, x))
       chNa <- colSums(is.na(sMa))
       if(any(chNa==0)) { newOr <- sMa[,which(chNa==0)[1]]
         out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, goodCol=chNa, matElim=matElim, chIdenCol=chIdenCol, addRef=addRef)  #
@@ -89,7 +89,7 @@ matchMatrixLinesToRef <- function(mat, ref, addRef=TRUE, inclInfo=FALSE, silent=
       } else {
         if(debug) {message(fxNa,"mML2"); mML2 <- list()}
         ## trim redundant text, re-try match
-        mat2 <- apply(mat, 2, trimRedundText, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
+        mat2 <- apply(matRe, 2, trimRedundText, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
         ref2 <- trimRedundText(ref, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
         sMa <- apply(mat2, 2, function(x) match(ref2, x))
         chNa <- colSums(is.na(sMa))
