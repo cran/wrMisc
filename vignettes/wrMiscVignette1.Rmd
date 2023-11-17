@@ -656,6 +656,21 @@ combineReplFromListToMatr(lst2)
 ```
 
 
+### Combine Redundant Lines From List with (Multiple) Matrix According to Reference
+
+The function `combineRedundLinesInListAcRef()` provides help for combining/summarizing lines of numeric data which may be summaried according to reference vector or matrix (part of the same input-list).
+Initial data and reference will be aligned based on rownames and the content of reference (or the column specified by \code{refColNa}).
+ 
+```{r combineRedundLinesInListAcRef, echo=TRUE}
+x1 <- list(quant=matrix(11:34, ncol=3, dimnames=list(letters[8:1], LETTERS[11:13])), 
+  annot=matrix(paste0(LETTERS[c(1:4,6,3:5)],LETTERS[c(1:4,6,3:5)]), ncol=1, 
+  dimnames=list(paste(letters[1:8]),"xx")) )
+combineRedundLinesInListAcRef(x1, c("annot","quant"), refColNa="xx")
+combineRedundLinesInListAcRef(lst=x1, listNa=c(quant="quant",ref="annot"), refColNa="xx")
+```
+
+
+
 ### Non-redundant Lines Of Matrix
 
 ```{r nonRedundLines, echo=TRUE}

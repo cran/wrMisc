@@ -314,6 +314,13 @@ head(get1stOfRepeatedByCol(mat3, sortB="B", sortS="B"))
 lst2 <- list(aa_1x=matrix(1:12, nrow=4, byrow=TRUE), ab_2x=matrix(24:13, nrow=4, byrow=TRUE))
 combineReplFromListToMatr(lst2)
 
+## ----combineRedundLinesInListAcRef, echo=TRUE---------------------------------
+x1 <- list(quant=matrix(11:34, ncol=3, dimnames=list(letters[8:1], LETTERS[11:13])), 
+  annot=matrix(paste0(LETTERS[c(1:4,6,3:5)],LETTERS[c(1:4,6,3:5)]), ncol=1, 
+  dimnames=list(paste(letters[1:8]),"xx")) )
+combineRedundLinesInListAcRef(x1, c("annot","quant"), refColNa="xx")
+combineRedundLinesInListAcRef(lst=x1, listNa=c(quant="quant",ref="annot"), refColNa="xx")
+
 ## ----nonRedundLines, echo=TRUE------------------------------------------------
 mat4 <- matrix(rep(c(1,1:3,3,1),2), ncol=2, dimnames=list(letters[1:6],LETTERS[1:2]))
 nonRedundLines(mat4)

@@ -13,7 +13,7 @@ rowSds(dat)
 numeric vector of sd values
 }
 \description{
-\code{rowSds} is speed optimized sd (takes matrix or data.frame and treats each line as set of data for sd {equiv to apply(dat,1,sd)}.
+This function is speed optimized sd per line (takes matrix or data.frame and treats each line as set of data for sd, )equiv to using \code{apply}.
 NAs are ignored from data unless entire line NA). Speed improvements may be seen at more than 100 lines.
 Note: NaN instances will be transformed to NA
 }

@@ -1,5 +1,5 @@
-49e80e3fbfb9658a302f7a0e9449e49f *DESCRIPTION
-3eed1237157eb6f2d7c17dd54eacae18 *NAMESPACE
+722b0568af9b84cab2fdf36bc6c31e43 *DESCRIPTION
+531f4c60258009136cd222d1d4107cd0 *NAMESPACE
 c28fa6459025e8a353d202036868a0eb *R/XYToDiffPpm.R
 1a4eb550290e0b0fdffa9709261de335 *R/addBeforFileExtension.R
 2f4e696b7985c9e725a8d297faa28010 *R/adjBy2ptReg.R
@@ -27,6 +27,7 @@ f7e1887ae2d26e1c08d63e9780c0257f *R/cleanReplicates.R
 2506c36e1a9b23ad5e61a7e58cb7cc45 *R/combineByEitherFactor.R
 c1ad58eef5d12c7a4a014834f03d5423 *R/combineOverlapInfo.R
 04861244efb660460ac858cef19c72e0 *R/combineRedBasedOnCol.R
+55d5d55fa32222c3e484a9a151321352 *R/combineRedundLinesInList.R
 3fcc03564fef43a6422ed9444fbcfc75 *R/combineReplFromListToMatr.R
 ad169c83260647adea8619acfc1eed5c *R/combineSingleT.R
 e109283bd022590c8628d1a6edb3ef3d *R/completeArrLst.R
@@ -146,7 +147,7 @@ d7255e04c0d9cd4cb032b81ac075794d *R/rowGrpSds.R
 0a5c6394e850bfb3c5efd2c65c20fd82 *R/rowMedSds.R
 440878bdf17483f594f4c3057e62206d *R/rowNormalize.R
 45b58c21138bddc651301a13695eb31f *R/rowSEMs.R
-bf6881d448efc87939b9df208723931c *R/rowSds.R
+650fc881e4e983c167de000ff06fa54b *R/rowSds.R
 35af58e7c80babc2f057cfa1f4990dec *R/sampNoDeMArrayLM.R
 cf281ab78549d2a610dde5a45eda96d3 *R/scaleXY.R
 463601882aea004266cd22e84afe8f38 *R/searchDataPairs.R
@@ -173,13 +174,13 @@ e9baa77d9327cde23c379c0417c04848 *R/trimRedundText.R
 fd63ed5a6b0894279b23e63b68fbf913 *R/upperMaCoord.R
 8212a5cbfd7ceb7712783a8071f41fac *R/withinRefRange.R
 43cc8cfcd85872688bb8df10f8967b0c *R/writeCsv.R
-4e9f856104bd781779ad51594868f247 *build/vignette.rds
+f3203bd5ff144bebab7937fceda3968c *build/vignette.rds
 ceca98912d1a9181b9e8bf22cf00079b *inst/doc/doc/wrMiscVignette1.R
 965cca571543726acb02179dabf5214e *inst/doc/doc/wrMiscVignette1.Rmd
 fb38f129d1fcd60b8f46d27e5d0bdfa5 *inst/doc/doc/wrMiscVignette1.html
-e17a148fdd01ad0a431ba5b7d95093b3 *inst/doc/wrMiscVignette1.R
-6c58971417ab7d0e4fcb78a3312506ed *inst/doc/wrMiscVignette1.Rmd
-5a784a4ab1bcabbe7be2cbd72686624c *inst/doc/wrMiscVignette1.html
+1ba2062afd06e254fe302ea731568f28 *inst/doc/wrMiscVignette1.R
+3aec58f74a10828ceae7f8cf115f74ec *inst/doc/wrMiscVignette1.Rmd
+cc96ca2c3d89d4902b53166bfc674900 *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -219,6 +220,7 @@ da350e096d60af819411519586c5d0a7 *man/coinPermTest.Rd
 a07e10cee7dd1816f8455b5026660d1a *man/combineByEitherFactor.Rd
 1e1eaaf52f60139007873385e47e24fb *man/combineOverlapInfo.Rd
 2cd61aef2e44dc981f12fe2e48824212 *man/combineRedBasedOnCol.Rd
+1991152d751d25fb0994197e7b2bbb13 *man/combineRedundLinesInListAcRef.Rd
 1623e9e0ffa85acc02e4dd8ccdbee175 *man/combineReplFromListToMatr.Rd
 fb279b4270f2f5bd759718f88b4f0df6 *man/combineSingleT.Rd
 0689b4cbabfde8862f0dca7fddda4774 *man/completeArrLst.Rd
@@ -424,7 +426,7 @@ d270636bf06f8d352d3cd09b1f15eefa *man/rowGrpSums.Rd
 d503187871e48666163b6a7252b3e6e1 *man/rowMedSds.Rd
 136869ce23bd1f1d1270051e1091fe96 *man/rowNormalize.Rd
 685ce274600f04e0a8d40674dca1b1f7 *man/rowSEMs.Rd
-f69abba8c9d9f16bddeb6604af75236b *man/rowSds.Rd
+9bb6da838a29514025f84456d61145e7 *man/rowSds.Rd
 d417f939679ecea4845eab56be7a5de9 *man/sampNoDeMArrayLM.Rd
 cfa73175f4690cc115927a118947acd4 *man/scaleXY.Rd
 2841452ab047206259384b5c2a2afb6a *man/searchDataPairs.Rd
@@ -451,4 +453,4 @@ e4db33cf3d427c2bfa24643d9a3e2739 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 2336ef261384d4d3fee8b2a1fea8335f *man/writeCsv.Rd
-6c58971417ab7d0e4fcb78a3312506ed *vignettes/wrMiscVignette1.Rmd
+3aec58f74a10828ceae7f8cf115f74ec *vignettes/wrMiscVignette1.Rmd
