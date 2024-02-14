@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineRedundLinesInList.R
 \name{combineRedundLinesInListAcRef}
 \alias{combineRedundLinesInListAcRef}
-\title{Combine Redundant Lines In List}
+\title{Combine Redundant Lines In List, Deprecated}
 \usage{
 combineRedundLinesInListAcRef(
   lst,
@@ -36,24 +36,15 @@ combineRedundLinesInListAcRef(
 This function returns a list of same length as input
 }
 \description{
-This function provides help for combining/summarizing lines of numeric data which may be summaried according to reference vector or matrilst (part of the same input-list).
-Initial data and reference will be aligned based on rownames and the content of reference (or the column specified by \code{refColNa}).
-}
-\details{
-The first element of \code{listNa} is supposed to be the name of the list-element to be used as reference. 
-Different order of \code{listNa} is possible when the vector \code{listNa} is named (using 'ref' or 'annot' to specify the reference), see also last example.
-
-The initial list may contain multiple matrixes which will all be summarized by the same procedure as long as they are specified by \code{listNa}. 
-
-Please note that list elements from input not specified by \code{listNa} will be lost, ie given as emty list-elements.
+The function combineRedundLinesInListAcRef() has been deprecated and replaced by combineRedundLinesInList() from the same package
 }
 \examples{
 x1 <- list(quant=matrix(11:34, ncol=3, dimnames=list(letters[8:1], LETTERS[11:13])), 
   annot=matrix(paste0(LETTERS[c(1:4,6,3:5)],LETTERS[c(1:4,6,3:5)]), ncol=1, 
   dimnames=list(paste(letters[1:8]),"xx")) )
-combineRedundLinesInListAcRef(lst=x1, listNa=c("annot","quant"), refColNa="xx")
-combineRedundLinesInListAcRef(lst=x1, listNa=c(quant="quant",ref="annot"), refColNa="xx")
+## please use combineRedundLinesInList()
+combineRedundLinesInList(lst=x1, refNa="annot", datNa="quant", refColNa="xx")
 }
 \seealso{
-\code{\link[graphics]{image}}
+\code{\link{combineRedundLinesInList}}
 }

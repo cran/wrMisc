@@ -80,6 +80,8 @@ pasteC <- function(..., collapse=", ", lastCol=" and ", quoteC=""){
 #' .seqCutStr("abcdefg", minLe=2)
 #' @export
 .seqCutStr <- function(txt, startFr=1, minLe=1, reverse=TRUE){
+  .Deprecated(new=".cutStr", package="wrMisc", msg="The function .seqCutStr() has been deprecated and replaced by .cutStr()")
+
   fxNa <- ".seqCutStr" 
   maxChar <- max(nchar(txt), na.rm=TRUE)
   message(fxNa, "Depreciated function, please use .cutStr() instead  (also from package wrMisc)")

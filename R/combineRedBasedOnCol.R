@@ -9,16 +9,16 @@
 #' @param colNa character vector (length 1) macting 1 column name (if mult only 1st will be used), in case of mult matches only 1st used
 #' @param sep (character) separator (default=",")
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return matrix containing the input matrix without lines considered repeated (unique-like)
-#' @seealso \code{\link{findRepeated}}, \code{\link{firstOfRepLines}}, \code{\link{organizeAsListOfRepl}}
+#' @seealso \code{\link{findRepeated}}, \code{\link{firstOfRepLines}}, \code{\link{organizeAsListOfRepl}}, \code{\link{combineRedundLinesInList}}
 #' @examples
 #' matr <- matrix(c(letters[1:6],"h","h","f","e",LETTERS[1:5]),ncol=3,
 #'   dimnames=list(letters[11:15],c("xA","xB","xC")))
 #' combineRedBasedOnCol(matr,colN="xB")
 #' combineRedBasedOnCol(rbind(matr[1,],matr),colN="xB")
 #' @export
-combineRedBasedOnCol <- function(mat,colNa,sep=",",silent=FALSE,callFrom=NULL){
+combineRedBasedOnCol <- function(mat, colNa, sep=",", silent=FALSE, callFrom=NULL){
   ## combine lines of matrix (or data.frame) 'mat' based on (repeated) elements in/of column with name 'colNa' (or column-number).
   ## 'colNa' ... 
   ## 'sep' ...  character vector (length 1) as separator when concatenating text-fields

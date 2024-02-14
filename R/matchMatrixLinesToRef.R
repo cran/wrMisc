@@ -23,7 +23,6 @@
 #' @return This function returns the input matrix in an adjusted order (plus an optional additional column showing the reference)
 #'  or if \code{inclInfo=TRUE} a list with $mat (adjusted matrix), $byColumn, $newOrder and $method;
 #'  the reference can bee added as additional last column if \code{addRef=TRUE}
-#'
 #' @seealso \code{\link[base]{match}},  \code{\link[base]{grep}}, \code{\link{trimRedundText}}, \code{\link{replicateStructure}}
 #' @examples
 #' ## Note : columns b and e allow non-ambigous match, not all elements of e are present in a
@@ -33,7 +32,6 @@
 #' matchMatrixLinesToRef(mat0[,1:4], ref=mat0[1:3,5], inclInfo=TRUE)
 #'
 #' matchMatrixLinesToRef(mat0[,-2], ref=mat0[,2], inclInfo=TRUE)   # needs 'reverse grep'
-#'
 #' @export
 matchMatrixLinesToRef <- function(mat, ref, addRef=TRUE, inclInfo=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## find best column for matching lines of mat (matrix) to ref (char vector) via two way grep
@@ -76,11 +74,12 @@ matchMatrixLinesToRef <- function(mat, ref, addRef=TRUE, inclInfo=FALSE, silent=
       if(any(chIdenCol, na.rm=TRUE)) {
         matElim <- if(sum(chIdenCol) >1) mat[,which(chIdenCol)] else matrix(mat[,which(chIdenCol)], ncol=1, dimnames=list(rownames(mat), colnames(mat)[which(chIdenCol)]))
         matRe <- mat[,which(!chIdenCol)]
-        if(debug) message(fxNa,"Removing ",sum(chIdenCol), "columns of all identical values (have no value for distinguishing lines)")}
+        if(debug) message(fxNa,"Removing ",sum(chIdenCol), "columns of all identical values (have no value for distinguishing lines)")
+      } else matRe <- NULL
       if(debug) {message(fxNa,"mML1"); mML1 <- list(mat=mat,matRe=matRe,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
 
       ## try simple match
-      sMa <- apply(matRe, 2, function(x) match(ref, x))
+      sMa <- apply(if(length(matRe) >0) matRe else mat, 2, function(x) match(ref, x))
       chNa <- colSums(is.na(sMa))
       if(any(chNa==0)) { newOr <- sMa[,which(chNa==0)[1]]
         out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, goodCol=chNa, matElim=matElim, chIdenCol=chIdenCol, addRef=addRef)  #
@@ -89,7 +88,7 @@ matchMatrixLinesToRef <- function(mat, ref, addRef=TRUE, inclInfo=FALSE, silent=
       } else {
         if(debug) {message(fxNa,"mML2"); mML2 <- list()}
         ## trim redundant text, re-try match
-        mat2 <- apply(matRe, 2, trimRedundText, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
+        mat2 <- apply(if(length(matRe) >0) matRe else mat, 2, trimRedundText, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
         ref2 <- trimRedundText(ref, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
         sMa <- apply(mat2, 2, function(x) match(ref2, x))
         chNa <- colSums(is.na(sMa))

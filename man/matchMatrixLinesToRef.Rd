@@ -56,7 +56,6 @@ matchMatrixLinesToRef(mat0[,1:4], ref=mat0[,5])
 matchMatrixLinesToRef(mat0[,1:4], ref=mat0[1:3,5], inclInfo=TRUE)
 
 matchMatrixLinesToRef(mat0[,-2], ref=mat0[,2], inclInfo=TRUE)   # needs 'reverse grep'
-
 }
 \seealso{
 \code{\link[base]{match}},  \code{\link[base]{grep}}, \code{\link{trimRedundText}}, \code{\link{replicateStructure}}

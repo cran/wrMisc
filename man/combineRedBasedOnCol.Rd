@@ -15,7 +15,7 @@ combineRedBasedOnCol(mat, colNa, sep = ",", silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 matrix containing the input matrix without lines considered repeated (unique-like)
@@ -33,5 +33,5 @@ combineRedBasedOnCol(matr,colN="xB")
 combineRedBasedOnCol(rbind(matr[1,],matr),colN="xB")
 }
 \seealso{
-\code{\link{findRepeated}}, \code{\link{firstOfRepLines}}, \code{\link{organizeAsListOfRepl}}
+\code{\link{findRepeated}}, \code{\link{firstOfRepLines}}, \code{\link{organizeAsListOfRepl}}, \code{\link{combineRedundLinesInList}}
 }

@@ -1,5 +1,5 @@
-722b0568af9b84cab2fdf36bc6c31e43 *DESCRIPTION
-531f4c60258009136cd222d1d4107cd0 *NAMESPACE
+7eea05c902c2d0705f65e8affd934d03 *DESCRIPTION
+d9bb1a715a8e2f3434a0de0ae03c7cc5 *NAMESPACE
 c28fa6459025e8a353d202036868a0eb *R/XYToDiffPpm.R
 1a4eb550290e0b0fdffa9709261de335 *R/addBeforFileExtension.R
 2f4e696b7985c9e725a8d297faa28010 *R/adjBy2ptReg.R
@@ -26,8 +26,8 @@ f7e1887ae2d26e1c08d63e9780c0257f *R/cleanReplicates.R
 3ee58ded0473b4dab4b88b4723dc6c72 *R/combineAsN.R
 2506c36e1a9b23ad5e61a7e58cb7cc45 *R/combineByEitherFactor.R
 c1ad58eef5d12c7a4a014834f03d5423 *R/combineOverlapInfo.R
-04861244efb660460ac858cef19c72e0 *R/combineRedBasedOnCol.R
-55d5d55fa32222c3e484a9a151321352 *R/combineRedundLinesInList.R
+d9810b219e78db37e33352a0ce6c3412 *R/combineRedBasedOnCol.R
+37804aef111937befe3fd66e43ccfbae *R/combineRedundLinesInList.R
 3fcc03564fef43a6422ed9444fbcfc75 *R/combineReplFromListToMatr.R
 ad169c83260647adea8619acfc1eed5c *R/combineSingleT.R
 e109283bd022590c8628d1a6edb3ef3d *R/completeArrLst.R
@@ -86,7 +86,7 @@ d82d451dd8dbc36c5a1d1bd264080f2b *R/listBatchReplace.R
 65fc985b41c55e1e654d443ffa75f290 *R/lrbind.R
 df7fcc01846d17d04e90b26e55cf4954 *R/makeMAList.R
 dbc5621a834bc790e2e436ffe5ac093b *R/makeNRedMatr.R
-4eb5e6302564c6b8d0e396503747da66 *R/matchMatrixLinesToRef.R
+6ed469d853cee15612eed1b342f49711 *R/matchMatrixLinesToRef.R
 10491acc2f6c0c07f51ba66152c5fcb7 *R/matchNamesWithReverseParts.R
 3170803de345f7e5b696c9b34008c4ee *R/matchSampToPairw.R
 3d156d4e60eb81d5b1f8c5f22c006aa3 *R/matr2list.R
@@ -115,7 +115,7 @@ e089f15cef77dea44ae7377f2c9f6aae *R/packageDownloadStat.R
 0460e6ddc4bd769fb06d6c6f60a57292 *R/pairsAsPropensMatr.R
 f4ed4eea42ee79a300cdcd23396b729f *R/partUnlist.R
 360bf5c079047659a10be22fa486a797 *R/partialDist.R
-2512d03349de84720f8357b1a828b531 *R/pasteC.R
+4adf81e1ceaa2553c8e10722107144ab *R/pasteC.R
 0521f8565c1363ff7196e5b3368a0f11 *R/presenceFilt.R
 099f55d136f1b52ac077c54a25c1d28e *R/presenceGrpFilt.R
 c6cb3a683983f57953ccc71de6c1bc2f *R/protectSpecChar.R
@@ -178,9 +178,9 @@ f3203bd5ff144bebab7937fceda3968c *build/vignette.rds
 ceca98912d1a9181b9e8bf22cf00079b *inst/doc/doc/wrMiscVignette1.R
 965cca571543726acb02179dabf5214e *inst/doc/doc/wrMiscVignette1.Rmd
 fb38f129d1fcd60b8f46d27e5d0bdfa5 *inst/doc/doc/wrMiscVignette1.html
-1ba2062afd06e254fe302ea731568f28 *inst/doc/wrMiscVignette1.R
-3aec58f74a10828ceae7f8cf115f74ec *inst/doc/wrMiscVignette1.Rmd
-cc96ca2c3d89d4902b53166bfc674900 *inst/doc/wrMiscVignette1.html
+4a13b94beb3037d76136305c477ae6df *inst/doc/wrMiscVignette1.R
+08f9c4442e79cbe0091c0e3b41b79b5c *inst/doc/wrMiscVignette1.Rmd
+1feb18f8e68c6e75c655107a5f94326a *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -219,8 +219,9 @@ da350e096d60af819411519586c5d0a7 *man/coinPermTest.Rd
 7dcffaa56e2187320f98b797bf2bc9bc *man/combineAsN.Rd
 a07e10cee7dd1816f8455b5026660d1a *man/combineByEitherFactor.Rd
 1e1eaaf52f60139007873385e47e24fb *man/combineOverlapInfo.Rd
-2cd61aef2e44dc981f12fe2e48824212 *man/combineRedBasedOnCol.Rd
-1991152d751d25fb0994197e7b2bbb13 *man/combineRedundLinesInListAcRef.Rd
+7096d132398923814044d206922bc0b8 *man/combineRedBasedOnCol.Rd
+79fa8176356459f1edb7604e31f6e5be *man/combineRedundLinesInList.Rd
+03232ba816648c1663294e00f83fb549 *man/combineRedundLinesInListAcRef.Rd
 1623e9e0ffa85acc02e4dd8ccdbee175 *man/combineReplFromListToMatr.Rd
 fb279b4270f2f5bd759718f88b4f0df6 *man/combineSingleT.Rd
 0689b4cbabfde8862f0dca7fddda4774 *man/completeArrLst.Rd
@@ -362,7 +363,7 @@ c707600c7509fe25b5647b3ee4e48354 *man/lmSelClu.Rd
 e941333ac7e41c439f632e1f89d67dfa *man/lrbind.Rd
 3cde37c1da1008362190fcc301a71fe5 *man/makeMAList.Rd
 ab6dcec716a722695dbfaaaa50eb000e *man/makeNRedMatr.Rd
-50ff37a6a8f2513d07a6d15f052c6c38 *man/matchMatrixLinesToRef.Rd
+cdc7b2cd47e30e1987e6a545b7bdb433 *man/matchMatrixLinesToRef.Rd
 0dfbdfe4154319345095319516f21fcc *man/matchNamesWithReverseParts.Rd
 70196da1a7a279ebb8780f73c1c63d04 *man/matchSampToPairw.Rd
 40b3274de787be5b491df13807d254c6 *man/matr2list.Rd
@@ -453,4 +454,4 @@ e4db33cf3d427c2bfa24643d9a3e2739 *man/uniqCountReport.Rd
 98d646871f7bc47e89b7322f4e411d7e *man/upperMaCoord.Rd
 17a2bb686841b8b60a91ef18502c2ecc *man/withinRefRange.Rd
 2336ef261384d4d3fee8b2a1fea8335f *man/writeCsv.Rd
-3aec58f74a10828ceae7f8cf115f74ec *vignettes/wrMiscVignette1.Rmd
+08f9c4442e79cbe0091c0e3b41b79b5c *vignettes/wrMiscVignette1.Rmd
