@@ -40,18 +40,18 @@ This function allows accessing the most recent counts of package downloads avail
 obtaining rank quantiles and to compare (multiple) given packages to the bulk data, optionally a plot can be drawn.
 }
 \details{
-The task of checking the number of downloads for a given package has been addressed by several packages (eg dlstats, cranlogs, adjustedcranlogs).
 Detailed articles on this subject have been published on R-Hub (https://blog.r-hub.io/2020/05/11/packagerank-intro/) and on
 R-bloggers (https://www.r-bloggers.com/2020/10/a-cran-downloads-experiment/).
+The task of checking the number of downloads for a given package has also been addressed by several other packages (eg dlstats, cranlogs, adjustedcranlogs).
 
-This function only allows accessing the most recent counts as listed on the website of www.datasciencemeta.com .
-Please note, that reading all lines from the website may take a few seconds.
+This function only allows accessing counts as listed on the website of \code{www.datasciencemeta.com} which get updated dayly.
+Please note, that reading all lines from the website may take a few seconds !!
 To get a better understanding of the counts read, reference quantiles for download-counts get added by default  (see argument \code{refQuant}).
 The (optional) figure can be drawn in linear scale (default, with minor zoom to lower number of counts) or in log (necessary for proper display of the entire range of counts), by setting the argument \code{log="y"}.
 
 The number of downloads counted by RStudio may not be a perfect measure for the actual usage/popularity of a given package,
 the articles cited above discuss this in more detail.
-For example, multiple downloads from the same IP or subsequent downloads of multiple (older) versions of the same package are counted, too.
+For example, multiple downloads from the same IP or subsequent downloads of multiple (older) versions of the same package seem to get counted, too.
 }
 \examples{
 ## Let's try a microscopic test-file (NOT representative for true up to date counts !!)

@@ -7,7 +7,7 @@
 htmlSpecCharConv(txt, silent = FALSE, callFrom = NULL, debug = FALSE)
 }
 \arguments{
-\item{txt}{character vector inclusing special characters}
+\item{txt}{character vector, including special characters}
 
 \item{silent}{(logical) suppress messages}
 
@@ -24,9 +24,12 @@ Note : The package \href{https://CRAN.R-project.org/package=stringi}{stringi} is
 Currently only the 16 most common special characters are implemented.
 }
 \examples{
-(x <- stringi::stri_unescape_unicode("\\\\u00b5\\\\u003d\\\\u0061\\\\u0062"))
+## we'll use the package stringi to generate text including the 'micro'-symbol as input
+x <- if(requireNamespace("stringi", quietly=TRUE)) {
+  stringi::stri_unescape_unicode("\\\\u00b5\\\\u003d\\\\u0061\\\\u0062")} else "\"x=axb\""
 htmlSpecCharConv(x)
 }
 \seealso{
-tables on \url{https://www.htmlhelp.com/reference/html40/entities/latin1.html},  \url{https://www.degraeve.com/reference/specialcharacters.php},  \url{https://ascii.cl/htmlcodes.htm}
+tables on \url{https://www.htmlhelp.com/reference/html40/entities/latin1.html},  
+  \url{https://www.degraeve.com/reference/specialcharacters.php}, or \code{https://ascii.cl/htmlcodes.htm}
 }

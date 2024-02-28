@@ -3,14 +3,18 @@
 #' Converts 'txt' so that (the most common) special characters (like 'beta','micro','square' etc) will be displayed correctly whe used for display in html (eg at mouse-over).
 #' Note : The package \href{https://CRAN.R-project.org/package=stringi}{stringi} is required for the conversions (the input will get returned if \code{stringi} is not available).
 #' Currently only the 16 most common special characters are implemented.
-#' @param txt character vector inclusing special characters
+#' 
+#' @param txt character vector, including special characters
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a corrected character vector adopted for html display
-#' @seealso tables on \url{https://www.htmlhelp.com/reference/html40/entities/latin1.html},  \url{https://www.degraeve.com/reference/specialcharacters.php},  \url{https://ascii.cl/htmlcodes.htm}
+#' @seealso tables on \url{https://www.htmlhelp.com/reference/html40/entities/latin1.html},  
+#'   \url{https://www.degraeve.com/reference/specialcharacters.php}, or \code{https://ascii.cl/htmlcodes.htm}
 #' @examples
-#' (x <- stringi::stri_unescape_unicode("\\u00b5\\u003d\\u0061\\u0062"))
+#' ## we'll use the package stringi to generate text including the 'micro'-symbol as input
+#' x <- if(requireNamespace("stringi", quietly=TRUE)) {
+#'   stringi::stri_unescape_unicode("\\u00b5\\u003d\\u0061\\u0062")} else "\"x=axb\""
 #' htmlSpecCharConv(x)
 #' @export
 htmlSpecCharConv <- function(txt, silent=FALSE, callFrom=NULL, debug=FALSE) {
@@ -28,8 +32,8 @@ htmlSpecCharConv <- function(txt, silent=FALSE, callFrom=NULL, debug=FALSE) {
     } else {
       conv <- matrix(c(conv, "&micro","&ordm","&sup1","&sup2","&sup3","&szlig",          
         "&agrave","&ccedil","&egrave","&eacute","&auml", "&ouml","&uuml","&divide","&otilde","&times"), ncol=2)  
-      conv <- rbind(conv,c('"','&quot'))
-      for(i in 1:nrow(conv)) { che <- grep(conv[i,1],txt)
-        if(length(che) >0) txt[che] <- gsub(conv[i,1],conv[i,2],txt[che]) } } }
+      conv <- rbind(conv, c('"','&quot'))
+      for(i in 1:nrow(conv)) { che <- grep(conv[i,1], txt)
+        if(length(che) >0) txt[che] <- gsub(conv[i,1], conv[i,2], txt[che]) } } }
   txt }
 

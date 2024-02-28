@@ -1,4 +1,4 @@
-7eea05c902c2d0705f65e8affd934d03 *DESCRIPTION
+1d736525d7c1efe606d6c84b63402bfd *DESCRIPTION
 d9bb1a715a8e2f3434a0de0ae03c7cc5 *NAMESPACE
 c28fa6459025e8a353d202036868a0eb *R/XYToDiffPpm.R
 1a4eb550290e0b0fdffa9709261de335 *R/addBeforFileExtension.R
@@ -75,7 +75,7 @@ d160f167867859a3775c83ad6318b430 *R/fusePairs.R
 eeafe3ddbf062eb1897b84c7491d716b *R/get1stOfRepeatedByCol.R
 254bcd74c4d39780f03a984634c00fd0 *R/getValuesByUnique.R
 6b5f948a600f610607ee9ba1c2d0bd6d *R/gitDataUrl.R
-71e1585a9744f5f318668b48e9bf29c0 *R/htmlSpecCharConv.R
+1dc8d7a52bd9985580b0b4825ab63a19 *R/htmlSpecCharConv.R
 d9003fa8f7c5f80926e7e5a3cb96f9ae *R/keepCommonText.R
 cd558901c7f671046ab8f34bdc1b7392 *R/levIndex.R
 00dfcee7cea32261cf11c95f2cb6b768 *R/linModelSelect.R
@@ -111,7 +111,7 @@ b83b62c80ca72a8fe80d4e0e24e50d2a *R/normalizeThis.R
 1a38a850174f77f17d6dfdf9812951bd *R/orderMatrToRef.R
 91edf159b4016641ac6639c804ec7193 *R/organizeAsListOfRepl.R
 d247f5326e0b8cdeec74031cf4e7e63f *R/pVal2lfdr.R
-e089f15cef77dea44ae7377f2c9f6aae *R/packageDownloadStat.R
+d20e96d048d92c67043ef4d9cbc89b47 *R/packageDownloadStat.R
 0460e6ddc4bd769fb06d6c6f60a57292 *R/pairsAsPropensMatr.R
 f4ed4eea42ee79a300cdcd23396b729f *R/partUnlist.R
 360bf5c079047659a10be22fa486a797 *R/partialDist.R
@@ -180,7 +180,7 @@ ceca98912d1a9181b9e8bf22cf00079b *inst/doc/doc/wrMiscVignette1.R
 fb38f129d1fcd60b8f46d27e5d0bdfa5 *inst/doc/doc/wrMiscVignette1.html
 4a13b94beb3037d76136305c477ae6df *inst/doc/wrMiscVignette1.R
 08f9c4442e79cbe0091c0e3b41b79b5c *inst/doc/wrMiscVignette1.Rmd
-1feb18f8e68c6e75c655107a5f94326a *inst/doc/wrMiscVignette1.html
+ec607f4af74c8b31b2afb53673bfe8ae *inst/doc/wrMiscVignette1.html
 2ca88fee59e6c6f00782e370b454adbf *inst/extdata/Names1.tsv
 fac32846f2c55a72992c73790b47016b *inst/extdata/a1.txt
 a815888b008f2849824715854ec4243d *inst/extdata/a2.txt
@@ -192,7 +192,7 @@ e4d9495a87a3a63eac1f6b925a629a6d *inst/extdata/pl01_2.xlsx
 3aa828a6a860f3c0f73ef06940a41502 *inst/extdata/pl02_1.xlsx
 d0255a3db31b017ca531a27234d52305 *inst/extdata/pl02_2.csv
 cd58f053a9d688b961837d166d134865 *inst/extdata/pl02_2.xlsx
-4110d24318a31c301fa1c347b00edd40 *inst/extdata/rpackagesMicro.html
+e54b97285879120a008d8cccdfbb1ada *inst/extdata/rpackagesMicro.html
 88be06e3677ab8651b5d4c74c65f96aa *man/XYToDiffPpm.Rd
 76455d5f1e9e5d3471c1d8b5ef04ca24 *man/addBeforFileExtension.Rd
 2ece8be327faa2e94b4d01dd4f9f29a0 *man/adjBy2ptReg.Rd
@@ -352,7 +352,7 @@ f8874f535d8e9a405bbac85505128f9e *man/fusePairs.Rd
 1f7a0892833dd9586b425a3145f0a2cd *man/get1stOfRepeatedByCol.Rd
 6d1a87a5715e9e347aee861f86454d1c *man/getValuesByUnique.Rd
 90f671a721bef6097e75139686d94226 *man/gitDataUrl.Rd
-49fea7a1618cd70b93b0613c3956462d *man/htmlSpecCharConv.Rd
+f8648c57601da1eb28d4e4a3c82c4ac8 *man/htmlSpecCharConv.Rd
 2bed33f9b53652728cd7233c730cf542 *man/keepCommonText.Rd
 22fcbe8db705ad3f2e9130fef0905afa *man/levIndex.Rd
 4e3639680c6dd10e3f1c1f8b1c637b9b *man/linModelSelect.Rd
@@ -391,7 +391,7 @@ d472e77b450577d1fbe00abd0a4aab07 *man/normalizeThis.Rd
 c8032d124b387462b7c86c0627c9cc21 *man/orderMatrToRef.Rd
 83d5d3f2d7259521d92391884bcf5c69 *man/organizeAsListOfRepl.Rd
 27e0709d988953f5b91f7f26ab474148 *man/pVal2lfdr.Rd
-9113287262c87aec4bed9ea20ce7ba90 *man/packageDownloadStat.Rd
+699977da324eb1b3d3505923a2189903 *man/packageDownloadStat.Rd
 e17d973be91cda8d14829ceb8b6c0a5a *man/pairsAsPropensMatr.Rd
 42e35a3ae817933da9214fd365128f22 *man/partUnlist.Rd
 3eaec48a5e3f09f4129365d425b94c5a *man/partialDist.Rd

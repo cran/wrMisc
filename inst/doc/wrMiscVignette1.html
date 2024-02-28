@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2024-02-12" />
+<meta name="date" content="2024-02-28" />
 
 <title>Getting started with wrMisc</title>
 
@@ -378,7 +378,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2024-02-12</h4>
+<h4 class="date">2024-02-28</h4>
 
 
 <div id="TOC">
@@ -669,7 +669,7 @@ the package first (best on a fresh R-session):</p>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="do">## This is &#39;wrMisc&#39; version number :</span></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;wrMisc&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &#39;1.14.1&#39;</code></pre>
+<pre><code>## [1] &#39;1.14.2&#39;</code></pre>
 </div>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
@@ -725,7 +725,7 @@ row:</p>
 ##       0       0       0</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">system.time</span>(sd2 <span class="ot">&lt;-</span> <span class="fu">apply</span>(dat1, <span class="dv">1</span>, sd))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.03    0.01    0.05</code></pre>
+##    0.03    0.02    0.05</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em>
 will run much slower compared to <code>rowSds</code>.</p>
 <p>Note, there is a minor issue with rounding :</p>
@@ -738,7 +738,7 @@ ie sd / mean, see also <a href="https://en.wikipedia.org/wiki/Coefficient_of_var
 for every row using <code>rowCVs</code> :</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">system.time</span>(cv1 <span class="ot">&lt;-</span> <span class="fu">rowCVs</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.01    0.00    0.01</code></pre>
+##       0       0       0</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">system.time</span>(cv2 <span class="ot">&lt;-</span> <span class="fu">apply</span>(dat1, <span class="dv">1</span>, sd) <span class="sc">/</span> <span class="fu">rowMeans</span>(dat1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
 ##    0.03    0.00    0.03</code></pre>
@@ -785,7 +785,7 @@ and <code>rowGrpCV</code>):</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="co"># The CV :</span></span>
 <span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a><span class="fu">system.time</span>(cv1Gr <span class="ot">&lt;-</span> <span class="fu">rowGrpCV</span>(dat1, grp1))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.02    0.00    0.02</code></pre>
+##       0       0       0</code></pre>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">head</span>(cv1Gr)</span></code></pre></div>
 <pre><code>##                A          B          C
 ## [1,] 0.194279471 0.19545033 0.17625186
@@ -4370,10 +4370,10 @@ avoid in file-names). Please look at the function’s help-page for all
 available options.</p>
 <div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb605-1"><a href="#cb605-1" tabindex="-1"></a><span class="do">## To get started</span></span>
 <span id="cb605-2"><a href="#cb605-2" tabindex="-1"></a><span class="fu">Sys.Date</span>()</span></code></pre></div>
-<pre><code>## [1] &quot;2024-02-12&quot;</code></pre>
+<pre><code>## [1] &quot;2024-02-28&quot;</code></pre>
 <div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb607-1"><a href="#cb607-1" tabindex="-1"></a><span class="do">## Compact English names (in European order), no matter what your local settings are :</span></span>
 <span id="cb607-2"><a href="#cb607-2" tabindex="-1"></a><span class="fu">sysDate</span>() </span></code></pre></div>
-<pre><code>## [1] &quot;12feb24&quot;</code></pre>
+<pre><code>## [1] &quot;28feb24&quot;</code></pre>
 <p>The table below shows a number of options to write the date in
 English or using local month-names :</p>
 <div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb609-1"><a href="#cb609-1" tabindex="-1"></a>tabD <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">paste0</span>(<span class="st">&quot;univ&quot;</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>), <span class="fu">c</span>(<span class="fu">sysDate</span>(<span class="at">style=</span><span class="st">&quot;univ1&quot;</span>), <span class="fu">sysDate</span>(<span class="at">style=</span><span class="st">&quot;univ2&quot;</span>), </span>
@@ -4387,39 +4387,39 @@ English or using local month-names :</p>
 <tbody>
 <tr class="odd">
 <td align="left">univ1</td>
-<td align="left">12feb24</td>
+<td align="left">28feb24</td>
 <td align="left">local1</td>
-<td align="left">12fév24</td>
+<td align="left">28fév24</td>
 </tr>
 <tr class="even">
 <td align="left">univ2</td>
-<td align="left">12Feb24</td>
+<td align="left">28Feb24</td>
 <td align="left">local2</td>
-<td align="left">12Fév24</td>
+<td align="left">28Fév24</td>
 </tr>
 <tr class="odd">
 <td align="left">univ3</td>
-<td align="left">12February2024</td>
+<td align="left">28February2024</td>
 <td align="left">local3</td>
-<td align="left">12Févr.2024</td>
+<td align="left">28Févr.2024</td>
 </tr>
 <tr class="even">
 <td align="left">univ4</td>
-<td align="left">12february2024</td>
+<td align="left">28february2024</td>
 <td align="left">local4</td>
-<td align="left">12févr.2024</td>
+<td align="left">28févr.2024</td>
 </tr>
 <tr class="odd">
 <td align="left">univ5</td>
-<td align="left">2024-02-12</td>
+<td align="left">2024-02-28</td>
 <td align="left">local5</td>
-<td align="left">12-févr.-2024</td>
+<td align="left">28-févr.-2024</td>
 </tr>
 <tr class="even">
 <td align="left">univ6</td>
-<td align="left">2024-043</td>
+<td align="left">2024-059</td>
 <td align="left">local6</td>
-<td align="left">2024févr.12</td>
+<td align="left">2024févr.28</td>
 </tr>
 </tbody>
 </table>
@@ -4446,22 +4446,22 @@ English or using local month-names :</p>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.58.1  knitr_1.45    wrMisc_1.14.1
+## [1] limma_3.58.1  knitr_1.45    wrMisc_1.14.2
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] gtable_0.3.4      jsonlite_1.8.7    dplyr_1.1.3       compiler_4.3.2   
-##  [5] highr_0.10        Rcpp_1.0.11       tidyselect_1.2.0  stringr_1.5.1    
-##  [9] jquerylib_0.1.4   splines_4.3.2     scales_1.2.1      yaml_2.3.7       
-## [13] fastmap_1.1.1     statmod_1.5.0     plyr_1.8.9        ggplot2_3.4.4    
+##  [1] gtable_0.3.4      jsonlite_1.8.8    dplyr_1.1.4       compiler_4.3.2   
+##  [5] highr_0.10        Rcpp_1.0.12       tidyselect_1.2.0  stringr_1.5.1    
+##  [9] jquerylib_0.1.4   splines_4.3.2     scales_1.3.0      yaml_2.3.8       
+## [13] fastmap_1.1.1     statmod_1.5.0     plyr_1.8.9        ggplot2_3.5.0    
 ## [17] R6_2.5.1          generics_0.1.3    BBmisc_1.13       fdrtool_1.2.17   
-## [21] backports_1.4.1   checkmate_2.3.0   tibble_3.2.1      munsell_0.5.0    
-## [25] bslib_0.5.1       pillar_1.9.0      rlang_1.1.2       utf8_1.2.4       
-## [29] stringi_1.8.1     cachem_1.0.8      xfun_0.41         sass_0.4.7       
-## [33] wrGraph_1.3.7.1   cli_3.6.1         magrittr_2.0.3    digest_0.6.33    
-## [37] grid_4.3.2        lifecycle_1.0.4   vctrs_0.6.4       qvalue_2.34.0    
-## [41] evaluate_0.23     glue_1.6.2        data.table_1.14.8 fansi_1.0.5      
-## [45] colorspace_2.1-0  reshape2_1.4.4    rmarkdown_2.25    pkgconfig_2.0.3  
-## [49] tools_4.3.2       htmltools_0.5.7</code></pre>
+## [21] backports_1.4.1   checkmate_2.3.1   tibble_3.2.1      munsell_0.5.0    
+## [25] bslib_0.6.1       pillar_1.9.0      rlang_1.1.3       utf8_1.2.4       
+## [29] stringi_1.8.3     cachem_1.0.8      xfun_0.42         sass_0.4.8       
+## [33] wrGraph_1.3.7     cli_3.6.2         magrittr_2.0.3    digest_0.6.34    
+## [37] grid_4.3.2        lifecycle_1.0.4   vctrs_0.6.5       qvalue_2.34.0    
+## [41] evaluate_0.23     glue_1.7.0        data.table_1.15.0 fansi_1.0.6      
+## [45] colorspace_2.1-0  reshape2_1.4.4    rmarkdown_2.25    tools_4.3.2      
+## [49] pkgconfig_2.0.3   htmltools_0.5.7</code></pre>
 </div>
 
 <script type="text/javascript">
