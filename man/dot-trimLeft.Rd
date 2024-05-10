@@ -2,7 +2,7 @@
 % Please edit documentation in R/trimRedundText.R
 \name{.trimLeft}
 \alias{.trimLeft}
-\title{Trim from Left}
+\title{Trim From Left Side}
 \usage{
 .trimLeft(x, minNchar = 1, silent = TRUE, debug = FALSE, callFrom = NULL)
 }
@@ -21,7 +21,7 @@
 This function returns a modified character vector
 }
 \description{
-This function allows trimming/removing redundant text-fragments from left side
+This function allows trimming/removing redundant text-fragments from left side.
 }
 \examples{
 txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")

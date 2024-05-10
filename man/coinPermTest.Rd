@@ -2,7 +2,7 @@
 % Please edit documentation in R/coinPermTest.R
 \name{coinPermTest}
 \alias{coinPermTest}
-\title{Compare means of two vectors by permutation test}
+\title{Compare Means Of Two Vectors By Permutation Test}
 \usage{
 coinPermTest(
   x1,
@@ -10,6 +10,7 @@ coinPermTest(
   orient = "two.sided",
   nPerm = 5000,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -24,10 +25,12 @@ coinPermTest(
 
 \item{silent}{(logical) suppress messages}
 
+\item{debug}{(logical) additional messages for debugging}
+
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This  function returns an object of "MCp" class numeric output with p-values
+This function returns an object of "MCp" class numeric output with p-values
 }
 \description{
 Run coin-flipping like permutation tests (to compare difference of 2 means: 'x1' and 'x2') without any distribution-assumptions.

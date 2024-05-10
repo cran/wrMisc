@@ -257,7 +257,7 @@ sortByNRepeated(choices1)
 sortByNRepeated(choices1, filterIntraRep=FALSE)  # without correcting multiple citation of NYC by Paul
 
 ## ----cbindNR, echo=TRUE-------------------------------------------------------
-## First we'll make soe toy data :
+## First we'll make some toy data :
 (ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1])))
 (ma2 <- matrix(11:16, ncol=3, dimnames=list(1:2,LETTERS[3:5])))
 
@@ -465,12 +465,12 @@ data.frame(va=sort(va1), simil=checkSimValueInSer(va1))
 aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.1,5)
 (cloMa <- findCloseMatch(x=aA, y=cC, com="diff", lim=0.5, sor=FALSE))       
 
-## ----closeMatchMatrix1, echo=TRUE---------------------------------------------
+## ----closeMatchMatrix2, echo=TRUE---------------------------------------------
 # all matches (of 2d arg) to/within limit for each of 1st arg ('x'); 'y' ..to 2nd arg = cC
 # first let's display only one single closest/best hit
 (maAa <- closeMatchMatrix(cloMa, aA, cC, lim=TRUE))  #
 
-## ----closeMatchMatrix2, echo=TRUE---------------------------------------------
+## ----closeMatchMatrix3, echo=TRUE---------------------------------------------
 (maAa <- closeMatchMatrix(cloMa, aA, cC, lim=FALSE,origN=TRUE))  #
 (maAa <- closeMatchMatrix(cloMa, cbind(valA=81:87, aA), cbind(valC=91:99, cC), colM=2,
   colP=2, lim=FALSE))
@@ -490,7 +490,7 @@ findCloseMatch(cC, aA, com="diff", lim=0.5, sor=FALSE)
 findSimilFrom2sets(aA, cC)
 findSimilFrom2sets(cC, aA)
 findSimilFrom2sets(aA, cC, best=FALSE)
-findSimilFrom2sets(aA, cC, comp="ppm", lim=5e4, deb=TRUE)
+findSimilFrom2sets(aA, cC, comp="ppm", lim=5e4)
 findSimilFrom2sets(aA, cC, comp="ppm", lim=9e4, bestO=FALSE)
 # below: find fewer 'best matches' since search window larger (ie more good hits compete !)
 findSimilFrom2sets(aA, cC, comp="ppm", lim=9e4, bestO=TRUE)
@@ -564,11 +564,27 @@ unifyEnumerator(c("ab-1","ab-2","c-3"))
 unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
 unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 
+## ----checkUnitPrefix1, echo=TRUE----------------------------------------------
+x1 <- c("10fg WW","xx 10fg 3pW"," 1pg 2.0W")
+checkUnitPrefix(x1)
+
+## different separators between digit and prefix:
+x2 <- c("10fg WW","xx 8_fg 3pW"," 1 pg-2.0W")
+checkUnitPrefix(x2, stringentSearch=TRUE)
+checkUnitPrefix(x2, stringentSearch=FALSE)
+
 ## ----adjustUnitPrefix1, echo=TRUE---------------------------------------------
-adjustUnitPrefix(c("10.psec","2 fsec"), unit="sec")
+adjustUnitPrefix(c("10.psec", "2 fsec"), unit="sec")
 
 ## ----adjustUnitPrefix2, echo=TRUE---------------------------------------------
-adjustUnitPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
+x2 <- c("abCc 500_nmol ABC", "abEe5_umol", "", "abFF_100_nmol_G", "abGg 2_mol", "abH.1 mmol")
+rbind( adjustUnitPrefix(x2, unit="mol", returnType="allText") , 
+  adjustUnitPrefix(x2, unit="mol", returnType="trim"),
+  adjustUnitPrefix(x2, unit="mol", returnType=""))
+
+## ----adjustUnitPrefix3, echo=TRUE---------------------------------------------
+x3 <- c("2.psec abc","300 fsec etc", "34 5fsec")
+adjustUnitPrefix(x3, unit=checkUnitPrefix(x3))
 
 ## ----mergeVectors1, echo=TRUE-------------------------------------------------
 x1 <- c(a=1, b=11, c=21)

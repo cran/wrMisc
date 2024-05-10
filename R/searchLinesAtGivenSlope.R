@@ -1,8 +1,11 @@
-#' Search points forming lines at given slope
+#' Search Points Forming Lines At Given Slope
 #'
 #' \code{searchLinesAtGivenSlope} searchs among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
 #'  ie search optimal (slope-) offset parameter(s) for (regression) line(s) with given slope ('coef').
 #'  Note: larger data-sets : segment residuals to 'coeff' & select most homogenous
+#' 
+#' Note: The package MASS is required when using as \code{lmCompare=TRUE}.
+#' For larger data the function will try using the package \code{NbClust} (available from CRAN) if installed.
 #' 
 #' @param dat matrix or data.frame, main input
 #' @param coeff (numeric) slope to consider
@@ -31,20 +34,18 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   opar <- list(mfrow=graphics::par("mfrow"), mfcol=graphics::par("mfcol"))
   on.exit(graphics::par(opar$mfrow))
   on.exit(graphics::par(opar$mfcol))
-  if(isTRUE(debug)) silent <- FALSE
-  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   if(isTRUE(lmCompare)) { 
     if(!requireNamespace("MASS", quietly=TRUE)) warning(fxNa,"Package 'MASS' not found ! Please install first from CRAN \n   setting 'lmCompare' to FALSE")
     lmCompare <- FALSE } else lmCompare <- FALSE 
   minNPoints <- 8                            ## min no of points to be included in primary selection of groups/clusters
   cvThr <- c(0.06,0.09)                      ## threshold for 1st flitering of clustering results
   argNa <- deparse(substitute(dat))
+
   coeff <- convToNum(coeff, spaceRemove=TRUE, convert=c(NA,"sparseChar"), remove=NULL, euroStyle=TRUE, sciIncl=TRUE, callFrom=fxNa)
   if(length(coeff) <1) stop(" 'coeff' should be numeric of length 1") else coeff <- coeff[1]
   offS <- offS0 <- dat[,2] - coeff*dat[,1]
-  if(!isTRUE(silent)) silent <- FALSE
-  if(!isTRUE(debug)) debug <- FALSE
-  if(debug) silent <- FALSE
   if(identical(filtExtr, c(0,1))) filtExtr <- NULL
   if(is.numeric(filtExtr)) {                 ## remove extreme points (needed for all appoaches ??)
     if(length(filtExtr) !=2) filtExtr <- sort(c(filtExtr, if(filtExtr[1] <0.5) 1 else 0)[1:2])
@@ -57,10 +58,10 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   filt0 <- (1:nrow(dat))[-1*filt1]                         # opposite of filt1, ie index numbers of points(lines of dat) excluded
   ## main : segment - if data sufficiently large
   bestPart <- if(length(filt1) >60 ) { 
-    .insp1dimByClustering(offS[filt1], automClu=TRUE, cluChar=TRUE, silent=TRUE, callFrom=fxNa)
+    .insp1dimByClustering(offS[filt1], automClu=TRUE, cluChar=TRUE, silent=silent, debug=debug, callFrom=fxNa)
   } else list(cluster=rep(1,length(filt1)), cluChar=matrix(c(length(filt1), stats::median(offS[filt1]),
     abs(stats::sd(offS[filt1]))/mean(offS[filt1])), nrow=1, dimnames=list(1,c("n","center","centerCV"))))
-  if(!silent & length(filt1) >50) message(fxNa,"Data (",nrow(dat), " lines) segemented in ",nrow(bestPart$cluChar)," cluster(s)")
+  if(!silent && length(filt1) >50) message(fxNa,"Data (",nrow(dat), " lines) segemented in ",nrow(bestPart$cluChar)," cluster(s)")
   ## note : cluster-names MUST be numeric-like !!  (no letters !)
   ## now add info from 2 dim data
   ## note : problem with using cor: small clusters have tendency for high cor ...
@@ -142,7 +143,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   offT[,"grade"] <- signif(log(offT[,"n"])/15 + offT[,"r"] -10*offT[,"CVoffS"],3)    # 'grade' .. consider n,r & CVoffS; higher..better
   if(debug) message(fxNa,"  offT created, columns ",paste(colnames(offT),collapse=" "))
   refCluSel <- which(refCluNo %in% rownames(offT)[which(offT[,"neigbDist"] <= neighbDiLim)])
-  if(!is.null(neighbDiLim) & length(refCluSel) >0) refCluNo <- refCluNo[refCluSel]
+  if(!is.null(neighbDiLim) && length(refCluSel) >0) refCluNo <- refCluNo[refCluSel]
   ## rank2 : rank of 'grade' among top-hits ('refCluNo'), here with 1 for highest=best 'grade'
   offT[match(refCluNo, rownames(offT)),"grade2"] <- (nrow(offT) +1 -rank(offT[,"grade"]))[match(refCluNo, rownames(offT))]
   if(indexPoints) {
@@ -151,20 +152,20 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   } else out <- offT
   ## compare to lm fit                                            
   if(debug) message(fxNa,"  ..ready to refine ",length(refCluNo)," groups by lm (conserve = ",is.list(out),")")
-  if(lmCompare) {for(i in 1:length(refCluNo)) {
+  if(lmCompare && requireNamespace("MASS")) {for(i in 1:length(refCluNo)) {
     j <- refCluNo[i]
     dat2 <- as.data.frame(matrix(dat[filt1[which(bestPart$cluster==j)],1:2], ncol=2))
     colnames(dat2) <- c("slope","B")     # LETTERS[1:2]
     tryLm <- try(MASS::rlm(B ~ slope, data=dat2))
     if(debug) message("  ..i=",i," used ",c("MASS::rlm","stats::lm")[1 +as.numeric(inherits(tryLm, "try-error") )])
     if(inherits(tryLm, "try-error")) {
-      if(!silent) message(" group ",refCluNo[i],":  problem making robust regression (from package MASS), trying regular regression instead")
+      if(!silent) message("Group ",refCluNo[i],":  problem making robust regression (from package MASS), trying regular regression instead")
       tryLm <- try(stats::lm(B ~ slope, data=dat2))
     }
     out$lm[[i]] <- tryLm                        # needed for lmFilter()
     if(i==1) out$lmSum <- matrix(NA, nrow=length(refCluNo), ncol=6, dimnames=list(refCluNo,
       c("(Intercept)","slope","pInterc","pSlope","residSE","Rsqu")))
-    if(inherits(tryLm, "try-error")) message(" Problem making regression on group",refCluNo[i],"") else if(is.list(out)) {
+    if(inherits(tryLm, "try-error")) message(fxNa,"Problem making regression on group",refCluNo[i],"") else if(is.list(out)) {
       tmp <- if(inherits(tryLm, "rlm")) {
         c(2*stats::pt(-abs(stats::coef(summary(tryLm))[,3]), df=length(stats::residuals(tryLm))-1), stats::cor(tryLm$qr$qr[,1], tryLm$qr$qr[,2])^2)
         } else c(stats::coef(summary(tryLm))[,4], summary(tryLm)$adj.r.squared)
@@ -304,20 +305,23 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   ## return clustering (class index) or (if 'cluChar'=TRUE) list with clustering and cluster-characteristics
   ## require(NbClust)
   fxNa <- .composeCallName(callFrom, newNa=".insp1dimByClustering")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   if(!isFALSE(automClu)) automClu <- TRUE  
   if(!isFALSE(cluChar)) cluChar <- TRUE
   out <- NULL  
-  if(automClu) {
-    if(!requireNamespace("NbClust", quietly=TRUE)) { message(fxNa,"Package 'NbClust' not found ! Please install first from CRAN \n   setting 'automClu'=FALSE for using kmeans()")
-    automClu <- FALSE } }
-  if(automClu) {
-    cluAut <- try(NbClust::NbClust(dat, method="average", index="ccc"),silent=TRUE)     # cluster only best = smallest dist
-    if(inherits(cluAut, "try-error")) { warning(fxNa,"Failed to run NbClust::NbClust(); ignoring  'automClu'")
-      automClu <- FALSE }
+  if(automClu) { if(requireNamespace("NbClust", quietly=TRUE)) {
+      cluAut <- try(NbClust::NbClust(dat, method="average", index="ccc"),silent=TRUE)     # cluster only best = smallest dist
+      if(inherits(cluAut, "try-error")) { warning(fxNa,"Failed to run NbClust::NbClust(); ignoring  'automClu'")
+        automClu <- FALSE }
+    } else {if(!silent) message(fxNa,"NOTE: Package 'NbClust' not found ! Please install first from CRAN \n   setting 'automClu'=FALSE for using kmeans()")
+    automClu <- FALSE }
+  }       
+
   if(automClu) {    
     out <- cluAut$Best.partition
     if(length(table(out)) < ceiling(length(dat)^0.16)) {
-      if(!silent) message(" Automatic clustering proposed only ",length(table(out))," clusters -> impose ",ceiling(length(dat)^0.3))
+      if(!silent) message(fxNa,"Automatic clustering proposed only ",length(table(out))," clusters -> impose ",ceiling(length(dat)^0.3))
       automClu <- FALSE } }   # insufficient number of clusters -> run kmeans
   if(!automClu) {
     nClu <- ceiling(length(dat)^0.4)
@@ -326,7 +330,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   if(cluChar) {
     ctrClu <- tapply(dat, out, mean, na.rm=TRUE)
     sdClu <- tapply(dat, out, stats::sd, na.rm=TRUE)
-    out <- list(cluster=out, cluChar=cbind(n=table(out), center=ctrClu, centerSd=sdClu, centerCV=abs(sdClu/ctrClu))) } }
+    out <- list(cluster=out, cluChar=cbind(n=table(out), center=ctrClu, centerSd=sdClu, centerCV=abs(sdClu/ctrClu))) }
   out }
 
 
@@ -419,7 +423,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
         "  ..new modified borders ",paste(quaVa,collapse=" "))  # result not ideal ?
       out <- which(dat1 >= quaVa[1] & dat1 <= quaVa[2])
     }
-    if(length(out) > length(dat1)*core & !silent) message(fxNa,"Keep ",
+    if(length(out) > length(dat1)*core && !silent) message(fxNa,"Keep ",
       round(length(out) -length(dat1)*core)," more elements than ",round(100*core),"%")
     if(displPlot) {
       chG <- try(graphics::plot(his1, col=grDevices::grey(0.8),border=grDevices::grey(0.7)), silent=TRUE)

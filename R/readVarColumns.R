@@ -1,4 +1,4 @@
-#' Read tabular content of files with variable number of columns  
+#' Read Tabular Content Of Files With Variable Number Of Columns  
 #'
 #' Reading the content of files where the number of separators (eg tabulation) is variable poses problems with traditional methods for reding files, like  \code{\link[utils]{read.table}}.
 #' This function reads each line independently and then parses all separators therein. The first line is assumed to be column-headers.
@@ -20,7 +20,7 @@
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a matrix (character or numeric)
-#' @seealso for regular 'complete' data \code{\link[utils]{read.table}}  
+#' @seealso for regular 'complete' data \code{\link[utils]{read.table}} and its argument \code{flush}  
 #' @examples
 #' path1 <- system.file("extdata",package="wrMisc")
 #' fiNa <- "Names1.tsv"
@@ -36,7 +36,7 @@ readVarColumns <- function(fiName, path=NULL, sep="\t", header=TRUE, emptyFields
   fxNa <- .composeCallName(callFrom, newNa="readVarColumns")
   fiName <- if(length(path) >0) {if(nchar(path) >0) file.path(path, fiName) else fiName} else fiName
   if(!file.exists(fiName)) { dataOK <- FALSE
-    warning(" PROBLEM : Can't find file '",fiName,"'")
+    warning("PROBLEM : Can't find file '",fiName,"'")
   } else {
     dataOK <- TRUE
     if(length(header) !=1) header <- FALSE
@@ -57,14 +57,14 @@ readVarColumns <- function(fiName, path=NULL, sep="\t", header=TRUE, emptyFields
       supNa <- if(supNa0 >1) out[1, min(supPep, na.rm=TRUE) -1] else ((1:ncol(out))[-supPep])[1]}
     out[1, supPep] <- paste(supNa, 1 +1:length(supPep),sep="_")
     if(nrow(out) <2) { dataOK <- FALSE
-      warning(" PROBLEM : data seem to be empty (header only ?)")} }
+      warning("PROBLEM : data seem to be empty (header only ?)")} }
 
   if(dataOK) {  
     ## extract row- and col-names, prepare for separating numeric from text
     testNum <- function(x) all(grepl("(^([0-9]+)|(^[+-][0-9]+)|(^\\.[0-9]+))((\\.[0-9]+)?)(([eE][+-]?[0-9]+)?)$", x))
     numCol <- apply(out[-1,], 2, testNum)
     if(length(refCo) !=1) {refCo <- min(which(!numCol))
-      if(isFALSE(silent)) message(fxNa," setting 'refCo' to '",out[1,refCo],"'")}  #
+      if(isFALSE(silent)) message(fxNa,"Setting 'refCo' to '",out[1,refCo],"'")}  #
     dupNa <- duplicated(out[1,])  
     ## integrate colnames and rownames ...
     useLi <- if(header) 2:nrow(out) else 1:nrow(out)

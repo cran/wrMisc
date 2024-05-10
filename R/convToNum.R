@@ -1,4 +1,4 @@
-#' Convert vector to numeric
+#' Convert Vector To Numeric
 #'
 #' This function checks if input vector/character string contains numbers (with or without comma) and attempts converting to numeric.
 #' This functions was designed for extracting the numeric part of character-vectors (or matrix) containing both numbers and character-elements.
@@ -7,7 +7,7 @@
 #' Note: so far Inf  and -Inf do not get recognized as numeric.
 #'
 #' @param x vector to be converted
-#' @param autoConv (logical) simple automatic conversion based on \code{as.numeric}; if \code{TRUE} all other arguments exept  \code{spaceRemove} will not be considered
+#' @param autoConv (logical) simple automatic conversion based on function \code{as.numeric}; if \code{TRUE} all other arguments exept  \code{spaceRemove} will not be considered
 #' @param spaceRemove (logical) to remove all heading and trailing (white) space (until first non-space character)
 #' @param convert (character) define which type of non-conform entries to convert to NAs. Note, if \code{remove} is selected to eliminate character-entries they cannot be converted any more. Use 'allChar' for all character-entries; 'sparseChar' sparse (ie rare) character entries; \code{NA} for converting 'Na' or 'na' to \code{NA}; if 'none' or \code{NULL} no conversions at all. 
 #' @param remove (character) define which type of non-conform entries to remove, removed items cannot be converted to \code{NA} any more. Use 'allChar' for removing all character entries; \code{NA} for removing all instances of \code{NA} (execept thise created by converting text); all elements will be kept if 'none' or \code{NULL}. 
@@ -15,6 +15,7 @@
 #' @param sciIncl (logical) include recognizing scientific notation (eg 2e-4)
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
 #' 
 #' @details This function may be used in two modes, depening if argument \code{autoConv} is \code{TRUE} or \code{FALSE}.
 #' The first options allows accessing an automatic mode based on \code{as.numeric}, 
@@ -33,8 +34,10 @@
 #' convToNum(x2, autoConv=FALSE, convert=NA,remove=c("allChar",NA))
 #' convToNum(x2, autoConv=FALSE, convert=NA,remove=c("allChar",NA),sciIncl=FALSE)
 #' @export 
-convToNum <- function(x, autoConv=TRUE, spaceRemove=TRUE, convert=c(NA,"sparseChar"),remove=NULL,euroStyle=TRUE,sciIncl=TRUE,callFrom=NULL,silent=TRUE) {
+convToNum <- function(x, autoConv=TRUE, spaceRemove=TRUE, convert=c(NA,"sparseChar"),remove=NULL,euroStyle=TRUE,sciIncl=TRUE,callFrom=NULL,silent=TRUE, debug=FALSE) {
   fxNa <- .composeCallName(callFrom,newNa="convToNum")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   if(!is.numeric(x)) {
     if(isTRUE(autoConv)) {
       if(isTRUE(spaceRemove)) x <- gsub(" ","",x)

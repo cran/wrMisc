@@ -13,7 +13,7 @@
 #' @param returnArray (logical) allows switching from array to list-output
 #' @param columns (NULL or character) column-headers to be extracted (if specified), 2nd value may be comlumn with rownames (if rownames are encountered as increasing rownames)
 #' @param excludeFiles (character) names of files to exclude (only used when reading all files of given directory)
-#' @param simpleNames (logical) allows truncating names (from beginning) to get to variable part (using .trimFromStart()), but keeping 'minNamesLe'
+#' @param simpleNames (logical) allows truncating names (from beginning) to get to variable part (using .trimLeft()), but keeping 'minNamesLe'
 #' @param minNamesLe (interger) min length of column-names if simpleNames=TRUE
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging 
@@ -31,8 +31,8 @@
 readCsvBatch <- function(fileNames=NULL, path=".", fileFormat="Eur", checkFormat=TRUE, returnArray=TRUE,
   columns=c("Plate","Well","StainA"), excludeFiles="All infected plates", simpleNames=TRUE, minNamesLe=4, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="readCsvBatch")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   HeaderInData <- if(is.null(columns)) FALSE else TRUE
   if(length(path) >0) {
     chPath <- dir.exists(path)
@@ -57,16 +57,23 @@ readCsvBatch <- function(fileNames=NULL, path=".", fileFormat="Eur", checkFormat
       if(!silent) message(fxNa,"Based on 'excludeFiles': excluding ",sum(checkFi)," files (out of ",length(fileNames),")")
       fileNames <- fileNames[which(!checkFi)]} 
   }  
+  ## check package(s)
+  reqPa <- c("utils")
+  chPa <- sapply(reqPa, requireNamespace, quietly=TRUE)
+  if(any(!chPa)) { if(!silent) message(fxNa,"Package '",reqPa[1],"' missing, please install first from CRAN  (returning NULL)")
+    fileNames <- NULL    
+  } 
+
   ## check if US or European format
   if(length(fileNames) >0) {
-    if(!silent) message(fxNa," ready to start reading ",length(fileNames)," files;  expecting header(s) : ", HeaderInData)
+    if(!silent) message(fxNa,"Ready to start reading ",length(fileNames)," files;  expecting header(s) : ", HeaderInData)
     tmp1 <- if(!identical(fileFormat,"Eur")) try(utils::read.csv(fileNames[1], header=HeaderInData, stringsAsFactors=FALSE), silent=TRUE) else NULL
     tmp2 <- if(!identical(fileFormat,"US")) try(utils::read.csv2(fileNames[1], header=HeaderInData, stringsAsFactors=FALSE), silent=TRUE) else NULL
     cheF <- c(inherits(tmp1, "try-error"), inherits(tmp2, "try-error"))
     if(debug) message(fxNa,"Done with inital try of reading files")
     
     if(all(cheF)) { fileNames <- NULL
-      stop(fxNa,"\n Problem with file format, can't read 1st file neither as European nor US-type CSV !!")    
+      warning(fxNa,"\n Problem with file format, can't read 1st file neither as European nor US-type CSV !!")    
     } else {
       chDim <- prod(dim(tmp1)) > prod(dim(tmp2))
       datDim <- if(chDim) dim(tmp1) else dim(tmp2)
@@ -76,8 +83,8 @@ readCsvBatch <- function(fileNames=NULL, path=".", fileFormat="Eur", checkFormat
   ## main reading
   if(length(fileNames) >0) {
     datL <- list()
-    arrNames <- if(isTRUE(simpleNames)) .trimFromStart(fileNames, minNchar=minNamesLe) else fileNames
-    if(debug) message(fxNa,"ready for main reading of  ",pasteC(utils::head(fileNames)))
+    arrNames <- if(isTRUE(simpleNames)) .trimLeft(fileNames, minNchar=minNamesLe) else fileNames
+    if(debug) message(fxNa,"Ready for main reading of  ",pasteC(utils::head(fileNames)))
     for(i in 1:length(fileNames)) {
       if(!silent) message(fxNa," ..reading file ",fileNames[i])
       curFileNa <- fileNames[i]
@@ -102,9 +109,9 @@ readCsvBatch <- function(fileNames=NULL, path=".", fileFormat="Eur", checkFormat
     if(returnArray) {
       dimnames(dat) <- list(rownames(tmp), arrNames, colnames(tmp))
     } else { dat <- datL
-      if(length(fileNames) !=length(dat)) message(fxNa," Problem ?  Got ",length(fileNames)," fileNames  BUT ",length(dat)," list-elements !")
+      if(length(fileNames) !=length(dat)) message(fxNa,"Problem ?  Got ",length(fileNames)," fileNames  BUT ",length(dat)," list-elements !")
       names(dat) <- substr(fileNames,1,nchar(fileNames)-4)
-      if(isTRUE(simpleNames)) names(dat) <- .trimFromStart(names(dat), minNchar=minNamesLe) }
+      if(isTRUE(simpleNames)) names(dat) <- .trimLeft(names(dat), minNchar=minNamesLe) }
   dat } else NULL }
 
 

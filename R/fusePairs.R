@@ -14,9 +14,9 @@
 #' fusePairs(daPa, maxFuse=4)
 #' @export
 fusePairs <- function(datPair, refDatNames=NULL, inclRepLst=FALSE, maxFuse=NULL, debug=FALSE, silent=TRUE, callFrom=NULL) {
-  fxNa <- .composeCallName(callFrom,newNa="fusePairs")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  fxNa <- .composeCallName(callFrom, newNa="fusePairs")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   msg <- " 'datPair' should be matrix of 2 cols with paired rownames"
   if(length(dim(datPair)) !=2) stop(msg) else if(ncol(datPair) <2) stop(msg)
   if(!is.matrix(datPair)) datPair <- if(nrow(datPair) >1) as.matrix(datPair) else matrix(datPair,nrow=1,dimnames=dimnames(datPair))
@@ -58,7 +58,7 @@ fusePairs <- function(datPair, refDatNames=NULL, inclRepLst=FALSE, maxFuse=NULL,
     out2 <- (1:length(tmp)) +length(out)
     names(out2) <- tmp
     out <- c(out,out2) }
-  out <- out[order(convToNum(.trimFromStart(names(out)), remove=NULL, sciIncl=TRUE))]
+  out <- out[order(convToNum(.trimLeft(names(out)), remove=NULL, sciIncl=TRUE))]
   if(inclRepLst) list(clu=out, repLst=similDat) else out }
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sampNoDeMArrayLM.R
 \name{sampNoDeMArrayLM}
 \alias{sampNoDeMArrayLM}
-\title{Locate Sample Index From Index or Name Of Pair-Wise Comparisons in list or MArrayLM-Object}
+\title{Locate Sample Index From Index Or Name Of Pair-Wise Comparisons In List Or MArrayLM-Object}
 \usage{
 sampNoDeMArrayLM(
   MArrayObj,
@@ -33,7 +33,7 @@ sampNoDeMArrayLM(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This fuction returns a numeric vector (length=2) with index indicating the columns of (replicate) mean-values corresponding to the comparison specified in \code{useComp}
+This function returns a numeric vector (length=2) with index indicating the columns of (replicate) mean-values corresponding to the comparison specified in \code{useComp}
 }
 \description{
 When multiple series of data are tested simultaneaously (eg using \code{moderTestXgrp}), multiple pairwise comparisons get performed. 
@@ -47,9 +47,9 @@ and a specific comparison indicated by \code{useComp} to get located in the elem
 grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
 set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
   dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
-test8 <- moderTestXgrp(t8, grp) 
-head(test8$p.value)         # all pairwise comparisons available
 if(requireNamespace("limma", quietly=TRUE)) {  # need limma installed...
+  test8 <- moderTestXgrp(t8, grp) 
+  head(test8$p.value)         # all pairwise comparisons available
   sampNoDeMArrayLM(test8,1)
   head(test8$means[,sampNoDeMArrayLM(test8,1)])
   head(test8$means[,sampNoDeMArrayLM(test8,"C-D")]) }

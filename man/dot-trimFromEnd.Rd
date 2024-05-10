@@ -2,7 +2,7 @@
 % Please edit documentation in R/trimRedundText.R
 \name{.trimFromEnd}
 \alias{.trimFromEnd}
-\title{Trim from end}
+\title{Trim from end (Deprecated)}
 \usage{
 .trimFromEnd(x, ..., callFrom = NULL, debug = FALSE, silent = TRUE)
 }
@@ -21,11 +21,11 @@
 This function returns a modified character vector
 }
 \description{
-This function allows trimming/removing redundant text-fragments from end
+Deprecated Version - This function allows trimming/removing redundant text-fragments from end
 }
 \examples{
 txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
-.trimFromEnd(txt1)
+.trimRight(txt1)
 }
 \seealso{
 \code{\link{trimRedundText}}; Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}

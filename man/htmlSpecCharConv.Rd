@@ -2,7 +2,7 @@
 % Please edit documentation in R/htmlSpecCharConv.R
 \name{htmlSpecCharConv}
 \alias{htmlSpecCharConv}
-\title{Html special character conversion}
+\title{Html Special Character Conversion}
 \usage{
 htmlSpecCharConv(txt, silent = FALSE, callFrom = NULL, debug = FALSE)
 }

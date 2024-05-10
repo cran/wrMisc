@@ -38,6 +38,8 @@ combineRedundLinesInList <- function(lst, refNa="ref", datNa="quant", refColNa="
   ## combine lines of (matrix) list-elements according to (line-) grouping given by reference (also part of list x); 
   ## name of reference should be in refNa; in case reference is matrix, a specific column (refColNa) may be chosen 
   fxNa <- .composeCallName(callFrom, newNa="combineRedundLinesInList")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   namesXY <- deparse(substitute(lst))
   out <- NULL
   datOK <- length(lst) >0
@@ -101,11 +103,11 @@ combineRedundLinesInList <- function(lst, refNa="ref", datNa="quant", refColNa="
         chSupTRef <- supRefColNa[1] %in% colnames(lst[[refNa]]) 
         if(isTRUE(chSupTRef)) chSupTRef <- isTRUE(sum(duplicated(lst[[refNa]][,chSupTRef])) <1)
         if(!chSupTRef) { datOK <- FALSE
-          if(!silent) message(fxNa," 'supRefColNa' either not in annotation-data or not unique !") }       
+          if(!silent) message(fxNa,"'supRefColNa' either not in annotation-data or not unique !") }       
        }       
     } else {
       if(length(names(lst[[refNa]])) <1) { datOK <- FALSE
-        if(!silent) message(fxNa," annotation has no names, can't use 'supRefColNa' (annotation is not matrix) !") }
+        if(!silent) message(fxNa,"Annotation has no names, can't use 'supRefColNa' (annotation is not matrix) !") }
   } }
   if(debug) { message(fxNa, "cRLL1a"); cRLL1a <- list() }
   
@@ -197,8 +199,9 @@ combineRedundLinesInList <- function(lst, refNa="ref", datNa="quant", refColNa="
 #' @export
 combineRedundLinesInListAcRef <- function(lst, listNa=c("ref","quant"), refColNa="xx", summarizeType="av", NA.rm=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   .Deprecated(new="combineRedundLinesInList", package="wrMisc", msg="The function combineRedundLinesInListAcRef() has been deprecated and replaced by combineRedundLinesInList()") 
-  #combineRedundLinesInList(lst=lst, listNa=listNa, refColNa=refColNa, summarizeType=summarizeType, NA.rm=NA.rm, silent=silent, debug=debug, callFrom=callFrom) 
   fxNa <- .composeCallName(callFrom, newNa="combineRedundLinesInList")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   namesXY <- deparse(substitute(lst))
   out <- NULL
   datOK <- TRUE

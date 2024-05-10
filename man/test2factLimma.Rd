@@ -2,13 +2,13 @@
 % Please edit documentation in R/test2factLimma.R
 \name{test2factLimma}
 \alias{test2factLimma}
-\title{2-factorial limma-style t-test}
+\title{2-Factorial Limma-Style t-Test}
 \usage{
 test2factLimma(
   datMatr,
   fac1,
   fac2,
-  testSynerg = TRUE,
+  testSynerg = FALSE,
   testOrientation = "=",
   addResults = c("lfdr", "FDR", "Mval", "means"),
   addGenes = NULL,
@@ -24,7 +24,7 @@ test2factLimma(
 
 \item{fac2}{(character or factor) vector describing grouping elements of each line of 'datMatr' for second factor, must be of same langth as fac1}
 
-\item{testSynerg}{(logical) decide if factor-interactions (eg synergy) should be included to model}
+\item{testSynerg}{(logical) decide if factor-interactions (eg synergy) should be tested in model, otherwise additive factors are supposed}
 
 \item{testOrientation}{(character) default (or any non-recignized input) '=', otherwise either '>','gerater','sup','upper' or '<','inf','lower'}
 
@@ -44,7 +44,7 @@ This function returns an object of class "MArrayLM" (from limma) containing/enri
 \description{
 The aim of this function is to provide convenient acces to two-factorial (linear) testing withing the framework of \code{\link{makeMAList}} including the emprical Bayes shrinkage. 
 The input data 'datMatr' which should already be organized as limma-type MAList, eg using using \code{\link{makeMAList}}. 
-Note: This function uses the Bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}.
+Note: This function uses the Bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} (which must be installed).
 }
 \examples{
 set.seed(2014)
@@ -53,13 +53,14 @@ fa <- factor(rep(letters[1:4],c(9,8,7,6)))
 dat2 <- data.frame(facA=rep(c("-","A","-","A"), c(9,8,7,6)),
   facB= rep(c("-","-","B","B"), c(9,8,7,6)), dat1=dat0, dat2=runif(30))
 grpNa <- sub("-","",sub("\\\\.","", apply(dat2[,1:2], 1, paste, collapse="")))    
-test2f <- test2factLimma(t(dat2[,3:4]), dat2$facA, dat2$facB, testS=FALSE)  
-test2f 
-# Now you can easily summarize results using topTable from limma
+test2f <- test2factLimma(t(dat2[,3:4]), dat2$facA, dat2$facB)  
+test2f     # just the p-values
+# Similarly, you can easily summarize results using topTable from limma
 if(requireNamespace("limma", quietly=TRUE)) {
+  test2g <- test2factLimma(t(dat2[,3:4]), dat2$facA, dat2$facB, addR=FALSE)  
   library(limma)
-  topTable(test2f, coef=1, n=5) 
-  topTable(test2f, coef=2, n=5) } 
+  topTable(test2g, coef=1, n=5) 
+  topTable(test2g, coef=2, n=5) } 
 }
 \seealso{
 \code{\link{makeMAList}}, single line testing \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}

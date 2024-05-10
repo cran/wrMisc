@@ -2,7 +2,7 @@
 % Please edit documentation in R/searchLinesAtGivenSlope.R
 \name{searchLinesAtGivenSlope}
 \alias{searchLinesAtGivenSlope}
-\title{Search points forming lines at given slope}
+\title{Search Points Forming Lines At Given Slope}
 \usage{
 searchLinesAtGivenSlope(
   dat,
@@ -54,6 +54,10 @@ This functions returns a matrix of line-characteristics  (or if indexPoints is \
 \code{searchLinesAtGivenSlope} searchs among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
  ie search optimal (slope-) offset parameter(s) for (regression) line(s) with given slope ('coef').
  Note: larger data-sets : segment residuals to 'coeff' & select most homogenous
+}
+\details{
+Note: The package MASS is required when using as \code{lmCompare=TRUE}.
+For larger data the function will try using the package \code{NbClust} (available from CRAN) if installed.
 }
 \examples{
 set.seed(2016); ra1 <- runif(300)

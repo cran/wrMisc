@@ -34,7 +34,7 @@ readCsvBatch(
 
 \item{excludeFiles}{(character) names of files to exclude (only used when reading all files of given directory)}
 
-\item{simpleNames}{(logical) allows truncating names (from beginning) to get to variable part (using .trimFromStart()), but keeping 'minNamesLe'}
+\item{simpleNames}{(logical) allows truncating names (from beginning) to get to variable part (using .trimLeft()), but keeping 'minNamesLe'}
 
 \item{minNamesLe}{(interger) min length of column-names if simpleNames=TRUE}
 

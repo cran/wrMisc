@@ -1,4 +1,4 @@
-#' Simple Package Download Statistics from CRAN
+#' Simple Package Download Statistics From CRAN
 #'
 #' This function allows accessing the most recent counts of package downloads availabale on http://www.datasciencemeta.com/rpackages,
 #' obtaining rank quantiles and to compare (multiple) given packages to the bulk data, optionally a plot can be drawn.
@@ -20,6 +20,8 @@
 #' @param queryPackages (character or integer) package names of interest, if \code{integer}, n random packages will be picked by random
 #' @param countUrl (character) the url where the dayly counts ara available
 #' @param refQuant (numeric) add reference quantile values to output matrix
+#' @param options (character) additional seetings : use 'naOmit' to remove NA-lines from output (package-names not found in 'countUrl'); 
+#'   'sort' for sorting output by number of downloads
 #' @param figure (logical) decide of figure should be printed
 #' @param log (character) set count-axis of figure to linear or log-scale (by setting \code{log="y"})
 #' @param silent (logical) suppress messages
@@ -28,20 +30,20 @@
 #' @return This function retuns a matrix with download counts (or \code{NULL} if the web-site can't be accessed or the query-packages are not found there)
 #' @seealso packages \href{https://CRAN.R-project.org/package=cranlogs}{cranlogs} and \href{https://CRAN.R-project.org/package=packageRank}{packageRank}
 #' @examples
-#' ## Let's try a microscopic test-file (NOT representative for true up to date counts !!)
+#' ## Let's try a microscopic test-file (NOT representative for true up-to-date counts !!)
 #' pack1 <- c("cif", "bcv", "FinCovRegularization", "wrMisc", "wrProteo")
 #' testFi <- file.path(system.file("extdata", package="wrMisc"), "rpackagesMicro.html")
 #' packageDownloadStat(pack1, countUrl=testFi, log="y", figure=FALSE)
-#' ## For real online counting simply drop the argument countUrl
+#' ## For real online counting simply use the argument countUrl in default setting
 #'
 #' @export
 packageDownloadStat <- function(queryPackages=c("wrMisc","wrProteo","cif","bcv","FinCovRegularization"), countUrl="http://www.datasciencemeta.com/rpackages",
-  refQuant=(1:10)/10, figure=TRUE, log="", silent=FALSE, callFrom=NULL, debug=FALSE) {
+  refQuant=(1:10)/10, options=c("naOmit", "sort"), figure=TRUE, log="", silent=FALSE, callFrom=NULL, debug=FALSE) {
   ## get rank & downloads for all 10% tiles as well as queryPackages
   ## return matrix with 1st line as rank and 2nd as n.dowloads, if inclQuant=TRUE 12th col - end for queryPackages
   fxNa <- .composeCallName(callFrom, newNa="packageDownloadStat")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   inclQuant <- length(refQuant) >0
   chPa <- length(naOmit(queryPackages)) >0 && all(is.character(queryPackages) | is.numeric(queryPackages))
   datOK <- FALSE
@@ -54,7 +56,7 @@ packageDownloadStat <- function(queryPackages=c("wrMisc","wrProteo","cif","bcv",
       txt <- try(readLines(countUrl, warn=FALSE), silent=TRUE)
       if(inherits(txt, "try-error") || length(txt) <2) { txt <- try(readLines(countUrl, warn=FALSE, n=9000), silent=TRUE)
         if(!inherits(txt, "try-error")) {
-          message(fxNa," Failed to read entire data-set, but succeeded to read first 9000 lines. Your package(s) of interest may not be included in this list") 
+          message(fxNa,"Failed to read entire data-set, but succeeded to read first 9000 lines. Your package(s) of interest may not be included in this list") 
         } 
       }
     }
@@ -136,18 +138,24 @@ packageDownloadStat <- function(queryPackages=c("wrMisc","wrProteo","cif","bcv",
       date1 <- sub(" .+","",sub(".+Last updated: ","",txt[grep("Last updated",txt)]))
       if(grepl("https://",countUrl)) graphics::mtext(paste("as of ",date1," "), cex=0.9, adj=1)
     }
-    if(debug) {message("pds5"); pds5 <- list(out=out,txt=txt,tab=tab,ta2=ta2,queryPackages=queryPackages,chPa=chPa,chNa=chNa,iniIn=iniIn,endIn=endIn, paNa=paNa, nDownl=nDownl,paRa=paRa,datOK=datOK)}
+    if(debug) {message("pds5"); pds5 <- list(out=out,txt=txt,tab=tab,ta2=ta2,queryPackages=queryPackages,chPa=chPa,chNa=chNa,iniIn=iniIn,endIn=endIn, paNa=paNa, nDownl=nDownl,paRa=paRa,datOK=datOK,refQuant=refQuant,inclQuant=inclQuant,maxPa=maxPa)}
 
     if(inclQuant) {
       ## add quantile (reference-)values
-      if(nrow(ta2) <1000) warning(fxNa,"Too few data ! Very imprecise estimation of reference centile ...")
+      if(nrow(ta2) <1000) warning(fxNa,"Too few data ! (",nrow(ta2)," lines)  Estimation of reference centile may be very imprecise  ...")
       refQuan2 <- round(maxPa * refQuant)
       refInd <- round(nrow(ta2) *refQuant)
       supl <- ta2$downloads[refInd]
       names(supl) <- paste0("cent_",100*round(refQuant,3))
       out <- rbind(out, data.frame(name=ta2$name[refInd], rank=ta2$rank[refInd], downloads=supl, centile=100*round(refQuant,3)))
-      out <- out[order(out$rank, decreasing=FALSE),] }
-    out
+      if("sort" %in% options) out <- out[order(out$rank, decreasing=FALSE),] 
+    }
+    if(length(out) >0 && "naOmit" %in% options) {
+      chNa <- grep("^NA(\\.[[:digit:]]+){0,1}", rownames(out))
+      if(length(chNa) < nrow(out)) { if(length(chNa) >0) out <- if(length(chNa) +1 < nrow(out)) out[-1*chNa,] else matrix(out[-1*chNa,], 
+        nrow=1, dimnames=list(rownames(out)[-1*chNa], colnames(out)))    # remove lines with NA
+        if(!silent) message(fxNa,"Removed lines for ",length(chNa)," packages not found") } }
+    out                                                                                           
   }  
 }
        

@@ -2,7 +2,7 @@
 % Please edit documentation in R/readVarColumns.R
 \name{readVarColumns}
 \alias{readVarColumns}
-\title{Read tabular content of files with variable number of columns}
+\title{Read Tabular Content Of Files With Variable Number Of Columns}
 \usage{
 readVarColumns(
   fiName,
@@ -57,5 +57,5 @@ datAll <- readVarColumns(fiName=file.path(path1,fiNa))
 str(datAll)
 }
 \seealso{
-for regular 'complete' data \code{\link[utils]{read.table}}
+for regular 'complete' data \code{\link[utils]{read.table}} and its argument \code{flush}
 }

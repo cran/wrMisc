@@ -15,6 +15,7 @@ readXlsxBatch(
   columns = c("Plate", "Well", "StainA"),
   simpleNames = 3,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -35,9 +36,11 @@ readXlsxBatch(
 
 \item{columns}{(NULL or character) column-headers to be extracted (if specified, otherwise all columns will be extracted)}
 
-\item{simpleNames}{(integer), if \code{NULL} all characters of fileNames will be maintained, otherwise allows truncating names (from beginning) to get to variable part (using .trimFromStart()), but keeping at least the number of charcters indicated by this argument}
+\item{simpleNames}{(integer), if \code{NULL} all characters of fileNames will be maintained, otherwise allows truncating names (from beginning) to get to variable part (using .trimLeft()), but keeping at least the number of charcters indicated by this argument}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
 
 \item{callFrom}{(character) allows easier tracking of messages produced}
 }

@@ -1,4 +1,4 @@
-#' Estimate mode (most frequent value)   
+#' Estimate Mode (Most Frequent Value)   
 #' 
 #' Estimate mode, ie most frequent value. In case of continuous numeric data, the most frequent values may not be the most frequently repeated exact term.
 #' This function offers various approches to estimate the mode of a numeric vector. 
@@ -31,8 +31,8 @@
 stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSign=1:6, silent=FALSE, callFrom=NULL, debug=FALSE) {
   ## stable mode  
   fxNa <- .composeCallName(callFrom, newNa="stableMode")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   ## prepare data: treat NA or non-finite values
   if(finiteOnly) { chFin <- is.finite(x)
     if(all(!chFin)) x <- NULL else if(any(!chFin)) {x <- x[which(chFin)]
@@ -72,17 +72,17 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
   } else  chDu <- sum(duplicated(x)) 
   ## BBmisc
   if(identical(method, "BBmisc")) {
-    if(!requireNamespace("BBmisc")) { method <- "density"
-      message(fxNa,"Package 'BBmisc' not found ! Please install first from CRAN \n   setting 'method' to 'density'") }    
-  }
-  if(identical(method, "BBmisc")) {
-    mo <- try(sapply(rangeSign, function(y) BBmisc::computeMode(signif(x, y))), silent=TRUE)
-    if(inherits(mo, "try-error")) { method <- "density"
-      warning(fxNa,"UNABLE to calulate BBmisc::computeMode(),  setting 'method' to 'density'")
-    } else  { posi <- .firstMin(diff(mo)/mo[-length(mo)], positionOnly = TRUE)
-      out <- mo[posi] }
-    if(debug) {message(fxNa," stM2"); stM2 <- list(method=method,bandw=bandw,x=x,mo=mo) }
-  }
+    if(requireNamespace("BBmisc")) {
+      mo <- try(sapply(rangeSign, function(y) BBmisc::computeMode(signif(x, y))), silent=TRUE)
+      if(inherits(mo, "try-error")) { method <- "density"
+        warning(fxNa,"UNABLE to calulate BBmisc::computeMode(),  setting 'method' to 'density'")
+      } else  { posi <- .firstMin(diff(mo)/mo[-length(mo)], positionOnly = TRUE)
+        out <- mo[posi] }
+      if(debug) {message(fxNa," stM2"); stM2 <- list(method=method,bandw=bandw,x=x,mo=mo) }
+    } else { method <- "density"
+      if(!silent) message(fxNa,"NOTE: Package 'BBmisc' not found ! Please install first from CRAN \n   setting 'method' to 'density'")
+    }  
+  }  
   ## density 
   if(identical(method, "density")) {
     if(length(bandw) <1) {bandw <- round(1.4* sqrt(length(x)))
@@ -103,21 +103,21 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
     if(!all(length(bandw) >0, is.numeric(bandw))) bandw <- ceiling(sqrt(length(x)))
     if(70 * bandw > length(x) && !silent)  message(fxNa,"Method='binning', value of 'bandw'=", bandw, " may be too high for good functioning !")
     xRa <- range(x[which(is.finite(x))])
-    frq <- table(cut(x, breaks = seq(xRa[1], xRa[2], length.out = bandw)))
+    frq <- table(cut(x, breaks=seq(xRa[1], xRa[2], length.out=bandw)))
     che <- max(frq, na.rm=TRUE) > c(0.5, 0.8) * length(x)
     if (che[2]) {
       if (!silent)  message(fxNa, ">80% of values in class no ", which.max(frq), ", refining mode estimation")
       mxF <- which.max(frq)
       mxF <- signif(seq(xRa[1], xRa[2], length.out = bandw)[c(max(mxF -3, 1), min(mxF +3, bandw))], 4)
-      frq <- table(cut(x, breaks = seq(mxF[1], mxF[2], length.out = bandw)))
+      frq <- table(cut(x, breaks=seq(mxF[1], mxF[2], length.out=bandw)))
     } else {
       if(che[1] && sum(frq < length(x)/5000) > 0.5 * bandw) {
         if(!silent) message(fxNa, ">50% of values in class no ", 
           which.max(frq), " & >50% of other classes almost empty, refining result")
         useBr <- range(which(frq > 0.05 * length(x))) +c(-1, 1)
         useBr <- c(max(useBr[1], 1), min(useBr[2], bandw))
-        mxF <- signif(seq(xRa[1], xRa[2], length.out = bandw)[useBr], 4)
-        frq <- table(cut(x, breaks = seq(mxF[1], mxF[2], length.out = bandw)))
+        mxF <- signif(seq(xRa[1], xRa[2], length.out=bandw)[useBr], 4)
+        frq <- table(cut(x, breaks=seq(mxF[1], mxF[2], length.out=bandw)))
       }
     }
     out <- which.max(frq)

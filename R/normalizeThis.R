@@ -1,4 +1,4 @@
-#' Normalize data in various modes
+#' Normalize Data In Various Modes
 #'
 #' Generic normalization of 'dat' (by columns), multiple methods may be applied.
 #' The choice of normalization procedures must be done with care, plotting the data before and after normalization
@@ -68,17 +68,17 @@
 #' @export
 normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="proportional", trimFa=NULL, minQuant=NULL, sparseLim=0.4, nCombin=3, omitNonAlignable=FALSE, maxFact=10, quantFa=NULL, expFa=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="normalizeThis")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   if(!any(sapply(c("additive","add","a"), identical, mode))) mode <- "proportional"
 
   out <- NULL
   chMe <- is.na(method)
-  if(sum(!chMe) <1) stop(" Argument 'method' seems empty - nothing to do !")
+  if(sum(!chMe) <1) stop(fxNa,"Argument 'method' seems empty - nothing to do !")
   method <- if(any(chMe)) naOmit(method)[1] else method[1]
-  if(length(dim(dat)) !=2) stop(" expecting matrix or data.frame with >= 2 rows as 'dat' !")
+  if(length(dim(dat)) !=2) stop(fxNa,"Expecting matrix or data.frame with >= 2 rows as 'dat' !")
   if(!is.matrix(dat)) dat <- as.matrix(dat)
-  if(!is.null(refLines)) if(identical(refLines, 1:nrow(dat))) {refLines <- NULL; if(!silent) message(fxNa," omit redundant 'refLines'")}
+  if(!is.null(refLines)) if(identical(refLines, 1:nrow(dat))) {refLines <- NULL; if(!silent) message(fxNa,"Omit redundant 'refLines'")}
   ## assemble parameters
   params <- list(refLines=refLines, trimFa=trimFa, useQ=quantFa, useExp=expFa)
   
@@ -102,7 +102,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
   }
   if(method %in% "slope") {
     params$useQ <- c(0.2,0.8)
-    if(length(quantFa) >0) {if(length(quantFa)==2) params$useQ <- quantFa else if(!silent) message(fxNa," invalid 'quantFa', use default c(0.2,0.8)")}
+    if(length(quantFa) >0) {if(length(quantFa)==2) params$useQ <- quantFa else if(!silent) message(fxNa,"Invalid 'quantFa', use default c(0.2,0.8)")}
   }
   if(method %in% "slope2Sections") {
     if(length(params$useQ) !=1) params$useQ <- list(signif(stats::quantile(dat, c(0.05,0.15), na.rm=TRUE), 3),
@@ -114,15 +114,19 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
       params$useExp <- sort(unique(c(round(1 /(1 +abs(useExp -useExp[1])), 4), round(1 +abs(useExp -useExp[1]), 3)))) }
     method <- "exponent"
   }
-  if("vsn" %in% method & (if(length(refLines) >0) length(refLines) < nrow(dat) else FALSE)) {
-    if(debug) message(fxNa," recognized as method='vsn'")
+  if("vsn" %in% method && !requireNamespace("vsn")) {
+    method <- "mean"
+    if(!silent) message(fxNa,"NOTE: Please install package 'vsn' first from CRAN, resetting argument 'method' to default 'mean'")
+  }
+  if("vsn" %in% method && (if(length(refLines) >0) length(refLines) < nrow(dat) else FALSE)) {
+    if(debug) message(fxNa,"Recognized as method='vsn'")
     params$refLines <- NULL
-    if(!silent) message(fxNa," ignoring content of 'refLines', since 'vsn' can only normalize considering all data")}
+    if(!silent) message(fxNa,"Ignoring content of 'refLines', since 'vsn' can only normalize considering all data")}
   if(debug) {message(fxNa,"Ready to start .normalize() ; nt2 ;  using method=",method,"   mode=",mode,"   params=",pasteC(unlist(params)))}
   
   ## main normalization
   out <- .normalize(dat, method, mode=mode, param=params, silent=silent, debug=debug, callFrom=fxNa)
-  if(inherits(out, "try-error")) { message(fxNa," Could not run normalization by '",method,"' which gave an error (returning unnormalized)"); out <- dat}
+  if(inherits(out, "try-error")) { message(fxNa,"Could not run normalization by '",method,"' which gave an error (returning unnormalized)"); out <- dat}
   out }
 
 #' Main Normalization function
@@ -148,7 +152,9 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
   ## 'dat' .. matrix (>1 col, >1 li) to be normalized
   ## 'meth' .. method
   ## 'param' .. list with supl parameters (refLines, certain specific for norm methods)
-  fxNa <- ".normalize"
+  fxNa <- .composeCallName(callFrom, newNa=".normalize")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   mode <- if(identical(mode,"additive")) "Add" else "Prop"       # reduce to short name
   if(identical(meth,"average")) meth <- "mean"
   asRefL <- (length(param$refLines) < nrow(dat) && !is.null(param$refLines))
@@ -156,7 +162,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
   if("vsn" %in% meth) {
     chPa <- requireNamespace("vsn", quietly=TRUE)
     if(!chPa) { meth <- "mean"
-      warning(fxNa, "Package 'vsn' not found ! Please install first from Bioconductor; resetting to default 'mean'")
+      if(!silent) message(fxNa, "NOTE: Package 'vsn' not found ! Please install first from Bioconductor; resetting argument 'meth' to default 'mean'")
     }
     if(nrow(if(asRefL) datRef else dat) <42) message(callFrom," PROBLEM : Too few lines of data to run 'vsn' ! ")}
   ## Some methods have not yet been adopted/declined to additive/proportional mode
@@ -182,7 +188,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
     slope=.normConstSlope(mat=dat, useQuant=param$useQ, refLines=param$refLines, diagPlot=FALSE),
     exponent=try(exponNormalize(dat, useExpon=param$useExp, refLines=param$refLines)$datNor, silent=TRUE),
     slope2Sections=try(adjBy2ptReg(dat, lims=param$useQ, refLines=param$refLines), silent=TRUE),
-    vsn=try(vsn::justvsn(dat), silent=TRUE) )
+    vsn=if(requireNamespace("vsn")) try(vsn::justvsn(dat), silent=TRUE) else NULL ) 
   }
 
 #' Normalize columns of 2dim matrix to common linear regression fit
@@ -210,10 +216,11 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
   ## 'useQuant' ..defines window of data to be considered for normalizing
   ## 'refLines' ..lines to use for determining normalization factors
   ## 'datName' for use as title in diag plot
-  # cat(" mat: "); cat(str(mat),"\n")
   fxNa <- .composeCallName(callFrom,newNa=".normConstSlope")
-  msg1 <- " 'useQuant' should be vector of two numeric values between 0 & 1"
-  msg2 <- paste(" 'mat' should be matrix with two dimensions. Here it appears as ")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
+  msg1 <- "'useQuant' should be vector of two numeric values between 0 & 1"
+  msg2 <- paste("'mat' should be matrix with two dimensions. Here it appears as ")
   if(!is.numeric(mat)) stop(fxNa,msg2,class(mat)," with ",mode(mat)," data of ",length(dim(mat))," dims")
   if(sum(is.finite(useQuant)) != 2 || length(useQuant) !=2) {message(fxNa,msg1); useQuant=c(0.2,0.8)}
   if(useQuant[1] < 0 || useQuant[1] > 1) {message(msg1); useQuant=c(0.2,0.8)}
@@ -221,13 +228,13 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
   quantVal <- apply(mat, 2, stats::quantile, useQuant,na.rm=TRUE)
   tmp <- apply(mat, 2, function(x) {x <- naOmit(x); x[x >= stats::quantile(x,min(useQuant),na.rm=TRUE) & x <= stats::quantile(x,max(useQuant),na.rm=TRUE)]})
   if(!is.list(tmp)) tmp <- as.data.frame(tmp)
-  regr <- sapply(if(length(refLines) < nrow(mat) && !is.null(refLines)) tmp[refLines,] else tmp,.datSlope,toNinX=TRUE)
+  regr <- sapply(if(length(refLines) < nrow(mat) && !is.null(refLines)) tmp[refLines,] else tmp, .datSlope, toNinX=TRUE)
   regr[1,] <- regr[1,] + apply(rbind(quantVal[1,],mat), 2, function(x) sum(x[-1] < x[1], na.rm=TRUE))    # correct intercept for no of quantile-omitted data
   regrM <- rowMeans(regr, na.rm=FALSE)
   normD <- apply(rbind(regr, mat), 2, function(x) (x[-1*(1:2)] -(regrM[1]-x[1])/x[2]) *x[2]/regrM[2])
   if(plotLog %in% c("x","xy")) normD <- exp(normD)
   if(diagPlot) {
-    msg2 <- paste(fxNa," Unknow argument content ('",plotLog,"') for 'plotLog'; resetting to default no log",sep="")
+    msg2 <- paste(fxNa,"Unknow argument content ('",plotLog,"') for 'plotLog'; resetting to default no log",sep="")
     if(length(plotLog) !=1) { message(fxNa,msg2); plotLog <- ""}
     if(!(plotLog %in% c("","x","y","xy"))) {message(fxNa,msg2); plotLog <- ""}
     yLab <- "number of values"
@@ -243,7 +250,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
         graphics::points(1:sum(is.finite(normD[refLines,ii]))~ sort(normD[which(is.finite(normD[refLines,ii])),ii]),type="s",col=ii+2)
         graphics::points(sort(normD[which(is.finite(normD[-1*refLines,ii])),1]), 1:sum(is.finite(normD[-1*refLines,ii])),type="s",col=grDevices::grey(0.4))
       } else graphics::points(1:sum(is.finite(normD[,ii]))~ sort(normD[which(is.finite(normD[,ii])),ii]), type="s",col=ii+2)
-      graphics::abline(h=useQuant*sum(!is.na(normD))/ncol(normD), lty=3,col=grDevices::grey(0.6))
+      graphics::abline(h=useQuant*sum(!is.na(normD))/ncol(normD), lty=3, col=grDevices::grey(0.6))
       if(plotLog %in% c("x","xy")) graphics::curve(log(regrM[1])*(regrM[2]) +regrM[1], lty=2,col=2,add=TRUE) else graphics::abline(regrM[1],regrM[2],lty=2,col=2)
     } }
   normD }

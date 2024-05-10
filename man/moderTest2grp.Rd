@@ -2,7 +2,7 @@
 % Please edit documentation in R/moderTest2grp.R
 \name{moderTest2grp}
 \alias{moderTest2grp}
-\title{Moderated pair-wise t-test from limma}
+\title{Moderated Pair-Wise t-test From Limma}
 \usage{
 moderTest2grp(
   dat,
@@ -11,6 +11,7 @@ moderTest2grp(
   addResults = c("lfdr", "FDR", "Mval", "means"),
   testOrientation = "=",
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -28,15 +29,17 @@ moderTest2grp(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns a limma-type object of class \code{MArrayLM}
 }
 \description{
-Runs moderated t-test from package 'limma' on each line of data.
-Note: This function requires the package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} from bioconductor. 
-The limma contrast-matrix has to be read by column, the lines in the contrast-matrix containing '+1' will be compared to the '-1' lines, eg grpA-grpB .
+This function runs moderated t-test from package \code{limma} on each line of data.
+Note: This function requires the package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} from bioconductor being installed. 
+The \code{limma} contrast-matrix has to be read by column, the lines in the contrast-matrix containing '+1' will be compared to the '-1' lines, eg grpA-grpB .
 Local false discovery rates (lfdr) estimations will be made using the CRAN-package \href{https://CRAN.R-project.org/package=fdrtool}{fdrtool} (if available).
 }
 \examples{
@@ -48,12 +51,14 @@ t4 <- log2(t8[,1:4]/t8[,5:8])
 ## Two-sided testing 
 fit4 <- moderTest2grp(t4,gl(2,2))
 # If you have limma installed we can now see further
-if("list" \%in\% mode(fit4)) limma::topTable(fit4, coef=1, n=5)    # effect for 3,4,7,8
+if("list" \%in\% mode(fit4) & requireNamespace("limma")) {
+  limma::topTable(fit4, coef=1, n=5)}    # effect for 3,4,7,8
 
 ## One-sided testing
 fit4in <- moderTest2grp(t4,gl(2,2),testO="<")
 # If you have limma installed we can now see further
-if("list" \%in\% mode(fit4)) limma::topTable(fit4in, coef=1, n=5)
+if("list" \%in\% mode(fit4) & requireNamespace("limma")) {
+  limma::topTable(fit4in, coef=1, n=5) }
 }
 \seealso{
 \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}, \code{\link[stats]{p.adjust}}

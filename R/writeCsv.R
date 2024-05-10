@@ -37,13 +37,13 @@
 #' @export
 writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", filename=NULL, quote=FALSE, filterCol=NULL, replMatr=NULL, returnOut=FALSE, SYLKprevent=TRUE, digits=22, silent=FALSE,debug=FALSE,callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="writeCsv")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
 
   argN <- deparse(substitute(input))
   doWrite <- TRUE
   if(!requireNamespace("utils", quietly=TRUE)) { doWrite <- FALSE
-    warning(fxNa,"package 'utils' not found ! Please install first") 
+    warning(fxNa,"Package 'utils' not found ! Please install first from CRAN") 
   }  
   if(length(input) <1) { doWrite <- FALSE; warning(fxNa," 'input'  should be data or filename")}
   
@@ -52,25 +52,25 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
       if(!silent) message(fxNa,"trying to read  ",inPutFi,"  as format: ",imporTy)
         dat <- if(imporTy=="Eur") try(utils::read.csv2(inPutFi,stringsAsFactors=FALSE),silent=TRUE) else {
           if(imporTy=="US") try(utils::read.csv(inPutFi, stringsAsFactors=FALSE),silent=TRUE) else try(utils::read.table(inPutFi,stringsAsFactors=FALSE),silent=TRUE) }
-        if("try-error" %in% class(dat)) {message(fxNa,"PROBLEM when trying tp open file '",inPutFi,"' - abandon"); doWrite <- FALSE }
+        if("try-error" %in% class(dat)) {message(fxNa,"PROBLEM when trying to open file '",inPutFi,"' - abandon"); doWrite <- FALSE }
       } else { dat <- input
         if(!silent) message(fxNa," 'input' is character but since no corresponding to existing filename, trying to interpret as data to be written to file")}
     } else  dat <- input
     if(doWrite) {
-      if(!is.null(dat)) { if(length(inPutFi) >1) message(fxNa," ignoring content of 'inPutFi'")
+      if(!is.null(dat)) { if(length(inPutFi) >1) message(fxNa,"Ignoring content of 'inPutFi'")
          inPutFi <- NULL; imporTy <- ""}
       if(length(dim(dat)) <2) dat <- as.matrix(dat)     # fx created for typical case of data.frame or matrix
       datColCl <- rep(NA,ncol(dat))
       for(i in 1:ncol(dat)) datColCl[i] <- class(dat[,i])                            # document class for each column (won't work using apply)
-      if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"unkown format for 'expTy', setting to 'Eur'")}
+      if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"Unkown format for 'expTy', setting to 'Eur'")}
       expTy <- sort(stats::na.omit(expTy))
-      if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"unkown format for 'expTy', setting to 'Eur'")}
+      if(length(expTy) <1) {expTy <- "Eur"; if(!silent) message(fxNa,"Unkown format for 'expTy', setting to 'Eur'")}
       ## FILTERING  (independent to expTy)
       ## check if 'filterCol' in dat
       if(is.list(filterCol) && length(filterCol) >0) {
         useCol <- sapply(filterCol,function(x) x[1])
         useCol <- which(useCol %in% colnames(dat))
-        if(!silent && length(useCol)<1) message(fxNa," none of the columns from 'filterCol' found in ",inPutFi)
+        if(!silent && length(useCol)<1) message(fxNa,"None of the columns from 'filterCol' found in ",inPutFi)
         filtThr <- sapply(filterCol[useCol],function(x) if(length(x>1)) x[2] else NA)
         filterCol <- sapply(filterCol[useCol],function(x) x[1])
         }
@@ -81,7 +81,7 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
           ## this may be further deveoped: check if column has usable logical content
           chLi <- if(is.na(filtThr[i]) && chLogi) which(dat[,filterCol[i]]) else which(dat[,filterCol[i]] < filtThr[i])
           if(length(chLi) <nrow(dat) & length(chLi) >0) dat <- dat[chLi,] else if(length(chLi) <1) {
-            message(fxNa," filtering for ",filterCol[i]," nothing left !!")
+            message(fxNa,"Filtering for ",filterCol[i]," nothing left !!")
             dat <- NULL; return(NULL) }}
       } else if(!is.character(inPutFi)) expTy <- expTy[which(!expTy  %in% imporTy)]        # no need to re-write same file if no filtering (unless inPutFi is filename)
       ##
@@ -98,7 +98,7 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
         toNum <- colSums(nchar(zz)) <1
         if(debug) {message(fxNa,"..xxWriteC1b")}
         if(any(toNum)) {
-          if(!silent) message(fxNa," adjusting ",sum(toNum)," column(s) with Euro comma-separator")
+          if(!silent) message(fxNa,"Adjusting ",sum(toNum)," column(s) with Euro comma-separator")
           dat[,chCols[which(toNum)]] <- as.numeric(sub(",",".", dat[,chCols[which(toNum)]]))
           datColCl[chCols[which(toNum)]] <- "numeric"
           chCols <- which(!datColCl %in% c("numeric","integer")) }                   # refresh
@@ -125,7 +125,7 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
       ## write to file
       if(length(filename) <1) filename <- paste0(if(is.character(inPutFi)) sub("\\.csv$","",inPutFi) else argN,".",expTy,".csv")
       if(length(filename) < length(expTy)) {
-        if(!silent) message(fxNa," adding type to name(s) of file(s) to be written")
+        if(!silent) message(fxNa,"Adding type to name(s) of file(s) to be written")
         filename <- paste0(sub("\\.csv$","",filename),".",expTy,".csv")
         if("txt" %in% expTy) filename <- sub("\\.txt.\\csv$",".txt",filename)
         names(filename) <- expTy }

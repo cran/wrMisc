@@ -4,12 +4,16 @@
 \alias{combineReplFromListToMatr}
 \title{Combine replicates from list to matrix}
 \usage{
-combineReplFromListToMatr(lst, callFrom = NULL)
+combineReplFromListToMatr(lst, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{lst}{(list)  list of arrays (typically multi-parameter measures of micortiterplate data)}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 list of arrays now with same dimension of arrays (but shorter, since replicate-arrays were combined)

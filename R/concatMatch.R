@@ -51,9 +51,9 @@ concatMatch <- function(x, table, sep=",", sepPattern=NULL, globalPat="digitExte
   ##  extensPat (charcter) \code{TRUE} for removing terminal lower case eg ('AB1234ups')
   ## need to find if any of concatenated 'x' in 'table'
   ## prepare
-  fxNa <- wrMisc::.composeCallName(callFrom, newNa="concatMatch")
-  if(isTRUE(debug)) silent <- FALSE
-  if(!isTRUE(silent)) silent <- FALSE
+  fxNa <- .composeCallName(callFrom, newNa="concatMatch")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   xIni <- x; tableIni <- table           # initialize backup
   chDux <- duplicated(x)
   if(length(x) <1) stop("Invalid entry, 'x' must be at least of length=1")
@@ -125,7 +125,7 @@ concatMatch <- function(x, table, sep=",", sepPattern=NULL, globalPat="digitExte
   if(any(chMa)) {
     ## not all items of 'x' found in 'table' ==> try complementing missing
     ##  now work only on x not prevusouly found !
-    if(debug) {message(fxNa,sum(chMa)," ID/term of 'x' not found so far : ", wrMisc::pasteC(utils::head(x[which(chMa)], quoteC="'")))}
+    if(debug) {message(fxNa,sum(chMa)," ID/term of 'x' not found so far : ", pasteC(utils::head(x[which(chMa)], quoteC="'")))}
     ## check for separators
     chSepT <- grep(sepPattern, table)             # which 'table' are concatented => useful for splitting
     chSepX <- grep(sepPattern, x[which(chMa)])    # don't use truncation (strat A) when x has concatenation

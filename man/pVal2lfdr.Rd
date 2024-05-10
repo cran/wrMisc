@@ -4,12 +4,14 @@
 \alias{pVal2lfdr}
 \title{Convert p-values to lfdr}
 \usage{
-pVal2lfdr(x, silent = TRUE, callFrom = NULL)
+pVal2lfdr(x, silent = TRUE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{(numeric) vector of p.values}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalizeThis.R
 \name{normalizeThis}
 \alias{normalizeThis}
-\title{Normalize data in various modes}
+\title{Normalize Data In Various Modes}
 \usage{
 normalizeThis(
   dat,

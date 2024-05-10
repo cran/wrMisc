@@ -9,6 +9,7 @@ buildTree(
   startFr = NULL,
   posCo = c("beg", "end"),
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -21,7 +22,9 @@ buildTree(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns a list with $paths (branches as matrix with columns 'sumLen' & 'n'), $usedNodes (character vector of all names used to build tree) and $tree (object from data.tree)

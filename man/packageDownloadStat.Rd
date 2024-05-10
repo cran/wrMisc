@@ -2,12 +2,13 @@
 % Please edit documentation in R/packageDownloadStat.R
 \name{packageDownloadStat}
 \alias{packageDownloadStat}
-\title{Simple Package Download Statistics from CRAN}
+\title{Simple Package Download Statistics From CRAN}
 \usage{
 packageDownloadStat(
   queryPackages = c("wrMisc", "wrProteo", "cif", "bcv", "FinCovRegularization"),
   countUrl = "http://www.datasciencemeta.com/rpackages",
   refQuant = (1:10)/10,
+  options = c("naOmit", "sort"),
   figure = TRUE,
   log = "",
   silent = FALSE,
@@ -21,6 +22,9 @@ packageDownloadStat(
 \item{countUrl}{(character) the url where the dayly counts ara available}
 
 \item{refQuant}{(numeric) add reference quantile values to output matrix}
+
+\item{options}{(character) additional seetings : use 'naOmit' to remove NA-lines from output (package-names not found in 'countUrl'); 
+'sort' for sorting output by number of downloads}
 
 \item{figure}{(logical) decide of figure should be printed}
 
@@ -54,11 +58,11 @@ the articles cited above discuss this in more detail.
 For example, multiple downloads from the same IP or subsequent downloads of multiple (older) versions of the same package seem to get counted, too.
 }
 \examples{
-## Let's try a microscopic test-file (NOT representative for true up to date counts !!)
+## Let's try a microscopic test-file (NOT representative for true up-to-date counts !!)
 pack1 <- c("cif", "bcv", "FinCovRegularization", "wrMisc", "wrProteo")
 testFi <- file.path(system.file("extdata", package="wrMisc"), "rpackagesMicro.html")
 packageDownloadStat(pack1, countUrl=testFi, log="y", figure=FALSE)
-## For real online counting simply drop the argument countUrl
+## For real online counting simply use the argument countUrl in default setting
 
 }
 \seealso{

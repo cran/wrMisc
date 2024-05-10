@@ -16,8 +16,10 @@
 #'   paste("col",1:3,sep=""), c("ch1","ch2")))
 #' organizeAsListOfRepl(arr1)
 #' @export
-organizeAsListOfRepl <- function(arrIn, inspNChar=0, byDim=3, silent=TRUE,debug=FALSE, callFrom=NULL){
+organizeAsListOfRepl <- function(arrIn, inspNChar=0, byDim=3, silent=TRUE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="organizeAsListOfRepl")
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   if(length(dim(arrIn)) !=3) stop(fxNa,"Expecting data organized as 3 dims, where last dimension should represent different plates")
   msg <- "Expecting 2nd dim to have names where characters 1 to 6 describe the plate-type- to identify replicates"
   if(sum(nchar(dimnames(arrIn)[[byDim]]) <1) >1) stop(fxNa,msg)
@@ -28,7 +30,7 @@ organizeAsListOfRepl <- function(arrIn, inspNChar=0, byDim=3, silent=TRUE,debug=
   chNch <- inspNChar <1
   if(any(chNch)) inspNChar[which(chNch)] <- as.integer(gregexpr("_",dimnames(arrIn)[[byDim]][which(chNch)])) -1 
   chNch <- inspNChar <0
-  if(any(inspNChar <1)) inspNChar[which(chNch)] <- nchar(.trimFromEnd(dimnames(arrIn)[[byDim]])[which(chNch)])
+  if(any(inspNChar <1)) inspNChar[which(chNch)] <- nchar(.trimRight(dimnames(arrIn)[[byDim]])[which(chNch)])
   if(!silent) message(fxNa," inspect ",inspNChar," characters of  ",pasteC(dimnames(arrIn)[[byDim]]))
   plateTy <- substr(dimnames(arrIn)[[byDim]],1,inspNChar)
   if(length(unique(plateTy)) ==dim(arrIn)[byDim]) message(fxNa," names of rd dim of 'arrIn' seem all different")

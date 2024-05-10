@@ -567,7 +567,7 @@ Common column-names are interpreted that their respective information should be 
 This can be done using `cbindNR()` :
 
 ```{r cbindNR, echo=TRUE}
-## First we'll make soe toy data :
+## First we'll make some toy data :
 (ma1 <- matrix(1:6, ncol=3, dimnames=list(1:2,LETTERS[3:1])))
 (ma2 <- matrix(11:16, ncol=3, dimnames=list(1:2,LETTERS[3:5])))
 
@@ -931,7 +931,7 @@ aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.
 The result of _findCloseMatch()_ is a list organized by each 'x', telling all instances of 'y' found within the distance tolerance given by _lim_.
 Using `closeMatchMatrix()` the result obtained above, can be presented in a more convenient format for the human eye.
 
-```{r closeMatchMatrix1, echo=TRUE}
+```{r closeMatchMatrix2, echo=TRUE}
 # all matches (of 2d arg) to/within limit for each of 1st arg ('x'); 'y' ..to 2nd arg = cC
 # first let's display only one single closest/best hit
 (maAa <- closeMatchMatrix(cloMa, aA, cC, lim=TRUE))  #
@@ -940,7 +940,7 @@ Using `closeMatchMatrix()` the result obtained above, can be presented in a more
 Using the argument _limitToBest=FALSE_ we can display all distances within the limits imposed, some values/points may occur multiple times.
 For example, value number 4 of 'cC' (=12.5) or value number 3 of 'aA' (=13) now occur multiple times...
 
-```{r closeMatchMatrix2, echo=TRUE}
+```{r closeMatchMatrix3, echo=TRUE}
 (maAa <- closeMatchMatrix(cloMa, aA, cC, lim=FALSE,origN=TRUE))  #
 (maAa <- closeMatchMatrix(cloMa, cbind(valA=81:87, aA), cbind(valC=91:99, cC), colM=2,
   colP=2, lim=FALSE))
@@ -966,7 +966,7 @@ findCloseMatch(cC, aA, com="diff", lim=0.5, sor=FALSE)
 findSimilFrom2sets(aA, cC)
 findSimilFrom2sets(cC, aA)
 findSimilFrom2sets(aA, cC, best=FALSE)
-findSimilFrom2sets(aA, cC, comp="ppm", lim=5e4, deb=TRUE)
+findSimilFrom2sets(aA, cC, comp="ppm", lim=5e4)
 findSimilFrom2sets(aA, cC, comp="ppm", lim=9e4, bestO=FALSE)
 # below: find fewer 'best matches' since search window larger (ie more good hits compete !)
 findSimilFrom2sets(aA, cC, comp="ppm", lim=9e4, bestO=TRUE)
@@ -1147,21 +1147,50 @@ unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 ```
 
 
+### Find Common Unit
+
+The function `checkUnitPrefix` aims to find a unit-abbreviation or -name occurring in all elements of a character-vector.
+The unit name may be preceeded by different decimal prefixes (eg 'k','M', see argument _pref_) which may vary within the vector.
+By default some common SI-units will be searched, see argument _unit_.
+
+```{r checkUnitPrefix1, echo=TRUE}
+x1 <- c("10fg WW","xx 10fg 3pW"," 1pg 2.0W")
+checkUnitPrefix(x1)
+
+## different separators between digit and prefix:
+x2 <- c("10fg WW","xx 8_fg 3pW"," 1 pg-2.0W")
+checkUnitPrefix(x2, stringentSearch=TRUE)
+checkUnitPrefix(x2, stringentSearch=FALSE)
+```
+
 
 ### Adjust Decimal Prefixes And Extact Numeric+Unit Part
 
 The function `adjustUnitPrefix()` provides help extracting the numeric part of character vectors and allows adjusting to a single million-unit type.
 This can be used to convert a vector of mixed prefixes like  'z','a','f','p','n','u' and 'm' (note: the 'u' is used for 'micro').
-The output is a numeric vector with numeric+unit as names.
+The output is a character vector with all prefix+unit expressions adjusted to use the same prefix everywhere (numeric+separator+prefix+unit). 
+Redundant additional text may get (optionally) trimmed (see argument _returnType="trim"_), the numeric part names + unit is give in the names.
+
+Please note that decimal/comma digits will not be recognized properly, the function may/will consider the decimal sign as just another separator 
+(as '.' is part af the default selection of separators).
 
 ```{r adjustUnitPrefix1, echo=TRUE}
-adjustUnitPrefix(c("10.psec","2 fsec"), unit="sec")
-```
-In the example below you can see that additional text (to the right of the digit+unit) get's stripped off.
-```{r adjustUnitPrefix2, echo=TRUE}
-adjustUnitPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
+adjustUnitPrefix(c("10.psec", "2 fsec"), unit="sec")
 ```
 
+Using the argument _returnType_ you can choose how much of the remaining text should be shown.
+```{r adjustUnitPrefix2, echo=TRUE}
+x2 <- c("abCc 500_nmol ABC", "abEe5_umol", "", "abFF_100_nmol_G", "abGg 2_mol", "abH.1 mmol")
+rbind( adjustUnitPrefix(x2, unit="mol", returnType="allText") , 
+  adjustUnitPrefix(x2, unit="mol", returnType="trim"),
+  adjustUnitPrefix(x2, unit="mol", returnType=""))
+```
+
+If the _unit_ -name is not knonw in advance, you can try to figure out. In the example it is shown that the unit-name can be determined using the function _checkUnitPrefix()_.
+```{r adjustUnitPrefix3, echo=TRUE}
+x3 <- c("2.psec abc","300 fsec etc", "34 5fsec")
+adjustUnitPrefix(x3, unit=checkUnitPrefix(x3))
+```
 
 
 ### Merging Multiple Named Vectors To Matrix
@@ -1196,7 +1225,7 @@ mergeVectors(x1, x2, x3, x4)
 This function allows adjusting the order of lines of a matrix \code{mat} to a reference character-vector \code{ref},
 even when initial direct matching of character-strings using \code{match} is not possible/successful.
 In this case, various variants of using \code{grep} will be used to see if unambiguous matching is possible of characteristic parts of the text.
-All columns of \code{mat} will be tested an the column giving the bes resuts will be used.
+All columns of \code{mat} will be tested an the column giving the best results will be used.
 
 ```{r matchMatrixLinesToRef1, echo=TRUE}
 ## Note : columns b and e allow non-ambigous match, not all elements of e are present in a
@@ -2085,12 +2114,16 @@ This function prints tables in the current graphical output/window (which may by
 Many times it may be useful to add the date to filenames when saving data or plots as files.
 The built-in functions _date()_, _Sys.Date()_ and _Sys.Time()_ are a good way to start.
 
-Generally I like to use abbreviated month-names since the order of writing the month is different in Europe compared to the USA, 
-so this may help avoiding mis-interpreting dates insetad of writing the number of the Month.
+Generally I like to use abbreviated month-names since the order of writing the month is different in Europe compared to the USA.
+So, this may help avoiding mis-interpreting dates instead of writing the number of the Month.
 For example, 2021-03-05 means in Europe March 5th while in other places it means May 3rd.
 
-The R-functions mentioned above use local language settings, so I wrote the function `sysDate` to 
-produce compact versions of current the date, **independent to local language settings** (or not -if you prefer), ie locale-specific, 
+You may also look at the standardized format for *numeric dates* [norm ISO 8601](https://en.wikipedia.org/wiki/ISO_8601), 
+which matches to _Sys.Date()_ (from package _base_) and _sysDate(style="univ5")_ (package _wrMisc_) .
+
+The R-functions mentioned above (_date()_, _Sys.Date()_, from the _base_ package) use local language settings.
+For using English languange names you may use the function `sysDate` from this package (ie wrProteo). 
+It allows producing compact versions of current the date, **independent to local language settings** (or not -if you prefer), ie locale-specific, 
 (yes, in some languages - like French - the first 3 letters of the month may give ambiguous results !) 
 and to avoid white space ' ' (which I prefer to avoid in file-names).
 Please look at the function's help-page for all available options.

@@ -4,7 +4,14 @@
 \alias{.chooseGrpCol}
 \title{Automatic choice of colors}
 \usage{
-.chooseGrpCol(nGrp, paired = FALSE, alph = 0.2)
+.chooseGrpCol(
+  nGrp,
+  paired = FALSE,
+  alph = 0.2,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{nGrp}{(numeric vector) main input}
@@ -12,9 +19,15 @@
 \item{paired}{(logical)}
 
 \item{alph}{(numeric vector)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced#'}
 }
 \value{
-character vector with color codes
+This function returns a character vector with color codes
 }
 \description{
 This function allows to do automatic choice of colors: if single-> grey, if few -> RColorBrewer, if many : gradient green -> grey/red

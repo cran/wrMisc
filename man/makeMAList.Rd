@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeMAList.R
 \name{makeMAList}
 \alias{makeMAList}
-\title{Make MA-List object}
+\title{Make MA-List Object}
 \usage{
 makeMAList(
   mat,
@@ -34,7 +34,7 @@ limma-type "MAList" containing M and A values
 }
 \description{
 \code{makeMAList} extracts sets of data-pairs (like R & G series) and makes MA objects as \code{MA-List object} (eg for ratio oriented analysis).
-The grouping of columns as sets of replicate-measurements is done according to argumnet \code{'MAfac'}.
+The grouping of columns as sets of replicate-measurements is done according to argumnet \code{MAfac}.
 The output is fully compatible to functions of package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} (Bioconductor).
 }
 \details{

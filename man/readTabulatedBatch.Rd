@@ -2,7 +2,7 @@
 % Please edit documentation in R/readTabulatedBatch.R
 \name{readTabulatedBatch}
 \alias{readTabulatedBatch}
-\title{Batch reading of Tabulated Text-Files}
+\title{Batch Reading Of Tabulated Text-Files}
 \usage{
 readTabulatedBatch(
   query,

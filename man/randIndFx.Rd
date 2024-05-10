@@ -4,7 +4,14 @@
 \alias{randIndFx}
 \title{Distance of categorical data (Jaccard, Rand and adjusted Rand index)}
 \usage{
-randIndFx(ma, method = "ARI", adjSense = TRUE, silent = FALSE, callFrom = NULL)
+randIndFx(
+  ma,
+  method = "ARI",
+  adjSense = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{ma}{(matrix) main input for distance calulation}
@@ -13,7 +20,9 @@ randIndFx(ma, method = "ARI", adjSense = TRUE, silent = FALSE, callFrom = NULL)
 
 \item{adjSense}{(logical) allows introducing correlation/anticorrelation (interprete neg distance results as anti)}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

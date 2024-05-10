@@ -2,16 +2,18 @@
 % Please edit documentation in R/colMedSds.R
 \name{colMedSds}
 \alias{colMedSds}
-\title{Standard error of median for each column by bootstrap}
+\title{Standard Error Of Median For Each Column By Bootstrap}
 \usage{
-colMedSds(dat, nBoot = 99, silent = FALSE, callFrom = NULL)
+colMedSds(dat, nBoot = 99, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(numeric) matix}
 
-\item{nBoot}{(integer) number if iterations}
+\item{nBoot}{(integer, length=1) number if iterations}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

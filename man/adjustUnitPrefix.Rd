@@ -6,10 +6,11 @@
 \usage{
 adjustUnitPrefix(
   x,
-  pref = c("z", "a", "f", "p", "n", "u", "m"),
+  pref = c("z", "a", "f", "p", "n", "u", "m", "", "k", "M", "G"),
   unit = "sec",
-  sep = c(".", " ", ""),
-  headingTxt = "",
+  sep = c("_", ".", " ", ""),
+  minTrimNChar = 0,
+  returnType = c("NAifInvalid", "allText"),
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -24,7 +25,9 @@ adjustUnitPrefix(
 
 \item{sep}{(character) separator characters that may appear between integer numeric value and unit description}
 
-\item{headingTxt}{(character) additional text preceeding the numeric part of 'x' to be ingnored/removed}
+\item{minTrimNChar}{(integer) min number of text characters when trimming adjacent text on left and right of main numeric+prefix+unit}
+
+\item{returnType}{(character) set options for retuning results : 'NAifInvalid' .. return NA for invalid parts,'allText' .. return initial text if problem, 'trim'}
 
 \item{silent}{(logical) suppress messages}
 
@@ -33,7 +36,7 @@ adjustUnitPrefix(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function returns a numeric vector with quantities extracted and adjusted to a single type of unit (without the unit description)
+This function returns a character vector (same length as input) with adjusted unified decimal prefix and adjusted numeric content, the numeric content only is also giben in the names of the output
 }
 \description{
 This function provides help converting values with with different unit-prefixes to a single prefix-unit type.
@@ -41,15 +44,26 @@ This can be used to convert a vector of mixed prefixes like 'p' and 'n'.
 Any text to the right of the unit will be ignored.
 }
 \details{
-Please note that the current version recognizes and converts only interger values, decimals or scientific writing won't work.
+The aim of this function if to allow adjusting a vector containing '100pMol' and '1nMol' to '100pMol' and '1000pMol' for better downstream analysis.
+Please note that the current version recognizes and converts only interger values; decimals or scientific writing won't be recognized properly.
 The resultant numeric vector expresses all values as lowest prefix unit level.
 In case of invalid entries \code{NA}s will be returned.
 
-Please note the 'u' is used for 'micro'.
+Please note that decimal/comma digits will not be recognized properly, since the function will consider (by default) the decimal sign as just another separator.
+
+To avoid special characters (which may not work on all operating-systems) the letter 'u' is used for 'micro'.
 }
 \examples{
-adjustUnitPrefix(c("10.psec abc","2 fsec etc"), unit="sec")
+adjustUnitPrefix(c("2.psec abc","20 fsec etc"), unit="sec")
+
+x1 <- c("50_amol", "5_fmol","250_amol","100_amol", NA, "500_amol", "500_amol", "1_fmol")
+adjustUnitPrefix(x1, unit="mol")                   
+
+x2 <- c("abCc 500_nmol ABC", "abEe5_umol", "", "abFF_100_nmol_G", "abGg 2_mol", "abH.1 mmol")
+rbind( adjustUnitPrefix(x2, unit="mol", returnType="allText") , 
+  adjustUnitPrefix(x2, unit="mol", returnType="trim"),
+  adjustUnitPrefix(x2, unit="mol", returnType=""))
 }
 \seealso{
-\code{\link{convToNum}}
+\code{\link{convToNum}}; \code{\link{checkUnitPrefix}}; \code{\link{trimRedundText}}
 }

@@ -8,26 +8,33 @@ checkFilePath(
   fileName,
   path,
   expectExt = "",
-  compressedOption = TRUE,
-  strictExtension = FALSE,
-  stopIfNothing = FALSE,
+  mode = "byFile",
+  compressedOption = NULL,
+  strictExtension = NULL,
+  stopIfNothing = NULL,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
 )
 }
 \arguments{
-\item{fileName}{(character) name of file to be tested; may also include an absolute or relative path}
+\item{fileName}{(character) name of file to be tested; may also include an absolute or relative path; 
+if \code{NULL} and \code{path} as well as \code{expectExt} will take 1st file in given path and proper extension}
 
 \item{path}{(character, length=1) optional separate entry for path of \code{fileName}}
 
-\item{expectExt}{(character) file extension (will not be considerd if \code{""})}
+\item{expectExt}{(character) file extension (will not be considered if \code{""})}
 
-\item{compressedOption}{(logical) also look for .gz compressed files}
+\item{mode}{(character) further details     if function should give error or warning if no files found
+integrates previous argument \code{compressedOption} to also look for look for .gz compressed files; 
+\code{strictExtension} to decide if extension (\code{expectExt}) - if given - should be considered obligatory;
+\code{stopIfNothing} to stop with error if no files found}
 
-\item{strictExtension}{(logical) decide if extesion (\code{expectExt}) - if given - should be considered obligatory}
+\item{compressedOption}{deprected  (logical) also look for .gz compressed files}
 
-\item{stopIfNothing}{(logical) decide if function should give error or warning if no files found}
+\item{strictExtension}{deprected  (logical) decide if extesion (\code{expectExt}) - if given - should be considered obligatory}
+
+\item{stopIfNothing}{deprected, please use argument \code{mode} instead !}
 
 \item{silent}{(logical) suppress messages}
 

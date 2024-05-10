@@ -2,7 +2,7 @@
 % Please edit documentation in R/trimRedundText.R
 \name{.trimFromStart}
 \alias{.trimFromStart}
-\title{Trim from start}
+\title{Trim from start (Deprecated)}
 \usage{
 .trimFromStart(
   x,
@@ -30,11 +30,11 @@
 This function returns a modified character vector
 }
 \description{
-This function allows trimming/removing redundant text-fragments from start
+Deprecated Version - This function allows trimming/removing redundant text-fragments from start
 }
 \examples{
 txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
-.trimFromStart(txt1)
+.trimLeft(txt1)  # replacement
 }
 \seealso{
 \code{\link{trimRedundText}}; Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}

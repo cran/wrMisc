@@ -2,20 +2,26 @@
 % Please edit documentation in R/rowMedSds.R
 \name{rowMedSds}
 \alias{rowMedSds}
-\title{sd of median for each row by bootstrap}
+\title{Estimate sd Of Median For Each Row By Bootstrap}
 \usage{
-rowMedSds(dat, nBoot = 99)
+rowMedSds(dat, nBoot = 99, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(numeric) matix, main input}
 
 \item{nBoot}{(integer) number if iterations for bootstrap}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-This functions returns a (numeric) vector with estimated standard errors
+This functions returns a (numeric) vector with estimated sd values
 }
 \description{
-\code{rowMedSds} determines the stand error (sd) of the median for each row by bootstraping each row of 'dat'.
+This function determines the stand error (sd) of the median for each row by bootstraping each row of 'dat'.
 Note: requires package \href{https://CRAN.R-project.org/package=boot}{boot}
 }
 \examples{
@@ -23,5 +29,5 @@ set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)), ncol=10)
 rowMedSds(dat1) ; plot(rowSds(dat1), rowMedSds(dat1))
 }
 \seealso{
-\code{\link[boot]{boot}}
+For a more flexible version able to handle lists please look at \code{\link{colMedSds}} ,  based on \code{\link[boot]{boot}}
 }

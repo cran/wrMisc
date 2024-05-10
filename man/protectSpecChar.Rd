@@ -8,6 +8,7 @@ protectSpecChar(
   x,
   prot = c(".", "\\\\", "|", "(", ")", "[", "{", "^", "$", "*", "+", "?"),
   silent = TRUE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -17,6 +18,8 @@ protectSpecChar(
 \item{prot}{(character) collection of characters that need to be protected}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

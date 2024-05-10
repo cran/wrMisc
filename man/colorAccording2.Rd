@@ -2,7 +2,7 @@
 % Please edit documentation in R/colorAccording2.R
 \name{colorAccording2}
 \alias{colorAccording2}
-\title{Transform numeric values to color-gradient}
+\title{Transform Numeric Values To Color-Gradient}
 \usage{
 colorAccording2(
   x,
@@ -11,6 +11,8 @@ colorAccording2(
   nEndOmit = NULL,
   revCol = FALSE,
   alpha = 1,
+  silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -27,15 +29,18 @@ colorAccording2(
 
 \item{alpha}{(numeric) optional transparency value (1 for no transparency, 0 for complete opaqueness)}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns a character vector (of same length as x) with color encoding
 }
 \description{
 This function helps making color-gradients for plotting a numerical variable.
-It requires the package 'RColorBrewer' being installed from CRAN. 
-Note : RColorBrewer palettes were not integrated here, since they are not continuous.
+Note : RColorBrewer palettes were not integrated here/yet.
 }
 \examples{
 set.seed(2015); dat1 <- round(runif(15),2)

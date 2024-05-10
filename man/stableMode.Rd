@@ -2,7 +2,7 @@
 % Please edit documentation in R/stableMode.R
 \name{stableMode}
 \alias{stableMode}
-\title{Estimate mode (most frequent value)}
+\title{Estimate Mode (Most Frequent Value)}
 \usage{
 stableMode(
   x,

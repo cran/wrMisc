@@ -4,10 +4,16 @@
 \alias{colSds}
 \title{sd for each column}
 \usage{
-colSds(dat)
+colSds(dat, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{matrix (or data.frame) with numeric values (may contain NAs)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 numeric vector of sd values

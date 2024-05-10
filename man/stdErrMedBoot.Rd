@@ -2,20 +2,26 @@
 % Please edit documentation in R/stdErrMedBoot.R
 \name{stdErrMedBoot}
 \alias{stdErrMedBoot}
-\title{Standard eror of median by boot-strap}
+\title{Standard Eror Of Median by Boot-Strap}
 \usage{
-stdErrMedBoot(x, nBoot = 99)
+stdErrMedBoot(x, nBoot = 9, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{(numeric) vector to estimate median and it's standard error}
 
 \item{nBoot}{(integer) number for iterations}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 This function returns a (numeric) vector with estimated standard error
 }
 \description{
-\code{stdErrMedBoot} estimate standard eror of median by boot-strap approach. 
+\code{stdErrMedBoot} estimate standard eror of median by bootstrap approach. 
 Note: requires package \href{https://CRAN.R-project.org/package=boot}{boot}
 }
 \examples{
@@ -24,5 +30,5 @@ rat1 <- ratioAllComb(ra1[1:9],ra1[10:17])
 median(rat1); stdErrMedBoot(rat1)
 }
 \seealso{
-\code{\link[boot]{boot}}
+\code{\link{colMedSds}} and \code{\link{rowMedSds}}; based on \code{\link[boot]{boot}}
 }

@@ -12,7 +12,8 @@
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
 #' @return This function returns a modified character vector
-#' @seealso Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
+#' @seealso Inverse : Find/keep common text \code{\link{keepCommonText}}; \code{\link{checkUnitPrefix}}; 
+#'    you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 #' @examples
 #' txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
 #' trimRedundText(txt1, side="right")       # trim from right
@@ -23,8 +24,8 @@
 trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent=TRUE, callFrom=NULL, debug=FALSE) {
   ##
   fxNa <- .composeCallName(callFrom, newNa="trimRedundText")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   doTrim <- TRUE
   if(length(txt) <1) message(fxNa,"Problem : 'txt' appears empty, nothing to do") else {
     if(!is.character(txt)) { txt <- try(as.character(txt))
@@ -33,11 +34,11 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
   } 
   ## trimming of heading and tailing white space
   if(length(txt) >0 && spaceElim) { 
-    txt <- gsub(" $","",gsub("^ ","",txt)) 
+    txt <- gsub(" $","", gsub("^ ","",txt)) 
   }
   if(doTrim) { chLe <- nchar(txt)
     if(any(naOmit(chLe) ==0)) { doTrim <- FALSE
-      if(sum(chLe ==0, na.rm=TRUE) + sum(is.na(chLe))==length(txt)) { message(fxNa,"NOTE : all elements appear empty ! Nothing to do ..")
+      if(sum(chLe ==0, na.rm=TRUE) + sum(is.na(chLe)) ==length(txt)) { message(fxNa,"NOTE : all elements appear empty ! Nothing to do ..")
   	  } else if(!silent) message(fxNa,"NOTE : ",sum(chLe==0)," elements appear empty ! Nothing to do ..") }
   	}    
   ## finish checking arguments    
@@ -61,9 +62,9 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
     }
     txt } }
 
-#' Trim from Left
+#' Trim From Left Side
 #'
-#' This function allows trimming/removing redundant text-fragments from left side
+#' This function allows trimming/removing redundant text-fragments from left side.
 #' 
 #' @param x character vector to be treated
 #' @param minNchar (integer) minumin number of characters that must remain
@@ -83,21 +84,18 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
   msg <- c(fxNa,"Some entries are too short for trimming to min ",minNchar," characters, nothing to do")
   if(all(naOmit(nChar > minNchar))) {
     ch1 <- min(nChar, na.rm=TRUE)
-    if(ch1 -1 > minNchar) {
-      ch1 <- (ch1 -minNchar) :1
-      ch1 <- paste0("^",substr(rep(x[which.min(nChar)], length(ch1)), 1, ch1))
-      ch3 <- lapply(gsub("\\.","\\\\.",ch1), grep, x)
-      ch3 <- sapply(ch3, length) ==length(x)
-      if(any(ch3)) x <- substring(x, nchar(ch1[min(which(ch3))]))
-    } else {
-      if(!silent) message(msg) }
+    ch1 <- (ch1 -minNchar) :1
+    ch1 <- paste0("^",substr(rep(x[which.min(nChar)], length(ch1)), 1, ch1))
+    ch3 <- lapply(gsub("\\.","\\\\.",ch1), grep, x)
+    ch3 <- sapply(ch3, length) + sum(is.na(x)) ==length(x)
+    if(any(ch3)) x <- substring(x, nchar(ch1[min(which(ch3))]))
   } else if(!silent) message(msg)
   x
 }
 
-#' Trim from right
+#' Trim From Right Side
 #'
-#' This function allows trimming/removing redundant text-fragments from right side
+#' This function allows trimming/removing redundant text-fragments from right side.
 #' 
 #' @param x character vector to be treated
 #' @param minNchar (integer) minumin number of characters that must remain
@@ -116,22 +114,19 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
   msg <- c(fxNa,"Some entries are too short for trimming to min ",minNchar," characters, nothing to do")
   if(all(naOmit(nChar > minNchar))) {
     ch1 <- min(nChar, na.rm=TRUE)
-    if(ch1 -1 > minNchar) {
-      ch1 <- 1: (ch1 -minNchar) 
-      ch2 <- x[which.min(nChar)]
-      ch1 <- paste0(substr(paste0(rep(ch2, length(ch1))), nchar(ch2)- ch1 +1, nchar(ch2)),"$")
-      ch3 <- lapply(gsub("\\.","\\\\.",ch1), grep, x)
-      ch3 <- sapply(ch3, length) ==length(x)
-      if(any(ch3)) x <- substring(x, 1, nchar(x) - nchar(ch1[which.max(which(ch3))]) +1)
-    } else {
-      if(!silent) message(msg) }
+    ch1 <- 1: (ch1 -minNchar) 
+    ch2 <- x[which.min(nChar)]
+    ch1 <- paste0(substr(paste0(rep(ch2, length(ch1))), nchar(ch2)- ch1 +1, nchar(ch2)),"$")
+    ch3 <- lapply(gsub("\\.","\\\\.",ch1), grep, x)
+    ch3 <- sapply(ch3, length) + sum(is.na(x)) ==length(x)
+    if(any(ch3)) x <- substring(x, 1, nchar(x) - nchar(ch1[which.max(which(ch3))]) +1)
   } else if(!silent) message(msg) 
   x
 }
         
-#' Trim from start
+#' Trim from start (Deprecated)
 #'
-#' This function allows trimming/removing redundant text-fragments from start
+#' Deprecated Version - This function allows trimming/removing redundant text-fragments from start
 #' 
 #' @param x character vector to be treated
 #' @param ... more vectors to be treated
@@ -143,14 +138,16 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
 #' @seealso \code{\link{trimRedundText}}; Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 #' @examples
 #' txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
-#' .trimFromStart(txt1)
+#' .trimLeft(txt1)  # replacement
 #' @export
 .trimFromStart <- function(x,..., minNchar=1, silent=TRUE, debug=FALSE, callFrom=NULL) {
+  ## deprecated version
   ## trim, ie remove redundant characters from beginning
   ## 'minNchar' min number of characters that should remain
   y <- list(...)
   fxNa <- .composeCallName(callFrom, newNa=".trimFromStart")
-  if(length(x) <  1) message(fxNa," Problem : 'x' appears empty") else {
+  .Deprecated(new=".trimLeft", package="wrMisc", msg="The function .trimFromStart() has been deprecated and replaced by .trimLeft()") 
+  if(length(x) < 1) {if(!silent) message(fxNa," Problem : 'x' appears empty")} else {
     exclLiNa <- c("minNchar","silent","callFrom")
     exclLiNa2 <- c(sapply(nchar(exclLiNa[1]):2, function(z) substr(exclLiNa[1],1,z)),
       sapply(nchar(exclLiNa[2]):2, function(z) substr(exclLiNa[2],1,z)))
@@ -162,9 +159,9 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
     while(length(unique(substr(x, 1, 1))) <2 & min(nchar(x),na.rm=TRUE) > minNchar) x <- substr(x, 2, nchar(x)) }
   x }
 
-#' Trim from end
+#' Trim from end (Deprecated)
 #'
-#' This function allows trimming/removing redundant text-fragments from end
+#' Deprecated Version - This function allows trimming/removing redundant text-fragments from end
 #' 
 #' @param x character vector to be treated
 #' @param ... more vectors to be treated
@@ -175,13 +172,14 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
 #' @seealso \code{\link{trimRedundText}}; Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 #' @examples
 #' txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
-#' .trimFromEnd(txt1)
+#' .trimRight(txt1)
 #' @export
 .trimFromEnd <- function(x,..., callFrom=NULL, debug=FALSE, silent=TRUE) {
   ## trim, ie remove redundant characters from beginning
   ## note: since aruguments collected by
   ## less elaborated than .trimFromStart()
   fxNa <- .composeCallName(callFrom,newNa=".trimFromEnd")
+  .Deprecated(new=".trimRight", package="wrMisc", msg="The function .trimFromEnd() has been deprecated and replaced by .trimRight()") 
   y <- list(...)
   if(length(y) >0) {if(any(c("callFrom","silent") %in% names(y))) {
     y <- y[-1*which(names(y) %in% c("callFrom","callFr","sil","silent"))]}}

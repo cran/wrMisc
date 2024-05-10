@@ -2,7 +2,7 @@
 % Please edit documentation in R/convToNum.R
 \name{convToNum}
 \alias{convToNum}
-\title{Convert vector to numeric}
+\title{Convert Vector To Numeric}
 \usage{
 convToNum(
   x,
@@ -13,13 +13,14 @@ convToNum(
   euroStyle = TRUE,
   sciIncl = TRUE,
   callFrom = NULL,
-  silent = TRUE
+  silent = TRUE,
+  debug = FALSE
 )
 }
 \arguments{
 \item{x}{vector to be converted}
 
-\item{autoConv}{(logical) simple automatic conversion based on \code{as.numeric}; if \code{TRUE} all other arguments exept  \code{spaceRemove} will not be considered}
+\item{autoConv}{(logical) simple automatic conversion based on function \code{as.numeric}; if \code{TRUE} all other arguments exept  \code{spaceRemove} will not be considered}
 
 \item{spaceRemove}{(logical) to remove all heading and trailing (white) space (until first non-space character)}
 
@@ -34,6 +35,8 @@ convToNum(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 This function returns a numeric vector (or matrix (if 'x' is matrix))

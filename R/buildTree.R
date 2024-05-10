@@ -11,7 +11,8 @@
 #' @param startFr (integer) index for 1st node (typically =1 if 'disDat' sorted by "beg"), should point to a terminal node for consective growing of branches
 #' @param posCo (character) colnames specifying the begin & start sites in 'disDat', if NULL 1st & 2nd col will be used
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a list with $paths (branches as matrix with columns 'sumLen' & 'n'), $usedNodes (character vector of all names used to build tree) and $tree (object from data.tree)
 #' @seealso package \href{https://CRAN.R-project.org/package=data.tree}{data.tree} original function used \code{\link[data.tree]{Node}}; in this package : for exploiting edge/tree related issues \code{\link{simpleFragFig}}, \code{\link{countSameStartEnd}} and \code{\link{contribToContigPerFrag}}, 
 #' @examples
@@ -20,11 +21,11 @@
 #' buildTree(frag2)
 #' countSameStartEnd(frag2)
 #' @export
-buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, callFrom=NULL){
+buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="buildTree")
-  if(!isTRUE(silent)) silent <- FALSE
-  datOK <- TRUE
-  if(length(disDat) <1) datOK <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
+  datOK <- length(disDat) >0
   if(length(dim(disDat)) <2) disDat <- matrix(disDat, nrow=1, dimnames=list("1",names(disDat))) # assume as single entry
   rowNa <- rownames(disDat)
   if(is.null(rowNa)) rowNa <- 1:nrow(disDat)
@@ -36,16 +37,17 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
   chSlash <- grep("/", rownames(disDat))
   if(length(chSlash) >0) message(fxNa,"TROUBLE ahead, names of nodes should NOT contain '/' !!")
   disDat <- cbind(disDat[,1:2], le=disDat[,2] -disDat[,1] +1)            # add col for length # if(ncol(disDat)==2)   
-  if(!requireNamespace("data.tree", quietly=TRUE)) {
-    warning(fxNa,"Package 'data.tree' missing ! Please install from CRAN first .. returning NULL)")
-    datOK <- FALSE
-  } else {
+
+  if(datOK && requireNamespace("data.tree", quietly=TRUE)) {
   	## check if package is functioning  
     setX <- try(data.tree::Node$new("_Root_"))        # virtual node as generic root,  need to avoid reserved names (see NODE_RESERVED_NAMES_CONST)
     if(inherits(setX, "try-error")) { datOK <- FALSE
       warning(fxNa,"Problem running package data-tree : Can't even create a new generic node")}
+  } else { datOK <- FALSE
+    if(!silent) message(fxNa,"NOTE: Package 'data.tree' missing ! Please install from CRAN first .. returning NULL)")   
   }   
-  if(datOK) {  
+
+  if(datOK && requireNamespace("data.tree", quietly=TRUE)) {  
   	## main  
     ## check for dupl
     chDup <- duplicated(paste(disDat[,1],disDat[,2],sep="_"), fromLast=FALSE)
@@ -67,7 +69,7 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
     ## check startFr
     startFr <- if(is.null(startFr)) rootBase[1] else try(as.integer(startFr))
     if(inherits(startFr, "try-error")) stop(fxNa,": 'startFr' should be NULL or integer (of length 1) !")
-    if(!startFr %in% rootBase) { if(!silent) message(fxNa,": choice of 'startFr' is not close to root, resetting to ",rootBase[1]," ('",names(rootBase)[1],"')")
+    if(!startFr %in% rootBase) { if(!silent) message(fxNa,"Choice of 'startFr' is not close to root, resetting to ",rootBase[1]," ('",names(rootBase)[1],"')")
       startFr <- rootBase[1] } 
     names(startFr) <- rownames(disDat)[startFr]
     tm1 <- disDat[,1] == disDat[startFr,2] +1              # startFr has following
@@ -140,14 +142,14 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
       tm$iter <- tm$iter +1
       j <- which(tm$lo)[1]
       addToObj <- if(tm$iter==2) newNodeNa else tm$preN[j]    
-      assign(paste0("b",tm$it[j],"_",j), get(addToObj)$AddChild(rownames(tm$disDat)[j],len=tm$disDat[j,3])) 
+      assign(paste0("b",tm$it[j],"_",j), get(addToObj)$AddChild(rownames(tm$disDat)[j], len=tm$disDat[j,3])) 
       tm$lo[j] <- FALSE                                          # this one is done ...
       tm0 <- tm$disDat[,1]== tm$disDat[j,2] +1                    # test for potential children
       if(any(tm0)) {z <- which(tm0);                        
         tm$lo[z] <- TRUE                                        # set to-do status for children
         tm$it[z] <- tm$it[j]+1                                  # tree-level 
         tm$preN[z] <- paste0("b",tm$it[j],"_",j)                # report (prev)name of node
-        reOrd <- c(z,which(!tm0))                               # need to change order to treat children next (for treatig correctly branched trees)
+        reOrd <- c(z, which(!tm0))                               # need to change order to treat children next (for treatig correctly branched trees)
         tm$lo <- tm$lo[reOrd]
         tm$it <- tm$it[reOrd]
         tm$preN <- tm$preN[reOrd]

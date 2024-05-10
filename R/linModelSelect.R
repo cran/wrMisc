@@ -144,11 +144,13 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
         graphics::axis(side=2, las=1, col=1, tick=TRUE, cex.axis=cexYAxis)                                         # left axis
         ptBg <- quantCol
         chPch <- pch %in% c(21:25)
-        if(any(chPch)) { quantCol[which(chPch)] <- grDevices::rgb(0.2,0.2,0.2,0.4) }    
-        chPa <- requireNamespace("wrGraph", quietly=TRUE)
-        if(!chPa) { message(fxNa,": package 'wrGraph' not installed for searching optimal placement of legend")
+        if(any(chPch)) { quantCol[which(chPch)] <- grDevices::rgb(0.2,0.2,0.2,0.4) }
+        if(requireNamespace("wrGraph", quietly=TRUE)) {
+          legLoc <- try(wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc, silent=TRUE)
+        } else {
+          if(!silent) message(fxNa,"NOTE: Package 'wrGraph' not installed from CRAN for searching optimal placement of legend  (setting to default 'bottomright')")
           legLoc <- "bottomright"
-        } else legLoc <- try(wrGraph::checkForLegLoc(dat1, sampleGrp=legLab, showLegend=FALSE)$loc, silent=TRUE)
+        } 
         if(inherits(legLoc, "try-error")) { legLoc <- "bottomright"
            message(fxNa,"Did not succeed in determining optimal legend location")}
         tmp <- try(graphics::legend(legLoc, legLab, pch=legPch, col=legCol, text.col=legCol, pt.bg=ptBg, cex=cexLeg, xjust=0.5,yjust=0.5), silent=TRUE)        # as points

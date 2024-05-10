@@ -1,4 +1,4 @@
-#' Html special character conversion
+#' Html Special Character Conversion
 #'
 #' Converts 'txt' so that (the most common) special characters (like 'beta','micro','square' etc) will be displayed correctly whe used for display in html (eg at mouse-over).
 #' Note : The package \href{https://CRAN.R-project.org/package=stringi}{stringi} is required for the conversions (the input will get returned if \code{stringi} is not available).
@@ -19,21 +19,27 @@
 #' @export
 htmlSpecCharConv <- function(txt, silent=FALSE, callFrom=NULL, debug=FALSE) {
   fxNa <- .composeCallName(callFrom, newNa="htmlSpecCharConv")
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
-
-  if(!requireNamespace("stringi", quietly=TRUE)) {
-    message(fxNa,"Package 'stringi' needed for conversion not found ! Please install from CRAN. Returning initial 'txt'")
-  } else {
-    speCh <- c("\\u00b5","\\u00ba","\\u00b9","\\u00b2","\\u00b3",beta="\\u00df","\\u00e0", ced="\\u00e7",
-      "\\u00e8","\\u00e9", ae="\\u00e2","\\u00f6","\\u00fc","\\u00f7","\\u00f5",x="\\u00d7")
-    conv <- try(stringi::stri_unescape_unicode(speCh), silent=TRUE) 
-    if(inherits(conv, "try-error")) { warning(fxNa,": UNABLE to tun stringi::stri_unescape_unicode() !"); txt <- NULL
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
+  if(length(txt) >0){  
+    if(!is.character(txt)) txt <- try(as.character(txt))
+    if(inherits(txt, "try-error")) { warning(fxNa,"Invalid inout format (can't transform into text !)"); txt <- NULL }
+  } 
+  if(length(txt) >0){    
+    if(requireNamespace("stringi", quietly=TRUE)) {
+      speCh <- c("\\u00b5","\\u00ba","\\u00b9","\\u00b2","\\u00b3",beta="\\u00df","\\u00e0", ced="\\u00e7",
+        "\\u00e8","\\u00e9", ae="\\u00e2","\\u00f6","\\u00fc","\\u00f7","\\u00f5",x="\\u00d7")
+      conv <- try(stringi::stri_unescape_unicode(speCh), silent=TRUE) 
+      if(inherits(conv, "try-error")) { warning(fxNa,": UNABLE to tun stringi::stri_unescape_unicode() !"); txt <- NULL
+      } else {
+        conv <- matrix(c(conv, "&micro","&ordm","&sup1","&sup2","&sup3","&szlig",          
+          "&agrave","&ccedil","&egrave","&eacute","&auml", "&ouml","&uuml","&divide","&otilde","&times"), ncol=2)  
+        conv <- rbind(conv, c('"','&quot'))
+        for(i in 1:nrow(conv)) { che <- grep(conv[i,1], txt)
+          if(length(che) >0) txt[che] <- gsub(conv[i,1], conv[i,2], txt[che]) } } 
     } else {
-      conv <- matrix(c(conv, "&micro","&ordm","&sup1","&sup2","&sup3","&szlig",          
-        "&agrave","&ccedil","&egrave","&eacute","&auml", "&ouml","&uuml","&divide","&otilde","&times"), ncol=2)  
-      conv <- rbind(conv, c('"','&quot'))
-      for(i in 1:nrow(conv)) { che <- grep(conv[i,1], txt)
-        if(length(che) >0) txt[che] <- gsub(conv[i,1], conv[i,2], txt[che]) } } }
+      if(!silent) message(fxNa,"NOTE: Package 'stringi' needed for conversion not found ! Please install first from CRAN. Returning initial 'txt'  (returning initial txt)")
+    }
+  }
   txt }
 

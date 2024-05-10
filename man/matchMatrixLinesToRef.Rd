@@ -7,6 +7,7 @@
 matchMatrixLinesToRef(
   mat,
   ref,
+  exclCol = NULL,
   addRef = TRUE,
   inclInfo = FALSE,
   silent = FALSE,
@@ -18,6 +19,8 @@ matchMatrixLinesToRef(
 \item{mat}{(matrix or data.frame) main input, all columns of \code{mat} will be tested for (partial) matching of \code{ref}}
 
 \item{ref}{(character, length must match ) reference for trying to match each of the columns of  \code{mat}}
+
+\item{exclCol}{(character or integer) column-name or -index of column to ignore/exclude when looking for matches}
 
 \item{addRef}{(logical), if \code{TRUE} the content of \code{ref} will be added to  \code{mat} as additional column}
 

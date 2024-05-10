@@ -32,8 +32,8 @@
 moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR","Mval","means"), testOrientation="=", silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="moderTestXgrp")
   runTest <- TRUE
-  if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
+    if(!isTRUE(silent)) silent <- FALSE }
   if(!isFALSE(limmaOutput)) limmaOutput <- TRUE
   if(any(length(dat) <1, length(dim(dat)) !=2, dim(dat) < c(1,3))) { runTest <- FALSE
     warning(fxNa,"Invalid argument 'dat'; must be matrix or data.frame with min 1 lines and 3 columns") }
@@ -42,22 +42,22 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       warning(fxNa,"Check parameters: Number of columns of 'dat' doesn't match to length of 'grp'") }}  
   if(runTest) {  
     if(!is.factor(grp)) grp <- as.factor(grp)
-    if(length(levels(grp)) <2) stop(" Need at least 2 groups in argument 'grp'")
+    if(length(levels(grp)) <2) stop("Need at least 2 groups in argument 'grp'")
     ## check packae dependencies 
     packages <- c("limma", "fdrtool", "qvalue")
     checkPkg <- function(pkg) requireNamespace(pkg, quietly=TRUE)
     checkPkgs <- sapply(packages, checkPkg)
-    if(!checkPkgs[1]) { runTest <- FALSE; warning(fxNa,"Package 'limma' not found ! Unable to run tests. Please install first from Bioconductor")} } 
+    if(!checkPkgs[1]) { runTest <- FALSE; message(fxNa,"NOTE: Package 'limma' not found ! Unable to run tests. Please install first from Bioconductor")} } 
   if(debug) {message(fxNa,"mTX1"); mTX1 <- list(dat=dat,grp=grp,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest)}
     
-  if(runTest) {
-    if(limmaOutput & length(addResults) >0) if("all" %in% addResults) addResults <- c("BH", "BY","lfdr","qValue","bonferroni","Mval","means","nonMod")
-    if(!checkPkgs[2] & any("lfdr" %in% tolower(addResults))) {
+  if(runTest && requireNamespace("limma")) {
+    if(limmaOutput && length(addResults) >0) if("all" %in% addResults) addResults <- c("BH", "BY","lfdr","qValue","bonferroni","Mval","means","nonMod")
+    if(!checkPkgs[2] && any("lfdr" %in% tolower(addResults))) {
       if(!silent) message(fxNa,"Package 'fdrtool' not found, omitting .. Please install from CRAN for enabeling 'lfdr'")
-      addResults <- addResults[which(!tolower(addResults) %in% "lfdr")] }
-    if(!checkPkgs[3] & any(c("qvalue","qval") %in% tolower(addResults))) {
+      addResults <- addResults[-which(tolower(addResults) %in% "lfdr")] }
+    if(!checkPkgs[3] && any(c("qvalue","qval") %in% tolower(addResults))) {
       if(!silent) message(fxNa,"Package 'qvalue' not found, omitting .. Please install from Bioconductor for enabeling 'qValue'")
-      addResults <- addResults[which(!tolower(addResults) %in% c("qvalue","qval"))] }
+      addResults <- addResults[-which(tolower(addResults) %in% c("qvalue","qval"))] }
     if(debug) {message(fxNa,"mTX2")}
     ## treat non-unique row-names ?
 
@@ -82,13 +82,13 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
     fit0 <- try(limma::lmFit(dat[globFilt,], datDesign), silent=TRUE)          # testing part 1
     if(inherits(fit0, "try-error")) { runTest <- FALSE
        warning(fxNa," Problem running lmFit(), unable to run tests; check if package 'limma' is properly installed !")}
-    if(debug) {message(fxNa,"mTX4")}
-       
-  }  
-  if(runTest) {
+    if(debug) {message(fxNa,"mTX4")}       
+  } else runTest <- FALSE
+
+  if(runTest && requireNamespace("limma")) {
     fit1 <- limma::eBayes(limma::contrasts.fit(fit0, contrasts=contr.matr))  # variant to run all contrasts at same time
     compNa <- colnames(fit1$contrasts)
-    if(is.null(compNa) & !silent) message(fxNa," Note: Could not find names of (multiple) comparisons !")
+    if(is.null(compNa) && !silent) message(fxNa," Note: Could not find names of (multiple) comparisons !")
     fit1$means <- rowGrpMeans(dat, grp) 
     ## separate running of contrasts, like gxTools, need then to extract & combine all pValues
     chNA <- colSums(is.na(fit1$p.value))
@@ -109,6 +109,8 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
     }
     if(is.null(colnames(fit1$t))) colnames(fit1$t) <- compNa
     if(is.null(colnames(fit1$p.value))) colnames(fit1$p.value) <- compNa
+    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue") && !silent) message(fxNa,"NOTE: package 'qvalue' not installed from CRAN, can't calulate ...")
+
     ## add various multiple testing corrections
     if(!limmaOutput) out <- fit1$p.value[,2] else { out <- fit1
       ## further inspect & correct values of 'addResults' ?
@@ -117,9 +119,9 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
         apply(out$p.value, 2, stats::p.adjust, meth="BH")} else stats::p.adjust(out$p.value, meth="BH")
       if("BY" %in% toupper(addResults)) out$BY <- if(is.matrix(out$p.value)) {
         apply(out$p.value, 2, stats::p.adjust, meth="BY")} else stats::p.adjust(out$p.value, meth="BY")
-      if("lfdr" %in% tolower(addResults)) {out$lfdr <- if(is.matrix(out$p.value)) {
+      if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool")) {out$lfdr <- if(is.matrix(out$p.value)) {
         apply(out$p.value, 2, pVal2lfdr)} else pVal2lfdr(out$p.value) }    
-      if(any(c("qval","qvalue") %in% tolower(addResults))) { out$qVal <- if(is.matrix(out$p.value)) {
+      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) { out$qVal <- if(is.matrix(out$p.value)) {
         try(apply(out$p.value, 2, function(x) qvalue::qvalue(x,lfdr.out=TRUE)$lfdr), silent=TRUE)} else try(qvalue::qvalue(out$p.value,lfdr.out=TRUE)$lfdr, silent=TRUE) 
         if(inherits(out$qVal, "try-error")) { 
           if(!silent) message(fxNa," Problem with pi0 estimation, setting pi0=1 like BH-FDR")
@@ -143,26 +145,26 @@ moderTestXgrp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       if(any(c("FDR","BH") %in% toupper(addResults))) {
         if(length(dim(out$nonMod.p))==2) { out$nonMod.FDR <- apply(out$nonMod.p, 2, stats::p.adjust, method="BH")
         colnames(out$nonMod.FDR)  <- compNa } else out$nonMod.FDR <- stats::p.adjust(out$nonMod.p, method="BH")
-        }
+      }
       if(any("BY" %in% toupper(addResults))) {
         if(length(dim(out$nonMod.p))==2) { out$nonMod.BY <- apply(out$nonMod.p, 2, stats::p.adjust, method="BY")
         colnames(out$nonMod.BY)  <- compNa } else out$nonMod.BY <- stats::p.adjust(out$nonMod.p, method="BY")
-        }
-      if(any("lfdr" %in% tolower(addResults))) {
+      }
+      if(any("lfdr" %in% tolower(addResults)) && requireNamespace("fdrtool")) {
         if(length(dim(out$nonMod.p))==2) { out$nonMod.lfdr <- apply(out$nonMod.p, 2, pVal2lfdr)
         colnames(out$nonMod.lfdr)  <- compNa } else out$nonMod.lfdr <- pVal2lfdr(out$nonMod.p)
-        }
-      if(any(c("qval","qvalue") %in% tolower(addResults))) {
+      }
+      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) {
         out$nonMod.qVal <- if(length(dim(out$nonMod.p))==2) try(apply(out$nonMod.p, 2, qvalue::qvalue), silent=TRUE) else try(qvalue::qvalue(out$nonMod.p), silent=TRUE)
-        if(inherits(out$nonMod.qVal, "try-error")) { if(!silent) message(fxNa," Problem with pi0 estimation (non-shrinked p-values) for qValue, setting pi0=1 like BH-FDR")
+        if(inherits(out$nonMod.qVal, "try-error")) { if(!silent) message(fxNa,"Problem with pi0 estimation (non-shrinked p-values) for qValue, setting pi0=1 like BH-FDR")
           out$nonMod.qVal <- if(length(dim(out$nonMod.p))==2) apply(out$nonMod.p, 2, qvalue::qvalue,pi0=1, lfdr.out=TRUE) else qvalue::qvalue(out$nonMod.p,pi0=1, lfdr.out=TRUE)
         }
         if(length(dim(out$nonMod.p))==2) colnames(out$nonMod.qVal)  <- compNa 
-        }
+      }
       if(any(c("bonferroni","bonf") %in% tolower(addResults))) {
         if(length(dim(out$nonMod.p))==2) { out$nonMod.bonf <- apply(out$nonMod.p, 2, stats::p.adjust, method="bonferroni")
         colnames(out$nonMod.bonf)  <- compNa } else out$nonMod.lfdr <- stats::p.adjust(out$nonMod.p, method="bonferroni")
-        }
       }
+    }
     out } }  
    

@@ -43,5 +43,6 @@ txt2 <- c("ddd_ab","ddd_bcd","ddd_cde")
 trimRedundText(txt2, side="left")        # trim from left 
 }
 \seealso{
-Inverse : Find/keep common text \code{\link{keepCommonText}};  you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
+Inverse : Find/keep common text \code{\link{keepCommonText}}; \code{\link{checkUnitPrefix}}; 
+   you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 }
