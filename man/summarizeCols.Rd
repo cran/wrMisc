@@ -7,6 +7,8 @@
 summarizeCols(
   matr,
   meth = "median",
+  refCol = NULL,
+  nEqu = FALSE,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -15,7 +17,11 @@ summarizeCols(
 \arguments{
 \item{matr}{data.frame matrix of data to be summarized by comlumn (may do different method for text and numeric comlumns)}
 
-\item{meth}{(character) summarization method (eg 'maxLast','minLast','maxLast','maxAbsLast', 'minLast', 'medianComplete' or 'meanComplete')}
+\item{meth}{(character) summarization method (eg 'min','max','mean','aver','median','first','last','maxOfRef','minOfRef','maxAbsLast','minAbsLast', 'medianComplete' or 'meanComplete')}
+
+\item{refCol}{(character or integr) column to be used as reference}
+
+\item{nEqu}{(logical) if \code{TRUE}, add additional column indicating the number of equal lines for choice (only with min or max)}
 
 \item{silent}{(logical) suppress messages}
 
@@ -28,19 +34,23 @@ vector with summary for each column
 }
 \description{
 \code{summarizeCols} summarizes all columns of matrix (or data.frame).
-In case of text-columns the sorted middle (~median) will be given, unless 'maxLast', 'minLast',
- 'maxLast','maxAbsLast' or 'minLast' .. consider only last column of 'matr' : choose from all columns the line where (max of) last col is at min;
+In case of text-columns the sorted middle (~median) will be given, unless 'maxAbsLast', 'minAbsLast',
+ .. consider only last column of 'matr' : choose from all columns the line where (max of) last col is at min;
  'medianComplete' or 'meanComplete' consideres only lines/rows where no NA occur (NA have influence other columns !)
+}
+\details{
+The argument \code{method} allows options that treat (summarize) all columns independently or to select one line (based on argulent \code{refCol})
 }
 \examples{
 t1 <- matrix(round(runif(30,1,9)), nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
 summarizeCols(t1, me="median")
-t(sapply(by(t1,rownames(t1), function(x) x), summarizeCols,me="maxLast"))
+t(sapply(by(t1,rownames(t1), function(x) x), summarizeCols,me="maxAbsLast"))
 t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
   matrix(round(runif(30,-3,2),1), ncol=2), stringsAsFactors=FALSE)
 by(t3,t3[,1], function(x) x)
-t(sapply(by(t3,t3[,1], function(x) x), summarizeCols,me="maxAbsLast"))
+by(t3,t3[,1], function(x) summarizeCols(x, me="maxAbsLast"))
+t(sapply(by(t3,t3[,1], function(x) x), summarizeCols, me="maxAbsLast"))
 }
 \seealso{
-\code{rowMeans} in \code{\link[base]{colSums}}
+\code{rowMeans} in \code{\link[base]{colSums}}; if data has subgroups to be used in a \code{tapply()}-way please see \code{\link{makeNRedMatr}}
 }

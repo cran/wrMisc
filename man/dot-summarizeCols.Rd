@@ -9,25 +9,38 @@
   me = c("median", "medianComplete", "mean", "meanComplete", "aver", "average", "min",
     "max", "maxOfRef", "minOfRef", "maxAbsOfRef", "lastLi", "last", "firstComplete",
     "first", "firstLi", "summary"),
-  vectAs1row = TRUE
+  nEq = FALSE,
+  vectAs1row = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
 )
 }
 \arguments{
 \item{x}{data.frame matrix of data to be summarized by comlumn}
 
-\item{me}{(character, length=1) summarization method (eg 'maxLast','minLast','maxLast','maxAbsLast', 'minLast', 'medianComplete' or 'meanComplete')}
+\item{me}{(character, length=1) summarization method (eg 'min','max','mean','median', 'medianComplete' or 'meanComplete')}
+
+\item{nEq}{(logical) if TRUE, add additional column indicating the number of equal lines for choice (only with min or max)}
 
 \item{vectAs1row}{(logical) if TRUE will interprete non-matrix 'x' as matrix with 1 row (correct effect of automatic conversion when extracting 1 line)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-vector with summary for each column
+vector with summary for each column (unless 'me=="summary"', in this case a matrix or list will be returned )
 }
 \description{
 This function summarizes columns of matrix (or data.frame) 'x' using apply
-Note, it cannot handle character entries !  (all results will be NA)
+In case of character entries the 'median' of sorted values will be returned
 }
 \examples{
-t1 <- matrix(round(runif(30,1,9)), nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]  
+m1 <- matrix(c(28,27,11,12,11,12), nrow=2, dimnames=list(1:2,c("y","x","ref")))
+.summarizeCols(m1, me="median")
 }
 \seealso{
 \code{summarizeCols}

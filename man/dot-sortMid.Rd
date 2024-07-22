@@ -15,10 +15,11 @@
 This function returns a numeric verctor
 }
 \description{
-This function chooses the (first) most frequent or  middle of sorted vector
+This function chooses the (first) most frequent or  middle of sorted vector, similar to the concept of \code{mode}
 }
 \examples{
 .sortMid(11:14)
+.sortMid(rep("b",3))
 }
 \seealso{
 simple/partial functionality in \code{\link{summarizeCols}},  \code{\link{checkSimValueInSer}}

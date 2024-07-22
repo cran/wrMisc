@@ -337,10 +337,25 @@ t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
   matrix(round(runif(30,-3,2),1), nc=2), stringsAsFactors=FALSE)
   
 # First we split the data.frame in list  
-by(t3,t3[,1],function(x) x)
+by(t3,t3[,1], function(x) x)
 t(sapply(by(t3,t3[,1],function(x) x), summarizeCols, me="maxAbsOfRef"))
 (xt3 <- makeNRedMatr(t3, summ="mean", iniID="ref"))
 (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxAbsOfRef")), iniID="ref"))
+
+## ----makeNRedMatr2, echo=TRUE-------------------------------------------------
+set.seed(2024)
+df2 <- data.frame(transcrID=paste("TrID", 101:124, sep=""), geneID=paste("geID",rep(201:206,each=4)), 
+  geneLe=round(runif(24, min=50, max=1500)), a=101:124, b=224:201)
+df2 <- df2[-1*c(1,4:7,12:15),]  
+
+(dfLongest <- makeNRedMatr(df2, summ=unlist(list(X1="maxOfRef")), iniID="geneID"))
+
+ summarizeCols(df2[1:2,c(1:5,3)], me="min")  # OK
+ summarizeCols(df2[1:2,c(1:5,3)], me="mean")  # OK
+ summarizeCols(df2[1:2,c(1:5,3)], me="maxOfRef")  # OK
+ summarizeCols(df2[1:6,c(1:5,3)], me="maxOfRef")
+
+(xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxOfRef")), iniID=c("ref")))  
 
 ## ----combineRedBasedOnCol, echo=TRUE------------------------------------------
 matr <- matrix(c(letters[1:6],"h","h","f","e",LETTERS[1:5]), ncol=3,
@@ -529,6 +544,11 @@ set.seed(2021)
 x <- sample(letters, 50000, replace=TRUE)
 stableMode(dat, method="mode")
 stableMode(dat, method="allModes")
+
+## ----protectSpecChar1, echo=TRUE----------------------------------------------
+aa <- c("abc","abcde","ab.c","ab.c.e","ab*c","ab\\d")
+grepl("b.", aa)             # all TRUE
+grepl(protectSpecChar("b."), aa)
 
 ## ----trimRedundText1, echo=TRUE-----------------------------------------------
 txt1 <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
@@ -935,6 +955,11 @@ sapply(ir2, function(x) apply(x, 2, median))
 
 ## ----clu05, echo=TRUE---------------------------------------------------------
 sapply(ir2, colSds)
+
+## ----rmOrphans1, echo=TRUE----------------------------------------------------
+x=c(3:1,3:4,4:6,5:3)
+cbind(x, def=rmOrphans(x), assign1=rmOrphans(x, reassign=TRUE), 
+  assign1=rmOrphans(x, minN=0.2, reassign=TRUE) )
 
 ## ----filterNetw0, echo=TRUE---------------------------------------------------
 

@@ -35,18 +35,21 @@ asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillN
   fxNa <- .composeCallName(callFrom, newNa="asSepList")
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(!isTRUE(silent)) silent <- FALSE
-  namesY <- sub("[[:punct:]].*|[[:space:]].*|","",deparse(substitute(y)))   # reduce to alphanum content
+  namesY <- sub("[[:punct:]].*|[[:space:]].*","",deparse(substitute(y)))   # reduce to alphanum content
+   aSL0 <- list(y=y,asNumeric=asNumeric,minLen=minLen,namesY=namesY)
   if(length(y) >0) {
-    if(!inherits(y,"list")) {
+    if(!is.list(y) || is.data.frame(y)) {    # for data.frame
       y <- .asDF2(y)
       chNam <- if(length(colnames(y)) <1) rep(TRUE, ncol(y)) else colnames(y) %in% ""
       if(any(chNam)) colnames(y)[which(chNam)] <- paste0(namesY,sep,which(chNam))
       y <- as.list(y)
-      if(debug) {message(fxNa,"aSL1  non-list concert to list of length ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,minLen=minLen) }
+      if(debug) {message(fxNa,"aSL1  Non-list concert to list of length ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,minLen=minLen) }
     } else {
+        aSL0b <- list()
       .matr2List <- function(z) as.list(as.data.frame(z))
       chSubLi <- sapply(y, is.list) & !sapply(y, is.data.frame)
-      if(debug) {message(fxNa,"aSL1  list-entry; ini length of 'y' ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,chSubLi=chSubLi) }
+      if(debug) {message(fxNa,"aSL1  list-entry; ini length of 'y' ",length(y)); aSL1 <- list(y=y,asNumeric=asNumeric,chSubLi=chSubLi) }  
+      
       w <- NULL
       ## try to separate sub-lists
       if(length(y) >0 & any(chSubLi)) {                        # run partUnlist() on all sub-lists
@@ -61,7 +64,7 @@ asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillN
           if(any(chNam) & isTRUE(fillNames)) {newNa <- paste(namesY,which(chNam),sep=sep)
             if(any(newNa %in% names(y))) newNa <- paste0(namesY,sep,"_",which(chNam))
               names(y)[which(chNam)] <- newNa }
-          if(debug) {message(fxNa,"aSL2   ")}
+          if(debug) {message(fxNa,"aSL2  "); aSL2 <- list(isLi=isLi,chNam=chNam)}
 
           if(any(isLi)) y <- partUnlist(y, silent=silent, debug=debug,callFrom=fxNa)  #[which(chSubLi)])
           ## now need to separate matrix-columns (& check names)
@@ -74,7 +77,7 @@ asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillN
           y <- y[-which(ch2d)]                        # remove matrix parts
           y[length(y) +(1:length(w))] <- w            # attach separated columns
           names(y)[1 +length(y) -(length(w):1)] <- names(w)
-          if(debug) {message(fxNa,"aSL3   length of basic part ",length(y),"   length of matrix-part ",length(w))}
+          if(debug) {message(fxNa,"aSL3   Length of basic part ",length(y),"   length of matrix-part ",length(w))}
 
           ## adjust order
           newOr <- as.list(match(names(iniDim), names(y)))
@@ -85,7 +88,7 @@ asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillN
         }
       }
     }
-    if(debug) {message(fxNa,"aSL4   length of list output (befor minLen-filter) ",length(y))}
+    if(debug) {message(fxNa,"aSL4   Length of list output (befor minLen-filter) ",length(y))}
     ## check length
     chLe <- sapply(y, length) < minLen
     if(any(chLe, na.rm=TRUE)) { y <- y[which(!chLe)]
@@ -93,9 +96,9 @@ asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillN
     ## convert to numeric
     if(isTRUE(asNumeric)) { chMode <- sapply(y, function(x) "numeric" %in% mode(x))
       if(any(!chMode)) y[which(!chMode)] <- lapply(y, convToNum, callFrom=fxNa,silent=silent) }
-    if(debug) {message(fxNa,"aSL5   length of list output (after minLen-filter) ",length(y))}
+    if(debug) {message(fxNa,"aSL5   Length of list output (after minLen-filter) ",length(y))}
   } else if(debug(fxNa,"Empty input, nothing to do"))
-  if(debug) message(fxNa,"returning list of length ",length(y))
+  if(debug) message(fxNa,"Returning list of length ",length(y))
   y }
 
 

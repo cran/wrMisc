@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2024-05-10" />
+<meta name="date" content="2024-07-22" />
 
 <title>Getting started with wrMisc</title>
 
@@ -62,7 +62,7 @@ ul.task-list{list-style: none;}
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2024-05-10</h4>
+<h4 class="date">2024-07-22</h4>
 
 
 <div id="TOC">
@@ -181,6 +181,7 @@ Occuring Value (traditional mode)</a></li>
 </ul></li>
 <li><a href="#Text-Manipulations" id="toc-Text-Manipulations">Text-Manipulations</a>
 <ul>
+<li><a href="#protect-special-characters" id="toc-protect-special-characters">Protect Special Characters</a></li>
 <li><a href="#trimming-redundant-text" id="toc-trimming-redundant-text">Trimming Redundant Text</a></li>
 <li><a href="#extract-common-part-of-text" id="toc-extract-common-part-of-text">Extract Common Part Of
 Text</a></li>
@@ -260,6 +261,7 @@ Determination Of Replicate Structure Based On Meta-Data</a></li>
 Clustering</a></li>
 <li><a href="#characterize-clustering-results" id="toc-characterize-clustering-results">Characterize Clustering
 Results</a></li>
+<li><a href="#remove-or-reassign-orphans" id="toc-remove-or-reassign-orphans">Remove or Reassign Orphans</a></li>
 </ul></li>
 <li><a href="#TreeLikeStructures" id="toc-TreeLikeStructures">Tree-Like
 Structures</a>
@@ -355,7 +357,7 @@ library(&quot;knitr&quot;)
 
 ## This is &#39;wrMisc&#39; version number :
 packageVersion(&quot;wrMisc&quot;)</code></pre>
-<pre><code>## [1] &#39;1.15.0.3&#39;</code></pre>
+<pre><code>## [1] &#39;1.15.1&#39;</code></pre>
 </div>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
@@ -411,7 +413,7 @@ row:</p>
 ##       0       0       0</code></pre>
 <pre class="r"><code>system.time(sd2 &lt;- apply(dat1, 1, sd))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.02    0.00    0.02</code></pre>
+##    0.03    0.00    0.03</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em>
 will run much slower compared to <code>rowSds</code>.</p>
 <p>Note, there is a minor issue with rounding :</p>
@@ -427,7 +429,7 @@ for every row using <code>rowCVs</code> :</p>
 ##       0       0       0</code></pre>
 <pre class="r"><code>system.time(cv2 &lt;- apply(dat1, 1, sd) / rowMeans(dat1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.01    0.00    0.01</code></pre>
+##    0.00    0.01    0.01</code></pre>
 <pre class="r"><code># typically the calculation using rowCVs is much faster
 head(cv1)</code></pre>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -1597,7 +1599,7 @@ filtSizeUniq(list(A=&quot;a&quot;, B=c(&quot;b&quot;,&quot;bb&quot;,&quot;c&quot
   matrix(round(runif(30,-3,2),1), nc=2), stringsAsFactors=FALSE)
   
 # First we split the data.frame in list  
-by(t3,t3[,1],function(x) x)</code></pre>
+by(t3,t3[,1], function(x) x)</code></pre>
 <pre><code>## t3[, 1]: 11
 ##    ref tx  X1   X2
 ## 1   11  a 0.4 -1.1
@@ -1628,29 +1630,71 @@ by(t3,t3[,1],function(x) x)</code></pre>
 ## 10  15  j -1.7  0.0
 ## 15  15  o -1.2 -1.8</code></pre>
 <pre class="r"><code>t(sapply(by(t3,t3[,1],function(x) x), summarizeCols, me=&quot;maxAbsOfRef&quot;))</code></pre>
-<pre><code>##    [,1] [,2] [,3] [,4]
-## 11 11   &quot;a&quot;  0.1  1.2 
-## 12 12   &quot;b&quot;  -0.3 1.8 
-## 13 13   &quot;c&quot;  0.8  -2.4
-## 14 14   &quot;d&quot;  -1.6 -2.6
-## 15 15   &quot;e&quot;  -1.2 -1.8</code></pre>
+<pre><code>##    ref tx  X1   X2  
+## 11 11  &quot;k&quot; 0.1  1.2 
+## 12 12  &quot;g&quot; -0.3 1.8 
+## 13 13  &quot;h&quot; 0.8  -2.4
+## 14 14  &quot;i&quot; -1.6 -2.6
+## 15 15  &quot;o&quot; -1.2 -1.8</code></pre>
 <pre class="r"><code>(xt3 &lt;- makeNRedMatr(t3, summ=&quot;mean&quot;, iniID=&quot;ref&quot;))</code></pre>
 <pre><code>## makeNRedMatr : Common summarization method &#39;mean&#39;, run as batch</code></pre>
 <pre><code>## makeNRedMatr : Summarize redundant based on col &#39;ref&#39;  using method(s) : &#39;mean&#39;, &#39;mean&#39;, &#39;mean&#39; and &#39;mean&#39; yielding 4 cols</code></pre>
 <pre><code>##    ID ref tx         X1         X2 nRedLi
-## 11 11  11  a  0.3666667  0.3666667      3
-## 12 12  12  b  0.1000000  0.5666667      3
-## 13 13  13  c  0.8333333 -0.7333333      3
-## 14 14  14  d  0.5000000 -1.0000000      3
-## 15 15  15  e -1.2666667 -0.4666667      3</code></pre>
+## 11 11  11  f  0.3666667  0.3666667      3
+## 12 12  12  g  0.1000000  0.5666667      3
+## 13 13  13  h  0.8333333 -0.7333333      3
+## 14 14  14  i  0.5000000 -1.0000000      3
+## 15 15  15  j -1.2666667 -0.4666667      3</code></pre>
 <pre class="r"><code>(xt3 &lt;- makeNRedMatr(t3, summ=unlist(list(X1=&quot;maxAbsOfRef&quot;)), iniID=&quot;ref&quot;))</code></pre>
 <pre><code>## makeNRedMatr : Summarize redundant based on col &#39;ref&#39;  using method(s) : &#39;maxAbsOfRef&#39; and col &#39;X1&#39; yielding 4 cols</code></pre>
 <pre><code>##    ref tx  X1   X2   nRedLi
-## 11 11  &quot;a&quot; 0.6  1    3     
+## 11 11  &quot;f&quot; 0.6  1    3     
 ## 12 12  &quot;b&quot; 2    -0.4 3     
-## 13 13  &quot;c&quot; 0.9  1.8  3     
+## 13 13  &quot;m&quot; 0.9  1.8  3     
 ## 14 14  &quot;d&quot; 1.7  0.7  3     
-## 15 15  &quot;e&quot; -1.7 0    3</code></pre>
+## 15 15  &quot;j&quot; -1.7 0    3</code></pre>
+<div id="example-summarize-table-for-longest-of-transcripts" class="section level4">
+<h4>Example : Summarize table for longest of transcripts</h4>
+<p>In the previous example for each subgroup a summarization was
+calculated. In other cases you may just want to select a line according
+to values from a single column. Suppose you want to select the line
+corresponding to the longest transcript.</p>
+<pre class="r"><code>set.seed(2024)
+df2 &lt;- data.frame(transcrID=paste(&quot;TrID&quot;, 101:124, sep=&quot;&quot;), geneID=paste(&quot;geID&quot;,rep(201:206,each=4)), 
+  geneLe=round(runif(24, min=50, max=1500)), a=101:124, b=224:201)
+df2 &lt;- df2[-1*c(1,4:7,12:15),]  
+
+(dfLongest &lt;- makeNRedMatr(df2, summ=unlist(list(X1=&quot;maxOfRef&quot;)), iniID=&quot;geneID&quot;))</code></pre>
+<pre><code>## makeNRedMatr : Which column to use with &#39;maxOfRef&#39; not specified, using last numeric &#39;b&#39;</code></pre>
+<pre><code>## makeNRedMatr : Summarize redundant based on col &#39;geneID&#39;  using method(s) : &#39;maxOfRef&#39; and col &#39;b&#39; yielding 5 cols</code></pre>
+<pre><code>##          transcrID geneID     geneLe a   b   nRedLi
+## geID 201 &quot;TrID102&quot; &quot;geID 201&quot; 515    102 223 2     
+## geID 202 &quot;TrID108&quot; &quot;geID 202&quot; 490    108 217 1     
+## geID 203 &quot;TrID109&quot; &quot;geID 203&quot; 1321   109 216 3     
+## geID 204 &quot;TrID116&quot; &quot;geID 204&quot; 1271   116 209 1     
+## geID 205 &quot;TrID117&quot; &quot;geID 205&quot; 210    117 208 4     
+## geID 206 &quot;TrID121&quot; &quot;geID 206&quot; 119    121 204 4</code></pre>
+<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;min&quot;)  # OK</code></pre>
+<pre><code>##     transcrID geneID     geneLe a     b     geneLe.1
+## out &quot;TrID102&quot; &quot;geID 201&quot; &quot; 515&quot; &quot;102&quot; &quot;222&quot; &quot; 515&quot;</code></pre>
+<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;mean&quot;)  # OK</code></pre>
+<pre><code>##   transcrID   geneID geneLe     a     b geneLe.1
+## 2   TrID102 geID 201    776 102.5 222.5      776</code></pre>
+<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;maxOfRef&quot;)  # OK</code></pre>
+<pre><code>##   transcrID   geneID geneLe   a   b geneLe.1
+## 3   TrID103 geID 201   1037 103 222     1037</code></pre>
+<pre class="r"><code> summarizeCols(df2[1:6,c(1:5,3)], me=&quot;maxOfRef&quot;)</code></pre>
+<pre><code>##    transcrID   geneID geneLe   a   b geneLe.1
+## 11   TrID111 geID 203   1358 111 214     1358</code></pre>
+<pre class="r"><code>(xt3 &lt;- makeNRedMatr(t3, summ=unlist(list(X1=&quot;maxOfRef&quot;)), iniID=c(&quot;ref&quot;)))  </code></pre>
+<pre><code>## makeNRedMatr : Summarize redundant based on col &#39;ref&#39;  using method(s) : &#39;maxOfRef&#39; and col &#39;X1&#39; yielding 4 cols</code></pre>
+<pre><code>##    ref tx  X1   X2   nRedLi
+## 11 11  &quot;f&quot; 0.6  1    3     
+## 12 12  &quot;b&quot; 2    -0.4 3     
+## 13 13  &quot;m&quot; 0.9  1.8  3     
+## 14 14  &quot;d&quot; 1.7  0.7  3     
+## 15 15  &quot;e&quot; -0.9 0.4  3</code></pre>
+</div>
 </div>
 <div id="combinereduce-redundant-lines-based-on-specified-column" class="section level3">
 <h3>Combine/Reduce Redundant Lines Based On Specified Column</h3>
@@ -2412,6 +2456,18 @@ stableMode(dat, method=&quot;mode&quot;)</code></pre>
 <h2>Text-Manipulations</h2>
 <p>There are several packages offering interesting functions for
 manipulating text. Here are a few functions to complement these.</p>
+<div id="protect-special-characters" class="section level3">
+<h3>Protect Special Characters</h3>
+<p>The function <code>protectSpecChar()</code> allows protecting the
+majority of special characters which may influence the outcome of
+<em>grep()</em> and related functions so thay they can be used easier in
+searches using <em>grep()</em> or alike.</p>
+<pre class="r"><code>aa &lt;- c(&quot;abc&quot;,&quot;abcde&quot;,&quot;ab.c&quot;,&quot;ab.c.e&quot;,&quot;ab*c&quot;,&quot;ab\\d&quot;)
+grepl(&quot;b.&quot;, aa)             # all TRUE</code></pre>
+<pre><code>## [1] TRUE TRUE TRUE TRUE TRUE TRUE</code></pre>
+<pre class="r"><code>grepl(protectSpecChar(&quot;b.&quot;), aa)</code></pre>
+<pre><code>## [1] FALSE FALSE  TRUE  TRUE FALSE FALSE</code></pre>
+</div>
 <div id="trimming-redundant-text" class="section level3">
 <h3>Trimming Redundant Text</h3>
 <p>Automatic annotation has the tendency to concatenate many parameters
@@ -3902,6 +3958,31 @@ ir2 &lt;- reorgByCluNo(iris[,-5], irKm$cluster, addInfo=FALSE, retList=TRUE)</co
 <code>cutArrayInCluLike()</code> in section <a href="#WorkingWithArrays">Working with Arrays</a> ‘Working with
 Arrays’.</p>
 </div>
+<div id="remove-or-reassign-orphans" class="section level3">
+<h3>Remove or Reassign Orphans</h3>
+<p>In some some circumstances clusters/groups with very vew individuals
+are not productive during further evalualtions (in particular in the
+context of interaction-netwoks). The function <code>rmOrphans()</code>
+allows identifying and modifying cluster- or group-assignments of such
+very small groups (‘orphans’).</p>
+<p>In the example below a vector of cluster-assignments (‘x’) is treated
+by different options to remove orphans :</p>
+<pre class="r"><code>x=c(3:1,3:4,4:6,5:3)
+cbind(x, def=rmOrphans(x), assign1=rmOrphans(x, reassign=TRUE), 
+  assign1=rmOrphans(x, minN=0.2, reassign=TRUE) )</code></pre>
+<pre><code>##       x def assign1 assign1
+##  [1,] 3   3       3       3
+##  [2,] 2  NA       3       3
+##  [3,] 1  NA       3       3
+##  [4,] 3   3       3       3
+##  [5,] 4   4       4       4
+##  [6,] 4   4       4       4
+##  [7,] 5   5       5       4
+##  [8,] 6  NA       5       4
+##  [9,] 5   5       5       4
+## [10,] 4   4       4       4
+## [11,] 3   3       3       3</code></pre>
+</div>
 </div>
 <div id="TreeLikeStructures" class="section level2">
 <h2>Tree-Like Structures</h2>
@@ -4099,10 +4180,10 @@ space ’ ’ (which I prefer to avoid in file-names). Please look at the
 function’s help-page for all available options.</p>
 <pre class="r"><code>## To get started
 Sys.Date()</code></pre>
-<pre><code>## [1] &quot;2024-05-10&quot;</code></pre>
+<pre><code>## [1] &quot;2024-07-22&quot;</code></pre>
 <pre class="r"><code>## Compact English names (in European order), no matter what your local settings are :
 sysDate() </code></pre>
-<pre><code>## [1] &quot;10may24&quot;</code></pre>
+<pre><code>## [1] &quot;22jul24&quot;</code></pre>
 <p>The table below shows a number of options to write the date in
 English or using local month-names :</p>
 <pre class="r"><code>tabD &lt;- cbind(paste0(&quot;univ&quot;,1:6), c(sysDate(style=&quot;univ1&quot;), sysDate(style=&quot;univ2&quot;), 
@@ -4116,39 +4197,39 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 <tbody>
 <tr class="odd">
 <td align="left">univ1</td>
-<td align="left">10may24</td>
+<td align="left">22jul24</td>
 <td align="left">local1</td>
-<td align="left">10mai24</td>
+<td align="left">22jui24</td>
 </tr>
 <tr class="even">
 <td align="left">univ2</td>
-<td align="left">10May24</td>
+<td align="left">22Jul24</td>
 <td align="left">local2</td>
-<td align="left">10Mai24</td>
+<td align="left">22Jui24</td>
 </tr>
 <tr class="odd">
 <td align="left">univ3</td>
-<td align="left">10May2024</td>
+<td align="left">22July2024</td>
 <td align="left">local3</td>
-<td align="left">10Mai2024</td>
+<td align="left">22Juil.2024</td>
 </tr>
 <tr class="even">
 <td align="left">univ4</td>
-<td align="left">10may2024</td>
+<td align="left">22july2024</td>
 <td align="left">local4</td>
-<td align="left">10mai2024</td>
+<td align="left">22juil.2024</td>
 </tr>
 <tr class="odd">
 <td align="left">univ5</td>
-<td align="left">2024-05-10</td>
+<td align="left">2024-07-22</td>
 <td align="left">local5</td>
-<td align="left">10-mai-2024</td>
+<td align="left">22-juil.-2024</td>
 </tr>
 <tr class="even">
 <td align="left">univ6</td>
-<td align="left">2024-131</td>
+<td align="left">2024-204</td>
 <td align="left">local6</td>
-<td align="left">2024mai10</td>
+<td align="left">2024juil.22</td>
 </tr>
 </tbody>
 </table>
@@ -4156,7 +4237,7 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 </div>
 <div id="session-info" class="section level2">
 <h2>Session-Info</h2>
-<pre><code>## R version 4.4.0 (2024-04-24 ucrt)
+<pre><code>## R version 4.4.1 (2024-06-14 ucrt)
 ## Platform: x86_64-w64-mingw32/x64
 ## Running under: Windows 10 x64 (build 19045)
 ## 
@@ -4175,21 +4256,21 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.59.10   knitr_1.46      wrMisc_1.15.0.3
+## [1] limma_3.60.3  knitr_1.47    wrMisc_1.15.1
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] gtable_0.3.5      jsonlite_1.8.8    dplyr_1.1.4       compiler_4.4.0   
-##  [5] highr_0.10        Rcpp_1.0.12       tidyselect_1.2.1  stringr_1.5.1    
+##  [5] highr_0.11        Rcpp_1.0.12       tidyselect_1.2.1  stringr_1.5.1    
 ##  [9] jquerylib_0.1.4   splines_4.4.0     scales_1.3.0      yaml_2.3.8       
-## [13] fastmap_1.1.1     statmod_1.5.0     plyr_1.8.9        ggplot2_3.5.1    
+## [13] fastmap_1.2.0     statmod_1.5.0     plyr_1.8.9        ggplot2_3.5.1    
 ## [17] R6_2.5.1          generics_0.1.3    BBmisc_1.13       fdrtool_1.2.17   
-## [21] backports_1.4.1   checkmate_2.3.1   tibble_3.2.1      munsell_0.5.1    
-## [25] bslib_0.7.0       pillar_1.9.0      rlang_1.1.3       utf8_1.2.4       
-## [29] stringi_1.8.3     cachem_1.0.8      xfun_0.43         sass_0.4.9       
-## [33] wrGraph_1.3.7     cli_3.6.2         magrittr_2.0.3    digest_0.6.35    
-## [37] grid_4.4.0        lifecycle_1.0.4   vctrs_0.6.5       qvalue_2.35.0    
-## [41] evaluate_0.23     glue_1.7.0        data.table_1.15.4 fansi_1.0.6      
-## [45] colorspace_2.1-0  reshape2_1.4.4    rmarkdown_2.26    tools_4.4.0      
+## [21] backports_1.5.0   checkmate_2.3.1   tibble_3.2.1      munsell_0.5.1    
+## [25] bslib_0.7.0       pillar_1.9.0      rlang_1.1.4       utf8_1.2.4       
+## [29] stringi_1.8.4     cachem_1.1.0      xfun_0.45         sass_0.4.9       
+## [33] wrGraph_1.3.7     cli_3.6.3         magrittr_2.0.3    digest_0.6.36    
+## [37] grid_4.4.0        lifecycle_1.0.4   vctrs_0.6.5       qvalue_2.36.0    
+## [41] evaluate_0.24.0   glue_1.7.0        data.table_1.15.4 fansi_1.0.6      
+## [45] colorspace_2.1-0  reshape2_1.4.4    rmarkdown_2.27    tools_4.4.0      
 ## [49] pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
 </div>
 

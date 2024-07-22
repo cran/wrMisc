@@ -697,10 +697,33 @@ t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
   matrix(round(runif(30,-3,2),1), nc=2), stringsAsFactors=FALSE)
   
 # First we split the data.frame in list  
-by(t3,t3[,1],function(x) x)
+by(t3,t3[,1], function(x) x)
 t(sapply(by(t3,t3[,1],function(x) x), summarizeCols, me="maxAbsOfRef"))
 (xt3 <- makeNRedMatr(t3, summ="mean", iniID="ref"))
 (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxAbsOfRef")), iniID="ref"))
+```
+
+#### Example : Summarize table for longest of transcripts
+
+In the previous example for each subgroup a summarization was calculated.
+In other cases you may just want to select a line according to values from a single column.
+Suppose you want to select the line corresponding to the longest transcript.
+
+
+```{r makeNRedMatr2, echo=TRUE}
+set.seed(2024)
+df2 <- data.frame(transcrID=paste("TrID", 101:124, sep=""), geneID=paste("geID",rep(201:206,each=4)), 
+  geneLe=round(runif(24, min=50, max=1500)), a=101:124, b=224:201)
+df2 <- df2[-1*c(1,4:7,12:15),]  
+
+(dfLongest <- makeNRedMatr(df2, summ=unlist(list(X1="maxOfRef")), iniID="geneID"))
+
+ summarizeCols(df2[1:2,c(1:5,3)], me="min")  # OK
+ summarizeCols(df2[1:2,c(1:5,3)], me="mean")  # OK
+ summarizeCols(df2[1:2,c(1:5,3)], me="maxOfRef")  # OK
+ summarizeCols(df2[1:6,c(1:5,3)], me="maxOfRef")
+
+(xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxOfRef")), iniID=c("ref")))  
 ```
 
 
@@ -1053,6 +1076,16 @@ stableMode(dat, method="allModes")
 ## Text-Manipulations    {#Text-Manipulations}
 
 There are several packages offering interesting functions for manipulating text. Here are a few functions to complement these.
+
+### Protect Special Characters
+The function `protectSpecChar()` allows protecting the majority of special characters which may influence the outcome of _grep()_ and related functions so thay they can be used easier in searches using _grep()_ or alike.
+
+```{r protectSpecChar1, echo=TRUE}
+aa <- c("abc","abcde","ab.c","ab.c.e","ab*c","ab\\d")
+grepl("b.", aa)             # all TRUE
+grepl(protectSpecChar("b."), aa)
+```
+
 
 ### Trimming Redundant Text
 
@@ -1971,6 +2004,19 @@ sapply(ir2, colSds)
 
 Besides, we have already seen the function `cutArrayInCluLike()` in section [Working with Arrays](#WorkingWithArrays) 'Working with Arrays'.
 
+
+### Remove or Reassign Orphans
+
+In some some circumstances clusters/groups with very vew individuals are not productive during further evalualtions (in particular in the context of interaction-netwoks).
+The function `rmOrphans()` allows identifying and modifying cluster- or group-assignments of such very small groups ('orphans').
+
+In the example below a vector of cluster-assignments ('x') is treated by different options to remove orphans :
+
+```{r rmOrphans1, echo=TRUE}
+x=c(3:1,3:4,4:6,5:3)
+cbind(x, def=rmOrphans(x), assign1=rmOrphans(x, reassign=TRUE), 
+  assign1=rmOrphans(x, minN=0.2, reassign=TRUE) )
+```
 
 
 ## Tree-Like Structures   {#TreeLikeStructures}
