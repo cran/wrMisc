@@ -24,7 +24,7 @@ This function may be used to calculate CVs from replicate microtiter plates (eg 
 ie initial matrixes that are the organized into arrays.
 }
 \examples{
-set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
+set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
 head(arrayCV(dat1,byDim=2))
 }
 \seealso{

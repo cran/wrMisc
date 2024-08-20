@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2024-07-22" />
+<meta name="date" content="2024-08-20" />
 
 <title>Getting started with wrMisc</title>
 
@@ -62,7 +62,7 @@ ul.task-list{list-style: none;}
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2024-07-22</h4>
+<h4 class="date">2024-08-20</h4>
 
 
 <div id="TOC">
@@ -183,6 +183,8 @@ Occuring Value (traditional mode)</a></li>
 <ul>
 <li><a href="#protect-special-characters" id="toc-protect-special-characters">Protect Special Characters</a></li>
 <li><a href="#trimming-redundant-text" id="toc-trimming-redundant-text">Trimming Redundant Text</a></li>
+<li><a href="#removing-redundantshared-words" id="toc-removing-redundantshared-words">Removing Redundant/Shared
+Words</a></li>
 <li><a href="#extract-common-part-of-text" id="toc-extract-common-part-of-text">Extract Common Part Of
 Text</a></li>
 <li><a href="#manipulating-enumerator-extensions" id="toc-manipulating-enumerator-extensions">Manipulating
@@ -235,6 +237,7 @@ normalizeThis()</a></li>
 Rows</a></li>
 <li><a href="#matrix-coordinates-of-valuespoints-according-to-filtering" id="toc-matrix-coordinates-of-valuespoints-according-to-filtering">Matrix
 Coordinates Of Values/Points According To Filtering</a></li>
+<li><a href="#trimmed-mean" id="toc-trimmed-mean">Trimmed Mean</a></li>
 </ul></li>
 <li><a href="#StatisticalTesting" id="toc-StatisticalTesting">Statistical Testing</a>
 <ul>
@@ -357,7 +360,7 @@ library(&quot;knitr&quot;)
 
 ## This is &#39;wrMisc&#39; version number :
 packageVersion(&quot;wrMisc&quot;)</code></pre>
-<pre><code>## [1] &#39;1.15.1&#39;</code></pre>
+<pre><code>## [1] &#39;1.15.2&#39;</code></pre>
 </div>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
@@ -413,7 +416,7 @@ row:</p>
 ##       0       0       0</code></pre>
 <pre class="r"><code>system.time(sd2 &lt;- apply(dat1, 1, sd))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.03    0.00    0.03</code></pre>
+##    0.02    0.00    0.01</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em>
 will run much slower compared to <code>rowSds</code>.</p>
 <p>Note, there is a minor issue with rounding :</p>
@@ -429,7 +432,7 @@ for every row using <code>rowCVs</code> :</p>
 ##       0       0       0</code></pre>
 <pre class="r"><code>system.time(cv2 &lt;- apply(dat1, 1, sd) / rowMeans(dat1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.00    0.01    0.01</code></pre>
+##    0.03    0.00    0.04</code></pre>
 <pre class="r"><code># typically the calculation using rowCVs is much faster
 head(cv1)</code></pre>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -473,7 +476,7 @@ sd1Gr[1,] == c(sd(dat1[1,1:3]), sd(dat1[1,4:7]), sd(dat1[1,8:10]))</code></pre>
 <pre class="r"><code># The CV :
 system.time(cv1Gr &lt;- rowGrpCV(dat1, grp1))</code></pre>
 <pre><code>##    user  system elapsed 
-##       0       0       0</code></pre>
+##    0.02    0.00    0.01</code></pre>
 <pre class="r"><code>head(cv1Gr)</code></pre>
 <pre><code>##                A          B          C
 ## [1,] 0.194279471 0.19545033 0.17625186
@@ -1647,12 +1650,12 @@ by(t3,t3[,1], function(x) x)</code></pre>
 ## 15 15  15  j -1.2666667 -0.4666667      3</code></pre>
 <pre class="r"><code>(xt3 &lt;- makeNRedMatr(t3, summ=unlist(list(X1=&quot;maxAbsOfRef&quot;)), iniID=&quot;ref&quot;))</code></pre>
 <pre><code>## makeNRedMatr : Summarize redundant based on col &#39;ref&#39;  using method(s) : &#39;maxAbsOfRef&#39; and col &#39;X1&#39; yielding 4 cols</code></pre>
-<pre><code>##    ref tx  X1   X2   nRedLi
-## 11 11  &quot;f&quot; 0.6  1    3     
-## 12 12  &quot;b&quot; 2    -0.4 3     
-## 13 13  &quot;m&quot; 0.9  1.8  3     
-## 14 14  &quot;d&quot; 1.7  0.7  3     
-## 15 15  &quot;j&quot; -1.7 0    3</code></pre>
+<pre><code>##    ref tx   X1   X2 nRedLi
+## 11  11  f  0.6  1.0      3
+## 12  12  b  2.0 -0.4      3
+## 13  13  m  0.9  1.8      3
+## 14  14  d  1.7  0.7      3
+## 15  15  j -1.7  0.0      3</code></pre>
 <div id="example-summarize-table-for-longest-of-transcripts" class="section level4">
 <h4>Example : Summarize table for longest of transcripts</h4>
 <p>In the previous example for each subgroup a summarization was
@@ -1667,20 +1670,20 @@ df2 &lt;- df2[-1*c(1,4:7,12:15),]
 (dfLongest &lt;- makeNRedMatr(df2, summ=unlist(list(X1=&quot;maxOfRef&quot;)), iniID=&quot;geneID&quot;))</code></pre>
 <pre><code>## makeNRedMatr : Which column to use with &#39;maxOfRef&#39; not specified, using last numeric &#39;b&#39;</code></pre>
 <pre><code>## makeNRedMatr : Summarize redundant based on col &#39;geneID&#39;  using method(s) : &#39;maxOfRef&#39; and col &#39;b&#39; yielding 5 cols</code></pre>
-<pre><code>##          transcrID geneID     geneLe a   b   nRedLi
-## geID 201 &quot;TrID102&quot; &quot;geID 201&quot; 515    102 223 2     
-## geID 202 &quot;TrID108&quot; &quot;geID 202&quot; 490    108 217 1     
-## geID 203 &quot;TrID109&quot; &quot;geID 203&quot; 1321   109 216 3     
-## geID 204 &quot;TrID116&quot; &quot;geID 204&quot; 1271   116 209 1     
-## geID 205 &quot;TrID117&quot; &quot;geID 205&quot; 210    117 208 4     
-## geID 206 &quot;TrID121&quot; &quot;geID 206&quot; 119    121 204 4</code></pre>
-<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;min&quot;)  # OK</code></pre>
+<pre><code>##          transcrID   geneID geneLe   a   b nRedLi
+## geID 201   TrID102 geID 201    515 102 223      2
+## geID 202   TrID108 geID 202    490 108 217      1
+## geID 203   TrID109 geID 203   1321 109 216      3
+## geID 204   TrID116 geID 204   1271 116 209      1
+## geID 205   TrID117 geID 205    210 117 208      4
+## geID 206   TrID121 geID 206    119 121 204      4</code></pre>
+<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;min&quot;)  </code></pre>
 <pre><code>##     transcrID geneID     geneLe a     b     geneLe.1
 ## out &quot;TrID102&quot; &quot;geID 201&quot; &quot; 515&quot; &quot;102&quot; &quot;222&quot; &quot; 515&quot;</code></pre>
-<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;mean&quot;)  # OK</code></pre>
+<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;mean&quot;) </code></pre>
 <pre><code>##   transcrID   geneID geneLe     a     b geneLe.1
 ## 2   TrID102 geID 201    776 102.5 222.5      776</code></pre>
-<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;maxOfRef&quot;)  # OK</code></pre>
+<pre class="r"><code> summarizeCols(df2[1:2,c(1:5,3)], me=&quot;maxOfRef&quot;) </code></pre>
 <pre><code>##   transcrID   geneID geneLe   a   b geneLe.1
 ## 3   TrID103 geID 201   1037 103 222     1037</code></pre>
 <pre class="r"><code> summarizeCols(df2[1:6,c(1:5,3)], me=&quot;maxOfRef&quot;)</code></pre>
@@ -1688,12 +1691,12 @@ df2 &lt;- df2[-1*c(1,4:7,12:15),]
 ## 11   TrID111 geID 203   1358 111 214     1358</code></pre>
 <pre class="r"><code>(xt3 &lt;- makeNRedMatr(t3, summ=unlist(list(X1=&quot;maxOfRef&quot;)), iniID=c(&quot;ref&quot;)))  </code></pre>
 <pre><code>## makeNRedMatr : Summarize redundant based on col &#39;ref&#39;  using method(s) : &#39;maxOfRef&#39; and col &#39;X1&#39; yielding 4 cols</code></pre>
-<pre><code>##    ref tx  X1   X2   nRedLi
-## 11 11  &quot;f&quot; 0.6  1    3     
-## 12 12  &quot;b&quot; 2    -0.4 3     
-## 13 13  &quot;m&quot; 0.9  1.8  3     
-## 14 14  &quot;d&quot; 1.7  0.7  3     
-## 15 15  &quot;e&quot; -0.9 0.4  3</code></pre>
+<pre><code>##    ref tx   X1   X2 nRedLi
+## 11  11  f  0.6  1.0      3
+## 12  12  b  2.0 -0.4      3
+## 13  13  m  0.9  1.8      3
+## 14  14  d  1.7  0.7      3
+## 15  15  e -0.9  0.4      3</code></pre>
 </div>
 </div>
 <div id="combinereduce-redundant-lines-based-on-specified-column" class="section level3">
@@ -2481,6 +2484,25 @@ define a <em>minimum</em> width for the remaining/resulting text.</p>
 trimRedundText(txt1)</code></pre>
 <pre><code>## [1] &quot;d&quot;    &quot;de&quot;   &quot;defg&quot; &quot;dE&quot;   NA     &quot;dEF&quot;</code></pre>
 </div>
+<div id="removing-redundantshared-words" class="section level3">
+<h3>Removing Redundant/Shared Words</h3>
+<p>A more gentle way to make text non-redundant consists in removing
+redundant text isporposed by the function <code>rmSharedWords()</code>.
+Multiple separators may be used (and combined) to specify ‘words’, a
+minimum length of what mat be considered a word can be defined, too
+(default at min 2 characters). For example, this can be used to make
+column-names shorter and more precise.</p>
+<pre class="r"><code>txt2 &lt;- c(&quot;abc d&quot;,&quot;abc de&quot;,&quot;abc defg&quot;,&quot;abc dE&quot;,NA,&quot;abc dEF&quot;)
+rmSharedWords(txt2)</code></pre>
+<pre><code>## [1] &quot;d&quot;    &quot;de&quot;   &quot;defg&quot; &quot;dE&quot;   NA     &quot;dEF&quot;</code></pre>
+<p>In contrast to trimRedundText() numeric parts may remain ‘intact’,
+see example below.</p>
+<pre class="r"><code>txt3 &lt;- c(&quot;ab 100 m&quot;,&quot;ab 120 m&quot;,&quot;ab 1000 m&quot;)
+trimRedundText(txt3)</code></pre>
+<pre><code>## [1] &quot;0&quot;  &quot;2&quot;  &quot;00&quot;</code></pre>
+<pre class="r"><code>rmSharedWords(txt3)</code></pre>
+<pre><code>## [1] &quot;100_m&quot;  &quot;120_m&quot;  &quot;1000_m&quot;</code></pre>
+</div>
 <div id="extract-common-part-of-text" class="section level3">
 <h3>Extract Common Part Of Text</h3>
 <p>The original idea was to do something resembling the inverse process
@@ -2623,8 +2645,8 @@ properly, the function may/will consider the decimal sign as just
 another separator (as ‘.’ is part af the default selection of
 separators).</p>
 <pre class="r"><code>adjustUnitPrefix(c(&quot;10.psec&quot;, &quot;2 fsec&quot;), unit=&quot;sec&quot;)</code></pre>
-<pre><code>##          10000              2 
-## &quot; 10000 fsec &quot;     &quot; 2 fsec &quot;</code></pre>
+<pre><code>##        10000            2 
+## &quot;10000 fsec&quot;     &quot;2 fsec&quot;</code></pre>
 <p>Using the argument <em>returnType</em> you can choose how much of the
 remaining text should be shown.</p>
 <pre class="r"><code>x2 &lt;- c(&quot;abCc 500_nmol ABC&quot;, &quot;abEe5_umol&quot;, &quot;&quot;, &quot;abFF_100_nmol_G&quot;, &quot;abGg 2_mol&quot;, &quot;abH.1 mmol&quot;)
@@ -2695,17 +2717,19 @@ tested an the column giving the best results will be used.</p>
 mat0 &lt;- cbind(a=c(&quot;mvvk&quot;,&quot;axxd&quot;,&quot;bxxd&quot;,&quot;vv&quot;),b=c(&quot;iwwy&quot;,&quot;iyyu&quot;,&quot;kvvh&quot;,&quot;gxx&quot;), c=rep(9,4),
   d=c(&quot;hgf&quot;,&quot;hgf&quot;,&quot;vxc&quot;,&quot;nvnn&quot;), e=c(&quot;_vv_&quot;,&quot;_ww_&quot;,&quot;_xx_&quot;,&quot;_yy_&quot;))
 matchMatrixLinesToRef(mat0[,1:4], ref=mat0[,5])</code></pre>
-<pre><code>##      a      b      c   d      c   ref   
-## [1,] &quot;bxxd&quot; &quot;kvvh&quot; &quot;9&quot; &quot;vxc&quot;  &quot;9&quot; &quot;_vv_&quot;
-## [2,] &quot;mvvk&quot; &quot;iwwy&quot; &quot;9&quot; &quot;hgf&quot;  &quot;9&quot; &quot;_ww_&quot;
-## [3,] &quot;vv&quot;   &quot;gxx&quot;  &quot;9&quot; &quot;nvnn&quot; &quot;9&quot; &quot;_xx_&quot;
-## [4,] &quot;axxd&quot; &quot;iyyu&quot; &quot;9&quot; &quot;hgf&quot;  &quot;9&quot; &quot;_yy_&quot;</code></pre>
+<pre><code>## aOO1</code></pre>
+<pre><code>##      ref   
+## [1,] &quot;_vv_&quot;
+## [2,] &quot;_ww_&quot;
+## [3,] &quot;_xx_&quot;
+## [4,] &quot;_yy_&quot;</code></pre>
 <pre class="r"><code>matchMatrixLinesToRef(mat0[,1:4], ref=mat0[1:3,5], inclInfo=TRUE)</code></pre>
+<pre><code>## aOO1</code></pre>
 <pre><code>## $mat
-##      a      b      c   d      c   ref   
-## [1,] &quot;bxxd&quot; &quot;kvvh&quot; &quot;9&quot; &quot;vxc&quot;  &quot;9&quot; &quot;_vv_&quot;
-## [2,] &quot;mvvk&quot; &quot;iwwy&quot; &quot;9&quot; &quot;hgf&quot;  &quot;9&quot; &quot;_ww_&quot;
-## [3,] &quot;vv&quot;   &quot;gxx&quot;  &quot;9&quot; &quot;nvnn&quot; &quot;9&quot; &quot;_xx_&quot;
+##      ref   
+## [1,] &quot;_vv_&quot;
+## [2,] &quot;_ww_&quot;
+## [3,] &quot;_xx_&quot;
 ## 
 ## $byColumn
 ## [1] 2
@@ -3567,6 +3591,27 @@ which(ma1 &gt;37)      # doesn&#39;t tell which row &amp; col</code></pre>
 ## [6,]   2   5
 ## [7,]   2   9</code></pre>
 </div>
+<div id="trimmed-mean" class="section level3">
+<h3>Trimmed Mean</h3>
+<p>Under certain circumstances using the trimmed mean may be more stable
+towards outlyer values. The base function <code>mean()</code> allows to
+preform symmetric trimming, thus with more trimming the result will
+start converging to the <em>mean</em>. The function
+<code>trimmedMean()</code> gives more flexible options for assinging
+different upper- and lower fractions of the initial data to be trimmed.
+When outlyer values always appear at the high (or low) end of data, such
+proceeding may be useful. However, the user is encouraged to use this
+with caution since there is also a risk of introducing bias.</p>
+<pre class="r"><code>x &lt;- c(17:11,27:28)
+mean(x)</code></pre>
+<pre><code>## [1] 17</code></pre>
+<pre class="r"><code>mean(x, trim=0.15)       # symmetric trimming</code></pre>
+<pre><code>## [1] 16.28571</code></pre>
+<pre class="r"><code>mean(x[x &lt; 25])          # manual trimming</code></pre>
+<pre><code>## [1] 14</code></pre>
+<pre class="r"><code>trimmedMean(x, trim=c(l=0, u=0.7))   # asymmetric trim</code></pre>
+<pre><code>## [1] 13.5</code></pre>
+</div>
 </div>
 <div id="StatisticalTesting" class="section level2">
 <h2>Statistical Testing</h2>
@@ -3950,10 +3995,65 @@ ir2 &lt;- reorgByCluNo(iris[,-5], irKm$cluster, addInfo=FALSE, retList=TRUE)</co
 ## Petal.Length 4.5 5.65 1.5
 ## Petal.Width  1.4 2.10 0.2</code></pre>
 <pre class="r"><code>sapply(ir2, colSds)</code></pre>
-<pre><code>##                      1         2         3
-## Sepal.Width  0.2962841 0.2900924 0.3790644
-## Petal.Length 0.5088950 0.4885896 0.1736640
-## Petal.Width  0.2974997 0.2798725 0.1053856</code></pre>
+<pre><code>## Warning in colSums(matrix(as.numeric(!is.na(t(dat))), ncol = nrow(dat)) * :
+## longer object length is not a multiple of shorter object length
+## Warning in colSums(matrix(as.numeric(!is.na(t(dat))), ncol = nrow(dat)) * :
+## longer object length is not a multiple of shorter object length
+## Warning in colSums(matrix(as.numeric(!is.na(t(dat))), ncol = nrow(dat)) * :
+## longer object length is not a multiple of shorter object length</code></pre>
+<pre><code>## $`1`
+##         51         52         54         55         56         57         58 
+## 0.07001335 0.06000809 0.07828623 0.02853218 0.02287431 0.08354720 0.15709795 
+##         59         60         61         62         63         64         65 
+## 0.03700469 0.06364329 0.15923773 0.04151695 0.10273735 0.04399074 0.10485173 
+##         66         67         68         69         70         71         72 
+## 0.04523536 0.03599045 0.06735713 0.07202384 0.08265631 0.09082568 0.05363288 
+##         73         74         75         76         77         79         80 
+## 0.07271801 0.04979830 0.02853218 0.03251681 0.05263765 0.02518504 0.12859209 
+##         81         82         83         84         85         86         87 
+## 0.09794136 0.11384682 0.07020193 0.09312551 0.03599045 0.08717141 0.06031574 
+##         88         89         90         91         92         93         94 
+## 0.05991990 0.05238589 0.06200184 0.03547245 0.04189733 0.06161683 0.16120159 
+##         95         96         97         98         99        100        102 
+## 0.03076184 0.05048383 0.03584321 0.02853218 0.18621084 0.04183417 0.10854413 
+##        107        114        115        120        122        124        127 
+## 0.04856173 0.11088184 0.15338493 0.10502810 0.09748133 0.08025421 0.07035242 
+##        128        134        139        143        147        150 
+## 0.08625665 0.09108731 0.07709505 0.10854413 0.10296872 0.10685009 
+## 
+## $`2`
+##         53         78        101        103        104        105        106 
+## 0.16732675 0.13693850 0.09030345 0.02903775 0.05785108 0.02620532 0.14163626 
+##        108        109        110        111        112        113        116 
+## 0.10589162 0.10474356 0.12618014 0.10821691 0.09923436 0.04187571 0.08444247 
+##        117        118        119        121        123        125        126 
+## 0.06096385 0.19876132 0.20908513 0.04354104 0.16419450 0.03814256 0.06491885 
+##        129        130        131        132        133        135        136 
+## 0.05091989 0.07895804 0.07922781 0.16153057 0.05495068 0.13704234 0.07088912 
+##        137        138        140        141        142        144        145 
+## 0.07967540 0.05990466 0.05660830 0.05906771 0.11215440 0.05021665 0.08003167 
+##        146        148        149 
+## 0.09749905 0.09069640 0.08635798 
+## 
+## $`3`
+##           1           2           3           4           5           6 
+## 0.015080735 0.062129555 0.040492882 0.047626095 0.026933024 0.078655020 
+##           7           8           9          10          11          12 
+## 0.012408029 0.009415575 0.076230585 0.051575979 0.039781033 0.021162153 
+##          13          14          15          16          17          18 
+## 0.065206736 0.082751657 0.090118290 0.140693907 0.074606998 0.015612658 
+##          19          20          21          22          23          24 
+## 0.063558426 0.053973538 0.034859485 0.044981629 0.070731455 0.052981321 
+##          25          26          27          28          29          30 
+## 0.063042584 0.064577749 0.029810284 0.013358480 0.011731694 0.038635925 
+##          31          32          33          34          35          36 
+## 0.051258449 0.023010202 0.098389480 0.110835786 0.047626095 0.050049771 
+##          37          38          39          40          41          42 
+## 0.026164316 0.033424908 0.065705589 0.009415575 0.026474478 0.162978902 
+##          43          44          45          46          47          48 
+## 0.040492882 0.055244170 0.084990276 0.062260808 0.057061370 0.034387943 
+##          49          50 
+## 0.039781033 0.021354157</code></pre>
 <p>Besides, we have already seen the function
 <code>cutArrayInCluLike()</code> in section <a href="#WorkingWithArrays">Working with Arrays</a> ‘Working with
 Arrays’.</p>
@@ -4180,10 +4280,10 @@ space ’ ’ (which I prefer to avoid in file-names). Please look at the
 function’s help-page for all available options.</p>
 <pre class="r"><code>## To get started
 Sys.Date()</code></pre>
-<pre><code>## [1] &quot;2024-07-22&quot;</code></pre>
+<pre><code>## [1] &quot;2024-08-20&quot;</code></pre>
 <pre class="r"><code>## Compact English names (in European order), no matter what your local settings are :
 sysDate() </code></pre>
-<pre><code>## [1] &quot;22jul24&quot;</code></pre>
+<pre><code>## [1] &quot;20aug24&quot;</code></pre>
 <p>The table below shows a number of options to write the date in
 English or using local month-names :</p>
 <pre class="r"><code>tabD &lt;- cbind(paste0(&quot;univ&quot;,1:6), c(sysDate(style=&quot;univ1&quot;), sysDate(style=&quot;univ2&quot;), 
@@ -4197,39 +4297,39 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 <tbody>
 <tr class="odd">
 <td align="left">univ1</td>
-<td align="left">22jul24</td>
+<td align="left">20aug24</td>
 <td align="left">local1</td>
-<td align="left">22jui24</td>
+<td align="left">20aoû24</td>
 </tr>
 <tr class="even">
 <td align="left">univ2</td>
-<td align="left">22Jul24</td>
+<td align="left">20Aug24</td>
 <td align="left">local2</td>
-<td align="left">22Jui24</td>
+<td align="left">20Aoû24</td>
 </tr>
 <tr class="odd">
 <td align="left">univ3</td>
-<td align="left">22July2024</td>
+<td align="left">20August2024</td>
 <td align="left">local3</td>
-<td align="left">22Juil.2024</td>
+<td align="left">20Août2024</td>
 </tr>
 <tr class="even">
 <td align="left">univ4</td>
-<td align="left">22july2024</td>
+<td align="left">20august2024</td>
 <td align="left">local4</td>
-<td align="left">22juil.2024</td>
+<td align="left">20août2024</td>
 </tr>
 <tr class="odd">
 <td align="left">univ5</td>
-<td align="left">2024-07-22</td>
+<td align="left">2024-08-20</td>
 <td align="left">local5</td>
-<td align="left">22-juil.-2024</td>
+<td align="left">20-août-2024</td>
 </tr>
 <tr class="even">
 <td align="left">univ6</td>
-<td align="left">2024-204</td>
+<td align="left">2024-233</td>
 <td align="left">local6</td>
-<td align="left">2024juil.22</td>
+<td align="left">2024août20</td>
 </tr>
 </tbody>
 </table>
@@ -4256,7 +4356,7 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.60.3  knitr_1.47    wrMisc_1.15.1
+## [1] limma_3.60.3  knitr_1.47    wrMisc_1.15.2
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] gtable_0.3.5      jsonlite_1.8.8    dplyr_1.1.4       compiler_4.4.0   

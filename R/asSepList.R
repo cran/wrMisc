@@ -14,7 +14,7 @@
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
 #' @return This function returns a list, partially unlisted to vectors
-#' @seealso \code{\link[wrMisc]{partUnlist}}, \code{\link[base]{unlist}}
+#' @seealso \code{\link{partUnlist}}, \code{\link[base]{unlist}}
 #' @examples
 #' bb <- list(fa=gl(2,2), c=31:33, L2=matrix(21:28,nc=2),
 #'   li=list(li1=11:14, li2=data.frame(41:44)))

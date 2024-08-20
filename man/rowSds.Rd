@@ -4,16 +4,22 @@
 \alias{rowSds}
 \title{sd for each row (fast execution)}
 \usage{
-rowSds(dat)
+rowSds(dat, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{dat}{matrix (or data.frame) with numeric values (may contain NAs)}
+\item{dat}{matrix (or data.frame) with numeric values (may contain NAs which will be ignored)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 numeric vector of sd values
 }
 \description{
-This function is speed optimized sd per line (takes matrix or data.frame and treats each line as set of data for sd, )equiv to using \code{apply}.
+This function is speed optimized \code{sd} per row of a matrix or data.frame and treats each row as independent set of data for sd (equiv to \code{apply(dat,1,sd)}).
 NAs are ignored from data unless entire line NA). Speed improvements may be seen at more than 100 lines.
 Note: NaN instances will be transformed to NA
 }

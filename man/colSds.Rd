@@ -7,24 +7,23 @@
 colSds(dat, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{dat}{matrix (or data.frame) with numeric values (may contain NAs)}
+\item{dat}{matrix (or data.frame) with numeric values (may contain NAs which will be ignored)}
 
 \item{silent}{(logical) suppress messages}
 
 \item{debug}{(logical) additional messages for debugging}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 numeric vector of sd values
 }
 \description{
-\code{colSds} is a speed optimized \code{sd} for matrix or data.frames. 
-It and treats each line as an independent set of data for calculating the sd (equiv to \code{apply(dat,1,sd)}).
-NAs are ignored from data.
+This function is speed optimized \code{sd} per column of a matrix or data.frame and treats each column as independent set of data for sd (equiv to \code{apply(dat,2,sd)}).
+NAs are ignored from data.  Speed improvements may be seen at more than 100 columns
 }
 \examples{
-set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),nc=10)
+set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
 colSds(dat1)
 }
 \seealso{

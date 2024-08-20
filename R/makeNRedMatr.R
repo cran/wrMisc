@@ -1,6 +1,6 @@
 #' Make non-redundant matrix
 #'
-#' \code{makeNRedMatr} takes matrix or data.frame 'dat' to summarize redundant lines (column argument \code{iniID}) along method specified in \code{summarizeRedAs} 
+#' This function takes matrix or data.frame 'dat' to summarize redundant lines (column argument \code{iniID}) along method specified in \code{summarizeRedAs} 
 #' to treat all lines with redundant \code{iniID} by same approach (ie for all columns the line where specified column is at eg max = 'maxOfRef' ).
 #' If no name given, the function will take the last numeric (factors may be used - they will be read as levels).
 #'
@@ -8,11 +8,16 @@
 #' When using for selection of single initial line give the character-string of argument \code{summarizeRedAs} a name (eg  \code{summ=c(X1="minOfRef")}
 #'  so that the function will use ONLY the column specified via the name for determining which line should be used/kept.    
 #' 
-#' This function has been developed using Proline version 1.6.1 coupled with MS-Angel 1.6.1.
+#' It is possible to base the choice from 'redundant' lines on a single reference-column.  
+#' For example, when \code{summarizeRedAs='maxOfRef'} summarizing of all (numeric) columns will be performed according to one single column (ie the line where the last numeric column is at its max).
+#' Otherwiser, a name can be assigned as reference column to be used (eg see last example using \code{summarizeRedAs=c(x1='maxOfRef')})
+#' 
 #' @param dat (matrix or data.frame) main input for making non-redundant
-#' @param summarizeRedAs (character) summarization method(s), typical choices 'median','mean','min' or 'maxOfRef',
-#'     'maxAbsOfRef' for summarizing according to 1 specified column, may be single method for all or different method for each column (besides col 'iniID') or special method looking at column (if found, first of special methods used, everything else not considered). 
-#' @param iniID (character) column-name used as initial ID (default="iniID"), ie reference for determining groups of redundant lines
+#' @param summarizeRedAs (character) summarization method(s), typical choices 'median','mean','min' or 'maxOfRef';
+#'    basic usage like \code{summarizeRedAs='mean'} will pick independently the mean for each (numeric) column; 
+#'    it is also possible to specify different methods for each of columnw (length of \code{summarizeRedAs} should be equal number of numeric columns);
+#'    special methods look at a single reference column to decide which line should be picked and their values reported (not compatible with specifying different methods for different columns), 
+#' @param iniID (character) column-name used as reference for determining groups of redundant lines (default="iniID")
 #' @param retDataFrame (logical) if \code{TRUE}, check if text-columns may be converted to data.frame with numeric
 #' @param nEqu (logical) if \code{TRUE}, add additional column indicating the number of equal lines for choice (only with min or max) 
 #' @param callFrom (character) allows easier tracking of messages produced
@@ -34,7 +39,7 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
   fxNa <- .composeCallName(callFrom, newNa="makeNRedMatr")
   maxLaArg <- c("maxOfRef","minOfRef","maxAbsOfRef")    
   summOpt <- c("median","mean","min","max","first","last",maxLaArg)   
-  summOpt <- c(summOpt,paste0(summOpt,"Complete"))
+  summOpt <- c(summOpt, paste0(summOpt,"Complete"))
   chSuMeth <- summarizeRedAs %in% summOpt
   txt <- " argument 'dat' must be matrix or data.frame with >1 line"
   if(!isTRUE(silent)) silent <- FALSE
@@ -47,15 +52,17 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
   if(length(iniID) !=1) stop(fxNa,txt) else if(is.na(iniID)) stop(fxNa,txt)
   iniIDcol <- colnames(dat) ==iniID
   if(sum(iniIDcol) <1) stop(fxNa,txt,"  Cannot identify column '",iniID,"' in input !")
+  refID <- dat[,iniID]
+  refDat <- refCol <- NULL
 
   ## check/correct for NAs in refID ?(ID for grouping) ??
   sumRedMode <- rep("",sum(!iniIDcol))                                        # need to know which col is numeric when treating each col individually
   for(i in which(!iniIDcol)) sumRedMode[i] <- mode(dat[,i])  
-  if(sum(summarizeRedAs %in% maxLaArg,na.rm=TRUE) >0) {                          # has special methods (limit to those)
+  if(any(summarizeRedAs %in% maxLaArg, na.rm=TRUE)) {                          # has special methods (limit to those)
     if(!silent && length(summarizeRedAs) >1) message(fxNa,"Canot use all ",length(summarizeRedAs),
       " methods specified in 'summarizeRedAs', only 1 method can be applied, using 1st of special methods") 
     summarizeRedAs <- summarizeRedAs[which(summarizeRedAs %in% maxLaArg)]
-    if(sum(names(summarizeRedAs) %in% colnames(dat),na.rm=TRUE) >0) {            # (col) names identified
+    if(all(names(summarizeRedAs) %in% colnames(dat),na.rm=TRUE)) {            # (col) names identified
       summarizeRedAs <- summarizeRedAs[which(names(summarizeRedAs) %in% colnames(dat))[1]]
     } else {
       summarizeRedAs <- summarizeRedAs[1]
@@ -67,32 +74,42 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
     if(length(summarizeRedAs) >1 && !silent) message(fxNa,"Too few (",length(summarizeRedAs),") methods specified, recycling methods")
     summarizeRedAs <- rep(summarizeRedAs, ncol(dat))[1:(ncol(dat))]
   }
-  if(debug) {message(fxNa,"mNR1")}
+  if(debug) {message(fxNa,"mNR1"); mNR1 <- list(dat=dat,summarizeRedAs=summarizeRedAs,iniID=iniID,retDataFrame=retDataFrame,sumRedMode=sumRedMode,iniIDcol=iniIDcol,nEqu=nEqu)}
 
-  if(any(summarizeRedAs %in% maxLaArg) && sum(names(summarizeRedAs) %in% colnames(dat)>0,na.rm=TRUE)) {
-    tm2 <- which.min(!colnames(dat) %in% names(summarizeRedAs))                                     # which col of data as key
-    summarizeRedAs <- summarizeRedAs[which.min(!names(summarizeRedAs) %in% colnames(dat)[tm2])]     # need short 'summarizeRedAs' with 'maxLast'(or simil)  
-  } else { if(length(summarizeRedAs) < sum(!iniIDcol)) {
-    if(!silent) message(fxNa,"Argument 'summarizeRedAs' has to few elements, extening by ",sum(!iniIDcol) -length(summarizeRedAs)," elements")
-    summarizeRedAs <- rep(summarizeRedAs, ceiling(sum(!iniIDcol)/length(summarizeRedAs)))[1:sum(!iniIDcol)]
-    names(summarizeRedAs) <- colnames(dat)[which(!iniIDcol)] }}    
-  refID <- dat[,which(iniIDcol)]
   out <- matrix(NA, nrow=length(unique(refID)), ncol=ncol(dat), dimnames=list(unique(refID),colnames(dat)))       # initalize (for all summariz w/o special meth)
-  if(any(summarizeRedAs %in% maxLaArg)) {                       ##  summarize all cols together (based on last col)      
-    if(length(names(summarizeRedAs)) <1) {
+  refID <- dat[,which(iniIDcol)]
+  ## prepare argument "summarizeRedAs"
+  if(any(summarizeRedAs %in% maxLaArg)) {
+    if(any(names(summarizeRedAs) %in% colnames(dat), na.rm=TRUE)) {
+      ## has name to use as ref
+      if(length(summarizeRedAs) >1) {  if(!silent) message(fxNa,"Only a single value of argument 'summarizeRedAs' can be used when reference-approach is chosen !")
+        summarizeRedAs <- summarizeRedAs[which.min(!names(summarizeRedAs) %in% colnames(dat)[refID])]}     # reduce 'summarizeRedAs' to 1st instance
+    } else {
       lastNum <- sumRedMode %in% c("numeric","integer")
       lastNum <- which(lastNum)[sum(lastNum,na.rm=TRUE)]
       if(!silent) message(fxNa,"Which column to use with '",summarizeRedAs,"' not specified, using last numeric '",colnames(dat)[lastNum],"'")
-      names(summarizeRedAs) <- colnames(dat)[lastNum] }
-    sumRefCo <- colnames(dat)==names(summarizeRedAs)
-    sumRef <- dat[,which(sumRefCo)[1]]
-    tmp <- cbind(dat, ref=sumRef)   
-       if(debug) {message(fxNa,"mNR2a"); mNR2a <- list(dat=dat,summarizeRedAs=summarizeRedAs,iniID=iniID,retDataFrame=retDataFrame,out=out,sumRedMode=sumRedMode,refID=refID,tmp=tmp,iniIDcol=iniIDcol,nEqu=nEqu)}
-    tmp <- t(sapply(by(tmp, dat[,which(iniIDcol)], function(y) y), summarizeCols, nEqu=nEqu, meth=summarizeRedAs, silent=silent, debug=debug, callFrom=fxNa)) 
-    out <- as.matrix(as.data.frame(tmp))[,-ncol(tmp)]
+      names(summarizeRedAs) <- colnames(dat)[lastNum] 
+    }
+    refCol <- which.min(!colnames(dat) %in% names(summarizeRedAs))       # which col of data as key
+    refDat <- dat[,refCol]
+    names(refCol) <- colnames(dat)[refCol] 
+    if(debug) message(fxNa,"refCol = '",names(refCol),"'")                                    
+  } else {
+    if(length(summarizeRedAs) < sum(!iniIDcol)) {
+      if(!silent) message(fxNa,"Argument 'summarizeRedAs' has to few elements, extening by ",sum(!iniIDcol) -length(summarizeRedAs)," elements")
+      summarizeRedAs <- rep(summarizeRedAs, ceiling(sum(!iniIDcol)/length(summarizeRedAs)))[1:sum(!iniIDcol)]
+      names(summarizeRedAs) <- colnames(dat)[which(!iniIDcol)] }    
+  }
+
+  ##  summarize all cols together (based on summarizeRedAs) 
+  if(debug) {message(fxNa,"mNR2a"); mNR2a <- list(dat=dat,summarizeRedAs=summarizeRedAs,iniID=iniID,refDat=refDat,retDataFrame=retDataFrame,out=out,sumRedMode=sumRedMode,refID=refID,iniIDcol=iniIDcol,nEqu=nEqu,maxLaArg=maxLaArg)}
+  if(any(summarizeRedAs %in% maxLaArg)) {                            
+    tmp <- cbind(dat, ref=refDat) 
+    tmp <- by(tmp, dat[,which(iniIDcol)], summarizeCols, meth=summarizeRedAs, refCol=refCol, silent=silent, debug=debug, callFrom=fxNa)
+    out <- data.frame(do.call("rbind", tmp))[,1:ncol(dat)]    
     colnames(out) <- colnames(dat) 
   } else { if(length(unique(summarizeRedAs)) >1) { for(i in which(!iniIDcol)) {              # various summarization methods defined for each col ...
-      ## key for grouping : iniIDcol    key for summarizing : which(sumRefCo) 
+      ## key for grouping : iniIDcol    key for summarizing : which(colnames(dat)==names(summarizeRedAs)) 
       if(debug) {message(fxNa,"mNR2b"); mNR2b <- list()}
       tmp <- tapply(dat[,i], refID, function(x) if(is.numeric(x) && !all(is.na(x))) .summarizeCols(x,me=summarizeRedAs[i]) else .sortMid(x))
       out[,i] <- tmp }
@@ -107,7 +124,7 @@ makeNRedMatr <- function(dat, summarizeRedAs, iniID="iniID", retDataFrame=TRUE, 
         i <- which(sumRedMode == "numeric")   # & colnames(dat) !=iniID
         out[,i] <- tmp <- t(sapply(by(dat[,i], refID, function(y) y), function(x) .summarizeCols(x, me=summarizeRedAs[i][1]))) }
   } }
-  if(debug) {message(fxNa,"mNR3"); mNR3 <- list(dat=dat,summarizeRedAs=summarizeRedAs,iniID=iniID,retDataFrame=retDataFrame,out=out,sumRedMode=sumRedMode,refID=refID)}
+  if(debug) {message(fxNa,"mNR3"); mNR3 <- list()}
   if(!silent) message(fxNa,"Summarize redundant based on col '",iniID,"'  using method(s) : ",pasteC(summarizeRedAs,quoteC="'"),
     if(any(summarizeRedAs %in% maxLaArg)) c(" and col '",names(summarizeRedAs)[1],"'")," yielding ",ncol(out)," cols")
   if(debug) {message(fxNa," mNR4")}

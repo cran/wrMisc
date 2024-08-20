@@ -30,7 +30,7 @@ matchMatrixLinesToRef(
 
 \item{debug}{(logical) additional messages for debugging}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 This function returns the input matrix in an adjusted order (plus an optional additional column showing the reference)

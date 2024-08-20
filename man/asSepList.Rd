@@ -56,5 +56,5 @@ cd <- list(e1=gl(3,2), e2=ca, e3=cb, e4=91:94, short=81:82, e6=letters[1:5])
 asSepList(cd)
 }
 \seealso{
-\code{\link[wrMisc]{partUnlist}}, \code{\link[base]{unlist}}
+\code{\link{partUnlist}}, \code{\link[base]{unlist}}
 }

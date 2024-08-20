@@ -10,11 +10,13 @@
 #' @return matrix of CV values
 #' @seealso \code{\link{rowCVs}}, \code{\link{rowGrpCV}}, \code{\link{replPlateCV}}
 #' @examples
-#' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),ncol=10)
+#' set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
 #' head(arrayCV(dat1,byDim=2))
 #' @export
 arrayCV <- function(arr, byDim=3, silent=TRUE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="arrayCV")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   curDiNa <- dimnames(arr)
   if(byDim > length(dim(arr))) { byDim <- length(dim(arr))
     message(fxNa," dimension number for argument 'byDim' too high, adjusting to ",byDim) }
@@ -24,6 +26,6 @@ arrayCV <- function(arr, byDim=3, silent=TRUE, callFrom=NULL){
   if(length(dim(arr)) ==3) {
     for(i in 1:dim(arr)[byDim]) {arrCV[,i] <- if(byDim==3) rowCVs(arr[,,i]) else {
       if(byDim ==2) rowCVs(arr[,i,]) else rowCVs(arr[i,,]) }}
-  } else arrCV <- matrix(rowCVs(arr), dimnames=list(rownames(arr),NULL))
+  } else arrCV <- matrix(rowCVs(arr), dimnames=list(rownames(arr), NULL))
   arrCV }
  

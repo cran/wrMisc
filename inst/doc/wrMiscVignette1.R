@@ -350,9 +350,9 @@ df2 <- df2[-1*c(1,4:7,12:15),]
 
 (dfLongest <- makeNRedMatr(df2, summ=unlist(list(X1="maxOfRef")), iniID="geneID"))
 
- summarizeCols(df2[1:2,c(1:5,3)], me="min")  # OK
- summarizeCols(df2[1:2,c(1:5,3)], me="mean")  # OK
- summarizeCols(df2[1:2,c(1:5,3)], me="maxOfRef")  # OK
+ summarizeCols(df2[1:2,c(1:5,3)], me="min")  
+ summarizeCols(df2[1:2,c(1:5,3)], me="mean") 
+ summarizeCols(df2[1:2,c(1:5,3)], me="maxOfRef") 
  summarizeCols(df2[1:6,c(1:5,3)], me="maxOfRef")
 
 (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxOfRef")), iniID=c("ref")))  
@@ -553,6 +553,15 @@ grepl(protectSpecChar("b."), aa)
 ## ----trimRedundText1, echo=TRUE-----------------------------------------------
 txt1 <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
 trimRedundText(txt1)
+
+## ----rmSharedWords1, echo=TRUE------------------------------------------------
+txt2 <- c("abc d","abc de","abc defg","abc dE",NA,"abc dEF")
+rmSharedWords(txt2)
+
+## ----rmSharedWords2, echo=TRUE------------------------------------------------
+txt3 <- c("ab 100 m","ab 120 m","ab 1000 m")
+trimRedundText(txt3)
+rmSharedWords(txt3)
 
 ## ----keepCommonText1, echo=TRUE-----------------------------------------------
 txt1 <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
@@ -822,6 +831,13 @@ set.seed(2021); ma1 <- matrix(sample.int(n=40, size=27, replace=TRUE), ncol=9)
 ## let's test which values are >37
 which(ma1 >37)      # doesn't tell which row & col
 coordOfFilt(ma1, ma1 >37)
+
+## ----trimmedMean1, echo=TRUE--------------------------------------------------
+x <- c(17:11,27:28)
+mean(x)
+mean(x, trim=0.15)       # symmetric trimming
+mean(x[x < 25])          # manual trimming
+trimmedMean(x, trim=c(l=0, u=0.7))   # asymmetric trim
 
 ## ----rnormW1, echo=TRUE-------------------------------------------------------
 ## some sample data :

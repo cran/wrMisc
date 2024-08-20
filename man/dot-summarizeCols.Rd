@@ -6,11 +6,10 @@
 \usage{
 .summarizeCols(
   x,
-  me = c("median", "medianComplete", "mean", "meanComplete", "aver", "average", "min",
-    "max", "maxOfRef", "minOfRef", "maxAbsOfRef", "lastLi", "last", "firstComplete",
-    "first", "firstLi", "summary"),
+  me = "median",
   nEq = FALSE,
   vectAs1row = TRUE,
+  supl = NULL,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -19,11 +18,13 @@
 \arguments{
 \item{x}{data.frame matrix of data to be summarized by comlumn}
 
-\item{me}{(character, length=1) summarization method (eg 'min','max','mean','median', 'medianComplete' or 'meanComplete')}
+\item{me}{(character, length=1) summarization method (eg 'min','max','mean','mean.trim','median','sd','CV', 'medianComplete' or 'meanComplete' etc, see \code{\link{summarizeCols}})}
 
 \item{nEq}{(logical) if TRUE, add additional column indicating the number of equal lines for choice (only with min or max)}
 
 \item{vectAs1row}{(logical) if TRUE will interprete non-matrix 'x' as matrix with 1 row (correct effect of automatic conversion when extracting 1 line)}
+
+\item{supl}{(numeric) supplemental parameters for the various summarizing functions (currently used with 'me=mean.trim' to assign upper and lower trimming fraction, passed to )}
 
 \item{silent}{(logical) suppress messages}
 
@@ -43,5 +44,5 @@ m1 <- matrix(c(28,27,11,12,11,12), nrow=2, dimnames=list(1:2,c("y","x","ref")))
 .summarizeCols(m1, me="median")
 }
 \seealso{
-\code{summarizeCols}
+\code{\link{summarizeCols}},  \code{\link[base]{table}} \code{\link[base]{table}}
 }

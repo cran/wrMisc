@@ -9,6 +9,7 @@ summarizeCols(
   meth = "median",
   refCol = NULL,
   nEqu = FALSE,
+  supl = NULL,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -17,17 +18,20 @@ summarizeCols(
 \arguments{
 \item{matr}{data.frame matrix of data to be summarized by comlumn (may do different method for text and numeric comlumns)}
 
-\item{meth}{(character) summarization method (eg 'min','max','mean','aver','median','first','last','maxOfRef','minOfRef','maxAbsLast','minAbsLast', 'medianComplete' or 'meanComplete')}
+\item{meth}{(character) summarization method, may be 'mean','aver','median','sd','CV', 'min','max','first','last','maxOfRef','minOfRef','maxAbsLast','minAbsLast',
+'medianComplete' or 'meanComplete', 'n' (number of non-\code{NA} elements),'n.NA' (number of \code{NA} elements), 'NULL' (returns \code{NULL})}
 
 \item{refCol}{(character or integr) column to be used as reference}
 
 \item{nEqu}{(logical) if \code{TRUE}, add additional column indicating the number of equal lines for choice (only with min or max)}
 
+\item{supl}{(numeric) supplemental parameters for the various summarizing functions (eg used with \code{meth="trimmedMean", supl=c(l=0.1,u=0.2)} to pass arguments to \code{\link{trimmedMean}})}
+
 \item{silent}{(logical) suppress messages}
 
 \item{debug}{(logical) additional messages for debugging}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 vector with summary for each column
@@ -39,18 +43,18 @@ In case of text-columns the sorted middle (~median) will be given, unless 'maxAb
  'medianComplete' or 'meanComplete' consideres only lines/rows where no NA occur (NA have influence other columns !)
 }
 \details{
-The argument \code{method} allows options that treat (summarize) all columns independently or to select one line (based on argulent \code{refCol})
+The argument \code{method} allows options that treat (summarize) all columns independently or to select one line (based on argument \code{refCol})
 }
 \examples{
-t1 <- matrix(round(runif(30,1,9)), nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
+t1 <- matrix(round(runif(30,1,9)),nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
 summarizeCols(t1, me="median")
 t(sapply(by(t1,rownames(t1), function(x) x), summarizeCols,me="maxAbsLast"))
 t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
   matrix(round(runif(30,-3,2),1), ncol=2), stringsAsFactors=FALSE)
 by(t3,t3[,1], function(x) x)
 by(t3,t3[,1], function(x) summarizeCols(x, me="maxAbsLast"))
-t(sapply(by(t3,t3[,1], function(x) x), summarizeCols, me="maxAbsLast"))
+t(sapply(by(t3, t3[,1], function(x) x), summarizeCols, me="maxAbsLast"))
 }
 \seealso{
-\code{rowMeans} in \code{\link[base]{colSums}}; if data has subgroups to be used in a \code{tapply()}-way please see \code{\link{makeNRedMatr}}
+\code{\link[base]{colSums}}; if data has subgroups to be used in a \code{\link[base]{tapply}}-way please see \code{\link{makeNRedMatr}}
 }

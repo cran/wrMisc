@@ -4,12 +4,18 @@
 \alias{rowCVs}
 \title{rowCVs}
 \usage{
-rowCVs(dat, autoconvert = NULL)
+rowCVs(dat, autoconvert = NULL, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(numeric) matix}
 
 \item{autoconvert}{(NULL or character) allows converting simple vectors in matrix of 1 row (autoconvert="row")}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 This function returns a (numeric) vector with CVs for each row of 'dat'
@@ -19,9 +25,9 @@ This function returns CV for values in each row (using speed optimized standard 
 Note : NaN values get replaced by NA.
 }
 \examples{
-set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)),ncol=10)
+set.seed(2016); dat1 <- matrix(c(runif(200) +rep(1:10,20)), ncol=10)
 head(rowCVs(dat1))
 }
 \seealso{
-\code{\link[base]{colSums}}, \code{\link{rowGrpCV}}, \code{\link{rowSds}}
+\code{\link[base]{colSums}}, \code{\link{rowSds}}, \code{\link{rowGrpCV}}, \code{\link{colCVs}}
 }

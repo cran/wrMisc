@@ -6,28 +6,30 @@
 #'  'medianComplete' or 'meanComplete' consideres only lines/rows where no NA occur (NA have influence other columns !)
 #' 
 #' @details
-#' The argument \code{method} allows options that treat (summarize) all columns independently or to select one line (based on argulent \code{refCol})
+#' The argument \code{method} allows options that treat (summarize) all columns independently or to select one line (based on argument \code{refCol})
 #' 
 #' @param matr data.frame matrix of data to be summarized by comlumn (may do different method for text and numeric comlumns)
-#' @param meth (character) summarization method (eg 'min','max','mean','aver','median','first','last','maxOfRef','minOfRef','maxAbsLast','minAbsLast', 'medianComplete' or 'meanComplete')
+#' @param meth (character) summarization method, may be 'mean','aver','median','sd','CV', 'min','max','first','last','maxOfRef','minOfRef','maxAbsLast','minAbsLast',
+#'  'medianComplete' or 'meanComplete', 'n' (number of non-\code{NA} elements),'n.NA' (number of \code{NA} elements), 'NULL' (returns \code{NULL})
 #' @param refCol (character or integr) column to be used as reference
 #' @param nEqu (logical) if \code{TRUE}, add additional column indicating the number of equal lines for choice (only with min or max) 
+#' @param supl (numeric) supplemental parameters for the various summarizing functions (eg used with \code{meth="trimmedMean", supl=c(l=0.1,u=0.2)} to pass arguments to \code{\link{trimmedMean}})
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging 
-#' @param callFrom (character) allow easier tracking of messages produced
+#' @param callFrom (character) allows easier tracking of messages produced
 #' @return vector with summary for each column
-#' @seealso \code{rowMeans} in \code{\link[base]{colSums}}; if data has subgroups to be used in a \code{tapply()}-way please see \code{\link{makeNRedMatr}}
+#' @seealso \code{\link[base]{colSums}}; if data has subgroups to be used in a \code{\link[base]{tapply}}-way please see \code{\link{makeNRedMatr}}
 #' @examples
-#' t1 <- matrix(round(runif(30,1,9)), nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
+#' t1 <- matrix(round(runif(30,1,9)),nc=3); rownames(t1) <- letters[c(1:5,3:4,6:4)]
 #' summarizeCols(t1, me="median")
 #' t(sapply(by(t1,rownames(t1), function(x) x), summarizeCols,me="maxAbsLast"))
 #' t3 <- data.frame(ref=rep(11:15,3), tx=letters[1:15],
 #'   matrix(round(runif(30,-3,2),1), ncol=2), stringsAsFactors=FALSE)
 #' by(t3,t3[,1], function(x) x)
 #' by(t3,t3[,1], function(x) summarizeCols(x, me="maxAbsLast"))
-#' t(sapply(by(t3,t3[,1], function(x) x), summarizeCols, me="maxAbsLast"))
+#' t(sapply(by(t3, t3[,1], function(x) x), summarizeCols, me="maxAbsLast"))
 #' @export
-summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
+summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, supl=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## summarize all columns of matrix (or data.frame) 'x' (most methods will call apply)
   ## in case of text-columns the sorted middle (~median) will be given, unless 'maxAbsLast' or 'minLast'
   ##   'maxAbsLast' or 'minLast' .. consider only last column of 'matr' : choose from all columns the line where (max of) last col is at min,max...
@@ -37,8 +39,8 @@ summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, silent=F
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   
-  argOpt <- c("median","mean","aver","average","min","max","maxAbsLast","minAbsLast","maxOfRef","minOfRef","maxAbsOfRef","minAbsOfRef","firstLi","lastLi","first","last")
-  argOpt <- c(argOpt, paste(argOpt,"Complete",sep=""), "Null")  
+  argOpt <- c("median","mean","aver","average","trimmedMean","min","max","maxAbsLast","minAbsLast","maxOfRef","minOfRef","maxAbsOfRef","minAbsOfRef","firstLi","lastLi","first","last","sd","CV")
+  argOpt <- c(argOpt, paste0(argOpt,"Complete"), "n","n.NA","Null")  
   txt <- c("Argument '","' should be "," seeting to first/default (meth='median')")
   if(length(dim(matr)) <2) {if(!silent) message(fxNa,txt[1],"matr",txt[2],"matrix or data.frame")
     if(length(dim(matr)) <1) {meth <- "Null"; matr=matrix(NA)} else matr <- as.matrix(matr)}
@@ -63,7 +65,7 @@ summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, silent=F
     
     ## now summarize
     if(debug) { message(fxNa, "sC2"); sC2 <- list()}
-    out <- .summarizeCols(matr, me=meth, nEq=nEqu, silent=silent,debug=debug,callFrom=fxNa)
+    out <- .summarizeCols(matr, me=meth, nEq=nEqu, supl=supl, silent=silent,debug=debug,callFrom=fxNa)
     if(grepl("Ref$", meth) && length(refCol)==1) out <- out[,-ncol(out)]      # in case of refLi - remove added col
   }    
   out }
@@ -76,31 +78,33 @@ summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, silent=F
 #' 
 #'  
 #' @param x data.frame matrix of data to be summarized by comlumn 
-#' @param me (character, length=1) summarization method (eg 'min','max','mean','median', 'medianComplete' or 'meanComplete')
+#' @param me (character, length=1) summarization method (eg 'min','max','mean','mean.trim','median','sd','CV', 'medianComplete' or 'meanComplete' etc, see \code{\link{summarizeCols}})
 #' @param nEq (logical) if TRUE, add additional column indicating the number of equal lines for choice (only with min or max) 
 #' @param vectAs1row (logical) if TRUE will interprete non-matrix 'x' as matrix with 1 row (correct effect of automatic conversion when extracting 1 line) 
+#' @param supl (numeric) supplemental parameters for the various summarizing functions (currently used with 'me=mean.trim' to assign upper and lower trimming fraction, passed to )
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging 
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return vector with summary for each column (unless 'me=="summary"', in this case a matrix or list will be returned )
-#' @seealso \code{summarizeCols} 
+#' @seealso \code{\link{summarizeCols}},  \code{\link[base]{table}} \code{\link[base]{table}}
 #' @examples
 #' m1 <- matrix(c(28,27,11,12,11,12), nrow=2, dimnames=list(1:2,c("y","x","ref")))
 #' .summarizeCols(m1, me="median")
 #' @export
-.summarizeCols <- function(x, me=c("median","medianComplete","mean","meanComplete","aver","average","min","max","maxOfRef","minOfRef",
-  "maxAbsOfRef","lastLi","last","firstComplete","first","firstLi","summary"), nEq=FALSE, vectAs1row=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
+.summarizeCols <- function(x, me="median", nEq=FALSE, vectAs1row=TRUE, supl=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## summarize columns of matrix (or data.frame) 'x' using apply
   ## CANNOT handle character entries !  (all results will be NA)
   ## 'vectAs1row' .. if TRUE will interprete non-matrix 'x' as matrix with 1 row (correct effect of automatic conversion when extracting 1 line)
   ## me='maxOfRef','maxAbsOfRef' or 'minOfRef': return line where last col of 'x' is at (first) max (or min) ...
+  ## me may be "median","medianComplete","mean","meanComplete","aver","average","trimmedMean","mean.trim","sd","CV","min","max","maxOfRef","minOfRef", "maxAbsOfRef","lastLi","last","firstComplete","first","firstLi","summary"
   ## me='lastLi' .. return last line of 'x'
   ## any term of me containing 'Complete' (eg 'firstComplete') ..  first filter to lines of 'x' wo any NA
   ## me='medianComplete' .. median only of 'x' where no NA per line
   ## me='summary' will return matrix instead of vector !! (eah col for init cols of 'x')
   fxNa <- .composeCallName(callFrom, newNa=".summarizeCols")
   if(me %in% c("me","med")) me <- "median" 
-  if(me %in% c("av","aver","average")) me <- "mean"                                   # synonyms ..
+  if(me %in% c("av","aver","average")) me <- "mean"                                     # synonyms ..
+  if(me %in% c("trimmedMean","trimMean")) me <- "mean.trim"                             # synonyms ..
   if(length(dim(x)) <2) {
     x <- if(vectAs1row) matrix(x, nrow=1, dimnames=list(NULL,names(x))) else as.matrix(x)        
     numCol <- 1
@@ -126,9 +130,14 @@ summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, silent=F
     minOfRef= if(is.numeric(x[,ncol(x)])) x[which.min(abs(x[,ncol(x)])),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=FALSE)),],
     median=apply(x[,numCol], 2, stats::median, na.rm=TRUE),    #   all columns
     mean=colMeans(x[,numCol], na.rm=TRUE),
-    max=apply(x, 2, max,na.rm=TRUE), 
+    mean.trim=apply(x, 2, trimmedMean, trim=supl, callFrom=fxNa, silent=silent), 
+    max=apply(x, 2, max, na.rm=TRUE), 
     min=apply(x, 2, min, na.rm=TRUE),
     summary=if(is.matrix(x)) apply(x, 2, summary) else sapply(x, summary),
+    sd=colSds(x, callFrom=fxNa),
+    CV=colCVs(x, callFrom=fxNa),
+    n=colSums(!is.na(x)),               # will count number of non-NA values (per column)
+    n.NA=colSums(is.na(x)),             # will count number of NA values (per column)
     lastLi= x[nrow(x),], last= x[nrow(x),], firstLi= x[1,], first=x[1,])
   if(length(dim(out)) <1) out <- if(is.matrix(x)) matrix(out, ncol=ncol(x), dimnames=list(NULL, colnames(x))) else {if(length(numCol)==1) as.data.frame(out) else t(as.data.frame(out))} 
   if(debug) {message(fxNa,"sCc2"); sCc2 <- list(x=x,out=out,me=me,numCol=numCol,txtCol=txtCol,nEq=nEq,silent=silent,debug=debug)}

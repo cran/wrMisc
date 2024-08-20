@@ -18,10 +18,12 @@ makeNRedMatr(
 \arguments{
 \item{dat}{(matrix or data.frame) main input for making non-redundant}
 
-\item{summarizeRedAs}{(character) summarization method(s), typical choices 'median','mean','min' or 'maxOfRef',
-'maxAbsOfRef' for summarizing according to 1 specified column, may be single method for all or different method for each column (besides col 'iniID') or special method looking at column (if found, first of special methods used, everything else not considered).}
+\item{summarizeRedAs}{(character) summarization method(s), typical choices 'median','mean','min' or 'maxOfRef';
+basic usage like \code{summarizeRedAs='mean'} will pick independently the mean for each (numeric) column; 
+it is also possible to specify different methods for each of columnw (length of \code{summarizeRedAs} should be equal number of numeric columns);
+special methods look at a single reference column to decide which line should be picked and their values reported (not compatible with specifying different methods for different columns),}
 
-\item{iniID}{(character) column-name used as initial ID (default="iniID"), ie reference for determining groups of redundant lines}
+\item{iniID}{(character) column-name used as reference for determining groups of redundant lines (default="iniID")}
 
 \item{retDataFrame}{(logical) if \code{TRUE}, check if text-columns may be converted to data.frame with numeric}
 
@@ -37,7 +39,7 @@ makeNRedMatr(
 This function returns a (numeric) matrix or data.frame with summarized data and add'l col with number of initial redundant lines
 }
 \description{
-\code{makeNRedMatr} takes matrix or data.frame 'dat' to summarize redundant lines (column argument \code{iniID}) along method specified in \code{summarizeRedAs} 
+This function takes matrix or data.frame 'dat' to summarize redundant lines (column argument \code{iniID}) along method specified in \code{summarizeRedAs} 
 to treat all lines with redundant \code{iniID} by same approach (ie for all columns the line where specified column is at eg max = 'maxOfRef' ).
 If no name given, the function will take the last numeric (factors may be used - they will be read as levels).
 }
@@ -45,7 +47,9 @@ If no name given, the function will take the last numeric (factors may be used -
 When using for selection of single initial line give the character-string of argument \code{summarizeRedAs} a name (eg  \code{summ=c(X1="minOfRef")}
  so that the function will use ONLY the column specified via the name for determining which line should be used/kept.    
 
-This function has been developed using Proline version 1.6.1 coupled with MS-Angel 1.6.1.
+It is possible to base the choice from 'redundant' lines on a single reference-column.  
+For example, when \code{summarizeRedAs='maxOfRef'} summarizing of all (numeric) columns will be performed according to one single column (ie the line where the last numeric column is at its max).
+Otherwiser, a name can be assigned as reference column to be used (eg see last example using \code{summarizeRedAs=c(x1='maxOfRef')})
 }
 \examples{
 t3 <- data.frame(ref=rep(11:15,3),tx=letters[1:15],

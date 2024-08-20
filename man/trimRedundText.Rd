@@ -25,7 +25,7 @@ trimRedundText(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 
 \item{debug}{(logical) display additional messages for debugging}
 }
@@ -43,6 +43,6 @@ txt2 <- c("ddd_ab","ddd_bcd","ddd_cde")
 trimRedundText(txt2, side="left")        # trim from left 
 }
 \seealso{
-Inverse : Find/keep common text \code{\link{keepCommonText}}; \code{\link{checkUnitPrefix}}; 
+\code{\link{rmSharedWords}}; Inverse search : Find/keep common text \code{\link{keepCommonText}}; \code{\link{checkUnitPrefix}}; 
    you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 }

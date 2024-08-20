@@ -703,6 +703,7 @@ t(sapply(by(t3,t3[,1],function(x) x), summarizeCols, me="maxAbsOfRef"))
 (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxAbsOfRef")), iniID="ref"))
 ```
 
+
 #### Example : Summarize table for longest of transcripts
 
 In the previous example for each subgroup a summarization was calculated.
@@ -718,9 +719,9 @@ df2 <- df2[-1*c(1,4:7,12:15),]
 
 (dfLongest <- makeNRedMatr(df2, summ=unlist(list(X1="maxOfRef")), iniID="geneID"))
 
- summarizeCols(df2[1:2,c(1:5,3)], me="min")  # OK
- summarizeCols(df2[1:2,c(1:5,3)], me="mean")  # OK
- summarizeCols(df2[1:2,c(1:5,3)], me="maxOfRef")  # OK
+ summarizeCols(df2[1:2,c(1:5,3)], me="min")  
+ summarizeCols(df2[1:2,c(1:5,3)], me="mean") 
+ summarizeCols(df2[1:2,c(1:5,3)], me="maxOfRef") 
  summarizeCols(df2[1:6,c(1:5,3)], me="maxOfRef")
 
 (xt3 <- makeNRedMatr(t3, summ=unlist(list(X1="maxOfRef")), iniID=c("ref")))  
@@ -1097,6 +1098,25 @@ However, as in some cases (like the first element of the example below) nothing 
 ```{r trimRedundText1, echo=TRUE}
 txt1 <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")
 trimRedundText(txt1)
+```
+
+
+### Removing Redundant/Shared Words
+
+A more gentle way to make text non-redundant consists in removing redundant text isporposed by the function `rmSharedWords()`.
+Multiple separators may be used (and combined) to specify 'words', a minimum length of what mat be considered a word can be defined, too (default at min 2 characters).
+For example, this can be used to make column-names shorter and more precise.
+
+```{r rmSharedWords1, echo=TRUE}
+txt2 <- c("abc d","abc de","abc defg","abc dE",NA,"abc dEF")
+rmSharedWords(txt2)
+```
+
+In contrast to trimRedundText() numeric parts may remain 'intact', see example below.
+```{r rmSharedWords2, echo=TRUE}
+txt3 <- c("ab 100 m","ab 120 m","ab 1000 m")
+trimRedundText(txt3)
+rmSharedWords(txt3)
 ```
 
 
@@ -1751,6 +1771,25 @@ set.seed(2021); ma1 <- matrix(sample.int(n=40, size=27, replace=TRUE), ncol=9)
 which(ma1 >37)      # doesn't tell which row & col
 coordOfFilt(ma1, ma1 >37)
 ```
+
+
+### Trimmed Mean
+
+Under certain circumstances using the trimmed mean may be more stable towards outlyer values.
+The base function  `mean()` allows to preform symmetric trimming, thus with more trimming the result will start converging to the _mean_.
+The function `trimmedMean()` gives more flexible options for assinging different upper- and lower fractions of the initial data to be trimmed.
+When outlyer values always appear at the high (or low) end of data, such proceeding may be useful.
+However, the user is encouraged to use this with caution since there is also a risk of introducing bias.
+
+
+```{r trimmedMean1, echo=TRUE}
+x <- c(17:11,27:28)
+mean(x)
+mean(x, trim=0.15)       # symmetric trimming
+mean(x[x < 25])          # manual trimming
+trimmedMean(x, trim=c(l=0, u=0.7))   # asymmetric trim
+```
+
 
 
 ## Statistical Testing  {#StatisticalTesting}

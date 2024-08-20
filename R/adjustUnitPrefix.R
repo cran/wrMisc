@@ -42,6 +42,8 @@ adjustUnitPrefix <- function(x, pref=c("z","a","f","p","n","u","m","","k","M","G
   if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
     if(!isTRUE(silent)) silent <- FALSE }
   datOK <- all(c(length(x), length(pref), length(unit)) >0)
+  if(length(returnType) >0 && is.character(returnType)) returnType <- naOmit(returnType)
+  if(length(returnType) <1 || !is.character(returnType)) {returnType <- c("NAifInvalid","allText"); if(!silent) message(fxNa,"Invalid entry for 'returnType', setting ti default ('NAifInvalid','allText')")}
   out <- if("NAifInvalid" %in% returnType) rep(NA, length(x)) else x
   if(datOK) {  
     if(length(unit) >1) { if(!silent) message(fxNa,"Argument 'unit' must be of length=1, truncating...")
@@ -57,12 +59,12 @@ adjustUnitPrefix <- function(x, pref=c("z","a","f","p","n","u","m","","k","M","G
     sep2 <- if("" %in% sep) sep[-which(sep %in% "")] else sep   
     sep3 <- if(length(sep2) <1) protectSpecChar(sep, callFrom=fxNa) else paste0(protectSpecChar(sep2, callFrom=fxNa),"{0,1}")
     if(length(sep3) >1) sep3 <- paste0(sep3, collapse="|")  #,")")
-    if(debug) {message(fxNa,"aUP1"); aUP1 <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,sep3=sep3,pref2=pref2)}      #headingTxt=headingTxt,
+    if(debug) {message(fxNa,"aUP1"); aUP1 <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,sep3=sep3,pref2=pref2,minTrimNChar=minTrimNChar,returnType=returnType, sep2=sep2,sep3=sep3)}
     txRi <- sub( paste0(".*[[:digit:]]+(", sep3,")(",pref2,"){0,1}", unit), "", x)    # OK   (keep all AFTER digit+sep+pref +unit) 
     pref3 <- paste0("(",paste(unique(pref2), collapse="|"), ")")       # prefixes
      if(debug) {message(fxNa,"aUP1b"); aUP1b <- list()}      #headingTxt=headingTxt,chPref=chPref,txLe=txLe,
     lePat <- paste0("[[:digit:]]+(",sep3,")",pref3,"{0,1}(",sep3,")",unit,".*") 
-    chLe <- grepl(lePat, x)
+    chLe <- grepl(lePat, x)                  # see if pattern (digit+sep +pref+unit) exists
     if(any(isFALSE(chLe))) {
       if(!silent) message(fxNa,"Ignoring ",sum(isFALSE(chLe))," instances for not-recognized pattern (eg no numeric content, or not-recognized unit or separator)")
       x[which(isFALSE(chLe))] <- NA }           # correcting/ignoring for not-recognized pattern
@@ -70,9 +72,9 @@ adjustUnitPrefix <- function(x, pref=c("z","a","f","p","n","u","m","","k","M","G
     datOK <- sum(chUnit) >0
   }    
   if(datOK) {        
-    txLe <- gsub(lePat,"", x)                   # OK  (keep all heading=toLeft to digits+sep+pref+unit+etc) 
+    txLe <- gsub(lePat,"", x)                   #   (keep all heading=toLeft to digits+sep+pref+unit+etc) 
     chPref <- nchar(x)==nchar(txLe)
-     if(debug) {message(fxNa,"aUP1c"); aUP1c <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,sep3=sep3,pref2=pref2,chPref=chPref,txLe=txLe,txRi=txRi)}      #headingTxt=headingTxt,
+     if(debug) {message(fxNa,"aUP1d"); aUP1d <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,sep3=sep3,pref2=pref2,chPref=chPref,txLe=txLe,txRi=txRi)}      #headingTxt=headingTxt,
     xIni <- x 
     x <- mapply(sub, txRi, "", mapply(sub, txLe, "", x))                   # reduce to num +sep+unit
     num <- substr(x, 1, nchar(x)- nchar(sub("[[:digit:]]+","",x)))         # numeric content/part     
@@ -84,26 +86,26 @@ adjustUnitPrefix <- function(x, pref=c("z","a","f","p","n","u","m","","k","M","G
     if(debug) {message(fxNa,"-- aUP2"); aUP2 <- list()}     # conVal=conVal,
     if(inherits(dig, "try-error")) { if(!silent) message(fxNa,"Invalid entry for x (can't extract numeric part), returning NA")
     } else {
-      freqSep <- names(sort(table(allSep), decreasing=TRUE))[1]
+      freqSep <- names(sort(table(allSep), decreasing=TRUE))[1]     # most frequent separator
       ## now check which prefix used, if all prefix same 
       if(length(unique(naOmit(allPref))) >1) {
-        if(debug) message(fxNa, "aUP3, converting ",length(unique(naOmit(allPref)))," different prefixes")
+        if(debug) {message(fxNa, "aUP3, converting ",length(unique(naOmit(allPref)))," different prefixes")}
         molCh <- match(allPref, pref)
         if(any(is.na(molCh) & !is.na(dig))) warning("Non-recognized prefix encountered :",paste(unique(pref2[which(is.na(molCh))])), "Result might be WRONG !")
         minPref <- pref[min(molCh, na.rm=TRUE)]
         ## need to find most frequent separator : if txRi & txLe -> need to remove
-        if(debug) {message(fxNa,"-- aUP3b"); aUP3b <- list()}
-
+        if(debug) {message(fxNa,"-- aUP3b"); aUP3b <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,sep3=sep3,pref2=pref2,chPref=chPref,dig=dig,molCh=molCh,txLe=txLe,txRi=txRi,freqSep=freqSep)}
+        
         ## convert (main)
         decFact <- 1e3                           # assume factor 1000             
         conVa3 <- dig* (decFact^(molCh - min(molCh, na.rm=TRUE)))    # adjust
         out <- if("allText" %in% returnType) {          ## add remaining text
-          paste0(txLe, freqSep, conVa3, freqSep, minPref, unit, freqSep, txRi)
+          paste0(if(any(nchar(txLe) >0, na.rm=TRUE)) paste0(txLe, freqSep), conVa3, freqSep, minPref, unit, if(any(nchar(txRi) >0, na.rm=TRUE)) paste0(freqSep, txRi))
         } else { if("trim" %in% returnType)  paste0(trimRedundText(txLe, minNchar=minTrimNChar, callFrom=fxNa), freqSep, conVa3, freqSep, minPref, unit, 
           freqSep, trimRedundText(txRi, minNchar=minTrimNChar, callFrom=fxNa)) else paste0(conVa3, freqSep, minPref, unit) }
         if(any(!chUnit)) out[which(!chUnit)] <- NA
         names(out) <- conVa3                       # numeric value in name
-        if(debug) {message(fxNa,"-- aUP4"); aUP4 <- list()}                  
+        if(debug) {message(fxNa,"-- aUP4 .."); aUP4 <- list()}                  
       } else {
         out <- if("trim" %in% returnType) {
           paste0(trimRedundText(txLe, minNchar=minTrimNChar, callFrom=fxNa), dig, freqSep, naOmit(allPref)[1], unit, trimRedundText(txRi, minNchar=minTrimNChar, callFrom=fxNa))

@@ -9,10 +9,10 @@
 #' @param side (character) may be be either 'both', 'left' or 'right'
 #' @param spaceElim (logical) optional removal of any heading or tailing white space 
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of messages produced
+#' @param callFrom (character) allows easier tracking of messages produced
 #' @param debug (logical) display additional messages for debugging
 #' @return This function returns a modified character vector
-#' @seealso Inverse : Find/keep common text \code{\link{keepCommonText}}; \code{\link{checkUnitPrefix}}; 
+#' @seealso  \code{\link{rmSharedWords}}; Inverse search : Find/keep common text \code{\link{keepCommonText}}; \code{\link{checkUnitPrefix}}; 
 #'    you may also look for related functions in package \href{https://CRAN.R-project.org/package=stringr}{stringr}
 #' @examples
 #' txt1 <- c("abcd_ccc","bcd_ccc","cde_ccc")
