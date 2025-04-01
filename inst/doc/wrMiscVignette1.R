@@ -4,26 +4,26 @@ suppressPackageStartupMessages({
 })
 
 ## ----install, echo=TRUE, eval=FALSE-------------------------------------------
-#  ## If not already installed, you'll have to install the package first.
-#  ## This is the basic installation commande in R
-#  install.packages("wrMisc")
+# ## If not already installed, you'll have to install the package first.
+# ## This is the basic installation commande in R
+# install.packages("wrMisc")
 
 ## ----install2, echo=TRUE, eval=FALSE------------------------------------------
-#  packages <- c("knitr", "rmarkdown", "BiocManager", "kableExtra", "boot", "data.tree", "data.table",
-#    "fdrtool", "RColorBrewer", "Rcpp", "wrMisc", "wrGraph", "wrProteo")
-#  checkInstallPkg <- function(pkg) {       # install function
-#    if(!requireNamespace(pkg, quietly=TRUE)) install.packages(pkg) }
-#  
-#  ## install if not yet present
-#  sapply(packages, checkInstallPkg)
+# packages <- c("knitr", "rmarkdown", "BiocManager", "kableExtra", "boot", "data.tree", "data.table",
+#   "fdrtool", "RColorBrewer", "Rcpp", "wrMisc", "wrGraph", "wrProteo")
+# checkInstallPkg <- function(pkg) {       # install function
+#   if(!requireNamespace(pkg, quietly=TRUE)) install.packages(pkg) }
+# 
+# ## install if not yet present
+# sapply(packages, checkInstallPkg)
 
 ## ----install3, echo=TRUE, eval=FALSE------------------------------------------
-#  ## Installation of limma
-#  BiocManager::install("limma")
+# ## Installation of limma
+# BiocManager::install("limma")
 
 ## ----install4, echo=TRUE, eval=FALSE------------------------------------------
-#  ## Now you can open this vignette out of R:
-#  vignette("wrMiscVignette1", package="wrMisc")
+# ## Now you can open this vignette out of R:
+# vignette("wrMiscVignette1", package="wrMisc")
 
 ## ----setup1-------------------------------------------------------------------
 library("wrMisc")

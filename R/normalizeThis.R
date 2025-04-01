@@ -14,7 +14,7 @@
 #'
 #' With the analysis of 'Omics'-data it is very common to work with data on log-scale.
 #' In this case the argument \code{mode} should be set to \code{additive}, since adding a constant factor to log-data corresponds to a multiplicative factor on regular scale
-#' Please note that (at this point) the methods 'slope', 'exponent', 'slope2Sections' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
+#' Please note that (at this point) the methods 'slope', 'exponent', 'twoPointSlope' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
 #' (you may look at the original documenation for more details, see \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
 #'
 #' Normalization using \code{method="rowNormalize"} runs \code{\link{rowNormalize}} from this package.
@@ -28,11 +28,11 @@
 #' Note : Depending on the procedure chosen, the normalized data may appear on a different scale.
 #'
 #' @param dat matrix or data.frame of data to get normalized
-#' @param method (character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "slope2Sections", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned
+#' @param method (character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "twoPointSlope", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned
 #' @param refLines (NULL or numeric) allows to consider only specific lines of 'dat' when determining normalization factors (all data will be normalized)
 #' @param refGrp Only the columns indicated will be used as reference, default all columns (integer or colnames)
-#' @param mode (character) may be "proportional", "additive";
-#'  decide if normalizatio factors will be applies as multiplicative (proportional) or additive; for log2-omics data \code{mode="aditive"} is suggested
+#' @param mode (character) may be "proportional", "additive" (for log2 data);
+#'  decide if normalization factors will be applied as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested
 #' @param trimFa (numeric, length=1) additional parameters for trimmed mean
 #' @param minQuant (numeric) only used with \code{method='rowNormalize'}: optional filter to set all values below given value as \code{NA}; see also \code{\link{rowNormalize}}
 #' @param sparseLim (integer) only used with \code{method='rowNormalize'}: decide at which min content of  \code{NA} values the function should go in sparse-mode; see also \code{\link{rowNormalize}}
@@ -66,12 +66,21 @@
 #' cor(dat1[c(1:10,91:100),4],rowMeans(dat1[c(1:10,91:100),1:2],na.rm=TRUE),use="complete.obs")
 #' cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 #' @export
-normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="proportional", trimFa=NULL, minQuant=NULL, sparseLim=0.4, nCombin=3, omitNonAlignable=FALSE, maxFact=10, quantFa=NULL, expFa=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
+normalizeThis <- function(dat, method=c("mean","average","median","trimMean","rowNormalize","slope","twoPointSlope","exponent","vsn","none","NULL"), refLines=NULL, refGrp=NULL, 
+  mode=c("proportional","additive","linear","logarithmic"), trimFa=NULL, minQuant=NULL, sparseLim=0.4, nCombin=3, omitNonAlignable=FALSE, maxFact=10, quantFa=NULL, expFa=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="normalizeThis")
   if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
     if(!isTRUE(silent)) silent <- FALSE }
-  if(!any(sapply(c("additive","add","a"), identical, mode))) mode <- "proportional"
-
+  if(!any(sapply(c("additive","add","ad","a"), identical, mode))) mode <- "proportional"
+  
+  mode <- match.arg(mode) 
+  if("logarithmic" %in% mode)  mode <- "additive" else if("linear" %in% mode) mode <- "proportional" 
+  if(length(mode) >1) mode <- mode[1]
+  method <- match.arg(method) 
+  if("average" %in% method)  method <- "mean"  
+  if("NULL" %in% method)  method <- "none"  
+  if(length(method) >1) method <- method[1]
+  
   out <- NULL
   chMe <- is.na(method)
   if(sum(!chMe) <1) stop(fxNa,"Argument 'method' seems empty - nothing to do !")
@@ -104,7 +113,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
     params$useQ <- c(0.2,0.8)
     if(length(quantFa) >0) {if(length(quantFa)==2) params$useQ <- quantFa else if(!silent) message(fxNa,"Invalid 'quantFa', use default c(0.2,0.8)")}
   }
-  if(method %in% "slope2Sections") {
+  if(method %in% "twoPointSlope") {
     if(length(params$useQ) !=1) params$useQ <- list(signif(stats::quantile(dat, c(0.05,0.15), na.rm=TRUE), 3),
       signif(stats::quantile(dat, c(0.05,0.15), na.rm=TRUE), 3))
   }
@@ -135,9 +144,9 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
 #' It assumes all checks have been done before calling this function.
 #' 
 #' @param dat matrix or data.frame of data to get normalized
-#' @param meth (character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "slope2Sections", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned
+#' @param meth (character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "twoPointSlope", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned
 #' @param mode (character) may be "proportional", "additive";
-#'  decide if normalizatio factors will be applies as multiplicative (proportional) or additive; for log2-omics data \code{mode="aditive"} is suggested
+#'  decide if normalizatio factors will be applies as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested
 #' @param param (list) additional parameters
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
@@ -166,7 +175,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
     }
     if(nrow(if(asRefL) datRef else dat) <42) message(callFrom," PROBLEM : Too few lines of data to run 'vsn' ! ")}
   ## Some methods have not yet been adopted/declined to additive/proportional mode
-  if(meth %in% c("none", "slope", "exponent", "slope2Sections", "vsn")) mode <- NULL
+  if(meth %in% c("none", "slope", "exponent", "twoPointSlope", "vsn")) mode <- NULL
   meth <- paste0(meth,mode)
 
   switch(meth,
@@ -187,7 +196,7 @@ normalizeThis <- function(dat, method="mean", refLines=NULL, refGrp=NULL, mode="
       sparseLim=param$sparseLim, nCombin=param$nCombin, omitNonAlignable=param$omitNonAlignable, maxFact=param$maxFact, silent=silent, debug=debug, callFrom=fxNa),
     slope=.normConstSlope(mat=dat, useQuant=param$useQ, refLines=param$refLines, diagPlot=FALSE),
     exponent=try(exponNormalize(dat, useExpon=param$useExp, refLines=param$refLines)$datNor, silent=TRUE),
-    slope2Sections=try(adjBy2ptReg(dat, lims=param$useQ, refLines=param$refLines), silent=TRUE),
+    twoPointSlope=try(adjBy2ptReg(dat, lims=param$useQ, refLines=param$refLines), silent=TRUE),
     vsn=if(requireNamespace("vsn")) try(vsn::justvsn(dat), silent=TRUE) else NULL ) 
   }
 

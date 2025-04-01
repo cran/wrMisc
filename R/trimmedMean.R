@@ -1,6 +1,7 @@
 #' Trimmed Mean
 #'
 #' This function allows more flexible options for calculating a trimmed mean compared to \code{mean} (from the base-package).
+#' For example, the trimming may be asymmetric to the median of the data.
 #' 
 #' 
 #' @details
@@ -47,7 +48,7 @@ trimmedMean <- function(dat, trim=c(l=0.2,u=0.2), silent=FALSE, debug=FALSE, cal
         if(all(c("l","u") %in% names(trim))) trim <- trim[match(c("l","u"), names(trim))]
         if(trim[2] < 0.5) trim[2] <- 1 - trim[2]
         trim <- round(trim[1:2]*length(dat))
-        if(debug) message(fxNa," using indexes ",trim[1]," to ",trim[2],"  out of 1:",length(dat))
+        if(debug) message(fxNa,"Using indexes ",trim[1]," to ",trim[2],"  out of 1:",length(dat))
         out <- if(trim[2] != trim[1]) mean(sort(dat)[trim[1]:trim[2]], na.rm=TRUE) else dat[trim[1]]}
     }   
   out }

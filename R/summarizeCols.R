@@ -131,6 +131,7 @@ summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, supl=NUL
     median=apply(x[,numCol], 2, stats::median, na.rm=TRUE),    #   all columns
     mean=colMeans(x[,numCol], na.rm=TRUE),
     mean.trim=apply(x, 2, trimmedMean, trim=supl, callFrom=fxNa, silent=silent), 
+    top3mean=NA,   # apply(x, 2, top3mean, callFrom=fxNa),
     max=apply(x, 2, max, na.rm=TRUE), 
     min=apply(x, 2, min, na.rm=TRUE),
     summary=if(is.matrix(x)) apply(x, 2, summary) else sapply(x, summary),

@@ -6,10 +6,11 @@
 \usage{
 normalizeThis(
   dat,
-  method = "mean",
+  method = c("mean", "average", "median", "trimMean", "rowNormalize", "slope",
+    "twoPointSlope", "exponent", "vsn", "none", "NULL"),
   refLines = NULL,
   refGrp = NULL,
-  mode = "proportional",
+  mode = c("proportional", "additive", "linear", "logarithmic"),
   trimFa = NULL,
   minQuant = NULL,
   sparseLim = 0.4,
@@ -26,14 +27,14 @@ normalizeThis(
 \arguments{
 \item{dat}{matrix or data.frame of data to get normalized}
 
-\item{method}{(character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "slope2Sections", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned}
+\item{method}{(character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "twoPointSlope", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned}
 
 \item{refLines}{(NULL or numeric) allows to consider only specific lines of 'dat' when determining normalization factors (all data will be normalized)}
 
 \item{refGrp}{Only the columns indicated will be used as reference, default all columns (integer or colnames)}
 
-\item{mode}{(character) may be "proportional", "additive";
-decide if normalizatio factors will be applies as multiplicative (proportional) or additive; for log2-omics data \code{mode="aditive"} is suggested}
+\item{mode}{(character) may be "proportional", "additive" (for log2 data);
+decide if normalization factors will be applied as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested}
 
 \item{trimFa}{(numeric, length=1) additional parameters for trimmed mean}
 
@@ -77,7 +78,7 @@ Thus, all measures will be multiplied by 1/0.95 (apr 1.053) to compensate for su
 
 With the analysis of 'Omics'-data it is very common to work with data on log-scale.
 In this case the argument \code{mode} should be set to \code{additive}, since adding a constant factor to log-data corresponds to a multiplicative factor on regular scale
-Please note that (at this point) the methods 'slope', 'exponent', 'slope2Sections' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
+Please note that (at this point) the methods 'slope', 'exponent', 'twoPointSlope' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
 (you may look at the original documenation for more details, see \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
 
 Normalization using \code{method="rowNormalize"} runs \code{\link{rowNormalize}} from this package.

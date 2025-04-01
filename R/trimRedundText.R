@@ -62,6 +62,7 @@ trimRedundText <- function(txt, minNchar=1, side="both", spaceElim=FALSE, silent
     }
     txt } }
 
+
 #' Trim From Left Side
 #'
 #' This function allows trimming/removing redundant text-fragments from left side.

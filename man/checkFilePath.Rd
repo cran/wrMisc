@@ -2,13 +2,13 @@
 % Please edit documentation in R/checkFilePath.R
 \name{checkFilePath}
 \alias{checkFilePath}
-\title{Check If File Is Available For Reading}
+\title{Verify File-name If Existing (in specified path), If Has Proper Extension Or Select Files With Proper Extension From Given Path}
 \usage{
 checkFilePath(
-  fileName,
-  path,
+  fileName = NULL,
+  path = "./",
   expectExt = "",
-  mode = "byFile",
+  mode = "compressedOption",
   compressedOption = NULL,
   strictExtension = NULL,
   stopIfNothing = NULL,
@@ -25,7 +25,7 @@ if \code{NULL} and \code{path} as well as \code{expectExt} will take 1st file in
 
 \item{expectExt}{(character) file extension (will not be considered if \code{""})}
 
-\item{mode}{(character) further details     if function should give error or warning if no files found
+\item{mode}{(character) further details if function should give error or warning if no files found
 integrates previous argument \code{compressedOption} to also look for look for .gz compressed files; 
 \code{strictExtension} to decide if extension (\code{expectExt}) - if given - should be considered obligatory;
 \code{stopIfNothing} to stop with error if no files found}
@@ -43,11 +43,11 @@ integrates previous argument \code{compressedOption} to also look for look for .
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function returns a character vector with verified path and file-name(s), returns \code{NULL} if nothing
+This function returns a character vector with verified file-name(s) (and path), returns \code{NULL} if nothing found - unless \code{mode="stopIfNothing"}
 }
 \description{
 This function allows tesing if a given file-name corresponds to an existing file (eg for reading lateron).
-Indications to the path and file-extensions may be given separately. If no files do match .gz compressed versions may be searced, too.
+Indications to the path and file-extensions may be given separately. If no files do match .gz compressed versions may be searched, too.
 }
 \details{
 When the filename given by the user exists but it's file-extension is not matching \code{expectExt} 

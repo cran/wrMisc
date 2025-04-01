@@ -17,21 +17,21 @@
 #' @return This function returns a limma-type object of class \code{MArrayLM}
 #' @seealso \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}, \code{\link[stats]{p.adjust}}
 #' @examples
-#' set.seed(2017); t8 <- matrix(round(rnorm(1600,10,0.4),2), ncol=8,
-#'   dimnames=list(paste("l",1:200),c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
-#' t8[3:6,1:2] <- t8[3:6,1:2]+3     # augment lines 3:6 for AA1&BB1
-#' t8[5:8,5:6] <- t8[5:8,5:6]+3     # augment lines 5:8 for AA2&BB2 (c,d,g,h should be found)
+#' set.seed(2017); t8 <- matrix(round(rnorm(1520,10,0.4),2), ncol=8,
+#'   dimnames=list(paste("l",1:190),c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
+#' t8[3:6,1:2] <- t8[3:6,1:2] +3     # augment lines 3:6 for AA1&BB1
+#' t8[5:8,5:6] <- t8[5:8,5:6] +3     # augment lines 5:8 for AA2&BB2 (c,d,g,h should be found)
 #' t4 <- log2(t8[,1:4]/t8[,5:8])
 #' ## Two-sided testing 
 #' fit4 <- moderTest2grp(t4,gl(2,2))
 #' # If you have limma installed we can now see further
-#' if("list" %in% mode(fit4) & requireNamespace("limma")) {
+#' if(requireNamespace("limma")) {
 #'   limma::topTable(fit4, coef=1, n=5)}    # effect for 3,4,7,8
 #' 
 #' ## One-sided testing
-#' fit4in <- moderTest2grp(t4,gl(2,2),testO="<")
+#' fit4in <- moderTest2grp(t4,gl(2,2), testO="<")
 #' # If you have limma installed we can now see further
-#' if("list" %in% mode(fit4) & requireNamespace("limma")) {
+#' if(requireNamespace("limma")) {
 #'   limma::topTable(fit4in, coef=1, n=5) }
 #' @export
 moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR","Mval","means"), testOrientation="=", silent=FALSE, debug=FALSE, callFrom=NULL){

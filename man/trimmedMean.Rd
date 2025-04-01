@@ -30,6 +30,7 @@ This function returns a (numeric) vector with the trimmed mean
 }
 \description{
 This function allows more flexible options for calculating a trimmed mean compared to \code{mean} (from the base-package).
+For example, the trimming may be asymmetric to the median of the data.
 }
 \details{
 If the second value of trim is <0.5 it is supposed that this indicates a fraction from the upper end the vector-dat as \code{\link[base]{mean}} does.

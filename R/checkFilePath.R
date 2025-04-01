@@ -1,7 +1,7 @@
-#' Check If File Is Available For Reading
+#' Verify File-name If Existing (in specified path), If Has Proper Extension Or Select Files With Proper Extension From Given Path
 #'
 #' This function allows tesing if a given file-name corresponds to an existing file (eg for reading lateron).
-#' Indications to the path and file-extensions may be given separately. If no files do match .gz compressed versions may be searced, too.
+#' Indications to the path and file-extensions may be given separately. If no files do match .gz compressed versions may be searched, too.
 #' 
 #' @details
 #' 
@@ -15,7 +15,7 @@
 #'   if \code{NULL} and \code{path} as well as \code{expectExt} will take 1st file in given path and proper extension
 #' @param path (character, length=1) optional separate entry for path of \code{fileName}
 #' @param expectExt (character) file extension (will not be considered if \code{""})
-#' @param mode (character) further details     if function should give error or warning if no files found
+#' @param mode (character) further details if function should give error or warning if no files found
 #'   integrates previous argument \code{compressedOption} to also look for look for .gz compressed files; 
 #'   \code{strictExtension} to decide if extension (\code{expectExt}) - if given - should be considered obligatory;
 #'   \code{stopIfNothing} to stop with error if no files found
@@ -25,161 +25,167 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return This function returns a character vector with verified path and file-name(s), returns \code{NULL} if nothing 
+#' @return This function returns a character vector with verified file-name(s) (and path), returns \code{NULL} if nothing found - unless \code{mode="stopIfNothing"} 
 #' @seealso \code{\link[base]{file.exists}} 
 #' @examples
 #' (RhomeFi <- list.files(R.home()))
 #' file.exists(file.path(R.home(), "bin"))
 #' checkFilePath(c("xxx","unins000"), R.home(), expectExt="dat")
 #' @export
-checkFilePath <- function(fileName, path, expectExt="", mode="byFile", compressedOption=NULL, strictExtension=NULL, stopIfNothing=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
-  ## check file-input if available to read
+checkFilePath <- function(fileName=NULL, path="./", expectExt="", mode="compressedOption", compressedOption=NULL, strictExtension=NULL, stopIfNothing=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
+  ## verify file if existing (in specified path), if has proper extension or select files with proper extension from given path 
   fxNa <- .composeCallName(callFrom, newNa="checkFilePath")
-  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
-    if(!isTRUE(silent)) silent <- FALSE }
-  msg <- "Invalid entry for 'path'  "   
-  if(debug) {message(fxNa,"cFP0a"); cFP0a <- list(fileName=fileName,path=path,expectExt=expectExt,mode=mode)}
-   
-  .NaRepl <- function(x, repl) {   # replace NAs
-    if(length(x) <1) x <- repl else {
-      chNa <- is.na(x)
-      if(any(chNa)) x[which(chNa)] <- repl }
-    x } 
-     
-   .adLen <- function(x,y) {  ## adjust length of 'x' to 'y'
-     if(length(x) < length(y)) x <- rep(x, length(y))[1:length(y)]                
-     if(length(x) > length(y)) x <- x[1:length(y)]                
-     x  }
-   
-  .findSingleFile <- function(pa, fi, ext, strict=FALSE, compr=FALSE, sil=FALSE, deb=FALSE, caFr=NULL) {    # main function for SINGLE pa (path), fi, ext; testing, presumes extP & ext are checked/adjusted
-    ## return filename found to be present (if multiple possible ONLY 1st will be given)
-    if(length(fi) >0 && is.na(fi[1])) fi <- NULL
-    argLe <- c(pa=length(pa), fi=length(fi), ext=length(ext))
-    if(argLe[1] < 0) pa <- "." 
-    fiN <- NULL
-    debugFx <- deb         # for debugging
-    compExt <- c(".zip",".7z",".gz")
-    if(argLe[2] <1 && argLe[3] <1) {            # neither extension nor file-name, shortcut/option to pick 1st of path
-      if(argLe[1] >0 && dir.exists(pa[1])) { fiN <- list.files(pa)[1] } }
-    if(debugFx) {message("cSF0b"); cSF0b <- list(fiN=fiN,argLe=argLe,pa=pa,fi=fi,ext=ext)}
-    ## check for direct hit
-    if(length(fiN) <1 && argLe[2]==1) { 
-      fiN <- list.files(pa, pattern=paste0("^", sub("\\.","\\\\.", fi), "$")) }
-    if(length(fiN) <1 && argLe[3] >0) {            # remove empty
-      chEL <- nchar(ext) <1
-      if(any(chEL)) { ext <- ext[which(!chEL)]
-        argLe[3] <- length(ext) } }
-    if(length(fiN) <1 && argLe[3] >0) {
-      ext <- paste0(".",sub("^\\.","", ext)) }     # add heading '.' if missing
-      
-    ## check for direct hit with extesion
-    if(length(fiN) <1 && argLe[2]==1 && argLe[3]==1) {
-      fi2 <- sub("\\.","\\\\.", paste0("^",fi, ext,"$"))  
-      if(length(ext) >1) fi2 <- paste(paste0("(",fi2,")"), collapse="|")
-      fiN <- list.files(pa, pattern=fi2) }
-      
-    ## no filename but extension - look as pattern & pick 1st  
-    if(length(fiN) <1 && argLe[2] <1 && argLe[3] >0) {
-      ext2 <- paste0(c(ext, if(compr) paste0(rep(ext, length(compExt)), rep(compExt, each=length(ext)))), "$")
-      chLe <- nchar(ext2) >0
-      if(any(chLe)) ext2[which(chLe)] <- sub("\\.","\\\\.", ext2[which(chLe)] )
-      fiN <- list.files(pa, pattern=ext2)
-      if(length(fiN) >0) { if(!sil) message(caFr, if(debug) "cSF1 ","Found ",length(fiN)," matches, picking 1st ..")
-        fiN <- fiN[1] }      
-    }    
-    if(debugFx) {message("cSF1"); cSF1 <- list(fiN=fiN,argLe=argLe,pa=pa,fi=fi,ext=ext,compr=compr,compExt=compExt)}
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  mode2 <- NULL
+  
+  if(debug) {message(fxNa,"cFP0"); cFP0 <- list(fileName=fileName,path=path,expectExt=expectExt,mode=mode,compressedOption=compressedOption)}
+  if(length(mode) >0) {
+    mode <- unique(as.character(mode))
+    if(any(c("s","st") %in% mode)) warning(fxNa,"Content for argument 'mode' unclear, ignoring")
+    if(any(c("strictExtension","strictExtens","strictExt","strictEx","strictE","strict","stri","str") %in% mode)) mode2 <- "strictExtension"
+    if(any(c("compressedOption","compressedOpt","compressed","compr","comp","com","co","c") %in% mode)) mode2 <- c(mode2, "compressedOption")
+    if(any(c("stopIfNothing","stopIfNo","stopIfN","stopIf","stopI","stop","sto") %in% mode)) mode2 <- c(mode2, "stopIfNothing")
+  } 
+  if(isTRUE(strictExtension)) mode2 <- c(mode2, "strictExtension")          # back compatobilty
+  if(length(compressedOption) >0 && !isFALSE(compressedOption)) mode2 <- c(mode2, "compressedOption")       # back compatobilty
+  mode2 <- unique(as.character(mode2))
+  
+  comprExt <- if(length(compressedOption) >0 && is.character(compressedOption)) compressedOption else {
+    if("compressedOption" %in% mode2) c("gz", "zip", "7z") else NULL } # Supported compressed file extensions
 
-    ## integrate ext & compression (fi & ext given)
-    if(length(fiN) <1 && argLe[2]==1 && argLe[3] >0) { 
-      ext2 <- c(ext, if(compr) sapply(ext, paste0, compExt))    # add compressed versions
-      chELe <- nchar(ext2) >0
-      if(any(chELe)) ext2[which(chELe)] <- paste0(".",sub("\\.","", ext2[which(chELe)]))   # check/add heading point at extension     
-      fiN <- paste0(fi,ext2) %in% list.files(path=pa)    # search as strict
-      fiN <- if(any(fiN)) paste0(fi,ext2)[which(fiN)] else NULL
-      if(length(fiN) <1 && compr) {                              # now check if ext is already in fi & adjust
-        chExt <- ext %in% paste0(".",tools::file_ext(fi))
-        if(any(chExt)) { 
-          fiN <- paste0(fi,compExt) %in% list.files(path=pa)    # search as strict
-          fiN <- if(any(fiN)) paste0(fi,compExt)[which(fiN)] else NULL
+  validExtension <- function(fiNa, extLst, comprExt=c("gz","zip")) {
+    ## check if filenames do correspond to expected extensions
+    ## if comprExt given, double-extensions due to compression will be recognized/validated, too
+    ## return F & T for each file if extLst (& comprExt) correspond
+    ##  add name of (compressed/initial) file as name of output
+    #example# fiNa <- c("ab","ab.c","ab.c.gz","ab.d","ab.d.zip","ab.e"); extLst <- c("c","d"); validExtension(fiNa, extLst)  # ok
+    fiNaExt1 <- tools::file_ext(fiNa)
+    out <- fiNaExt1 %in% extLst
+    if(length(comprExt) >0 && any(comprExt %in% fiNaExt1)) {
+      fiNaExtD <- .doubleExt(fiNa, termExt=comprExt)
+      out <- fiNaExtD %in% c(extLst, paste0(rep(extLst, each=length(comprExt)),".",rep(comprExt,length(extLst))))
+    } 
+    names(out)[which(out)] <- fiNa[which(out)]
+  out }
+
+  ## Ensure path exists and replace NA by default './'
+  if(length(path) >0) {
+    chNA <- is.na(path)
+    if(any(chNA)) path[which(chNA)] <- "./"
+    if(any(!dir.exists(path))) stop(sum(!dir.exists(path))," Provided 'path' do(es) not exist !")
+  } else path <- "./" 
+    
+  ## Check 'expectExt'
+  if(length(expectExt) >0) {
+    expectExt <- unique(as.character(expectExt))
+    chBad <- nchar(expectExt) <1 | is.na(expectExt)   # '' and NAs get ignored/removed
+    if(any(chBad)) expectExt <- expectExt[which(!chBad)]
+  } else chBad <- NULL
+  if(debug) {message(fxNa,"cFP1"); cFP1 <- list(fileName=fileName,path=path,expectExt=expectExt,mode2=mode2,compressedOption=compressedOption, chBad=chBad)}
+  
+  ## Construct combined path & fileName
+  if(length(fileName) <1) {
+    if(length(path) ==1) {
+      ## single path : pick all matching
+      pat <-  if(length(expectExt) <1) NULL else {if(length(comprExt) <1) paste0("\\.",sub("\\$$","",expectExt),"$") else paste0("\\.",rep(expectExt,each=length(comprExt)), paste0(sub("\\$$","",comprExt),"$") ) }
+      pat <- if(length(expectExt) <1) unique(c("", pat))
+      files <- list.files(path[1], full.names=TRUE, pattern=pat) 
+    } else {                  
+      ## multiple paths : pick 1st matching of each path
+      files <- sapply(path, function(pa) list.files( pa, 
+        pattern= if(length(expectExt) <1) NULL else {if(length(comprExt) >0) paste0("\\.",rep(expectExt, each=length(comprExt)), 
+          sub("\\$$","",comprExt),"$") else  paste0("\\.",sub("\\$$","",expectExt),"$")}, full.names=TRUE)[1] )
+    }
+    paFile <- files
+    if(debug) {message(fxNa,"cFP2"); cFP2 <- list(fileName=fileName,path=path,expectExt=expectExt,mode2=mode2,compressedOption=compressedOption,comprExt=comprExt, chBad=chBad, files=files,paFile=paFile)}
+
+  } else {
+    ## fileName(s) given
+    ## if path is given and meaningful -> add
+    paFile <- fileName                                                                           
+    if(length(path) >0) {  
+      if(length(path)==1) path <- rep(path, length(fileName))
+      chPa <- is.na(path) | nchar(path) <1 | path %in% c(".","./")         # identify unusable path: exclude non-given -> meaning current dir
+      if(any(!chPa)) paFile[which(!chPa)] <- file.path(path[which(!chPa)], fileName[which(!chPa)])
+    }  
+  }   
+  
+  if(debug) {message(fxNa,"cFP3"); cFP3 <- list(fileName=fileName,path=path,expectExt=expectExt,mode2=mode2,compressedOption=compressedOption,comprExt=comprExt, chBad=chBad, paFile=paFile)}
+  ## need to integrate "strictExtension"  & "stopIfNothing"
+
+  ### MAIN CHECK
+  ## if  length(expectExt) > 1 treat list  : attach ext
+  ## if strict & extensions given: check extensions
+  if(length(paFile) >0) {
+    if(debug) {message(fxNa,"cFP4"); cFP4 <- list(fileName=fileName,path=path,expectExt=expectExt,mode2=mode2,compressedOption=compressedOption,comprExt=comprExt, paFile=paFile)}
+
+    if("strictExtension" %in% mode2) {    # assume each extension should fit to each paFile
+      #check length# length(expectExt) ==1 
+      if(length(expectExt) >0) {    # standard case, expectExt given -> check & set not-conform to NA (which will be F after file.exists)
+        chFi0 <- validExtension(paFile, expectExt, comprExt) 
+        if(any(!chFi0)) paFile[which(!chFi0)] <- NA
+      } 
+      chEx <- file.exists(paFile)   
+      out <- paFile
+      if(any(!chEx)) out[!chEx] <- NA
+    } else {           #  if not strict, pick first of possibly multiple hits
+      out <- rep(NA, length(paFile))
+      names(out) <- paFile
+      fxCh <- function(x) {z <- file.exists(x); if(any(z)) x[which(z)[1]] else NA}
+      chFi1 <- file.exists(paFile)     # check which fit right away
+      if(any(chFi1)) out[which(chFi1)] <- paFile[which(chFi1)]
+      if(any(!chFi1)) {      # cases of no direct hit 
+        ext <- NULL
+        ## check & remove extension if already in paFi
+        fiExt <- tools::file_ext(paFile) %in% expectExt
+        if(any(fiExt)) expectExt <- c("",expectExt)    # add 'no extension' in case extension seen somewhere in paFile        
+        if(length(expectExt) >0 && length(comprExt) >0) {
+          ext <- unique(sub("\\.$","", c(expectExt,paste0( rep(expectExt, each=length(comprExt)),".",rep(comprExt, length(expectExt))) ) ))
+        } else if(length(expectExt) >0) ext <- unique(sub("\\.$","", expectExt)) else {
+          if(length(comprExt) >0) ext <- unique(sub("\\.$","", comprExt))
+        } 
+        if(length(ext) >0) { ch2 <- sub("\\.\\.",".", sapply(paFile[which(!chFi1)], paste0, ".", ext))  # append extensions to fileNames
+          out[which(!chFi1)] <- if(is.matrix(ch2)) apply(ch2, 2, fxCh) else unlist(sapply(ch2, fxCh))[1:sum(!chFi1)]     # check for presence
         }
       }
-    }
-    if(length(fiN) <1 && argLe[2] >0 && argLe[3] >0 && compr) { 
-      ## check if ext already in fi (while compr) : construct fi wo extension
-      fi2 <- fi  
-      if(compr) { chExt <- tools::file_ext(fi) %in% compExt
-        if(chExt) { ex2 <- tools::file_ext(sub("\\.([[:alnum:]]+)$","",fi))       # access extension underneith compr
-          chEx2 <- ex2 %in% ext && nchar(ex2) >0
-          if(chEx2) {            ## extension (underneith compr found present); test only compr
-            fiN <- paste0(fi, compExt) 
-            fiN <- list.files(pa, pattern=paste0("^",fiN,"$"))
-            chFi <- fiN %in% list.files(pa)
-            if(length(fiN) >0) { if(!sil) message(caFr, if(debug) "cSF2 ","Found ",length(fiN)," matches, picking 1st ..")
-              fiN <- fiN[1] }      
-        } }
-      }
-    }
-    if(debugFx) {message("cSF2"); cSF2 <- list(fiN=fiN,argLe=argLe,pa=pa,fi=fi,ext=ext)}
 
-    ## nothing found as direct hit
-    if(length(fiN) <1 && isFALSE(strict) && argLe[2] ==1) {
-      ## look as pattern
-      fi2 <- gsub("\\.","\\\\.", fi)
-      fi3 <- gsub("\\.","\\\\.", paste0(fi, compExt))       # fi wo ext but with compr
-      ex2 <- gsub("\\.","\\\\.", c(ext, if(compr) sapply(ext, paste, compExt)))    # add compressed versions
-      fiN <- if(all(argLe >0)) list.files(pa, pattern=paste0(fi2,ex2)) else {if(all(argLe[-3] >0)) list.files(pa, pattern=fi2) }
-      if(debugFx) {message("cSF3"); cSF3 <- list(pa=pa,fi=fi,ext=ext,argLe=argLe,fiN=fiN)}
-        
-      if(isFALSE(compr) && length(fiN) >0) {
-        ## remove compressed from resuls if isFALSE(compr)   
-        ch1 <- sapply(paste0(gsub("\\.","\\\\.", compExt),"$"), grepl, fiN)
-        if(any(ch1)) { if(length(dim(ch1)) <1) fiN <- NULL else { ch2 <- rowSums(ch1) >0; if(any(ch2)) fiNa <- fiNa[-which(ch2)] }}
-      }
-      if(length(fiN) >0) { if(!sil) message(caFr, if(debug) "cSF3b ","Found ",length(fiN)," matches in pattern search, picking 1st ..")
-        fiN <- fiN[1] }
+      if(any(!is.na(out))) out <- sub("\\.$","", out)      # remove terminal '.' (may be artifact from paste) 
     }
-    ## final : add path (unless already good wdir)
-    if(length(fiN) >0 && !("." %in% pa)) { fiN <- file.path(pa[1], fiN)}
-  fiN }  
-    
-    
-   if(debug) {message(fxNa,"cFP0b"); cFP0b <- list()}
-                    
-  ## check path
-  path <- .NaRepl(path, repl=".")
-   
-  ## check for paths as existing
-  chPa <- dir.exists(path)   
-  if(any(!chPa)) { 
-    if(!silent) message(fxNa, "path(s) ", pasteC(path[which(!chPa)], quoteC="'"),"'  not existing, ignoring...")
-    path[which(!chPa)] <- "." }
-
-  if(length(expectExt) <1) expectExt <- "" else if(any(is.na(expectExt))) expectExt <- ""  
-  if(debug) {message(fxNa,"cFP1"); cFP1 <- list(fileName=fileName,path=path,expectExt=expectExt,mode=mode)}
-
-  path2 <- .adLen(path, fileName)
+    if(debug) {message(fxNa,"cFP5"); cFP5 <- list(out=out,fileName=fileName,path=path,expectExt=expectExt,mode2=mode2,compressedOption=compressedOption,comprExt=comprExt, paFile=paFile)}
+    if("stopIfNothing" %in% mode2 && any(is.na(out))) { stop(sum(is.na(out))," File(s) not found !")}
  
+  } else out <- NULL  
+  out }
 
-  if(isTRUE(strictExtension)) mode <- c(mode, "strict")        # back compatobilty
-  stri2 <- rep(if(any(c("strictExtension","strict","stri","str") %in% mode)) TRUE else FALSE, length(fileName))
 
-  ext2 <- if(length(expectExt) >1) as.list(as.data.frame(matrix(rep(expectExt, length(fileName)), ncol=length(fileName)))) else {
-    rep(if(length(expectExt) <1) FALSE else expectExt, length(fileName)) }
-  if(debug) {message(fxNa,"cFP1c"); cFP1 <- list()}
-  
-  if(length(compressedOption)==1 && isTRUE(compressedOption)) mode <- unique(c(mode,"compressed"))        # stay back-compatible with deprecated argument (since wrMisc-1.15.0)... 
-  comp2 <- if(any(c("compressedOption","compressed","compr","com") %in% mode)) rep(TRUE, length(fileName)) else rep(FALSE, length(fileName))
-  if(any(c("compressed","compr","com") %in% names(mode))) {comp2 <- mode[which(c("compressed","compr","com") %in% names(mode))]
-    comp2 <- if(length(comp2) >1) as.list(as.data.frame(matrix(rep(comp2, length(fileName)), ncol=length(fileName)))) else rep(comp2, length(fileName)) }  
-  
-  if(debug) {message(fxNa,"cFP1d"); cFP1d <- list(fileName=fileName,path=path,expectExt=expectExt,mode=mode,path2=path2,comp2=comp2,ext2=ext2,stri2=stri2)}
-  
-  ## main
-  out <- mapply(.findSingleFile, fi=fileName, pa=path2, ext=ext2, strict=stri2, compr=comp2, deb=debug)
-  if(debug) {message(fxNa,"cFP1e"); cFP1e <- list()}
 
-  if(any(c("stop","stopIfNothing") %in% mode) && length(unlist(out, use.names=FALSE)) <1) stop(fxNa,"No files matching found for ", pasteC(fileName, quoteC="''"))
-  if("byFile" %in% mode) {unlist(sapply(out, function(x) if(length(x) <1) NA else x[1]))} else unlist(out) 
-  
+#' Return File-name Extensions Including Double Extensions (eg txt.gz)
+#'
+#' This function allows retreiving extensions to filenames similar to \code{\link[tools]{file_ext}}, but also alllows to retreive selected double-extensions (txt.gz).
+#' The leading dor will ne excluded similar to \code{\link[tools]{file_ext}}
+#' 
+#' @details
+#' 
+#' The argument \code{termExt} allows specifying additional (terminal) extensions to be recognized.
+#' 
+#' @param fiNa (character) name of file to be tested (may include path)
+#' @param termExt (character) additional terminal extensions
+#' @return This function returns a character vector with file-extensions (excluding the leading dot). (Only purely alphanumeric extensions are recognized.) 
+#' @seealso \code{\link[tools]{file_ext}},  \code{\link{checkFilePath}} 
+#' @examples
+#' fi <- c("ab","ab.c","ab.c.gz","ab.d","ab.d.zip","ab.e")
+#' .doubleExt(fi)
+#' @export
+.doubleExt <- function(fiNa, termExt=c("gz","zip")) {
+  ## get file-extension similar to tools::file_ext() BUT allows retreiving double-extensions (like txt.gz)
+  lastExt <- tools::file_ext(fiNa)
+  if(length(termExt) >0 && all(nchar(termExt) >0)) {
+    chDou <- lastExt %in% termExt
+    if(any(chDou)) {      #tools::file_ext(tools::file_ext(fiNa)) 
+      lastEx2 <- tools::file_ext(mapply(sub, paste0("\\.",lastExt[which(chDou)],"$"), rep("",sum(chDou)), fiNa[which(chDou)])) 
+      lastExt[which(chDou)] <- paste0( lastEx2, ".", lastExt[which(chDou)])
+    } }            
+  lastExt
 }
-  
+    

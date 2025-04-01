@@ -2,13 +2,15 @@
 % Please edit documentation in R/nonAmbiguousNum.R
 \name{nonAmbiguousNum}
 \alias{nonAmbiguousNum}
-\title{make numeric vector non-ambiguous (ie unique)}
+\title{Make numeric vector non-ambiguous (ie unique)}
 \usage{
 nonAmbiguousNum(
   x,
   uniqOnly = FALSE,
   asList = FALSE,
   nameMod = "amb_",
+  silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -21,14 +23,18 @@ nonAmbiguousNum(
 
 \item{nameMod}{(character) text to add in case on ambiguous values, default="amb_"}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 sorted non-ambigous numeric vector (or list if 'asList'=TRUE and 'uniqOnly'=FALSE)
 }
 \description{
-\code{nonAmbiguousNum} makes (named) values of numeric vector 'x' unique. 
-Note: for non-numeric use  \code{\link{firstOfRepeated}} - but 1000x slower !
+Thios function transfomrmes a vector of (named) numeric values \code{x} into unique. 
+Note: for non-numeric use the function \code{\link{firstOfRepeated}} - but 1000x slower !
 Return sorted non-ambigous numeric vector (or list if 'asList'=TRUE and 'uniqOnly'=FASLSE)
 }
 \examples{
