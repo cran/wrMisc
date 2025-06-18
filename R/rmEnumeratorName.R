@@ -7,6 +7,10 @@
 #' Several options exist for the output, the combination of separator-symbols and separtor text/words may be included, too.
 #'
 #' @details
+#' 
+#' In case only digit-enumerators are present (ie, without repetitive text), one has to use \code{incl="rmEnum"} to remove terminal enumerators. 
+#' This will work, only when all items do contain terminal digits.
+#' 
 #' Please note, that checking a variety of different separator text-word and separator-symbols may give an important number of combinations to check.
 #' In particular, when automatic trimming of separator text-words is added (eg \code{incl="trim2"}), the complexity of associated searches increases quickly.
 #' Thus, with large data-sets restricting the content of the arguments \code{nameEnum}, \code{sepEnum} and (in particular) \code{newSep} to the most probable terms/options
@@ -19,8 +23,10 @@
 #' @param nameEnum (character) potential enumerator-names
 #' @param sepEnum (character)  potential separators for enumerator-names
 #' @param newSep (character) potential enumerator-names
-#' @param incl (character) options to include further variants of the enumerator-names, use \code{"rmEnum"} for completely removing enumerator tag/name and digits
-#'   for differentr options of trimming names/tags from \code{nameEnum} one may use \code{anyCase}, \code{trim3} (trimming down to max 3 letters),
+#' @param incl (character) options to include further variants of the enumerator-names, 
+#'   use \code{"rmEnum"} for completely removing enumerator tag/name and digits for different options of trimming names/tags from \code{nameEnum};
+#'   or one may use \code{anyCase}, 
+#'   \code{trim3} (trimming down to max 3 letters),
 #'   \code{trim2} (trimming to max 2 letters) or  \code{trim1} (trimming down to single letter); 
 #'   \code{trim0} works like \code{trim1} but also includes ' ', ie no enumerator tag/name in front of the digit(s)  
 #' @param silent (logical) suppress messages
@@ -30,6 +36,10 @@
 #'   $pattern (the combination of separator-symbols and separtor text/words found), and if input is matrix $column (which column of the input was identified and treated)
 #' @seealso when the exact pattern is known \code{\link[base]{grep}} and \code{sub} may allow direct manipulations much faster
 #' @examples
+#' xv <- c("hg_1","hjRe2_2","hk-33")
+#' rmEnumeratorName(xv)
+#' rmEnumeratorName(xv, incl="rmEnum")
+#' 
 #' xx <- c("hg_Re1","hjRe2_Re2","hk-Re3_Re33")
 #' rmEnumeratorName(xx)
 #' rmEnumeratorName(xx, newSep="--")
@@ -43,7 +53,7 @@
 #' apply(xz, 2, rmEnumeratorName, sepEnum=c("","_"), newSep="_", silent=TRUE)
 #'
 #' @export
-rmEnumeratorName <- function(dat, nameEnum=c("Number","No","#","Replicate","Sample"), sepEnum=c(" ","-","_"), newSep="", incl=c("anyCase","trim2"), silent=FALSE, debug=FALSE, callFrom=NULL) {
+rmEnumeratorName <- function(dat, nameEnum=c("Number","No","#","Replicate","Sample"), sepEnum=c(" ","-","_","/"), newSep="", incl=c("anyCase","trim2"), silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## remove or rename enumerator tag/name (or remove entire enumerator) from tailing enumerators (eg 'abc_No1' to 'abc_1'), only if found present in all instances
   ## dat (character voector or matrix)
   ## return character vector of same length as initial
@@ -126,7 +136,21 @@ rmEnumeratorName <- function(dat, nameEnum=c("Number","No","#","Replicate","Samp
         if(any(grepl(".L$", incl))) out <- list(dat=out, pattern=substr(usePat, 1, nchar(usePat) -13))                  # optinal return as list including info which col was modified
       }
 
-    } else if(!silent) message(fxNa,"No conistent enumerator+digit combination found; nothing to do ..")
-  } else if(!silent) message(fxNa,"Invalid or empty input; nothing to do ..")
+    } else {
+      ## check for removing enumerators (absence of add'l text)
+      if(nchar(newSep) <1 && length(grep("^rmEnum", incl)) >0) {
+        if(debug) {message(fxNa,"rEN4 .."); rEN4 <- list(dat=dat,out=out,nameEnum=nameEnum,newSep=newSep,sepEnum=sepEnum,chEnum=chEnum,newSep=newSep)}
+        rmTailEnu <- sub(paste0("(",paste(protectSpecChar(sepEnum),collapse="|"),")", "[[:digit:]]+$"), "", dat)  # allows all combin of enumerators
+        ch3 <- nchar(dat) > nchar(rmTailEnu)
+        ## option for 'strict' , ie enumerator at all instances ?
+        
+        if(length(dim(dat)) <2 ) out <- rmTailEnu else {       
+          ch4 <- if(length(dim(dat)) >1) colSums(ch3)==nrow(dat) 
+          if(any(ch4)) out <- rmTailEnu[,which.min(ch4)]
+        } 
+      } else if(!silent && identical(out, dat)) message(fxNa,"No conistent enumerator+digit combination found; nothing to do ..")
+    } 
+       
+  } else if(debug) message(fxNa,"Invalid or empty input; nothing to do ..")
   out }
   

@@ -17,7 +17,7 @@
 \arguments{
 \item{dat}{matrix or data.frame of data to get normalized}
 
-\item{meth}{(character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "twoPointSlope", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned}
+\item{meth}{(character) may be "mean","median","NULL","none", "standardize","trimMean", "rowNormalize", "slope", "exponent", "twoPointSlope", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned}
 
 \item{mode}{(character) may be "proportional", "additive";
 decide if normalizatio factors will be applies as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested}

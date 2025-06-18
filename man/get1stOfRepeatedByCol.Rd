@@ -11,15 +11,18 @@ get1stOfRepeatedByCol(
   asFirstLast = c("full", "inter"),
   markIfAmbig = c("ambig", "seqNa"),
   asList = FALSE,
-  abmiPref = "_"
+  abmiPref = "_",
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
 )
 }
 \arguments{
 \item{mat}{(matrix or data.frame) numeric vector to be tested}
 
-\item{sortBy}{column name for which elements should be made unique, numeric or character column; 'sortSupl' .. add'l colname to always select specific 1st)}
+\item{sortBy}{(character) column name for which elements should be made unique, numeric or character column; 'sortSupl' .. add'l colname to always select specific 1st)}
 
-\item{sortSupl}{default="ty"}
+\item{sortSupl}{(character) default="ty"}
 
 \item{asFirstLast}{(character,length=2) to force specific strings from coluln 'sortSupl' as first and last when selecting 1st of repeated terms, default=c("full","inter")}
 
@@ -28,9 +31,15 @@ get1stOfRepeatedByCol(
 \item{asList}{(logical) to return list with non-redundant ('unique') and removed lines ('repeats')}
 
 \item{abmiPref}{(character) prefix to note ambiguous entries/terms, default="_"}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-depending on 'asList' either list with non-redundant ('unique') and removed lines ('repeats')
+This function returns depending on argumnet 'asList' either list with non-redundant ('unique') and removed lines ('repeats')
 }
 \description{
 \code{get1stOfRepeatedByCol} sorts matrix 'mat' and extracts only 1st occurance of values in column 'sortBy'.

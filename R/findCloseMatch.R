@@ -1,4 +1,4 @@
-#' Find close numeric values between two vectors
+#' Find Close Numeric Values Between Two Vectors
 #'
 #' \code{findCloseMatch} finds close matches (similar values) between two numeric vectors ('x','y') based on method 'compTy' and threshold 'limit'. 
 #'  Return list with close matches of 'x' to given 'y', the numeric value dependes on 'sortMatch' (if FALSE then always value of 'y' otherwise of longest of x&y).  
@@ -15,8 +15,8 @@
 #' @param maxFitShort (numeric) limit output to max number of elements (avoid returning high number of results if filtering was not enough stringent)
 #' @param sortMatch (logical) if TRUE than matching will be preformed as 'match longer (of x & y) to closer', this may process slightly faster (eg 'x' longer: list for each 'y' all 'x' that are close, otherwise list of each 'x'), 
 #' @param silent (logical) suppress messages
-#' @param debug (logical) display additional messages for debugging
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a list with close matches of 'x' to given 'y', the numeric value dependes on 'sortMatch' (if FASLE then always value of 'y' otherwise of longest of x&y)
 #' @seealso \code{\link{checkSimValueInSer}} and (from this package) \code{.compareByDiff}, for convient output \code{\link{countCloseToLimits}} 
 #' @examples
@@ -37,11 +37,11 @@
 #' findCloseMatch(a2, b2, com="diff", lim=0.00005)                         #'  find S,T
 #' @export
 findCloseMatch <- function(x, y, compTy="ppm", limit=5, asIndex=FALSE, maxFitShort=100, sortMatch=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="findCloseMatch")
+  fxNa <- .composeCallName(callFrom, newNa="findCloseMatch")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   compMeth <- c("ppm","diff","ratio")
-  msg <- c(paste("argument 'compTy' may be one of",pasteC(compMeth,qu="'",la=" or "))," , trimming to length=1")
+  msg <- c(paste("Argument 'compTy' may be one of",pasteC(compMeth,qu="'",la=" or "))," , trimming to length=1")
   if(length(compTy) <1) stop(msg[1]) else if(length(compTy)>1) {compTy <- compTy[1]; message(msg)}
   if(!compTy %in% compMeth) stop(msg[1])
   if(is.null(names(x))) names(x) <- paste0("x",equLenNumber(1:length(x)))                   # need default names to know which of 'x' in results !
@@ -51,7 +51,7 @@ findCloseMatch <- function(x, y, compTy="ppm", limit=5, asIndex=FALSE, maxFitSho
   if(sortMatch) dat <- dat[order(sapply(dat,length), decreasing=FALSE)]
   if(is.character(maxFitShort)) if(length(grep("%$", maxFitShort)) >0) {
     maxFitShort <- ceiling(length(dat[[1]])*as.numeric(sub("%$","",maxFitShort))/100)
-    } else stop("can't interpret 'maxFitShort'")
+    } else stop("Can't interpret 'maxFitShort'")
   tm2 <- switch(compTy,
     ppm=.compareByPPM(dat, limit, distVal=!asIndex),
     diff=.compareByDiff(dat, limit, distVal=!asIndex),
@@ -73,18 +73,19 @@ findCloseMatch <- function(x, y, compTy="ppm", limit=5, asIndex=FALSE, maxFitSho
       if(!silent) message(fxNa,sum(rSu > maxFitShort ,na.rm=TRUE)," row elements at too many 'close elements' try to reduce ..")
       for(i in 1:which(rSu > maxFitShort)) {limDis <- sort(tm2[i,],decreasing=TRUE,na.last=TRUE)[maxFitShort]
         tmY <- which(tm2[i,] <= limDis)
-        if(ncol(tm2) > maxFitShort & length(tmY) >= min(maxFitShort*1.15,floor(ncol(tm2)*0.96))) tm2[i,] <- NA else tm2[i,which(tm2[i,] >limDis)] <- NA}
+        if(ncol(tm2) > maxFitShort && length(tmY) >= min(maxFitShort*1.15,floor(ncol(tm2)*0.96))) tm2[i,] <- NA else tm2[i,which(tm2[i,] >limDis)] <- NA}
       rPi <- which(rowSums(!is.na(tm2)) >0)        # refresh (rows with some distance values)
     } else rPi <- which(rSu >0)
     if(debug) {message(fxNa,"fCM3")}  
     zz <- if(nrow(tm2) >1) as.matrix(tm2[,cPi])[rPi,] else matrix(tm2[,cPi], nrow=1, dimnames=list(rownames(tm2),colnames(tm2)[cPi]))
-    if(length(dim(zz)) <2) zz <- matrix(zz, nrow=length(rPi))
+	if(length(dim(zz)) <2) zz <- matrix(zz, nrow=length(rPi))
     if(is.null(colnames(zz)) || is.null(rownames(zz))) dimnames(zz) <- list(rownames(tm2)[rPi], colnames(tm2)[cPi])
     out <- if(asIndex) {if(length(cPi) >1) apply(!is.na(zz), 2, which) else which(!is.na(zz))         #list of indexes   dat,function(z) which(z))
     } else {if(length(cPi) >1) apply(zz, 2, naOmit) else naOmit(zz)} 
     if(!is.list(out)) {out <- as.list(out); zn <- rownames(zz)[apply(!is.na(zz),2,which)]; for(j in 1:length(out)) names(out[[j]]) <- zn[j]} 
     if(is.null(names(out))) names(out) <- rep(names(cPi), length(out))[1:length(out)]
   out }}
+
  
 #' Compare by PPM
 #'
@@ -112,6 +113,7 @@ findCloseMatch <- function(x, y, compTy="ppm", limit=5, asIndex=FALSE, maxFitSho
   } else tm2 <- abs(que/ref -1) < limit*1e-6
   tm2 }
 
+
 #' Compare by log-ratio
 #'
 #' This function allows to compare by log-ratio
@@ -136,6 +138,7 @@ findCloseMatch <- function(x, y, compTy="ppm", limit=5, asIndex=FALSE, maxFitSho
   if(distVal) {tm2 <- abs(log2(ref/que)); tm2[which(!abs(log2(ref/que)) <= log2(abs(limit)))] <- NA
   } else tm2 <- abs(log2(ref/que)) <= log2(abs(limit))
   tm2 }
+
 
 #' Compare by distance/difference
 #'

@@ -77,5 +77,5 @@ replicateStructure(strX, method=3, includeOther=TRUE)   # custom choice of 3rd c
 
 }
 \seealso{
-\code{\link[base]{duplicated}}, uses \code{\link{trimRedundText}}
+\code{\link[base]{duplicated}}, uses \code{\link{trimRedundText}}; for chosing single most likely column describing sample-names and groups of replicates \code{\link{chooseGroupNames}}
 }

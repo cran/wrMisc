@@ -6,8 +6,8 @@
 \usage{
 normalizeThis(
   dat,
-  method = c("mean", "average", "median", "trimMean", "rowNormalize", "slope",
-    "twoPointSlope", "exponent", "vsn", "none", "NULL"),
+  method = c("mean", "average", "median", "trimMean", "rowNormalize", "standardize",
+    "slope", "twoPointSlope", "exponent", "vsn", "none", "NULL"),
   refLines = NULL,
   refGrp = NULL,
   mode = c("proportional", "additive", "linear", "logarithmic"),
@@ -86,6 +86,11 @@ In this case, the working hypothesis is, that all values in each row are expecte
 This method could be applied when all series of values (ie columns) are replicate measurements of the same sample.
 THere is also an option for treating sparse data (see argument \code{sparseLim}), which may, hovere, consume much more comptational ressources,
 in particular, when the value \code{nCombin} is low (compared to the number of samples/columns).
+
+Normalization using  \code{method="standardize"} runs \code{\link[base]{scale}} resulting in a matrix where column-means are set to 0 (or very close to 0)
+and sd et 1, standardization by columns. With this method additive or proportional mode give the same output.  
+Results from this methid should be interpreted with caution, since the absolute values are not any more considered. 
+Therefor this approach is rather oriented for comparing profiles (no matter how important changes are on an absolute scale)
 
 Normalization using  \code{method="vsn"} runs \code{\link[vsn]{justvsn}} from \href{https://bioconductor.org/packages/release/bioc/html/vsn.html}{vsn}
 (this requires a minimum of 42 rows of input-data and having the Bioconductor package vsn installed).

@@ -593,6 +593,16 @@ unifyEnumerator(c("ab-1","ab-2","c-3"))
 unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
 unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 
+## ----chooseGroupNames1, echo=TRUE---------------------------------------------
+(mat <- cbind(a=letters[1:6], b=paste(rep(c("b","B"), each=3), 1:3), c=rep(1,6), 
+  d=gl(3,2), e=rep(c("e","E"),3), f=paste(rep(c("F","f","ff"), each=2), 1:2)))
+  
+chooseGroupNames(mat, method="median")         # col 2 (b/B)
+chooseGroupNames(mat, method="median", fullReport=TRUE) 
+chooseGroupNames(mat, method="min")            # col 2 (b/B)
+chooseGroupNames(mat, method="max")            # col 6 (F/f/ff)
+chooseGroupNames(mat, method="max", asUnique=FALSE) # col 1 (a..)
+
 ## ----checkUnitPrefix1, echo=TRUE----------------------------------------------
 x1 <- c("10fg WW","xx 10fg 3pW"," 1pg 2.0W")
 checkUnitPrefix(x1)

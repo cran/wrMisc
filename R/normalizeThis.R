@@ -22,6 +22,11 @@
 #' This method could be applied when all series of values (ie columns) are replicate measurements of the same sample.
 #' THere is also an option for treating sparse data (see argument \code{sparseLim}), which may, hovere, consume much more comptational ressources,
 #' in particular, when the value \code{nCombin} is low (compared to the number of samples/columns).
+#' 
+#' Normalization using  \code{method="standardize"} runs \code{\link[base]{scale}} resulting in a matrix where column-means are set to 0 (or very close to 0)
+#' and sd et 1, standardization by columns. With this method additive or proportional mode give the same output.  
+#' Results from this methid should be interpreted with caution, since the absolute values are not any more considered. 
+#' Therefor this approach is rather oriented for comparing profiles (no matter how important changes are on an absolute scale)
 #'
 #' Normalization using  \code{method="vsn"} runs \code{\link[vsn]{justvsn}} from \href{https://bioconductor.org/packages/release/bioc/html/vsn.html}{vsn}
 #' (this requires a minimum of 42 rows of input-data and having the Bioconductor package vsn installed).
@@ -66,7 +71,7 @@
 #' cor(dat1[c(1:10,91:100),4],rowMeans(dat1[c(1:10,91:100),1:2],na.rm=TRUE),use="complete.obs")
 #' cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 #' @export
-normalizeThis <- function(dat, method=c("mean","average","median","trimMean","rowNormalize","slope","twoPointSlope","exponent","vsn","none","NULL"), refLines=NULL, refGrp=NULL, 
+normalizeThis <- function(dat, method=c("mean","average","median","trimMean","rowNormalize","standardize","slope","twoPointSlope","exponent","vsn","none","NULL"), refLines=NULL, refGrp=NULL, 
   mode=c("proportional","additive","linear","logarithmic"), trimFa=NULL, minQuant=NULL, sparseLim=0.4, nCombin=3, omitNonAlignable=FALSE, maxFact=10, quantFa=NULL, expFa=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="normalizeThis")
   if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
@@ -144,7 +149,7 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
 #' It assumes all checks have been done before calling this function.
 #' 
 #' @param dat matrix or data.frame of data to get normalized
-#' @param meth (character) may be "mean","median","NULL","none", "trimMean", "rowNormalize", "slope", "exponent", "twoPointSlope", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned
+#' @param meth (character) may be "mean","median","NULL","none", "standardize","trimMean", "rowNormalize", "slope", "exponent", "twoPointSlope", "vsn"; When \code{NULL} or 'none' is chosen the input will be returned
 #' @param mode (character) may be "proportional", "additive";
 #'  decide if normalizatio factors will be applies as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested
 #' @param param (list) additional parameters
@@ -192,6 +197,8 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
       if(asRefL) datRef else dat, 2, stats::median, na.rm=TRUE), each=nrow(dat)),
     rowAdd= rowNormalize(dat=dat, method=meth, refLines=param$refLines, refGrp=param$refGrp, proportMode="additive", minQuant=param$minQuant,
       sparseLim=param$sparseLim, nCombin=param$nCombin, omitNonAlignable=param$omitNonAlignable, maxFact=param$maxFact, silent=silent, debug=debug, callFrom=fxNa),
+    standardizeAdd= scale(if(asRefL) datRef else dat, center=TRUE, scale=TRUE),
+    standardizeProp= scale(if(asRefL) datRef else dat, center=TRUE, scale=TRUE),
     rowProp=rowNormalize(dat=dat, method=meth, refLines=param$refLines, refGrp=param$refGrp, proportMode="proportional", minQuant=param$minQuant,
       sparseLim=param$sparseLim, nCombin=param$nCombin, omitNonAlignable=param$omitNonAlignable, maxFact=param$maxFact, silent=silent, debug=debug, callFrom=fxNa),
     slope=.normConstSlope(mat=dat, useQuant=param$useQ, refLines=param$refLines, diagPlot=FALSE),

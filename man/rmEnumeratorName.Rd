@@ -7,7 +7,7 @@
 rmEnumeratorName(
   dat,
   nameEnum = c("Number", "No", "#", "Replicate", "Sample"),
-  sepEnum = c(" ", "-", "_"),
+  sepEnum = c(" ", "-", "_", "/"),
   newSep = "",
   incl = c("anyCase", "trim2"),
   silent = FALSE,
@@ -24,8 +24,10 @@ rmEnumeratorName(
 
 \item{newSep}{(character) potential enumerator-names}
 
-\item{incl}{(character) options to include further variants of the enumerator-names, use \code{"rmEnum"} for completely removing enumerator tag/name and digits
-for differentr options of trimming names/tags from \code{nameEnum} one may use \code{anyCase}, \code{trim3} (trimming down to max 3 letters),
+\item{incl}{(character) options to include further variants of the enumerator-names, 
+use \code{"rmEnum"} for completely removing enumerator tag/name and digits for different options of trimming names/tags from \code{nameEnum};
+or one may use \code{anyCase}, 
+\code{trim3} (trimming down to max 3 letters),
 \code{trim2} (trimming to max 2 letters) or  \code{trim1} (trimming down to single letter); 
 \code{trim0} works like \code{trim1} but also includes ' ', ie no enumerator tag/name in front of the digit(s)}
 
@@ -46,6 +48,9 @@ In case the main input is a matrix, all columns will be tested independently to 
 Several options exist for the output, the combination of separator-symbols and separtor text/words may be included, too.
 }
 \details{
+In case only digit-enumerators are present (ie, without repetitive text), one has to use \code{incl="rmEnum"} to remove terminal enumerators. 
+This will work, only when all items do contain terminal digits.
+
 Please note, that checking a variety of different separator text-word and separator-symbols may give an important number of combinations to check.
 In particular, when automatic trimming of separator text-words is added (eg \code{incl="trim2"}), the complexity of associated searches increases quickly.
 Thus, with large data-sets restricting the content of the arguments \code{nameEnum}, \code{sepEnum} and (in particular) \code{newSep} to the most probable terms/options
@@ -55,6 +60,10 @@ In case the input \code{dat} is a matrix and multiple different numerator-types 
 If you which to remove/subsitute mutiple types of enumerators the function \code{rmEnumeratorName} must be run independently, see last example below.
 }
 \examples{
+xv <- c("hg_1","hjRe2_2","hk-33")
+rmEnumeratorName(xv)
+rmEnumeratorName(xv, incl="rmEnum")
+
 xx <- c("hg_Re1","hjRe2_Re2","hk-Re3_Re33")
 rmEnumeratorName(xx)
 rmEnumeratorName(xx, newSep="--")

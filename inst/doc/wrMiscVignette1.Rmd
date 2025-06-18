@@ -859,7 +859,7 @@ bb <- c("aa","dd","aa; bb; q","p; cc")
 ```
 
 
-### Comparing Global Patterns
+### Comparing Global Patterns        {#ComparingGlobalPatterns}
 
 In most programming languages it is fairly easy to compare _exact_ content of character vectors or factors with unordered levels.
 However, sometimes - due to semantic issues - some people may call a color 'purple' while others call it 'violet'.
@@ -925,6 +925,9 @@ See the example below :
 ```{r compGlobPat6, echo=TRUE}
 replicateStructure(bb, method="combNonOrth")
 ```
+
+Please see also the function _chooseGroupNames()_ which may help choosing among different types of patterns (ie low or high number of groups of replicates) (see section [Working With Redundant Data] (#WorkingWithRedundantData)).
+
 
 
 ## Search For Similar (Numeric) Values  {#SearchForSimilarNumericValues}
@@ -1200,6 +1203,29 @@ unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 ```
 
 
+### Find/Choose Column Most Likely Containing Sample-Names
+
+When information about a collection of samples is given in a table, the function  `unifyEnumerator()` was designed to find the column most likely containg sample-names 
+and it derives then the structure of groups of replicates by removing terminal enumerators from sample-names.
+Initial tables (as frequently found in transcriptomics and proteomics) may not have consistent schemes of naming columns (due to human annotators not using controlled vocabulary) 
+and may contain additional columns with redundant information (elements/conditions that were kept constant for all samples.    
+
+Internally this function uses _rmSharedWords()_ to further simplify resultant names.
+
+```{r chooseGroupNames1, echo=TRUE}
+(mat <- cbind(a=letters[1:6], b=paste(rep(c("b","B"), each=3), 1:3), c=rep(1,6), 
+  d=gl(3,2), e=rep(c("e","E"),3), f=paste(rep(c("F","f","ff"), each=2), 1:2)))
+  
+chooseGroupNames(mat, method="median")         # col 2 (b/B)
+chooseGroupNames(mat, method="median", fullReport=TRUE) 
+chooseGroupNames(mat, method="min")            # col 2 (b/B)
+chooseGroupNames(mat, method="max")            # col 6 (F/f/ff)
+chooseGroupNames(mat, method="max", asUnique=FALSE) # col 1 (a..)
+```
+
+Please see also the function _replicateStructure()_ which allows inspecting patterns of replicating elements (see section [Comparing Global Patterns] (#ComparingGlobalPatterns)).
+
+
 ### Find Common Unit
 
 The function `checkUnitPrefix` aims to find a unit-abbreviation or -name occurring in all elements of a character-vector.
@@ -1215,6 +1241,7 @@ x2 <- c("10fg WW","xx 8_fg 3pW"," 1 pg-2.0W")
 checkUnitPrefix(x2, stringentSearch=TRUE)
 checkUnitPrefix(x2, stringentSearch=FALSE)
 ```
+
 
 
 ### Adjust Decimal Prefixes And Extact Numeric+Unit Part

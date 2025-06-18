@@ -112,7 +112,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
           byCol <- which(chNa==0)[1]
           msgM <- "direct match"
         } else {
-          if(debug) {message(fxNa,"mMLR3"); mMLR13 <- list()}
+          if(debug) {message(fxNa,"mMLR3"); mMLR13 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out)}
           ## trim redundant text, re-try match
           mat2 <- apply(if(length(matUse) >0) matUse else mat, 2, trimRedundText, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
           ref2 <- trimRedundText(ref, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
@@ -124,7 +124,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
             #old#out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, goodCol=chNa, matElim=matElim, chIdenCol=chIdenCol, addRef=addRef)  #
             byCol <- which(chNa==0)[1]
             msgM <- "direct match after trimming redundant text"
-            if(debug) {message(fxNa,"mMLR3c"); mMLR3c <- list()}
+            if(debug) {message(fxNa,"mMLR3c"); mMLR3c <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat2=mat2,ref2=ref2,sMa=sMa)}
           } else {
             ## direct matching not successful, check if grep possible (only when pattern not longer than x)
             if(debug) {message(fxNa,"mMLR4"); mMLR4 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat2=mat2,ref2=ref2,sMa=sMa )}
@@ -142,24 +142,26 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
                 msgM <- "grep of ref after trimming redundant text"
               } else { refPoss <- FALSE
               msg <- c("grep matching not successful (",c("no","ambiguous hits")[1 +any(colSums(chDL >1) >0)],")") }}
+            if(debug) {message(fxNa,"mMLR4c"); mMLR4c <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat2=mat2,ref2=ref2,sMa=sMa )}
+
             if(any(!refPoss)) {
               ## check by harmonizing/trimming enumerators
               mat3 <- apply(mat2, 2, rmEnumeratorName, nameEnum=c("Number","No","#","Replicate","Sample","Speciem"), sepEnum=c(" ","-","_"), newSep="_No", incl=c("anyCase","trim1"), silent=debug, debug=debug, callFrom=fxNa)
               chCol <- colSums(mat2 ==mat3) < nrow(mat2)      # see if change in all elements in a given column
-              if(debug) {message(fxNa,"mMLR5"); mMLR5 <- list() }
+              if(debug) {message(fxNa,"mMLR5"); mMLR5 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat3=mat2,chCol=chCol) }
               if(any(chCol)) {
                 if(debug) message(fxNa,"Enumerators exist, try matching after harmonizing style ..")
                 if(!all(chCol)) mat3 <- if(sum(chCol) >1) mat3[,which(chCol)] else matrix(mat3[,which(chCol)], nrow=nrow(mat), dimnames=list(rownames(mat2), colnames(mat2)[which(chCol)]))  # trim
                 ref3 <- rmEnumeratorName(ref, nameEnum=c("","Number","No","#","Replicate","Sample","Speciem"), sepEnum=c(" ","-","_"), newSep="_No", incl=c("anyCase","trim1"), silent=debug, debug=debug, callFrom=fxNa)
                 chDir <- apply(mat3, 2, match, ref3)
                 chMa <- apply(chDir, 2, function(x) all(1:nrow(mat) %in% x, na.rm=TRUE))
-                if(debug) {message(fxNa,"mMLR5b"); mMLR5b <- list() }
+                if(debug) {message(fxNa,"mMLR5b"); mMLR5b <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat3=mat2,chCol=chCol) }
                 if(any(chMa)) {
                   goodCol <- which(chMa)[1]
                   if(debug) message(fxNa,"Found good hit by using column '",names(goodCol),"'  ie ",pasteC(utils::head(mat2[,goodCol]))," ...")
                   out <- if(addRef) cbind(mat[chDir[,goodCol],], ref=ref) else mat[chDir[,goodCol],]
                   msgM <- "Match after harmonizing enumerators (& trimming redundant text)"
-                  if(debug) {message(fxNa,"mMLR5c"); mMLR5c <- list() }
+                  if(debug) {message(fxNa,"mMLR5c"); mMLR5c <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat3=mat2,chCol=chCol) }
                 } else {
                   if(debug) message(fxNa,"Try matching all after trimming enumerators")
                   mat3 <- apply(mat2, 2, rmEnumeratorName, nameEnum=c("Number","No","#","Replicate","Sample","Speciem"), sepEnum=c(" ","-","_"), newSep="", incl=c("anyCase","trim1","rmEnum"), silent=debug, debug=debug, callFrom=fxNa)
@@ -181,7 +183,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
                 chRL <- sapply(chRev, sapply, length)       # number of grp hits
                 ch1 <- (if(ncol(mat) >1) colSums(chRL ==1) else sum(chRL==1)) ==length(ref)
                 if(any(ch1)) { newOr <- if(is.list(chRev)) order(unlist(chRev[[which(ch1)[1]]], use.names=FALSE)) else chRev[,which(ch1)[1]]         # new order for mat
-                  if(debug) {message(fxNa,"mMLR6") }
+                  if(debug) {message(fxNa,"mMLR6"); mMLR6=list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chRev=chRev,chRL=chRL,ch1=ch1) }
                   out <- cbind(if(any(dim(mat)==1, length(newOr)==1)) matrix(mat[newOr,], ncol=ncol(mat), dimnames=list(rownames(mat)[newOr], colnames(mat))) else mat[newOr,],
                     if(any(dim(matElim)==1, length(newOr)==1)) matrix(matElim[newOr,], ncol=ncol(matElim), dimnames=list(rownames(matElim)[newOr], colnames(matElim))) else matElim[newOr,])
                   if(length(matElim) >0) out <- out[,match(names(chIdenCol), colnames(out))]   # adjust init col-order

@@ -2,9 +2,16 @@
 % Please edit documentation in R/countCloseToLimits.R
 \name{countCloseToLimits}
 \alias{countCloseToLimits}
-\title{Count from two vectors number of values close within given limits}
+\title{Count From Two Vectors Number Of Values Close Within Given Limits}
 \usage{
-countCloseToLimits(closeMatch, limitIdent = 5, prefix = "lim_")
+countCloseToLimits(
+  closeMatch,
+  limitIdent = 5,
+  prefix = "lim_",
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{closeMatch}{(list) output from findCloseMatch(), ie list indicating which instances of 2 series of data have close matches}
@@ -12,9 +19,15 @@ countCloseToLimits(closeMatch, limitIdent = 5, prefix = "lim_")
 \item{limitIdent}{(numeric) max limit or panel of threshold values to test (if single value, in addtion a panel with values below will be tested)}
 
 \item{prefix}{(character)  prefix for names of output}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-integer vector with counts for number of list-elements with at least one absolue value below threshold, names
+This function returns an integer vector with counts for number of list-elements with at least one absolue value below threshold, names
 }
 \description{
 This functions summarizes the serach of similar (or identical) numeric values from 2 initial vectors, it 

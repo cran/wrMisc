@@ -1,4 +1,4 @@
-#' Count from two vectors number of values close within given limits
+#' Count From Two Vectors Number Of Values Close Within Given Limits
 #'
 #' This functions summarizes the serach of similar (or identical) numeric values from 2 initial vectors, it 
 #' evaluates the result from initial search run by findCloseMatch(), whose output is a less convenient list.
@@ -9,7 +9,10 @@
 #' @param closeMatch (list) output from findCloseMatch(), ie list indicating which instances of 2 series of data have close matches
 #' @param limitIdent (numeric) max limit or panel of threshold values to test (if single value, in addtion a panel with values below will be tested)
 #' @param prefix (character)  prefix for names of output
-#' @return integer vector with counts for number of list-elements with at least one absolue value below threshold, names
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns an integer vector with counts for number of list-elements with at least one absolue value below threshold, names
 #' @seealso \code{\link[wrMisc]{findCloseMatch}}
 #' @examples
 #' set.seed(2019); aa <- sample(12:15,20,repl=TRUE) +round(runif(20),2)-0.5
@@ -19,14 +22,17 @@
 #' (tmp3 <- countCloseToLimits(match1,lim=c(0.5,0.35,0.2)))
 #' (tmp4 <- countCloseToLimits(match1,lim=0.7))
 #' @export
-countCloseToLimits <- function(closeMatch,limitIdent=5,prefix="lim_") {
+countCloseToLimits <- function(closeMatch, limitIdent=5, prefix="lim_", silent=FALSE, debug=FALSE, callFrom=NULL) {
+  fxNa <- .composeCallName(callFrom,newNa="countCloseToLimits")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   limitIdent <- unique(limitIdent)
   if(length(limitIdent) ==1) {x <- floor(log10(signif(limitIdent,1)))
-    x <- c(10^c((x-1):x),10^c((x-1):x)/5,4*round(seq(limitIdent/40,limitIdent/4,length.out=20),2),limitIdent)     # default series of limits
-    limitIdent <- unique(signif(sort(x),digits=5)) }
-  if(length(closeMatch) <1 | length(limitIdent) <1) { out <- rep(NA,length(limitIdent))
+    x <- c(10^c((x-1):x), 10^c((x-1):x)/5, 4 *round(seq(limitIdent/40,limitIdent/4, length.out=20),2), limitIdent)     # default series of limits
+    limitIdent <- unique(signif(sort(x), digits=5)) }
+  if(length(closeMatch) <1 || length(limitIdent) <1) { out <- rep(NA,length(limitIdent))
   } else {
     out <- rowSums(sapply(closeMatch,function(z) (min(abs(z)) <= limitIdent)))}
-  if(is.null(names(out))) names(out) <- paste(prefix,limitIdent,sep="")  
+  if(is.null(names(out))) names(out) <- paste0(prefix, limitIdent)  
   out }
   

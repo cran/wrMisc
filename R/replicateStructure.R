@@ -33,7 +33,7 @@
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a list with $col (column index relativ to \code{x}), $lev (abstract labels of level),
 #'   $meth (note of method finally used) and $allCols with general replicate structure of all columns of  \code{x}
-#' @seealso  \code{\link[base]{duplicated}}, uses \code{\link{trimRedundText}}
+#' @seealso  \code{\link[base]{duplicated}}, uses \code{\link{trimRedundText}}; for chosing single most likely column describing sample-names and groups of replicates \code{\link{chooseGroupNames}}
 #' @examples
 #' ## a is all different, b is groups of 2,
 #' ## c & d  are groups of 2 nut NOT 'same general' pattern as b

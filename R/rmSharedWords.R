@@ -38,6 +38,7 @@ rmSharedWords <- function(x, sep=c("_"," ","."), anySep=TRUE, newSep=NULL, minLe
   fxNa <- .composeCallName(callFrom, newNa="rmSharedWords")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  chNA <- NULL
   datOK <- length(x) >0 && length(sep) >0
   if(datOK) {
     chNA <- is.na(x)

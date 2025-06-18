@@ -2,7 +2,7 @@
 % Please edit documentation in R/findCloseMatch.R
 \name{findCloseMatch}
 \alias{findCloseMatch}
-\title{Find close numeric values between two vectors}
+\title{Find Close Numeric Values Between Two Vectors}
 \usage{
 findCloseMatch(
   x,
@@ -34,9 +34,9 @@ findCloseMatch(
 
 \item{silent}{(logical) suppress messages}
 
-\item{debug}{(logical) display additional messages for debugging}
+\item{debug}{(logical) additional messages for debugging}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
 This function returns a list with close matches of 'x' to given 'y', the numeric value dependes on 'sortMatch' (if FASLE then always value of 'y' otherwise of longest of x&y)

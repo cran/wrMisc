@@ -5,21 +5,26 @@
 #' Note : problem when sortSupl or sortBy not present (or not intended for use)
 #'
 #' @param mat (matrix or data.frame) numeric vector to be tested
-#' @param sortBy column name for which elements should be made unique, numeric or character column; 'sortSupl' .. add'l colname to always select specific 1st)
-#' @param sortSupl default="ty"
+#' @param sortBy (character) column name for which elements should be made unique, numeric or character column; 'sortSupl' .. add'l colname to always select specific 1st)
+#' @param sortSupl (character) default="ty"
 #' @param asFirstLast (character,length=2) to force specific strings from coluln 'sortSupl' as first and last when selecting 1st of repeated terms, default=c("full","inter")
 #' @param markIfAmbig (character,length=2) 1st will be set to 'TRUE' if ambiguous/repeated, 2nd will get (heading) prefix, default=c("ambig","seqNa")
 #' @param asList (logical) to return list with non-redundant ('unique') and removed lines ('repeats') 
 #' @param abmiPref (character) prefix to note ambiguous entries/terms, default="_"
-#' @return depending on 'asList' either list with non-redundant ('unique') and removed lines ('repeats') 
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns depending on argumnet 'asList' either list with non-redundant ('unique') and removed lines ('repeats') 
 #' @seealso \code{\link{firstOfRepeated}} for (more basic) treatment of simple vector, \code{\link{nonAmbiguousNum}} for numeric use (much faster !!!)
 #' @examples
 #' aa <- cbind(no=as.character(1:20),seq=sample(LETTERS[1:15],20,repl=TRUE),
 #'   ty=sample(c("full","Nter","inter"),20,repl=TRUE),ambig=rep(NA,20),seqNa=1:20)
 #' get1stOfRepeatedByCol(aa)
 #' @export
-get1stOfRepeatedByCol <- function(mat,sortBy="seq",sortSupl="ty",asFirstLast=c("full","inter"),markIfAmbig=c("ambig","seqNa"),asList=FALSE,abmiPref="_"){
+get1stOfRepeatedByCol <- function(mat, sortBy="seq", sortSupl="ty", asFirstLast=c("full","inter"), markIfAmbig=c("ambig","seqNa"), asList=FALSE, abmiPref="_", silent=FALSE, debug=FALSE, callFrom=NULL){
   msg <- " 'mat' should be matrix or data.frame with >1 lines & >1 columns"
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(length(dim(mat)) !=2) stop(msg) else if(any(dim(mat) <2)) stop(msg)
   if(is.character(sortBy)) if(!sortBy %in% colnames(mat)) stop(" invalid 'sortBy'")     # check better to allow alternative use of vector instead of colname ??
   num <- if(is.numeric(mat[,sortBy])) mat[,sortBy] else as.numeric(as.factor(mat[,sortBy]))

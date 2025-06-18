@@ -28,7 +28,7 @@ linModelSelect(
 )
 }
 \arguments{
-\item{rowNa}{(character, length=1) rowname for line to be extracted from \code{dat}}
+\item{rowNa}{(character or numeric, length=1) if \code{character} rowname for line to be extracted from \code{dat}, if  \code{numeric} used as line-number of \code{dat}}
 
 \item{dat}{(matrix, list or MArrayLM-object from limma) main input of which columns should get re-ordered, may be output from \code{\link{moderTestXgrp}} or \code{\link{moderTest2grp}}.}
 

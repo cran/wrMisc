@@ -8,6 +8,8 @@ fuseCommonListElem(
   lst,
   initOrd = TRUE,
   removeDuplicates = FALSE,
+  silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -18,14 +20,18 @@ fuseCommonListElem(
 
 \item{removeDuplicates}{(logical) allow to remove duplicate entries (if vector contains names, both the name and the value need to be identical to be removed; note: all names must have names with more than 0 characters to be considered as names)}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-fused list (same names as elements of input)
+This function returns a fused list (same names as elements of input)
 }
 \description{
-\code{fuseCommonListElem} fuses (character or numeric) elements of list re-occuring under same name, so that resultant list has unique names.
-Note : will not work with list of matrixes
+This function fuses (character or numeric) elements of list re-occuring under same name, so that resultant list has unique names.
+Note : Will not work with list of matrixes
 }
 \examples{
 val1 <- 10 +1:26
