@@ -4,18 +4,26 @@
 \alias{naOmit}
 \title{Fast na.omit}
 \usage{
-naOmit(x)
+naOmit(x, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{x}{(vector or matrix) input}
+\item{x}{(vector or matrix) data to check & remove \code{NA}s}
+
+\item{silent}{(logical) suppress messages if \code{TRUE}}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-vector without NAs (matrix input will be transformed to vector). Returns NULL if input consists only of NAs.
+This function returns a vector without NAs (matrix input will be transformed to vector). Returns NULL if input consists only of NAs.
 }
 \description{
-\code{naOmit} removes NAs from input vector. This function has no slot for removed elements while \code{na.omit} does so. 
-Resulting objects from \code{naOmit} are smaller in size and subsequent execution (on large vectors) is faster (in particular if many NAs get encountered).
-Note : Behaves differently to \code{na.omit} with input other than plain vectors. Will not work with data.frames !
+This function removes NAs from input vector, in contrast to \code{na.omit} this function has no slot for removed elements.
+}
+\details{
+Resulting objects from \code{naOmit} are smaller in size and subsequent code execution (on large vectors) may be faster (in particular if many NAs get encountered).
+Note : This function behaves differently to \code{na.omit} with input other than plain vectors. Will not work with data.frames !
 }
 \examples{
 aA <- c(11:13,NA,10,NA); 

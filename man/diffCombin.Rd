@@ -2,9 +2,16 @@
 % Please edit documentation in R/diffCombin.R
 \name{diffCombin}
 \alias{diffCombin}
-\title{Compute matrix of differences for all pairwise combinations of numeric vector}
+\title{Compute Matrix Of Differences For All Pairwise Combinations Of Numeric Vector}
 \usage{
-diffCombin(x, diagAsNA = FALSE, prefix = TRUE, silent = FALSE, callFrom = NULL)
+diffCombin(
+  x,
+  diagAsNA = FALSE,
+  prefix = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{numeric vector to compute differences for all combinations}
@@ -15,10 +22,12 @@ diffCombin(x, diagAsNA = FALSE, prefix = TRUE, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-numeric matrix of all pairwise differences
+This function returns a numeric matrix of all pairwise differences
 }
 \description{
 \code{diffCombin} returns matrix of differences (eg resulting from subsititution) for all pairwise combinations of numeric vector 'x'.

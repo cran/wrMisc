@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalizeThis.R
 \name{.normConstSlope}
 \alias{.normConstSlope}
-\title{Normalize columns of 2dim matrix to common linear regression fit}
+\title{Normalize Columns Of 2-dim Matrix To Common Linear Regression Fit}
 \usage{
 .normConstSlope(
   mat,

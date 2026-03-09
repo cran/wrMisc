@@ -2,7 +2,7 @@
 % Please edit documentation in R/rowNormalize.R
 \name{.rowNormFact}
 \alias{.rowNormFact}
-\title{Obtain normalization factor (main)}
+\title{Obtain Normalization Factor (main)}
 \usage{
 .rowNormFact(
   dat,
@@ -57,5 +57,5 @@ This function was designed to obtain normalization factors.
 ma1 <- matrix(11:41, ncol=3)
 }
 \seealso{
-\code{\link{rowNormalize}}
+\code{\link{rowNormalize}}; \code{\link{normalizeThis}}
 }

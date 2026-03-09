@@ -2,9 +2,17 @@
 % Please edit documentation in R/extract1chan.R
 \name{extr1chan}
 \alias{extr1chan}
-\title{Extract just one series, ie channel, of list of arrays}
+\title{Extract Just One Series, ie One Channel, Of List Of Arrays}
 \usage{
-extr1chan(arrLst, cha, na.rm = TRUE, rowSep = "__")
+extr1chan(
+  arrLst,
+  cha,
+  na.rm = TRUE,
+  rowSep = "__",
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{arrLst}{(list) list of arrays (typically 1st and 2nd dim for specific genes/objects, 3rd for different measures associated with)}
@@ -14,9 +22,15 @@ extr1chan(arrLst, cha, na.rm = TRUE, rowSep = "__")
 \item{na.rm}{(logical) default =TRUE to remove NAs}
 
 \item{rowSep}{(character) separator for rows}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-list with just single channel extracted
+This function returns a list with just single channel extracted
 }
 \description{
 This function was designed for handeling measurements stored as list of multiple arrays, like eg compound-screens using microtiter-plates where multiple parameters ('channels') 

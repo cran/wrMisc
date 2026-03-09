@@ -1,4 +1,4 @@
-#' Find and combine points located very close in x/y space
+#' Find And Combine Points Located Very Close In x/y Space
 #'
 #' Search points in x,y space that are located very close and thus likely to overlap.
 #' In case of points close enough, various options for joining names (and shortening longer descriptions) are available. 
@@ -13,7 +13,7 @@
 #' @param debug (logical) additional messages for debugging
 #' @param silent (logical) suppres messages
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return matrix with fused (condensed) information for cluster of overapping points
+#' @return This function returns a matrix with fused (condensed) information for cluster of overapping points
 #' @examples
 #' set.seed(2013)
 #' datT2 <- matrix(round(rnorm(200)+3,1),ncol=2,dimnames=list(paste("li",1:100,sep=""),
@@ -27,7 +27,10 @@
 #' head(combineOverlapInfo(datT2,suplI=inf2[,2],disThr=0.03),n=10)
 #' @export
 combineOverlapInfo <- function(dat,suplInfo=NULL,disThr=0.01,addNsimil=TRUE,txtSepChar=",",combSym="+",maxOverl=50,callFrom=NULL,debug=FALSE,silent=FALSE){
-  fxNa <- .composeCallName(callFrom,newNa="combineOverlapInfo")
+  fxNa <- .composeCallName(callFrom, newNa="combineOverlapInfo")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  
   if(length(dim(dat)) !=2) stop("expecting matrix or data.frame with 2 cols as 'dat'")
   if(!is.null(suplInfo)){
     suplInfo <- as.character(suplInfo)
@@ -36,7 +39,7 @@ combineOverlapInfo <- function(dat,suplInfo=NULL,disThr=0.01,addNsimil=TRUE,txtS
       suplInfo <- NULL }}
   datOverl <- searchDataPairs(dat[,1:2], disThr=disThr, byColumn=FALSE, realDupsOnly=FALSE, callFrom=fxNa)
   txt <- " overlap-pairs: making condensed groups via fusePairs() will take "
-  if(!silent & nrow(datOverl) >1800) message(fxNa,nrow(datOverl),txt, if(nrow(datOverl) >5000) "VERY (!) " else "","MUCH TIME !")
+  if(!silent && nrow(datOverl) >1800) message(fxNa,nrow(datOverl),txt, if(nrow(datOverl) >5000) "VERY (!) " else "","MUCH TIME !")
   modDatLi0 <- sort(unique(naOmit( as.character(as.matrix(datOverl[,1:2])))))      # get all line-numbers with (potentially) close points
   modDatLi2 <- unique(convToNum(modDatLi0, remove=NULL, sciIncl=TRUE))
   modDatLi <- if(length(modDatLi2)==length(modDatLi0)) modDatLi2 else match(modDatLi0,rownames(dat))   # convert to numeric if possible, otherwise as rownames
@@ -48,18 +51,18 @@ combineOverlapInfo <- function(dat,suplInfo=NULL,disThr=0.01,addNsimil=TRUE,txtS
     datOverl[,2] <- as.character(datOverl[,2])
     if(debug) {message(fxNa,"combOI\n")}
     tmp <- fusePairs(datOverl, refDatNames=rownames(dat), inclRepLst=TRUE, maxFuse=maxOverl, callFrom=fxNa, debug=FALSE)
-    if(is.na(txtSepChar)) txtSepChar <- "_" else if(txtSepChar %in% c("+",".")) txtSepChar <- paste("\\",txtSepChar,sep="")
+    if(is.na(txtSepChar)) txtSepChar <- "_" else if(txtSepChar %in% c("+",".")) txtSepChar <- paste0("\\",txtSepChar)
     if(is.null(suplInfo)) suplInfo <- 1:nrow(dat)
     redInfo <- suplInfo
     if(debug) {message(fxNa,"xxComb3\n")}
     if(!all(is.na(suplInfo))) for(i in unique(tmp$clu)) {                # loop along cluster-names
       j <- match(names(tmp$clu)[which(tmp$clu==i)],rownames(dat))        # ie, at these locations
-      if(length(j) >1 & length(txtSepChar)==1) redInfo[j] <- paste(.retain1stPart(
+      if(length(j) >1 && length(txtSepChar)==1) redInfo[j] <- paste(.retain1stPart(
         suplInfo[j],sep=txtSepChar,offSet=1), collapse=sub("\\\\","",combSym)) }     
     out <- data.frame(dat, combInf=NA, clu=NA, isComb=FALSE, stringsAsFactors=FALSE)    
     if(length(suplInfo) ==nrow(dat)) { out$combInf <- redInfo }  
     out[,"clu"] <- tmp$clu[match(rownames(dat),names(tmp$clu))]
-    if(any(is.na(out[,"clu"]))) out[which(is.na(out[,"clu"])),"clu"] <- max(out[,"clu"],na.rm=TRUE)+(1:sum(is.na(out[,"clu"])))    # in case of NAs, attribue new no
+    if(any(is.na(out[,"clu"]))) out[which(is.na(out[,"clu"])),"clu"] <- max(out[,"clu"],na.rm=TRUE) +(1:sum(is.na(out[,"clu"])))    # in case of NAs, attribue new no
     cluTab <- table(out[,"clu"])
     out[which(!is.na(match(out[,"clu"],names(cluTab)[which(cluTab >1)]))),"isComb"] <- TRUE
     out }}

@@ -59,25 +59,27 @@ checkUnitPrefix <- function(x, pref=c("a","f","p","n","u","m","","k","M","G","T"
   if(length(sep) >0) sep <- naOmit(unique(sep))
   datOK <- all(c(length(x), length(pref), length(unit), length(sep)) >0)
   if(!datOK && !silent) message(fxNa,"Invalid entries: 'x','pref','unit' and/or 'sep' may not be all NA or NULL")
+  if(debug) {message(fxNa,"cUPF1"); cUPF1 <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,na.rm=na.rm,protSpecChar=protSpecChar,inclPat=inclPat)}
   if(datOK) {     
     if("." %in% c(pref, unit)) { datOK <- FALSE
       if(!silent) message(fxNa,"'pref' or 'unit' may NOT contain '.' !") } }
-  if(debug) { message(fxNa,"cUP0")}
+  if(debug) {message(fxNa,"cUPF2"); cUPF2 <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,na.rm=na.rm,protSpecChar=protSpecChar,inclPat=inclPat)}
   if(datOK) {   
     if(protSpecChar) sep <- protectSpecChar(sep, silent=!debug, callFrom=fxNa) 
     if(length(sep2) <1) sep2 <- sep else {
       sep2 <- if("" %in% sep2) "" else {
         if(protSpecChar) protectSpecChar(unique(sep2), silent=!debug, callFrom=fxNa) else unique(sep2)} } 
+  if(debug) {message(fxNa,"cUPF3"); cUPF3 <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,na.rm=na.rm,protSpecChar=protSpecChar,inclPat=inclPat)}
 
     ## MAIN :check pattern per unit
     chPat <- lapply(unit, fx1, pr=pref, se=sep, se2=sep2)
     names(chPat) <- unit
     chPa2 <- lapply(chPat, sapply, grepl, x)
-    if(debug) {message(fxNa,"cPU1"); cUP1 <- list()}
+    if(debug) {message(fxNa,"cUPF4"); cUPF4 <- list(x=x,pref=pref,unit=unit,sep=sep,sep2=sep2,na.rm=na.rm,protSpecChar=protSpecChar,inclPat=inclPat,chPat=chPat,chPa2=chPa2)}
     fxCh <- function(z) if(length(dim(z)) >1) any(colSums(z)==nrow(z)) else {if(length(x) >1) all(z) else any(z)}
     chUnit <- unlist(lapply(chPa2, fxCh))
-    if(debug) { message(fxNa,"colSu : ", paste(if(length(dim(chUnit)) >1) colSums(chUnit) else sum(chUnit), collapse=" "), "  cUP2")
-      cUP2 <- list(x=x, pref=pref,unit=unit,sep=sep,sep2=sep2,stringentSearch=stringentSearch,na.rm=na.rm,protSpecChar=protSpecChar, chUnit=chUnit,fx1=fx1,fx3=fx3, out=out) }
+    if(debug) { message(fxNa,"colSu : ", paste(if(length(dim(chUnit)) >1) colSums(chUnit) else sum(chUnit), collapse=" "), "  cUP5")
+      cUP5 <- list(x=x, pref=pref,unit=unit,sep=sep,sep2=sep2,stringentSearch=stringentSearch,na.rm=na.rm,protSpecChar=protSpecChar, chUnit=chUnit,fx1=fx1,fx3=fx3, out=out) }
     if(any(chUnit, na.rm=TRUE)) {
        ii <- which.max(nchar(names(chUnit))[which(chUnit)])    # in case of multiple hits choose (1st of) longest (supposedly entire unit-name)
        out <- if(isTRUE(inclPat)) list(unit=names(chUnit)[which(chUnit)][ii], 

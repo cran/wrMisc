@@ -2,32 +2,35 @@
 % Please edit documentation in R/regrMultBy1or2point.R
 \name{regrMultBy1or2point}
 \alias{regrMultBy1or2point}
-\title{Rescaling of multiple data-sets according to reference data using regression}
+\title{Rescaling Of Multiple Data-Sets According To Reference Data Using Regression}
 \usage{
 regrMultBy1or2point(
   inDat,
   refLst,
   regrTo = c(1, 0.5),
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
 \arguments{
-\item{inDat}{matrix or data.frame}
+\item{inDat}{(matrix or data.frame) data to be rescaled}
 
 \item{refLst}{list of names existing in inDat (one group of names for each value in 'regrTo'), to be transformed in values precised in 'regTo'; if no matches to names of 'inDat' found, the 2 lowest and/or highest highest values will be chosen}
 
 \item{regrTo}{(numeric,length=2) range (at scale 0-1) of target-values for mean of elements cited in 'refLst'}
 
-\item{silent}{(logical) suppress messages}
+\item{silent}{(logical) suppress messages if \code{TRUE}}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-normalized matrix
+This function returns a normalized matrix
 }
 \description{
-\code{regrMultBy1or2point} regresses each col of matrix according to 'refLst'(describing rownames of inDat). 
+This function regresses each col of matrix according to 'refLst'(describing rownames of inDat). 
 If 'refLst' conatins 2 groups, the 1st group will be set to the 1st value of 'regrTo' (and the 2nd group of 'refLst' to the 2nd 'regtTo')
 }
 \examples{

@@ -2,9 +2,16 @@
 % Please edit documentation in R/countSameStartEnd.R
 \name{countSameStartEnd}
 \alias{countSameStartEnd}
-\title{Count same start- and end- sites of edges (or fragments)}
+\title{Count Same Start- And End- Sites Of Edges (Or Fragments)}
 \usage{
-countSameStartEnd(frag, minFreq = 2, nDig = 4)
+countSameStartEnd(
+  frag,
+  minFreq = 2,
+  nDig = 4,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{frag}{(matrix) 1st column \code{beg} start-sites, 2nd column \code{end} end-sites of edges, rownames to precise fragment identities are recommended}
@@ -12,9 +19,12 @@ countSameStartEnd(frag, minFreq = 2, nDig = 4)
 \item{minFreq}{(integer) min number of accumulated sites for taking into account (allows filtering with large datasets)}
 
 \item{nDig}{(integer) rounding: number of digits for columns \code{beg.rat} and \code{end.rat} in output}
-}
-\value{
-matrix of 6 columns: input (beg and end), beg.n, beg.rat, end.n, end.rat
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced#' @return This function returns a matrix of 6 columns: input (beg and end), beg.n, beg.rat, end.n, end.rat}
 }
 \description{
 Suppose a parent sequence/string 'ABCDE' gets cut in various fragments (eg 'ABC','AB' ...).   

@@ -2,7 +2,7 @@
 % Please edit documentation in R/matchSampToPairw.R
 \name{matchSampToPairw}
 \alias{matchSampToPairw}
-\title{Match names to concatenated pairs of names}
+\title{Match Names To Concatenated Pairs Of Names}
 \usage{
 matchSampToPairw(
   grpNa,
@@ -27,7 +27,7 @@ matchSampToPairw(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix of 2 columns with inidices of \code{sampNa} with \code{pairwNa} as rows
+This function returns a matrix of 2 columns with inidices of \code{sampNa} with \code{pairwNa} as rows
 }
 \description{
 The column-names of multiple pairwise testing contain the names of the initial groups/conditions tested, plus there is a separator (eg '-' in \code{moderTestXgrp}).  
@@ -42,7 +42,10 @@ but the disadvantage that in case the perfect \code{grpNa} was not given, the lo
 2) The separator \code{sep} is given and exact matches at both sides will be searched.
 However, if the character(s) from \code{sep} do appear inside \code{grpNa} no matches will be found.
 
-If some \code{grpNa} are not found in \code{pairwNa} this will be marked as NA.
+If some \code{grpNa} are not found in \code{pairwNa} this will be marked as NA.  
+
+In the most recent version the function checks also if a double version of \code{sep} may fit better to \code{grpNa}
+and will adjust \code{sep} accordingly (eg adjust sep='-' to '--').
 }
 \examples{
 pairwNa1 <- c("abc-efg","abc-hij","efg-hij")

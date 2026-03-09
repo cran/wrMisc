@@ -1,6 +1,8 @@
-#' Test multiple starting levels for linear regression model, select best and plot   
+#' Test Multiple Starting Levels For Linear Regression Model, Select Best And Plot   
 #'
-#' The aim of this function is to select the data suiting set of levels of the main input data to construct a linear regression model. 
+#' The aim of this function is to select the data suiting set of levels on the main input data to construct a linear regression model. 
+#' 
+#' @details
 #' In real world measurements one may be confronted to the case of very low level analytes below the detection limit (LOD) and resulting read-outs fluctuate around around a common baseline (instead of \code{NA}). 
 #' With such data it may be preferable to omit the read-outs for the lowest concentrations/levels of analytes if they are spread around a base-line value.
 #' This function allows trying to omit all starting levels designed in \code{startLev}, then the resulting p-values for the linear regression slopes will be checked and the best p-value chosen. 
@@ -28,6 +30,7 @@
 #' @param cexYAxis (character) \code{cex}-type for size of text for y-axis labels
 #' @param xLabLas (integer) \code{las}-type orientation of x-axis labels (set to 2 for vertical axix-labels)
 #' @param cexLab (numeric) \code{cex}-type for size of text in x & y axis labels (will be passed to \code{cex.lab} in \code{plot()})
+#' @param suppressWarnings (logical) suppress warnings from lm() that may appear when NAs get introduced
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
@@ -52,11 +55,11 @@
 #' 
 #' @export
 linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, lisNa=c(raw="raw",annot="annot",datImp="datImp"), plotGraph=TRUE, 
-  tit=NULL, pch=c(1,3), cexLeg=0.95, cexSub=0.85, xLab=NULL, yLab=NULL, cexXAxis=0.85, cexYAxis=0.9, xLabLas=1, cexLab=1.1, silent=FALSE, debug=FALSE, callFrom=NULL)  {
+  tit=NULL, pch=c(1,3), cexLeg=0.95, cexSub=0.85, xLab=NULL, yLab=NULL, cexXAxis=0.85, cexYAxis=0.9, xLabLas=1, cexLab=1.1, suppressWarnings=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL)  {
   ##  test for linear models with option to start form multiple later levels (ie omitting some of the early levels)
   fxNa <- .composeCallName(callFrom, newNa="linModelSelect")
   if(!isTRUE(silent)) silent <- FALSE
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(isTRUE(debug)) {silent <- FALSE; suppressWarnings <- FALSE} else debug <- FALSE
 
   argNa <- c(deparse(substitute(rowNa)), deparse(substitute(dat)), deparse(substitute(expect)))
   quantCol <- c("blue","tan2","grey")       # figure: 1st for 'used in regression', 2nd for 'not-used', 3rd for 'NA/imputed'
@@ -65,11 +68,18 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
   doSelect <- TRUE                    # flag to see if input/data are valid
   if(length(rowNa) <1) {warning(fxNa,"Argument 'rowNa=",argNa[1],"' contains emty object, nothing to do !"); doSelect <- FALSE}
   if(length(dat) <1) {warning(fxNa,"Argument 'dat=",argNa[1],"' contains emty object, nothing to do !"); doSelect <- FALSE}
-  if(length(expect) <1) {warning(fxNa,"Argument 'expect=",argNa[3],"' contains emty object, nothing to do !"); doSelect <- FALSE}
+  if(length(expect) <1) {stop(fxNa,"Argument 'expect=",argNa[3],"' contains emty object, nothing to do !"); doSelect <- FALSE
+  } else if(is.character(expect)) {
+    exp2 <- try(as.numeric(expect), silent=TRUE)
+    if(inherits(exp2, "try-error")) {
+      exp2 <- try(as.numeric(gsub("[[:alpha:]]|_|\\-","",expect)), silent=TRUE)
+      if(inherits(exp2, "try-error")) stop(fxNa,"Argument 'expect=",pasteC(utils::head(expect)),"' contains no valid numeric content !") else {
+        if(!silent) message(fxNa,"Trying to convert from 'expect=",pasteC(utils::head(expect)),"' to numeric  ",pasteC(utils::head(exp2))) }
+    }
+  } 
   if(doSelect) {  
     if(length(rowNa) >1) { message(fxNa," 'rowNa' should have length of 1 (but is ",length(rowNa),"), truncating ...")
       rowNa <- rowNa[1] }
-    if(length(expect) <1) stop("Argument 'expect' seems to be empty (should be numeric for each level of dat)")
     hasAnn <- subPat <- FALSE
     if(length(startLev) >0) if(!is.numeric(startLev)) stop("Argument 'startLev' must be integer")
     if(debug) {message(fxNa,"lMS0"); lMS0 <- list(rowNa=rowNa,dat=dat,logExpect=logExpect,startLev=startLev,lisNa=lisNa,hasAnn=hasAnn)}
@@ -119,7 +129,8 @@ linModelSelect <- function(rowNa, dat, expect, logExpect=FALSE, startLev=NULL, l
     
       ## MAIN MODEL
       dat1 <- data.frame(conc=if(logExpect) log2(expect) else expect, quant=dat1, concL=expect)            # omics quantitation data is already log2
-      lm0 <- lapply(startLev, function(x) { lmX <- try(stats::lm(quant ~ conc, data=dat1[which(expect >= sort(unique(expect))[x]),])); lmX })
+      lm0 <- lapply(startLev, function(x) { lmX <- if(!isFALSE(suppressWarnings)) suppressWarnings(
+        try(stats::lm(quant ~ conc, data=dat1[which(expect >= sort(unique(expect))[x]),]))) else try(stats::lm(quant ~ conc, data=dat1[which(expect >= sort(unique(expect))[x]),])); lmX })
       slopeAndP <- sapply(lm0, function(x)  z <- stats::coef(summary(x))[2,c("Estimate","Pr(>|t|)")])
       bestReg <- which.min(slopeAndP[2,])
       if(!silent) message(fxNa," best slope pVal starting at level no ",bestReg)

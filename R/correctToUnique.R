@@ -2,7 +2,7 @@
 #'
 #' \code{correctToUnique} checks 'x' for unique entries, while maintaining the original length. If necessary a counter will added to non-unique entries. 
 #' @param x input character vector
-#' @param sep (character) separator used when adding counter
+#' @param sep (character) separator used when  counter
 #' @param atEnd (logical) decide location of placing the counter (at end or at beginning of initial text)
 #' @param maxIter (numeric) max number of iterations
 #' @param NAenum (logical) if \code{TRUE} all \code{NA}s will be enumerated (NA_1,NA_2,...)

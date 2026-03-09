@@ -57,7 +57,7 @@ It is set by default to \code{TRUE} to exclude such columns, since statistical t
 
 When using as \code{method="combAll"}, there is risk all lines (samples) will be be considered different and no replicates remain.
 To avoid this situation the argument can be set to \code{method="combNonOrth"}.
-Using this mode it will be checked if adding more columns will lead to complete loss of replicates, and -if so- concerned columns omitted.
+Using this mode it will be checked if  more columns will lead to complete loss of replicates, and -if so- concerned columns omitted.
 }
 \examples{
 ## a is all different, b is groups of 2,

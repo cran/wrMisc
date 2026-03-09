@@ -10,6 +10,8 @@ nonAmbiguousMat(
   uniqOnly = FALSE,
   asList = FALSE,
   nameMod = "amb_",
+  silent = TRUE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -24,7 +26,11 @@ nonAmbiguousMat(
 
 \item{nameMod}{(character) prefix added to 1st column of 'mat' (expect 'by') for indicating non-unique/ambiguous values}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) for bug-tracking: more/enhanced messages and intermediate objects written in global name-space}
+
+\item{callFrom}{(character) allows easier tracking of message(s) produced}
 }
 \value{
 sorted non-ambigous numeric vector (or list if 'asList'=TRUE and 'uniqOnly'=FALSE)

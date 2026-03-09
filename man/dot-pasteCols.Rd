@@ -12,7 +12,7 @@
 \item{sep}{(character) separator}
 }
 \value{
-simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
+This function returns a simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
 }
 \description{
 This function allows paste columns

@@ -16,11 +16,11 @@ equLenNumber(x, silent = FALSE, callFrom = NULL, debug = FALSE)
 \item{debug}{(logical) additional messages for debugging}
 }
 \value{
-character vector formated as equal number of characters per value
+This function returns a character vector formated as equal number of characters per value
 }
 \description{
 \code{equLenNumber} convert numeric entry 'x' to text, with all elements getting the same number of characters (ie  by adding preceeding or tailing 0s, if needed).
-So far, the function cannot handle scientific annotations.
+So far, this function cannot handle scientific annotations.
 }
 \examples{
 equLenNumber(c(12,-3,321))

@@ -1,4 +1,4 @@
-#' Normalize by adjusting exponent
+#' Normalize By Adjusting Exponent
 #'
 #' This function normalizes 'dat' by optimizing exponent function (ie dat ^exp) to fit best to 'ref' (default: average of each line of 'dat').
 #'
@@ -15,7 +15,8 @@
 #' @param refLines (NULL or integer) optional subset of lines to be considered (only) when determining normalization factors
 #' @param rSquare (logical) if \code{TRUE}, add r-squared
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allows easier tracking of messages produced
 #' @return This functuion returns a matrix of normalized data
 #' @seealso more eveolved than \code{\link[wrMisc]{normalizeThis}} with arugment set to 'exponent'
 #' @examples
@@ -37,21 +38,21 @@
 #' plot(dat1[,2],dat1[,3],type="b",main="init",ylab="ref")
 #' plot(dat2c$datNor[,2],dat1[,3],type="b",main="norm 2",ylab="ref"); 
 #' @export
-exponNormalize <- function(dat, useExpon, dynExp=TRUE, nStep=20, startExp=1, simMeas="cor", refDat=NULL, refGrp=NULL, refLines=NULL,rSquare=FALSE,silent=FALSE,callFrom=NULL) {
+exponNormalize <- function(dat, useExpon, dynExp=TRUE, nStep=20, startExp=1, simMeas="cor", refDat=NULL, refGrp=NULL, refLines=NULL, rSquare=FALSE, silent=FALSE, callFrom=NULL, debug=FALSE) {
   fxNa <- .composeCallName(callFrom,newNa="exponNormalize")
   dimDat <- dim(dat)
   if(!is.matrix(dat)) dat <- as.matrix(dat)
-  if(is.null(refDat)) refDat <- matrix(rowMeans(if(length(refLines) < nrow(dat) & !is.null(refLines)) dat[refLines,] else dat, na.rm=TRUE),
+  if(is.null(refDat)) refDat <- matrix(rowMeans(if(length(refLines) < nrow(dat) && !is.null(refLines)) dat[refLines,, drop=FALSE] else dat, na.rm=TRUE),
     ncol=1,dimnames=list(NULL,colnames(dat))) else { message(fxNa,"adj 'refDat to matrix' \n")
     if(length(dim(refDat)) <2) refDat <- as.matrix(as.numeric(refDat)) }
-  if(is.null(refGrp)) refGrp <- rep(1,ncol(dat))
+  if(is.null(refGrp)) refGrp <- rep(1, ncol(dat))
   if(length(refGrp) != ncol(dat)) message(fxNa," 'refGrp' (",length(refGrp),") doesn't fit to 'dat' (",ncol(dat)," cols)")
-  if(max(as.numeric(refGrp),na.rm=TRUE) > ncol(dat)) {
+  if(max(as.numeric(refGrp), na.rm=TRUE) > ncol(dat)) {
     message(fxNa," 'refGrp' suggests columns not found in 'dat' !") }
   useExpon <- unique(naOmit(useExpon))
   ## main
-  .sw <- function(useExpon,startExp,nStep) {     # function for defining new series of 'useExpon'
-    meth <- paste("m",0 +(length(useExpon) >1) + 2*all(startExp <1),sep="")
+  .sw <- function(useExpon, startExp, nStep) {     # function for defining new series of 'useExpon'
+    meth <- paste0("m",0 +(length(useExpon) >1) + 2*all(startExp <1))
     switch(meth,
       m0=seq(useExpon, startExp, length.out=nStep),
       m1=seq(useExpon[1], useExpon[2], length.out=nStep),
@@ -67,7 +68,7 @@ exponNormalize <- function(dat, useExpon, dynExp=TRUE, nStep=20, startExp=1, sim
   expoNor <- list()
   for(i in 1:nrow(useExpon)) expoNor[[i]] <- dat^matrix(rep(useExpon[i,], each=nrow(dat)), ncol=ncol(dat))
   corVal <- if(identical(simMeas,"cor")) sapply(expoNor, function(x) apply(x,2,stats::cor, y=refDat, use="complete.obs")) else {
-    corVal <- NULL; message(fxNa," PROBLEM : unknown similarity measure !!")}
+    corVal <- NULL; message(fxNa,"PROBLEM : unknown similarity measure !!")}
   if(!is.matrix(corVal)) corVal <- matrix(corVal, ncol=ncol(dat))
   if(all(dim(corVal) == dim(t(useExpon)))) corVal <- t(corVal)
   dimnames(corVal) <- list(paste("exp",useExpon[,1],sep="_"), colnames(dat))

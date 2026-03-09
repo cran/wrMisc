@@ -17,7 +17,7 @@ correctToUnique(
 \arguments{
 \item{x}{input character vector}
 
-\item{sep}{(character) separator used when adding counter}
+\item{sep}{(character) separator used when  counter}
 
 \item{atEnd}{(logical) decide location of placing the counter (at end or at beginning of initial text)}
 

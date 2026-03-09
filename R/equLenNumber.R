@@ -1,13 +1,13 @@
 #' Equal character-length number 
 #'
 #' \code{equLenNumber} convert numeric entry 'x' to text, with all elements getting the same number of characters (ie  by adding preceeding or tailing 0s, if needed).
-#' So far, the function cannot handle scientific annotations. 
+#' So far, this function cannot handle scientific annotations. 
 #'
 #' @param x (caracter) input vector
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return character vector formated as equal number of characters per value
+#' @return This function returns a character vector formated as equal number of characters per value
 #' @seealso \code{\link[base]{sprintf}}
 #' @examples
 #' equLenNumber(c(12,-3,321))
@@ -23,17 +23,17 @@ equLenNumber <- function(x, silent=FALSE, callFrom=NULL, debug=FALSE){
   check2 <- grep("^[[:digit:]]+\\.[[:digit:]]+$|^[[:digit:]]+$|^-[[:digit:]]+$|^-[[:digit:]]+\\.[[:digit:]]+$",x)   # other numeric (wo exponent)
   if(length(check2) < length(x) && !silent) message(fxNa," ",length(x)-length(check2)," out of ",length(x)," entries can't be transformed to numeric")
   x <- as.numeric(x)
-  if(length(check1) ==length(x)) sprintf(paste("%0",max(nchar(as.character(x))),"d",sep=""),x) else {
-    sprintf(paste("%0",max(nchar(as.character(x))+1),".",max(nchar(gsub("\\.","",gsub("^[[:digit:]]+","",gsub("^-","",x))))),"f",sep=""),x)}
+  if(length(check1) ==length(x)) sprintf(paste0("%0",max(nchar(as.character(x))),"d"),x) else {
+    sprintf(paste0("%0",max(nchar(as.character(x))+1),".",max(nchar(gsub("\\.","",gsub("^[[:digit:]]+","",gsub("^-","",x))))),"f"),x)}
 }
 
-#' Convert to simple vector (similar to unlist)
+#' Convert To Simple Vector (similar to unlist)
 #'
 #' This function allows converting 'dat' (may be list, data.frame etc) to simple vector, more elaborate than unlist()
 #' 
 #' @param dat (list, data.frame) main input
 #' @param toNumeric (logical)
-#' @return character (or numeric) vector
+#' @return This function returns a character (or numeric) vector
 #' @seealso  \code{\link[base]{unlist}}; used in  \code{\link{equLenNumber}}
 #' @examples
 #' aa <- matrix(11:14, ncol=2)
@@ -54,7 +54,7 @@ equLenNumber <- function(x, silent=FALSE, callFrom=NULL, debug=FALSE){
     if(!is.null(rowNa)) names(dat) <- rowNa }
   dat }
 
-#' Compose sequence of (function-)calls
+#' Compose Sequence Of (Function-)Calls
 #'
 #' This function was designed for tracing the hierarchy of function-calls.
 #' It allows to remove any tailing space or ': ' from 'callFrom' (character vector) and return with added 'newNa' (+ 'add2Tail')
@@ -63,7 +63,7 @@ equLenNumber <- function(x, silent=FALSE, callFrom=NULL, debug=FALSE){
 #' @param add2Head (character)
 #' @param add2Tail (character)
 #' @param callFrom (character) may also contain multiple separate names (ie length >1), will be concatenated using ' -> '
-#' @return character vector (history of who called whom)
+#' @return This function returns a character vector (history of who called whom)
 #' @seealso  \code{\link[base]{paste}}
 #' @examples
 #' .composeCallName("newFunction", callFrom="initFunction")

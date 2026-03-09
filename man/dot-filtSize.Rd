@@ -14,7 +14,7 @@
 \item{maxSize}{(integer) maximum number of characters}
 }
 \value{
-list of filtered input
+This function returns a list of filtered input
 }
 \description{
 This function aims to filter for size

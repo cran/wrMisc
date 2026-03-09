@@ -2,7 +2,7 @@
 % Please edit documentation in R/listGroupsByNames.R
 \name{listGroupsByNames}
 \alias{listGroupsByNames}
-\title{Organize values into list and sort by names}
+\title{Organize Values Into List And Sort By Names}
 \usage{
 listGroupsByNames(x, sep = ".", silent = FALSE, debug = FALSE, callFrom = NULL)
 }
@@ -18,7 +18,7 @@ listGroupsByNames(x, sep = ".", silent = FALSE, debug = FALSE, callFrom = NULL)
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix or data.frame
+This function returns a matrix or data.frame
 }
 \description{
 Sort values of \code{'x'} by its names and organize as list by common names, the names until \code{'sep'} are used for (re)grouping. 

@@ -12,8 +12,9 @@
 #' In consequence, a sample having received only 95% of input material is assumed to give only 95% signal intensity of what may have been expected.
 #' Thus, all measures will be multiplied by 1/0.95 (apr 1.053) to compensate for supposed lack of staring material.
 #'
-#' With the analysis of 'Omics'-data it is very common to work with data on log-scale.
-#' In this case the argument \code{mode} should be set to \code{additive}, since adding a constant factor to log-data corresponds to a multiplicative factor on regular scale
+#' LOG-SCALE : With the analysis of 'Omics'-data it is very common to work with data on log-scale.
+#' In this case the argument \code{mode} should be set to \code{additive} (or \code{log} or \code{logarithmic}).
+#' At normalization a constant factor will be added (or subtracted) using this mode. This corresponds to a multiplicative factor on regular scale.
 #' Please note that (at this point) the methods 'slope', 'exponent', 'twoPointSlope' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
 #' (you may look at the original documenation for more details, see \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
 #'
@@ -38,6 +39,7 @@
 #' @param refGrp Only the columns indicated will be used as reference, default all columns (integer or colnames)
 #' @param mode (character) may be "proportional", "additive" (for log2 data);
 #'  decide if normalization factors will be applied as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested
+#'  besides 'log' or 'logarithmic' may be used instead of 'additive'; and 'lin' or 'linear' may be used instead of 'proportional'
 #' @param trimFa (numeric, length=1) additional parameters for trimmed mean
 #' @param minQuant (numeric) only used with \code{method='rowNormalize'}: optional filter to set all values below given value as \code{NA}; see also \code{\link{rowNormalize}}
 #' @param sparseLim (integer) only used with \code{method='rowNormalize'}: decide at which min content of  \code{NA} values the function should go in sparse-mode; see also \code{\link{rowNormalize}}
@@ -72,14 +74,14 @@
 #' cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 #' @export
 normalizeThis <- function(dat, method=c("mean","average","median","trimMean","rowNormalize","standardize","slope","twoPointSlope","exponent","vsn","none","NULL"), refLines=NULL, refGrp=NULL, 
-  mode=c("proportional","additive","linear","logarithmic"), trimFa=NULL, minQuant=NULL, sparseLim=0.4, nCombin=3, omitNonAlignable=FALSE, maxFact=10, quantFa=NULL, expFa=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
+  mode=c("proportional","additive","linear","lin","logarithmic","log"), trimFa=NULL, minQuant=NULL, sparseLim=0.4, nCombin=3, omitNonAlignable=FALSE, maxFact=10, quantFa=NULL, expFa=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="normalizeThis")
   if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
     if(!isTRUE(silent)) silent <- FALSE }
   if(!any(sapply(c("additive","add","ad","a"), identical, mode))) mode <- "proportional"
   
   mode <- match.arg(mode) 
-  if("logarithmic" %in% mode)  mode <- "additive" else if("linear" %in% mode) mode <- "proportional" 
+  if(any(c("logarithmic","log") %in% mode))  mode <- "additive" else if(any(c("linear","lin") %in% mode)) mode <- "proportional" 
   if(length(mode) >1) mode <- mode[1]
   method <- match.arg(method) 
   if("average" %in% method)  method <- "mean"  
@@ -105,14 +107,15 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
     params$trimFa <- 0.2
     if(length(trimFa) >0) {if(length(trimFa) ==1) params$trimFa <- trimFa else if(!silent) message(fxNa," invalid 'trimFa', use default 0.2")}
   }
-  if(any(sapply(c("rowNormalize","rowN","row"), identical, method))) {
-    if(debug) message(fxNa," recognized as method='rowNormalize'")
+  if(any(sapply(c("rowNormalize","rowNorm","rowN","rowProp","rowP","row"), identical, method))) {
+    if(debug) message(fxNa,"Recognized as method='rowNormalize'")
     params$minQuant <- minQuant
     params$sparseLim <- sparseLim
     params$nCombin <- nCombin
     params$omitNonAlignable <- omitNonAlignable
     params$maxFact <- maxFact
-    method <- "row"
+    params$mode <- mode
+    method <- "rowNorm"
   }
   if(method %in% "slope") {
     params$useQ <- c(0.2,0.8)
@@ -123,7 +126,7 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
       signif(stats::quantile(dat, c(0.05,0.15), na.rm=TRUE), 3))
   }
   if(any(sapply(c("exponent","expo","exp"), identical, method))) {
-    if(debug) message(fxNa," recognized as method='exponent'")
+    if(debug) message(fxNa,"Recognized as method='exponent'")
     if(length(expFa) <1) { useExp <- c(log(c(10:1)), 30, 10, 3)
       params$useExp <- sort(unique(c(round(1 /(1 +abs(useExp -useExp[1])), 4), round(1 +abs(useExp -useExp[1]), 3)))) }
     method <- "exponent"
@@ -142,6 +145,7 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
   out <- .normalize(dat, method, mode=mode, param=params, silent=silent, debug=debug, callFrom=fxNa)
   if(inherits(out, "try-error")) { message(fxNa,"Could not run normalization by '",method,"' which gave an error (returning unnormalized)"); out <- dat}
   out }
+
 
 #' Main Normalization function
 #'
@@ -172,7 +176,7 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
   mode <- if(identical(mode,"additive")) "Add" else "Prop"       # reduce to short name
   if(identical(meth,"average")) meth <- "mean"
   asRefL <- (length(param$refLines) < nrow(dat) && !is.null(param$refLines))
-  datRef <- if(asRefL) {if(length(param$refLines) >1) dat[param$refLines,] else matrix(dat[param$refLines,],nrow=1)} else NULL
+  datRef <- if(asRefL) dat[param$refLines,,drop=FALSE] else NULL
   if("vsn" %in% meth) {
     chPa <- requireNamespace("vsn", quietly=TRUE)
     if(!chPa) { meth <- "mean"
@@ -195,11 +199,9 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
       if(asRefL) datRef else dat, 2, stats::median, na.rm=TRUE), each=nrow(dat)),
     medianProp=stats::median(if(asRefL) datRef else dat,na.rm=TRUE) * dat / rep(apply(
       if(asRefL) datRef else dat, 2, stats::median, na.rm=TRUE), each=nrow(dat)),
-    rowAdd= rowNormalize(dat=dat, method=meth, refLines=param$refLines, refGrp=param$refGrp, proportMode="additive", minQuant=param$minQuant,
-      sparseLim=param$sparseLim, nCombin=param$nCombin, omitNonAlignable=param$omitNonAlignable, maxFact=param$maxFact, silent=silent, debug=debug, callFrom=fxNa),
     standardizeAdd= scale(if(asRefL) datRef else dat, center=TRUE, scale=TRUE),
     standardizeProp= scale(if(asRefL) datRef else dat, center=TRUE, scale=TRUE),
-    rowProp=rowNormalize(dat=dat, method=meth, refLines=param$refLines, refGrp=param$refGrp, proportMode="proportional", minQuant=param$minQuant,
+    rowNorm= rowNormalize(dat=dat, method=meth, refLines=param$refLines, refGrp=param$refGrp, proportMode="Prop" %in% param$mode, minQuant=param$minQuant,
       sparseLim=param$sparseLim, nCombin=param$nCombin, omitNonAlignable=param$omitNonAlignable, maxFact=param$maxFact, silent=silent, debug=debug, callFrom=fxNa),
     slope=.normConstSlope(mat=dat, useQuant=param$useQ, refLines=param$refLines, diagPlot=FALSE),
     exponent=try(exponNormalize(dat, useExpon=param$useExp, refLines=param$refLines)$datNor, silent=TRUE),
@@ -207,7 +209,8 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
     vsn=if(requireNamespace("vsn")) try(vsn::justvsn(dat), silent=TRUE) else NULL ) 
   }
 
-#' Normalize columns of 2dim matrix to common linear regression fit
+
+#' Normalize Columns Of 2-dim Matrix To Common Linear Regression Fit
 #'
 #' This function aims to normalize columns of 2dim matrix to common linear regression fit within range of 'useQuant'
 #' 
@@ -270,4 +273,4 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
       if(plotLog %in% c("x","xy")) graphics::curve(log(regrM[1])*(regrM[2]) +regrM[1], lty=2,col=2,add=TRUE) else graphics::abline(regrM[1],regrM[2],lty=2,col=2)
     } }
   normD }
-
+  

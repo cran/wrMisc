@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineOverlapInfo.R
 \name{combineOverlapInfo}
 \alias{combineOverlapInfo}
-\title{Find and combine points located very close in x/y space}
+\title{Find And Combine Points Located Very Close In x/y Space}
 \usage{
 combineOverlapInfo(
   dat,
@@ -39,7 +39,7 @@ combineOverlapInfo(
 \item{silent}{(logical) suppres messages}
 }
 \value{
-matrix with fused (condensed) information for cluster of overapping points
+This function returns a matrix with fused (condensed) information for cluster of overapping points
 }
 \description{
 Search points in x,y space that are located very close and thus likely to overlap.

@@ -1,8 +1,12 @@
-#' Write (and convert) csv files
+#' Write (And Convert) Csv Files
 #'
-#' This functions is absed on \code{write.csv} allows for more options when writing data into csv-files.
+#' This functions allows for more options when writing data into csv-files compated to  \code{write.csv}.
+#' 
+#'
+#' @details
 #' The main input may be gven as R-object or read from file 'input'. Then, one can (re-)write using specified conversions. 
-#' An optional filter to select columns (column-name specified via 'filterCol') is available. 
+#' An optional filter to select columns (column-name specified via 'filterCol') is available.
+#'  
 #' The output may be simultaneaously written to multiple formats, as specified in 'expTy', 
 #' tabulation characters may be converted to avoid accidentally split/shift text to multiple columns. 
 #' Note: Mixing '.' and ',' as comma separators via text-columns or fused text&data may cause problems lateron, though.
@@ -35,10 +39,10 @@
 #'   returnOut=TRUE, filename=fiNa[2]))
 #'
 #' @export
-writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", filename=NULL, quote=FALSE, filterCol=NULL, replMatr=NULL, returnOut=FALSE, SYLKprevent=TRUE, digits=22, silent=FALSE,debug=FALSE,callFrom=NULL) {
+writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", filename=NULL, quote=FALSE, filterCol=NULL, replMatr=NULL, returnOut=FALSE, SYLKprevent=TRUE, digits=22, silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="writeCsv")
-  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
-    if(!isTRUE(silent)) silent <- FALSE }
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
 
   argN <- deparse(substitute(input))
   doWrite <- TRUE
@@ -71,8 +75,8 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
         useCol <- sapply(filterCol,function(x) x[1])
         useCol <- which(useCol %in% colnames(dat))
         if(!silent && length(useCol)<1) message(fxNa,"None of the columns from 'filterCol' found in ",inPutFi)
-        filtThr <- sapply(filterCol[useCol],function(x) if(length(x>1)) x[2] else NA)
-        filterCol <- sapply(filterCol[useCol],function(x) x[1])
+        filtThr <- sapply(filterCol[useCol], function(x) if(length(x>1)) x[2] else NA)
+        filterCol <- sapply(filterCol[useCol], function(x) x[1])
         }
       if(debug) {message(fxNa,"..xxWriteC0")}
       if(length(filterCol) >0) {
@@ -125,12 +129,12 @@ writeCsv <- function(input, inPutFi=NULL, expTy=c("Eur","US"), imporTy="Eur", fi
       ## write to file
       if(length(filename) <1) filename <- paste0(if(is.character(inPutFi)) sub("\\.csv$","",inPutFi) else argN,".",expTy,".csv")
       if(length(filename) < length(expTy)) {
-        if(!silent) message(fxNa,"Adding type to name(s) of file(s) to be written")
+        if(!silent) message(fxNa," type to name(s) of file(s) to be written")
         filename <- paste0(sub("\\.csv$","",filename),".",expTy,".csv")
         if("txt" %in% expTy) filename <- sub("\\.txt.\\csv$",".txt",filename)
         names(filename) <- expTy }
       if(debug) {message(fxNa,"..xxWriteC4")}
-      if(!silent & any(file.exists(filename))) message(fxNa,"file(s) ",pasteC(filename[which(file.exists(filename))],quo="'")," will be overwritten !")
+      if(!silent && any(file.exists(filename))) message(fxNa,"file(s) ",pasteC(filename[which(file.exists(filename))],quo="'")," will be overwritten !")
       if( "US" %in% expTy) tryW <- try(utils::write.csv(as.matrix(format(if(length(datExp)>0) datExp$US else dat,digits=digits)), filename["US"], row.names=FALSE, quote=quote),silent=silent)
       if("txt" %in% expTy) tryW <- try(utils::write.table(as.matrix(format(if(length(datExp)>0) datExp$txt else dat,digits=digits)), filename["txt"], row.names=FALSE, quote=quote),silent=silent)
       ## idea (relaed to problem when input is fused numeric&text): in case of Eur test all cols if factor/text and then (optional?) convert '.' to ','

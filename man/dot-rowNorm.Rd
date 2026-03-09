@@ -2,7 +2,7 @@
 % Please edit documentation in R/rowNormalize.R
 \name{.rowNorm}
 \alias{.rowNorm}
-\title{Row-normalization procedure on matrix or data.frame 'dat'}
+\title{Row-normalization Procedure On Matrix Or Data.frame (main)}
 \usage{
 .rowNorm(
   dat,
@@ -12,9 +12,9 @@
   maxFact = 10,
   fact0val = 10,
   retFact = FALSE,
-  callFrom = NULL,
   debug = FALSE,
-  silent = FALSE
+  silent = FALSE,
+  callFrom = NULL
 )
 }
 \arguments{
@@ -32,21 +32,21 @@
 
 \item{retFact}{(logical)}
 
-\item{callFrom}{(character) This function allows easier tracking of messages produced}
-
 \item{debug}{(logical) additional messages for debugging}
 
 \item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) This function allows easier tracking of messages produced}
 }
 \value{
 This function returns a matrix of normalized data same dimensions as 'dat'
 }
 \description{
-This function was performs a row-normalization procedure on matrix or data.frame 'dat'
+This function performs a row-normalization procedure on matrix or data.frame 'dat'
 }
 \examples{
 .rowNorm(matrix(11:31, ncol=3), refLi=1, method="mean", proportMode=TRUE)
 }
 \seealso{
-\code{\link{rowNormalize}}
+\code{\link{rowNormalize}}; \code{\link{normalizeThis}}
 }

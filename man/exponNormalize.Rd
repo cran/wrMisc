@@ -2,7 +2,7 @@
 % Please edit documentation in R/exponNormalize.R
 \name{exponNormalize}
 \alias{exponNormalize}
-\title{Normalize by adjusting exponent}
+\title{Normalize By Adjusting Exponent}
 \usage{
 exponNormalize(
   dat,
@@ -16,7 +16,8 @@ exponNormalize(
   refLines = NULL,
   rSquare = FALSE,
   silent = FALSE,
-  callFrom = NULL
+  callFrom = NULL,
+  debug = FALSE
 )
 }
 \arguments{
@@ -44,7 +45,9 @@ Note: 'refGrp' not yet coded optimally to extract numeric part of character vect
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
 This functuion returns a matrix of normalized data

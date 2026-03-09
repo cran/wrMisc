@@ -19,13 +19,13 @@ addBeforFileExtension <- function(x, add, sep="_", silent=FALSE, callFrom=NULL, 
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(length(add) >1) add <- add[1]
   if(length(grep("\\.",x)) >0) {
-    extLoc <- sapply(gregexpr("\\.",x),function(y) y[length(y)])
-    if(any(extLoc <0)) extLoc[extLoc <0] <- nchar(x[extLoc <0])+1
-    paste0(substr(x,1,extLoc-1),sep,add,substr(x,extLoc,nchar(x)))
-  } else paste(x,add,sep=sep) }
+    extLoc <- sapply(gregexpr("\\.", x),function(y) y[length(y)])
+    if(any(extLoc <0)) extLoc[extLoc <0] <- nchar(x[extLoc <0]) +1
+    paste0(substr(x,1,extLoc-1), sep, add, substr(x,extLoc,nchar(x)))
+  } else paste(x, add, sep=sep) }
 
 
-#' checkFileNameExtensions 
+#' Check File Name Extensions 
 #' Function for checking file-names.
 #' @param fileNa (character) file name to be checked
 #' @param ext (character) file extension
@@ -37,10 +37,10 @@ addBeforFileExtension <- function(x, add, sep="_", silent=FALSE, callFrom=NULL, 
   msg <- " need at least 1 character-string as 'fileNa' and as 'ext'"
   if(any(length(fileNa) <1,length(ext) <1)) stop(msg)
   ext <- sub("^\\.","",ext)           # remove starting point-separator
-  ext <- unique(paste(".",ext,sep=""))
-  che <- nchar(fileNa) > nchar(sub(paste(ext[1],"$",sep=""),"",fileNa)) 
+  ext <- unique(paste0(".",ext))
+  che <- nchar(fileNa) > nchar(sub(paste0(ext[1],"$"),"",fileNa)) 
   if(length(ext) >1) for(i in 2:length(ext)) {
-    che <- che || nchar(fileNa) > nchar(sub(paste(ext[i],"$",sep=""),"",fileNa))}
-  if(sum(!che) >0)fileNa[!che] <- paste(fileNa[!che],ext[1],sep="")
+    che <- che || nchar(fileNa) > nchar(sub(paste0(ext[i],"$"),"",fileNa))}
+  if(sum(!che) >0)fileNa[!che] <- paste0(fileNa[!che],ext[1])
   fileNa }
    

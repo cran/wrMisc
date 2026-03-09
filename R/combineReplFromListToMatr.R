@@ -10,16 +10,16 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return list of arrays now with same dimension of arrays (but shorter, since replicate-arrays were combined)
+#' @return This function returns a list of arrays now with same dimension of arrays (but shorter, since replicate-arrays were combined)
 #' @seealso \code{\link{extr1chan}}, \code{\link{organizeAsListOfRepl}}
 #' @examples
 #' lst2 <- list(aa_1x=matrix(1:12,nrow=4,byrow=TRUE),ab_2x=matrix(24:13,nrow=4,byrow=TRUE))
 #' combineReplFromListToMatr(lst2)
 #' @export
 combineReplFromListToMatr <- function(lst, silent=FALSE, debug=FALSE, callFrom=NULL){
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   fxNa <- .composeCallName(callFrom, newNa="combineReplFromListToMatr")
-  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
-    if(!isTRUE(silent)) silent <- FALSE }
   varNa <- .trimRight(.trimLeft(names(lst)))
   varSep <- gsub("[[:alnum:]]","",varNa)
   if(any(nchar(varSep) <1)) stop(fxNa,"Manually EDIT file-names, can't find separator between group/plate-name and replicate-number !")
@@ -37,7 +37,7 @@ combineReplFromListToMatr <- function(lst, silent=FALSE, debug=FALSE, callFrom=N
     } else {
       out[[i]] <- as.matrix(sapply(lst[iniFi +(1:arrTy[i])], as.numeric))
       dimNa <- dimnames(lst[[1 +iniFi]])
-      dimnames(out[[i]]) <- list(paste(dimNa[[1]], rep(sub("^X","",dimNa[[2]]), each=length(dimNa[[1]])), sep=""), varNa2[2, iniFi +(1:arrTy[i])] )
+      dimnames(out[[i]]) <- list(paste0(dimNa[[1]], rep(sub("^X","",dimNa[[2]]), each=length(dimNa[[1]]))), varNa2[2, iniFi +(1:arrTy[i])] )
       iniFi <- iniFi + arrTy[i]
    } }
    names(out) <- unique(varNa2[1,])

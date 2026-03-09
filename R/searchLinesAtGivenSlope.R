@@ -163,7 +163,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
       tryLm <- try(stats::lm(B ~ slope, data=dat2))
     }
     out$lm[[i]] <- tryLm                        # needed for lmFilter()
-    if(i==1) out$lmSum <- matrix(NA, nrow=length(refCluNo), ncol=6, dimnames=list(refCluNo,
+    if(i==1) out$lmSum <- matrix(NA_real_, nrow=length(refCluNo), ncol=6, dimnames=list(refCluNo,
       c("(Intercept)","slope","pInterc","pSlope","residSE","Rsqu")))
     if(inherits(tryLm, "try-error")) message(fxNa,"Problem making regression on group",refCluNo[i],"") else if(is.list(out)) {
       tmp <- if(inherits(tryLm, "rlm")) {
@@ -177,7 +177,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   useCol <- useColPa[out$clus]
   ## plot histogram of residues
   if(displHist) {
-    if(displScat) if(all(graphics::par()$mfrow <2)) {graphics::layout(matrix(1:2, ncol=2)) ; message(" adjusting layout for 2 images")}  
+    if(displScat) if(all(graphics::par()$mfrow <2)) {graphics::layout(matrix(1:2, ncol=2)) ; message("Adjusting layout for 2 images")}  
     cluBor <- matrix(unlist(by(offS,bestPart$cluster,range)), byrow=TRUE, ncol=2)
     his <- try(graphics::hist(offS, breaks="FD", main="hist of residuals to given slope"), silent=TRUE)
     if(inherits(his, "try-error")) message(fxNa,"UNABLE to plot histogram figure !") else {

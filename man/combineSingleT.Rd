@@ -2,15 +2,21 @@
 % Please edit documentation in R/combineSingleT.R
 \name{combineSingleT}
 \alias{combineSingleT}
-\title{Get all combinations with TRUE from each column}
+\title{Get All Combinations With TRUE From Each Column}
 \usage{
-combineSingleT(mat)
+combineSingleT(mat, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{mat}{2-column matrix of logical values}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-matrix with indexes of conbinations of \code{TRUE}
+This function returns a matrix with indexes of conbinations of \code{TRUE}
 }
 \description{
 This function addresses the case when multiple alternatove ways exit to combine two elements. 

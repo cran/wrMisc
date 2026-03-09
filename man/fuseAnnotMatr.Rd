@@ -33,7 +33,7 @@ fuseAnnotMatr(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-combined matrix (elements not found in 'annotTab' are displayed as NA)
+This function returns a combined matrix (elements not found in 'annotTab' are displayed as NA)
 }
 \description{
 In a number of instances experimental measurements and additional information (annotation) are provided by separate objects (matrixes) as they may not be generated the same time.

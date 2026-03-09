@@ -2,7 +2,7 @@
 % Please edit documentation in R/addBeforFileExtension.R
 \name{.checkFileNameExtensions}
 \alias{.checkFileNameExtensions}
-\title{checkFileNameExtensions 
+\title{Check File Name Extensions 
 Function for checking file-names.}
 \usage{
 .checkFileNameExtensions(fileNa, ext)
@@ -16,7 +16,7 @@ Function for checking file-names.}
 modified character vector
 }
 \description{
-checkFileNameExtensions 
+Check File Name Extensions 
 Function for checking file-names.
 }
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildTree.R
 \name{.growTree}
 \alias{.growTree}
-\title{Grow tree}
+\title{Grow Tree}
 \usage{
 .growTree(tm, setX, addToObj = NULL)
 }
@@ -14,7 +14,7 @@
 \item{addToObj}{.. data.tree object (branch on which to add new branches/nodes)}
 }
 \value{
-list
+This function returns a list
 }
 \description{
 This function allows growing tree-like structures (data.tree objects)

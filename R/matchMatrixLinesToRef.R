@@ -86,8 +86,8 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
     } else {
       if(any(chIdenCol, na.rm=TRUE)) {
         ## split& remove non-informative
-        matElim <- if(sum(chIdenCol) >1) mat[,which(chIdenCol)] else matrix(mat[,which(chIdenCol)], ncol=1, dimnames=list(rownames(mat), colnames(mat)[which(chIdenCol)]))
-        matUse <- if(sum(!chIdenCol) ==1) matrix(mat[,which(!chIdenCol)], ncol=1, dimnames=list(rownames(mat), colnames(mat)[which(!chIdenCol)])) else mat[,which(!chIdenCol)]
+        matElim <- mat[,which(chIdenCol), drop=FALSE] 
+        matUse <-  mat[,which(!chIdenCol), drop=FALSE]
         if(debug) message(fxNa,"Removing ",sum(chIdenCol), "columns of all identical values (have no value for distinguishing lines)")
       } else matUse <- mat
       if(debug) {message(fxNa,"mMLR2"); mMLR2 <- list(mat=mat,matUse=matUse,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
@@ -100,7 +100,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
             msg <-"All non-uniform columns get excluded via 'exclCol', nothing remains"
             matUse <- NULL
           } else {
-            matUse <- if(length(exclCol)+1 ==ncol(matUse)) matrix(matUse[,-exclCol], ncol=1, dimnames=list(rownames(matUse), colnames(matUse)[-exclCol])) else matUse[,-exclCol] }  
+            matUse <- if(length(exclCol) +1 ==ncol(matUse)) matrix(matUse[,-exclCol], ncol=1, dimnames=list(rownames(matUse), colnames(matUse)[-exclCol])) else matUse[,-exclCol] }  
         }
       }
       if(length(matUse) >0) {  
@@ -112,14 +112,20 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
           byCol <- which(chNa==0)[1]
           msgM <- "direct match"
         } else {
-          if(debug) {message(fxNa,"mMLR3"); mMLR13 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out)}
+          if(debug) {message(fxNa,"mMLR3"); mMLR3 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,matUse=matUse,out=out)}
           ## trim redundant text, re-try match
-          mat2 <- apply(if(length(matUse) >0) matUse else mat, 2, trimRedundText, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
-          ref2 <- trimRedundText(ref, minNchar=1, side="both", silent=silent,callFrom=fxNa,debug=debug)
+          matIni <- mat        ## needed ?
+          ## note : '\\' (from win paths) gave problems ..
+          matUse <- apply(if(length(matUse) >0) matUse else mat, 2, function(x) gsub("\\\\","/", x))
+          ref <- gsub("\\\\","/", ref)
+          ## used previously  trimRedundText(.., minNchar=1, side="both") insead of rmSharedWords()
+          mat2 <- apply(matUse, 2, rmSharedWords, sep=c("_"," ","/","-","."), minLe=1, silent=silent,callFrom=fxNa,debug=debug)
+          ref2 <- rmSharedWords(ref, sep=c("_"," ","/","-","."), minLe=1, silent=silent,callFrom=fxNa,debug=debug)
           sMa <- apply(mat2, 2, function(x) match(ref2, x))
           chNa <- colSums(is.na(sMa))
           if(debug) {message(fxNa,"mMLR3b"); mMLR3b <- list()}
-          if(any(chNa==0)) { newOr <- sMa[,which(chNa==0)[1]]
+          if(any(chNa==0)) {     ## should be sufficient for ProteomeDiscoverer file-list
+            newOr <- sMa[,which(chNa==0)[1]]
             out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, addRef=addRef)  #
             #old#out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, goodCol=chNa, matElim=matElim, chIdenCol=chIdenCol, addRef=addRef)  #
             byCol <- which(chNa==0)[1]
@@ -151,7 +157,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
               if(debug) {message(fxNa,"mMLR5"); mMLR5 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat3=mat2,chCol=chCol) }
               if(any(chCol)) {
                 if(debug) message(fxNa,"Enumerators exist, try matching after harmonizing style ..")
-                if(!all(chCol)) mat3 <- if(sum(chCol) >1) mat3[,which(chCol)] else matrix(mat3[,which(chCol)], nrow=nrow(mat), dimnames=list(rownames(mat2), colnames(mat2)[which(chCol)]))  # trim
+                if(!all(chCol)) mat3 <- mat3[,which(chCol), drop=FALSE]   # trim
                 ref3 <- rmEnumeratorName(ref, nameEnum=c("","Number","No","#","Replicate","Sample","Speciem"), sepEnum=c(" ","-","_"), newSep="_No", incl=c("anyCase","trim1"), silent=debug, debug=debug, callFrom=fxNa)
                 chDir <- apply(mat3, 2, match, ref3)
                 chMa <- apply(chDir, 2, function(x) all(1:nrow(mat) %in% x, na.rm=TRUE))
@@ -159,7 +165,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
                 if(any(chMa)) {
                   goodCol <- which(chMa)[1]
                   if(debug) message(fxNa,"Found good hit by using column '",names(goodCol),"'  ie ",pasteC(utils::head(mat2[,goodCol]))," ...")
-                  out <- if(addRef) cbind(mat[chDir[,goodCol],], ref=ref) else mat[chDir[,goodCol],]
+                  out <- if(addRef) cbind(mat[chDir[,goodCol],, drop=FALSE], ref=ref) else mat[chDir[,goodCol],, drop=FALSE]
                   msgM <- "Match after harmonizing enumerators (& trimming redundant text)"
                   if(debug) {message(fxNa,"mMLR5c"); mMLR5c <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat3=mat2,chCol=chCol) }
                 } else {
@@ -183,10 +189,10 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
                 chRL <- sapply(chRev, sapply, length)       # number of grp hits
                 ch1 <- (if(ncol(mat) >1) colSums(chRL ==1) else sum(chRL==1)) ==length(ref)
                 if(any(ch1)) { newOr <- if(is.list(chRev)) order(unlist(chRev[[which(ch1)[1]]], use.names=FALSE)) else chRev[,which(ch1)[1]]         # new order for mat
-                  if(debug) {message(fxNa,"mMLR6"); mMLR6=list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chRev=chRev,chRL=chRL,ch1=ch1) }
-                  out <- cbind(if(any(dim(mat)==1, length(newOr)==1)) matrix(mat[newOr,], ncol=ncol(mat), dimnames=list(rownames(mat)[newOr], colnames(mat))) else mat[newOr,],
-                    if(any(dim(matElim)==1, length(newOr)==1)) matrix(matElim[newOr,], ncol=ncol(matElim), dimnames=list(rownames(matElim)[newOr], colnames(matElim))) else matElim[newOr,])
-                  if(length(matElim) >0) out <- out[,match(names(chIdenCol), colnames(out))]   # adjust init col-order
+                  if(debug) {message(fxNa,"mMLR6"); mMLR6 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chRev=chRev,chRL=chRL,ch1=ch1) }
+                  out <- cbind(if(any(dim(mat)==1, length(newOr)==1)) matrix(mat[newOr,], ncol=ncol(mat), dimnames=list(rownames(mat)[newOr], colnames(mat))) else mat[newOr,, drop=FALSE],
+                    if(any(dim(matElim)==1, length(newOr)==1)) matrix(matElim[newOr,], ncol=ncol(matElim), dimnames=list(rownames(matElim)[newOr], colnames(matElim))) else matElim[newOr,, drop=FALSE])
+                  if(length(matElim) >0) out <- out[,match(names(chIdenCol), colnames(out)), drop=FALSE]   # adjust init col-order
                   if(addRef) out <- cbind(out, ref=ref)
                   byCol <- which(ch1)[1]
                   msgM <- "Reverse grep after trimming redundant text"
@@ -197,7 +203,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
         }
       }  
       if(debug) {message(fxNa,"mMLR7"); mMLR7 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
-      if(length(msg) >0 && !silent) message(fxNa,msg,"!  Returning NULL")
+      if(length(msg) >0 && !silent) message(fxNa, msg,"!  Returning NULL")
       if(debug && length(newOr) >0) message(fxNa,"Successfully found new order by ",msgM," : ",pasteC(newOr, quoteC="'"))
     }
   }

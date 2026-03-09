@@ -2,9 +2,16 @@
 % Please edit documentation in R/presenceGrpFilt.R
 \name{presenceGrpFilt}
 \alias{presenceGrpFilt}
-\title{Filter for each group of columns for sufficient data as non-NA}
+\title{Filter For Each Group Of Columns For Sufficient Data As Non-NA}
 \usage{
-presenceGrpFilt(dat, grp, presThr = 0.75, silent = FALSE, callFrom = NULL)
+presenceGrpFilt(
+  dat,
+  grp,
+  presThr = 0.75,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix or data.frame (abundance or expression-values which may contain some \code{NA}s).}
@@ -14,6 +21,8 @@ presenceGrpFilt(dat, grp, presThr = 0.75, silent = FALSE, callFrom = NULL)
 \item{presThr}{(numeric) min ratio of non- \code{NA} values (per group) for returning a given line & group as  \code{TRUE}}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

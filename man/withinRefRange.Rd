@@ -2,9 +2,18 @@
 % Please edit documentation in R/withinRefRange.R
 \name{withinRefRange}
 \alias{withinRefRange}
-\title{Check for values within range of reference}
+\title{Check For Values Within Range Of Reference}
 \usage{
-withinRefRange(x, fa, ref = NULL, absRef = TRUE, asInd = FALSE)
+withinRefRange(
+  x,
+  fa,
+  ref = NULL,
+  absRef = TRUE,
+  asInd = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{matrix or data.frame}
@@ -16,12 +25,18 @@ withinRefRange(x, fa, ref = NULL, absRef = TRUE, asInd = FALSE)
 \item{absRef}{(logical) return result as absolute or relative to 'x'(ie fa*ref)}
 
 \item{asInd}{(logical) if TRUE return index of which values of 'x' are within range, otherwise return values if 'x' within range}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-numeric vector (containing only the values within range of reference)
+This function returns a numeric vector containing only the values within range of reference
 }
 \description{
-\code{withinRefRange} checks which values of numeric vector 'x' are within range +/- 'fa' x 'ref' (ie within range of reference).
+This function checks which values of numeric vector 'x' are within range +/- 'fa' x 'ref' (ie within range of reference).
 }
 \examples{
 ## within 2.5 +/- 0.7

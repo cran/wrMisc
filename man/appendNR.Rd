@@ -4,7 +4,14 @@
 \alias{appendNR}
 \title{Append vectors or lists, without duplcating common elements}
 \usage{
-appendNR(x, y, rmDuplicate = TRUE, silent = FALSE, callFrom = NULL)
+appendNR(
+  x,
+  y,
+  rmDuplicate = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(vector or list) must have names to allow checking for duplicate names in y}
@@ -14,6 +21,8 @@ appendNR(x, y, rmDuplicate = TRUE, silent = FALSE, callFrom = NULL)
 \item{rmDuplicate}{(logical) avoid duplicating liste-elements present in both x and y (based on names of list-elements)}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }

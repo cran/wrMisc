@@ -2,22 +2,24 @@
 % Please edit documentation in R/extractLast2numericParts.R
 \name{extractLast2numericParts}
 \alias{extractLast2numericParts}
-\title{Extract last two numeric parts from character vector}
+\title{Extract Last Two Numeric Parts From Character Vector}
 \usage{
-extractLast2numericParts(x, silent = FALSE, callFrom = NULL)
+extractLast2numericParts(x, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{x}{main character input}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-(numeric) matrix with 2 columns (eg from initial concatenated coordinates)
+This function returns a (numeric) matrix with 2 columns (eg from initial concatenated coordinates)
 }
 \description{
-\code{extractLast2numericParts} extracts last 2 (integer) numeric parts between punctuations out of character vector 'x'.
+This function extracts last 2 (integer) numeric parts between punctuations out of character vector 'x'.
 Runs faster than \code{gregexpr} .
 Note: won't work correctly with decimals or exponential signs !! (such characters will be considered as punctuation, ie as separator)
 }

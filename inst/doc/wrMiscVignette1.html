@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2025-06-17" />
+<meta name="date" content="2026-03-03" />
 
 <title>Getting started with wrMisc</title>
 
@@ -62,7 +62,7 @@ ul.task-list{list-style: none;}
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2025-06-17</h4>
+<h4 class="date">2026-03-03</h4>
 
 
 <div id="TOC">
@@ -295,6 +295,7 @@ Plot</a></li>
 <li><a href="#writing-compact-dates-more-options" id="toc-writing-compact-dates-more-options">Writing Compact Dates (more
 options …)</a></li>
 </ul></li>
+<li><a href="#acknowledgements" id="toc-acknowledgements">Acknowledgements</a></li>
 <li><a href="#session-info" id="toc-session-info">Session-Info</a></li>
 </ul>
 </div>
@@ -362,7 +363,7 @@ library(&quot;knitr&quot;)
 
 ## This is &#39;wrMisc&#39; version number :
 packageVersion(&quot;wrMisc&quot;)</code></pre>
-<pre><code>## [1] &#39;1.15.4&#39;</code></pre>
+<pre><code>## [1] &#39;2.0.0&#39;</code></pre>
 </div>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
@@ -415,10 +416,10 @@ row:</p>
 <pre><code>## [1] 0.2583693 0.2426026 0.2477899 0.3089102 0.2307722 0.3124493</code></pre>
 <pre class="r"><code>system.time(sd1 &lt;- rowSds(dat1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.00    0.00    0.01</code></pre>
+##    0.00    0.00    0.02</code></pre>
 <pre class="r"><code>system.time(sd2 &lt;- apply(dat1, 1, sd))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.03    0.00    0.03</code></pre>
+##    0.01    0.00    0.01</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em>
 will run much slower compared to <code>rowSds</code>.</p>
 <p>Note, there is a minor issue with rounding :</p>
@@ -431,10 +432,10 @@ ie sd / mean, see also <a href="https://en.wikipedia.org/wiki/Coefficient_of_var
 for every row using <code>rowCVs</code> :</p>
 <pre class="r"><code>system.time(cv1 &lt;- rowCVs(dat1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.01    0.00    0.00</code></pre>
+##       0       0       0</code></pre>
 <pre class="r"><code>system.time(cv2 &lt;- apply(dat1, 1, sd) / rowMeans(dat1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.04    0.00    0.05</code></pre>
+##    0.03    0.00    0.01</code></pre>
 <pre class="r"><code># typically the calculation using rowCVs is much faster
 head(cv1)</code></pre>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -457,7 +458,7 @@ grp1</code></pre>
 <pre class="r"><code>## the mean for each group and row
 system.time(mean1Gr &lt;- rowGrpMeans(dat1, grp1))</code></pre>
 <pre><code>##    user  system elapsed 
-##       0       0       0</code></pre>
+##    0.02    0.00    0.01</code></pre>
 <pre class="r"><code>## Now the sd for each row and group
 system.time(sd1Gr &lt;- rowGrpSds(dat1, grp1))</code></pre>
 <pre><code>##    user  system elapsed 
@@ -705,7 +706,7 @@ are present in both lists and thus will appear twice. The function
 <code>appendNR()</code> allows to checking if some list-elements will
 appear twice, and thus avoid such duplicate entries.</p>
 <pre class="r"><code>appendNR(li1, li2)</code></pre>
-<pre><code>## appendNR :  adding 2 new names/elements (1 already present)</code></pre>
+<pre><code>## appendNR : Adding 2 new names/elements (1 already present)</code></pre>
 <pre><code>## $a
 ## [1] 1
 ## 
@@ -757,6 +758,26 @@ lrbind(lst2)</code></pre>
 ## f 16 24 32
 ## g 17 25 33
 ## h 18 26 34</code></pre>
+<div id="cbind-on-lists" class="section level4">
+<h4>cbind On Lists</h4>
+<p>In order to combine list-elements into a data.frame (or matrix), base
+R can do the job - as long as there is no problem with the number of
+rows.</p>
+<pre class="r"><code>li2 &lt;- list(a=11:13, b=matrix(21:26, nc=2, dimnames=list(letters[11:13],c(&quot;B&quot;,&quot;C&quot;))), data.frame(d=41:43, e=51:53) )
+
+## cbind like (to data.frame) 
+as.data.frame(li2) </code></pre>
+<pre><code>##    a b.B b.C  d  e
+## k 11  21  24 41 51
+## l 12  22  25 42 52
+## m 13  23  26 43 53</code></pre>
+<pre class="r"><code>## cbind like and convert into matrix (as long as all data are of same type, ie here all numeric)
+as.matrix(as.data.frame(li2)) </code></pre>
+<pre><code>##    a b.B b.C  d  e
+## k 11  21  24 41 51
+## l 12  22  25 42 52
+## m 13  23  26 43 53</code></pre>
+</div>
 </div>
 <div id="merge-multiple-matrices-from-list" class="section level3">
 <h3>Merge Multiple Matrices From List</h3>
@@ -1356,8 +1377,8 @@ be done using <code>cbindNR()</code> :</p>
 ## 2 12 14 16</code></pre>
 <pre class="r"><code>## now we can join 2 or more matrixes  
 cbindNR(ma1, ma2, summarizeAs=&quot;mean&quot;)       # average of both columns &#39;C&#39;</code></pre>
-<pre><code>## cbindNR :  treating 5 different (types of) columns : C B A D E</code></pre>
-<pre><code>## cbindNR :   sorting columns of output</code></pre>
+<pre><code>## cbindNR : Treating 5 different (types of) columns : C B A D E</code></pre>
+<pre><code>## cbindNR :   Sorting columns of output</code></pre>
 <pre><code>##   A B C  D  E
 ## 1 5 3 6 13 15
 ## 2 6 4 7 14 16</code></pre>
@@ -2200,13 +2221,8 @@ number 3 of ‘aA’ (=13) now occur multiple times…</p>
 ## [6,]       6   86 16       7   97 15.7       0.3   19108.0      3     0     0
 ## [7,]       6   86 16       5   95 15.9       0.1    6289.3      3     1     1
 ## [8,]       6   86 16       1   91 16.2      -0.2  -12346.0      3     0     0</code></pre>
-<pre class="r"><code>(maAa &lt;- closeMatchMatrix(cloMa, cbind(aA,valA=81:87), cC, lim=FALSE, deb=TRUE))  #</code></pre>
-<pre><code>## closeMatchMatrix : .. xxidentToMatr2a</code></pre>
-<pre><code>## closeMatchMatrix : .. xxidentToMatr2c</code></pre>
+<pre class="r"><code>(maAa &lt;- closeMatchMatrix(cloMa, cbind(aA,valA=81:87), cC, lim=FALSE))  #</code></pre>
 <pre><code>## closeMatchMatrix : Reset argument &#39;origNa&#39; to FALSE since names of &#39;predMatr&#39; and/or &#39;measMatr&#39; result of formula and would be too long</code></pre>
-<pre><code>## closeMatchMatrix : .. xxidentToMatr2d</code></pre>
-<pre><code>## closeMatchMatrix : .. xxidentToMatr2e</code></pre>
-<pre><code>## closeMatchMatrix : .. xxidentToMatr2f</code></pre>
 <pre><code>##      id.pred aA valA id.meas measMatr disToPred ppmToPred nByGrp isMin nBest
 ## [1,]       2 12   82       4     12.5      -0.5  -40000.0      1     1     1
 ## [2,]       3 13   83       4     12.5       0.5   40000.0      2     1     2
@@ -2246,7 +2262,7 @@ number 3 of ‘aA’ (=13) now occur multiple times…</p>
 ## f_2       f   86 16       o   95 15.9       0.1    6289.3      3     1     1
 ## f_3       f   86 16       k   91 16.2      -0.2  -12346.0      3     0     0</code></pre>
 <pre class="r"><code>(maA2 &lt;- closeMatchMatrix(cloM2, cbind(id=names(a2), valA=81:87,a2), cbind(id=names(c2),
-  valC=91:99,c2), colM=3, colP=3, lim=FALSE, deb=FALSE)) </code></pre>
+  valC=91:99,c2), colM=3, colP=3, lim=FALSE)) </code></pre>
 <pre><code>## closeMatchMatrix : Reset argument &#39;origNa&#39; to FALSE since names of &#39;predMatr&#39; and/or &#39;measMatr&#39; result of formula and would be too long</code></pre>
 <pre><code>##   id.pred valA a2   id.meas valC c2     disToPred             ppmToPred nByGrp
 ## b &quot;b&quot;     &quot;82&quot; &quot;12&quot; &quot;n&quot;     &quot;94&quot; &quot;12.5&quot; &quot;-0.5&quot;                &quot;-40000&quot;  &quot;1&quot;   
@@ -3257,31 +3273,34 @@ gitDataUrl(url1)</code></pre>
 <em>readSampleMetaData()</em> in <a href="https://CRAN.R-project.org/package=wrProteo">wrProteo</a>.</p>
 <pre class="r"><code>dataPxd &lt;- try(read.delim(gitDataUrl(url1), sep=&#39;\t&#39;, header=TRUE))
 str(dataPxd)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    27 obs. of  24 variables:
-##  $ source.name                          : chr  &quot;Sample 1&quot; &quot;Sample 1&quot; &quot;Sample 1&quot; &quot;Sample 2&quot; ...
-##  $ characteristics.organism.            : chr  &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; ...
-##  $ characteristics.organism.part.       : chr  &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; ...
-##  $ characteristics.disease.             : chr  &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; ...
-##  $ characteristics.cell.type.           : chr  &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; ...
-##  $ characteristics.mass.                : chr  &quot;2 mg&quot; &quot;2 mg&quot; &quot;2 mg&quot; &quot;2 mg&quot; ...
-##  $ characteristics.spiked.compound.     : chr  &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=125 amol;CN=UPS1;CV=Standards Research Group&quot; ...
-##  $ characteristics.biological.replicate.: int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ material.type                        : chr  &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; ...
-##  $ assay.name                           : chr  &quot;run 1&quot; &quot;run 2&quot; &quot;run 3&quot; &quot;run 4&quot; ...
-##  $ technology.type                      : chr  &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; ...
-##  $ comment.label.                       : chr  &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; ...
-##  $ comment.instrument.                  : chr  &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; ...
-##  $ comment.precursor.mass.tolerance.    : chr  &quot;5 ppm&quot; &quot;5 ppm&quot; &quot;5 ppm&quot; &quot;5 ppm&quot; ...
-##  $ comment.fragment.mass.tolerance.     : chr  &quot;0.8 Da&quot; &quot;0.8 Da&quot; &quot;0.8 Da&quot; &quot;0.8 Da&quot; ...
-##  $ comment.cleavage.agent.details.      : chr  &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; ...
-##  $ comment.modification.parameters.     : chr  &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; ...
-##  $ comment.modification.parameters..1   : chr  &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; ...
-##  $ comment.modification.parameters..2   : chr  &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; ...
-##  $ comment.technical.replicate.         : int  1 2 3 1 2 3 1 2 3 1 ...
-##  $ comment.fraction.identifier.         : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ comment.file.uri.                    : chr  &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R1.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R2.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R3.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_125amol_R1.raw&quot; ...
-##  $ comment.data.file.                   : chr  &quot;UPS1_12500amol_R1.raw&quot; &quot;UPS1_12500amol_R2.raw&quot; &quot;UPS1_12500amol_R3.raw&quot; &quot;UPS1_125amol_R1.raw&quot; ...
-##  $ factor.value.spiked.compound.        : chr  &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=125 amol;CN=UPS1;CV=Standards Research Group&quot; ...</code></pre>
+<pre><code>## &#39;data.frame&#39;:    27 obs. of  27 variables:
+##  $ source.name                                : chr  &quot;Sample 1&quot; &quot;Sample 1&quot; &quot;Sample 1&quot; &quot;Sample 2&quot; ...
+##  $ characteristics.organism.                  : chr  &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; ...
+##  $ characteristics.organism.part.             : chr  &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; ...
+##  $ characteristics.disease.                   : chr  &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; ...
+##  $ characteristics.cell.type.                 : chr  &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; ...
+##  $ characteristics.mass.                      : chr  &quot;2 mg&quot; &quot;2 mg&quot; &quot;2 mg&quot; &quot;2 mg&quot; ...
+##  $ characteristics.spiked.compound.           : chr  &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=125 amol;CN=UPS1;CV=Standards Research Group&quot; ...
+##  $ characteristics.biological.replicate.      : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ characteristics.material.type.             : chr  &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; ...
+##  $ assay.name                                 : chr  &quot;run 1&quot; &quot;run 2&quot; &quot;run 3&quot; &quot;run 4&quot; ...
+##  $ technology.type                            : chr  &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; ...
+##  $ comment.label.                             : chr  &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; ...
+##  $ comment.instrument.                        : chr  &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; ...
+##  $ comment.precursor.mass.tolerance.          : chr  &quot;5 ppm&quot; &quot;5 ppm&quot; &quot;5 ppm&quot; &quot;5 ppm&quot; ...
+##  $ comment.fragment.mass.tolerance.           : chr  &quot;0.8 Da&quot; &quot;0.8 Da&quot; &quot;0.8 Da&quot; &quot;0.8 Da&quot; ...
+##  $ comment.cleavage.agent.details.            : chr  &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; ...
+##  $ comment.modification.parameters.           : chr  &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; ...
+##  $ comment.modification.parameters..1         : chr  &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; ...
+##  $ comment.modification.parameters..2         : chr  &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; ...
+##  $ comment.technical.replicate.               : int  1 2 3 1 2 3 1 2 3 1 ...
+##  $ comment.fraction.identifier.               : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ comment.file.uri.                          : chr  &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R1.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R2.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R3.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_125amol_R1.raw&quot; ...
+##  $ comment.proteomics.data.acquisition.method.: chr  &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; ...
+##  $ comment.data.file.                         : chr  &quot;UPS1_12500amol_R1.raw&quot; &quot;UPS1_12500amol_R2.raw&quot; &quot;UPS1_12500amol_R3.raw&quot; &quot;UPS1_125amol_R1.raw&quot; ...
+##  $ comment.sdrf.version.                      : chr  &quot;v1.1.0&quot; &quot;v1.1.0&quot; &quot;v1.1.0&quot; &quot;v1.1.0&quot; ...
+##  $ comment.sdrf.template.                     : chr  &quot;NT=ms-proteomics;VV=v1.1.0&quot; &quot;NT=ms-proteomics;VV=v1.1.0&quot; &quot;NT=ms-proteomics;VV=v1.1.0&quot; &quot;NT=ms-proteomics;VV=v1.1.0&quot; ...
+##  $ factor.value.spiked.compound.              : chr  &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=125 amol;CN=UPS1;CV=Standards Research Group&quot; ...</code></pre>
 <hr />
 </div>
 </div>
@@ -3374,7 +3393,7 @@ dat1</code></pre>
 ## [7,]    7   15   NA   NA   NA   47   55
 ## [8,]    8   16   24   32   40   48   56</code></pre>
 <pre class="r"><code>## now let&#39;s filter
-presenceGrpFilt(dat1, gr=grp1, presThr=0.75)  # stringent</code></pre>
+presenceGrpFilt(dat1, grp=grp1, presThr=0.75)  # stringent</code></pre>
 <pre><code>##          1     2     3
 ## [1,]  TRUE  TRUE  TRUE
 ## [2,] FALSE FALSE FALSE
@@ -3384,7 +3403,17 @@ presenceGrpFilt(dat1, gr=grp1, presThr=0.75)  # stringent</code></pre>
 ## [6,] FALSE FALSE FALSE
 ## [7,]  TRUE FALSE FALSE
 ## [8,]  TRUE  TRUE  TRUE</code></pre>
-<pre class="r"><code>presenceGrpFilt(dat1, gr=grp1, presThr=0.25)  # less stringent</code></pre>
+<pre class="r"><code>presenceGrpFilt(dat1, grp=grp1, presThr=0.25)  # less stringent</code></pre>
+<pre><code>##          1     2    3
+## [1,]  TRUE  TRUE TRUE
+## [2,] FALSE FALSE TRUE
+## [3,]  TRUE FALSE TRUE
+## [4,] FALSE FALSE TRUE
+## [5,]  TRUE  TRUE TRUE
+## [6,]  TRUE FALSE TRUE
+## [7,]  TRUE FALSE TRUE
+## [8,]  TRUE  TRUE TRUE</code></pre>
+<pre class="r"><code>presenceGrpFilt(dat1, grp=grp1, presThr=0.25)  # less stringent</code></pre>
 <pre><code>##          1     2    3
 ## [1,]  TRUE  TRUE TRUE
 ## [2,] FALSE FALSE TRUE
@@ -3401,9 +3430,9 @@ presenceGrpFilt(dat1, gr=grp1, presThr=0.75)  # stringent</code></pre>
 t-tests on each line) the function <code>presenceFilt()</code> allows to
 eliminate lines containing too many <em>NA</em>-values for each
 pair-wise combination of the groups/levles.</p>
-<pre class="r"><code>presenceFilt(dat1, gr=grp1, maxGr=1, ratM=0.1)</code></pre>
-<pre><code>## presenceFilt :  correcting &#39;maxGrpMiss&#39; for group(s) 1, 2 and 3  due to ratMaxNA=0.1</code></pre>
-<pre><code>##        1-2   1-3   2-3
+<pre class="r"><code>grp2 &lt;- factor(rep(letters[4:2],c(2,2,3)))
+presenceFilt(dat1, gr=grp2, maxGr=1, ratM=0.1)</code></pre>
+<pre><code>##        b-c   b-d   c-d
 ## [1,]  TRUE  TRUE  TRUE
 ## [2,] FALSE FALSE FALSE
 ## [3,] FALSE  TRUE  TRUE
@@ -3412,17 +3441,29 @@ pair-wise combination of the groups/levles.</p>
 ## [6,] FALSE FALSE FALSE
 ## [7,]  TRUE  TRUE FALSE
 ## [8,]  TRUE  TRUE  TRUE</code></pre>
-<pre class="r"><code>presenceFilt(dat1, gr=grp1, maxGr=2, rat=0.5)</code></pre>
-<pre><code>## presenceFilt :  correcting &#39;maxGrpMiss&#39; for group(s) 1 and 2  due to ratMaxNA=0.5</code></pre>
-<pre><code>##        1-2  1-3  2-3
-## [1,]  TRUE TRUE TRUE
-## [2,] FALSE TRUE TRUE
-## [3,]  TRUE TRUE TRUE
-## [4,] FALSE TRUE TRUE
-## [5,]  TRUE TRUE TRUE
-## [6,]  TRUE TRUE TRUE
-## [7,]  TRUE TRUE TRUE
-## [8,]  TRUE TRUE TRUE</code></pre>
+<pre class="r"><code>presenceFilt(dat1, gr=grp2, maxGr=2, rat=0.5)</code></pre>
+<pre><code>##        b-c   b-d   c-d
+## [1,]  TRUE  TRUE  TRUE
+## [2,] FALSE FALSE FALSE
+## [3,]  TRUE  TRUE  TRUE
+## [4,] FALSE  TRUE  TRUE
+## [5,]  TRUE  TRUE  TRUE
+## [6,]  TRUE  TRUE FALSE
+## [7,]  TRUE  TRUE  TRUE
+## [8,]  TRUE  TRUE  TRUE</code></pre>
+<p>Here it is also possible to custom select only a few pairwise
+comparisons (when an elevated number of groups will trigger a rather
+high number of pairwise comparisons) :</p>
+<pre class="r"><code>presenceFilt(dat1, gr=grp2, useComp=c(&quot;d-c&quot;,&quot;b-d&quot;), maxGr=0, ratM=0.1)</code></pre>
+<pre><code>##        d-c   b-d
+## [1,]  TRUE  TRUE
+## [2,] FALSE FALSE
+## [3,]  TRUE  TRUE
+## [4,]  TRUE  TRUE
+## [5,]  TRUE  TRUE
+## [6,] FALSE FALSE
+## [7,] FALSE  TRUE
+## [8,]  TRUE  TRUE</code></pre>
 </div>
 <div id="cleaning-replicates" class="section level4">
 <h4>Cleaning Replicates</h4>
@@ -3741,14 +3782,14 @@ t8[6:7,3:5] &lt;- t8[6:7,3:5] +2.2                  # augment lines
 test8 &lt;- moderTestXgrp(t8, grp) 
 head(test8$p.value, n=8) </code></pre>
 <pre><code>##             A-C          A-D          C-D
-## a1 8.736828e-02 6.776543e-02 9.397304e-01
-## b1 4.384118e-01 5.400019e-01 8.205610e-01
-## c1 1.094834e-19 6.344497e-01 2.571471e-21
-## d1 2.671725e-13 9.915692e-01 2.858699e-13
-## e1 1.802454e-03 2.413137e-08 9.735465e-16
-## f1 3.188362e-01 2.527208e-32 2.226490e-22
-## g1 1.166242e-29 6.410057e-33 5.484445e-01
-## h1 1.141181e-05 1.943795e-05 5.674938e-01</code></pre>
+## a1 8.736828e-02 9.397304e-01 6.776543e-02
+## b1 4.384118e-01 8.205610e-01 5.400019e-01
+## c1 1.094834e-19 2.571471e-21 6.344497e-01
+## d1 2.671725e-13 2.858699e-13 9.915692e-01
+## e1 1.802454e-03 9.735465e-16 2.413137e-08
+## f1 3.188362e-01 2.226490e-22 2.527208e-32
+## g1 1.166242e-29 5.484445e-01 6.410057e-33
+## h1 1.141181e-05 5.674938e-01 1.943795e-05</code></pre>
 </div>
 <div id="transform-p-values-to-local-false-discovery-rate-lfdr" class="section level3">
 <h3>Transform p-values To Local False Discovery Rate (lfdr)</h3>
@@ -4330,10 +4371,10 @@ space ’ ’ (which I prefer to avoid in file-names). Please look at the
 function’s help-page for all available options.</p>
 <pre class="r"><code>## To get started
 Sys.Date()</code></pre>
-<pre><code>## [1] &quot;2025-06-17&quot;</code></pre>
+<pre><code>## [1] &quot;2026-03-03&quot;</code></pre>
 <pre class="r"><code>## Compact English names (in European order), no matter what your local settings are :
 sysDate() </code></pre>
-<pre><code>## [1] &quot;17jun25&quot;</code></pre>
+<pre><code>## [1] &quot;03mar26&quot;</code></pre>
 <p>The table below shows a number of options to write the date in
 English or using local month-names :</p>
 <pre class="r"><code>tabD &lt;- cbind(paste0(&quot;univ&quot;,1:6), c(sysDate(style=&quot;univ1&quot;), sysDate(style=&quot;univ2&quot;), 
@@ -4347,47 +4388,53 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 <tbody>
 <tr class="odd">
 <td align="left">univ1</td>
-<td align="left">17jun25</td>
+<td align="left">03mar26</td>
 <td align="left">local1</td>
-<td align="left">17jui25</td>
+<td align="left">03mar26</td>
 </tr>
 <tr class="even">
 <td align="left">univ2</td>
-<td align="left">17Jun25</td>
+<td align="left">03Mar26</td>
 <td align="left">local2</td>
-<td align="left">17Jui25</td>
+<td align="left">03Mar26</td>
 </tr>
 <tr class="odd">
 <td align="left">univ3</td>
-<td align="left">17June2025</td>
+<td align="left">03March2026</td>
 <td align="left">local3</td>
-<td align="left">17Juin2025</td>
+<td align="left">03Mars2026</td>
 </tr>
 <tr class="even">
 <td align="left">univ4</td>
-<td align="left">17june2025</td>
+<td align="left">03march2026</td>
 <td align="left">local4</td>
-<td align="left">17juin2025</td>
+<td align="left">03mars2026</td>
 </tr>
 <tr class="odd">
 <td align="left">univ5</td>
-<td align="left">2025-06-17</td>
+<td align="left">2026-03-03</td>
 <td align="left">local5</td>
-<td align="left">17-juin-2025</td>
+<td align="left">3-mars-2026</td>
 </tr>
 <tr class="even">
 <td align="left">univ6</td>
-<td align="left">2025-168</td>
+<td align="left">2026-062</td>
 <td align="left">local6</td>
-<td align="left">2025juin17</td>
+<td align="left">2026mars03</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<div id="acknowledgements" class="section level2">
+<h2>Acknowledgements</h2>
+<p>The author would like to acknowledge the support by the <a href="https://www.igbmc.fr">IGBMC</a> (CNRS UMR 7104, Inserm U 1258,
+UdS), <a href="http://www.cnrs.fr/en">CNRS</a>, <a href="https://www.unistra.fr/fr">Université de Strasbourg (UdS)</a> and
+<a href="https://www.inserm.fr">Inserm</a>.</p>
+</div>
 <div id="session-info" class="section level2">
 <h2>Session-Info</h2>
-<pre><code>## R version 4.5.0 (2025-04-11 ucrt)
+<pre><code>## R version 4.5.2 (2025-10-31 ucrt)
 ## Platform: x86_64-w64-mingw32/x64
 ## Running under: Windows 11 x64 (build 26100)
 ## 
@@ -4406,21 +4453,21 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.64.0  knitr_1.50    wrMisc_1.15.4
+## [1] limma_3.64.3 knitr_1.50   wrMisc_2.0.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.1.4        compiler_4.5.0    
-##  [5] Rcpp_1.0.14        tidyselect_1.2.1   stringr_1.5.1      dichromat_2.0-0.1 
-##  [9] jquerylib_0.1.4    splines_4.5.0      scales_1.4.0       yaml_2.3.10       
-## [13] fastmap_1.2.0      statmod_1.5.0      plyr_1.8.9         ggplot2_3.5.2     
-## [17] R6_2.6.1           BBmisc_1.13        generics_0.1.3     fdrtool_1.2.18    
-## [21] backports_1.5.0    checkmate_2.3.2    tibble_3.2.1       bslib_0.9.0       
-## [25] pillar_1.10.2      RColorBrewer_1.1-3 rlang_1.1.6        stringi_1.8.7     
-## [29] cachem_1.1.0       xfun_0.52          sass_0.4.10        wrGraph_1.3.10    
-## [33] cli_3.6.5          magrittr_2.0.3     digest_0.6.37      grid_4.5.0        
-## [37] lifecycle_1.0.4    vctrs_0.6.5        qvalue_2.40.0      evaluate_1.0.3    
-## [41] glue_1.8.0         data.table_1.17.0  farver_2.1.2       reshape2_1.4.4    
-## [45] rmarkdown_2.29     tools_4.5.0        pkgconfig_2.0.3    htmltools_0.5.8.1</code></pre>
+##  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.1.4        compiler_4.5.2    
+##  [5] Rcpp_1.1.0         tidyselect_1.2.1   stringr_1.6.0      jquerylib_0.1.4   
+##  [9] splines_4.5.2      scales_1.4.0       yaml_2.3.11        fastmap_1.2.0     
+## [13] statmod_1.5.1      plyr_1.8.9         ggplot2_4.0.1      R6_2.6.1          
+## [17] BBmisc_1.13        generics_0.1.4     fdrtool_1.2.18     backports_1.5.0   
+## [21] checkmate_2.3.3    tibble_3.3.0       bslib_0.9.0        pillar_1.11.1     
+## [25] RColorBrewer_1.1-3 rlang_1.1.6        stringi_1.8.7      cachem_1.1.0      
+## [29] xfun_0.54          sass_0.4.10        S7_0.2.1           wrGraph_1.3.11.2  
+## [33] cli_3.6.5          magrittr_2.0.4     digest_0.6.39      grid_4.5.2        
+## [37] lifecycle_1.0.4    vctrs_0.6.5        qvalue_2.40.0      evaluate_1.0.5    
+## [41] glue_1.8.0         data.table_1.17.8  farver_2.1.2       reshape2_1.4.5    
+## [45] rmarkdown_2.30     tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.8.1</code></pre>
 </div>
 
 

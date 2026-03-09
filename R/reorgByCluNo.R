@@ -8,7 +8,7 @@
 #' @param cluNo (positive integer, length to match nrow(dat) initial cluster numbers for each line of 'mat' (obtained by separate clustering or other segmentation) or may desinn column of \code{mat} to use as cluster-numbers
 #' @param useColumn (character or integer) the columns to use from \code{mat} as main data (default will use all, exept \code{cluCol} and/or \code{meanCol} if they design columns))
 #' @param meanCol (character or integer) alternative summarizing data for intra-cluster sorting (instead of geometric mean)
-#' @param addInfo (logical) allows adding of columns 'index', 'geoMean' and 'cluNo'  (or array if \code{FALSE}) 
+#' @param addInfo (logical) allows  of columns 'index', 'geoMean' and 'cluNo'  (or array if \code{FALSE}) 
 
 #' @param retList (logical) return as list of matrixes (or array if \code{FALSE}) 
 #' @param silent (logical) suppress messages

@@ -4,13 +4,19 @@
 \alias{upperMaCoord}
 \title{(upper) pairwise x,y combinations}
 \usage{
-upperMaCoord(n)
+upperMaCoord(n, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{n}{(integer) number of elements for making all pair-wise combinations}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-2-column matrix wiyh indexes for all pairwise combnations of 1:n
+This function returns a 2-column matrix wiyh indexes for all pairwise combinations of 1:n
 }
 \description{
 \code{upperMaCoord} gets pairwise combinations for 'n' elements; return matrix with x & y coordinates to form all pairwise groups for n elements.

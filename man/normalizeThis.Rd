@@ -10,7 +10,7 @@ normalizeThis(
     "slope", "twoPointSlope", "exponent", "vsn", "none", "NULL"),
   refLines = NULL,
   refGrp = NULL,
-  mode = c("proportional", "additive", "linear", "logarithmic"),
+  mode = c("proportional", "additive", "linear", "lin", "logarithmic", "log"),
   trimFa = NULL,
   minQuant = NULL,
   sparseLim = 0.4,
@@ -34,7 +34,8 @@ normalizeThis(
 \item{refGrp}{Only the columns indicated will be used as reference, default all columns (integer or colnames)}
 
 \item{mode}{(character) may be "proportional", "additive" (for log2 data);
-decide if normalization factors will be applied as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested}
+decide if normalization factors will be applied as multiplicative (proportional) or additive; for log2-omics data \code{mode="additive"} is suggested
+besides 'log' or 'logarithmic' may be used instead of 'additive'; and 'lin' or 'linear' may be used instead of 'proportional'}
 
 \item{trimFa}{(numeric, length=1) additional parameters for trimmed mean}
 
@@ -76,8 +77,9 @@ For examples samples/columns with less signal will be considered as having recei
 In consequence, a sample having received only 95% of input material is assumed to give only 95% signal intensity of what may have been expected.
 Thus, all measures will be multiplied by 1/0.95 (apr 1.053) to compensate for supposed lack of staring material.
 
-With the analysis of 'Omics'-data it is very common to work with data on log-scale.
-In this case the argument \code{mode} should be set to \code{additive}, since adding a constant factor to log-data corresponds to a multiplicative factor on regular scale
+LOG-SCALE : With the analysis of 'Omics'-data it is very common to work with data on log-scale.
+In this case the argument \code{mode} should be set to \code{additive} (or \code{log} or \code{logarithmic}).
+At normalization a constant factor will be added (or subtracted) using this mode. This corresponds to a multiplicative factor on regular scale.
 Please note that (at this point) the methods 'slope', 'exponent', 'twoPointSlope' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
 (you may look at the original documenation for more details, see \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
 

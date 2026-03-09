@@ -2,13 +2,14 @@
 % Please edit documentation in R/correctWinPath.R
 \name{correctWinPath}
 \alias{correctWinPath}
-\title{Correct mixed slash and backslash in file path}
+\title{Correct Mixed Slash And Backslash In File-Path}
 \usage{
 correctWinPath(
   x,
   asHtml = FALSE,
   anyPlatf = FALSE,
-  silent = TRUE,
+  silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -17,14 +18,16 @@ correctWinPath(
 
 \item{asHtml}{(logical) option for use in html : add prefix "file:/"}
 
-\item{anyPlatf}{(logical) if \code{TRUE}, checking will only be performed in Windows environement}
+\item{anyPlatf}{(logical, length=1) if \code{TRUE}, checking will only be performed in Windows environement}
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-character vector with corrected path
+This function returns a character vector with corrected path
 }
 \description{
 This function corrects paths character strings for mixed slash and backslash in file path.

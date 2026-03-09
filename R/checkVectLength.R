@@ -18,7 +18,7 @@ checkVectLength <- function(x, expeL=1, stopOnProblem=FALSE, silent=FALSE, debug
   msg <- " argument 'expeL' should be numeric of length 1 ; resetting to default =1"
   if(!is.finite(expeL)) {expeL <- 1; message(fxNa,msg)}
   if(length(x) != expeL) {
-    msg <- paste(" Argument '",argN,"' doesn't fit to expected length of ",expeL,sep="")
+    msg <- paste0(" Argument '",argN,"' doesn't fit to expected length of ",expeL)
     if(stopOnProblem) stop(fxNa,msg) else {if(!silent) message(fxNa,msg)} }
   }
 

@@ -4,7 +4,13 @@
 \alias{extrNumericFromMatr}
 \title{Extract numeric part of matrix or data.frame}
 \usage{
-extrNumericFromMatr(dat, trimToData = TRUE, silent = FALSE, callFrom = NULL)
+extrNumericFromMatr(
+  dat,
+  trimToData = TRUE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{matrix (or data.frame) for extracting numeric parts}
@@ -13,13 +19,15 @@ extrNumericFromMatr(dat, trimToData = TRUE, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
+\item{debug}{(logical) additional messages for debugging}
+
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-matrix of numeric data
+This function reurns a matrix of numeric data
 }
 \description{
-\code{extrNumericFromMatr} extracts numeric part of matrix or data.frame, removing remaining non-numeric elements if \code{trimToData} is set to \code{TRUE}.
+This function extracts numeric part of matrix or data.frame, removing remaining non-numeric elements if \code{trimToData} is set to \code{TRUE}.
 Note, that cropping entire lines where a (single) text element appeared may quickly reduce the overal content of the input data.
 }
 \examples{

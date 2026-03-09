@@ -1,4 +1,4 @@
-#' Match names to concatenated pairs of names   
+#' Match Names To Concatenated Pairs Of Names   
 #'
 #' @description
 #' The column-names of multiple pairwise testing contain the names of the initial groups/conditions tested, plus there is a separator (eg '-' in \code{moderTestXgrp}).  
@@ -14,6 +14,9 @@
 #' However, if the character(s) from \code{sep} do appear inside \code{grpNa} no matches will be found.
 #'
 #' If some \code{grpNa} are not found in \code{pairwNa} this will be marked as NA.  
+#' 
+#' In the most recent version the function checks also if a double version of \code{sep} may fit better to \code{grpNa}
+#' and will adjust \code{sep} accordingly (eg adjust sep='-' to '--'). 
 #'	 
 #' @param grpNa (character) the names of the groups of replicates (ie conditions) used to test
 #' @param pairwNa (character) the names of pairwise-testing (ie 'concatenated' \code{sampNa}
@@ -21,7 +24,7 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return matrix of 2 columns with inidices of \code{sampNa} with \code{pairwNa} as rows
+#' @return This function returns a matrix of 2 columns with inidices of \code{sampNa} with \code{pairwNa} as rows
 #' @seealso (for running multiple pair-wise test) \code{\link{moderTestXgrp}}, \code{\link[base]{grep}}, \code{\link[base]{strsplit}}
 #' @examples
 #' pairwNa1 <- c("abc-efg","abc-hij","efg-hij")

@@ -4,18 +4,22 @@
 \alias{replPlateCV}
 \title{CV of replicate plates (list of matrixes)}
 \usage{
-replPlateCV(lst, callFrom = NULL)
+replPlateCV(lst, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{lst}{list of matrixes : suppose lines are independent elements, colums are replicates of the 1st column. All matrixes must have same dimensions}
 
+\item{silent}{(logical) suppress messages if \code{TRUE}}
+
+\item{debug}{(logical) additional messages for debugging}
+
 \item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-matrix or array (1st dim is intraplate-position, 2nd .. plate-group/type, 3rd .. channels)
+This function returns a matrix or array (1st dim is intraplate-position, 2nd .. plate-group/type, 3rd .. channels)
 }
 \description{
-\code{replPlateCV} gets CVs of replicates from list of 2 or 3-dim arrays (where 2nd dim is replicates, 3rd dim may be channel). 
+This function calculates CVs of replicates from list of 2 or 3-dim arrays (where 2nd dim is replicates, 3rd dim may be channel). 
 Note : all list-elements of must MUST have SAME dimensions !
 When treating data from microtiter plates (eg 8x12) data are typically spread over multiple plates, ie initial matrixes that are the organized into arrays.
 Returns matrix or array (1st dim is intraplate-position, 2nd .. plate-group/type, 3rd .. channels)

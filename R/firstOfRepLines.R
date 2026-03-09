@@ -1,4 +1,4 @@
-#' Reduce to first occurance of repeated lines
+#' Reduce To First Occurance Of Repeated Lines
 #'
 #' This function concatenattes all columns of input-matrix and then searches like \code{unique} for unique elements, optionally the indexes of unique elements may get returned.
 #' Note: This function reats input as character (thus won't understand \code{10==10.0} ).
@@ -10,7 +10,7 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
+#' @return This function returns a simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
 #' @seealso  \code{\link[base]{unique}}, \code{\link{nonAmbiguousNum}}, faster than \code{\link{firstOfRepeated}} which gives more detail in output (lines/elements/indexes of omitted)
 #' @examples
 #' mat <- matrix(c("e","n","a","n","z","z","n","z","z","b", 
@@ -40,7 +40,7 @@ firstOfRepLines <- function(mat, outTy="ind", useCol=NULL, silent=FALSE, debug=F
 #' This function allows extracting NA-neighbour value
 #' @param x initial matrix to treat 
 #' @param grp (factor) grouing of replicates
-#' @return snumeric vector
+#' @return This function returns a numeric vector
 #' @seealso  \code{\link[base]{unique}}, \code{\link{nonAmbiguousNum}}, faster than \code{\link{firstOfRepeated}} which gives more detail in output (lines/elements/indexes of omitted)
 #' @examples
 #' .extrNAneighb(c(11:14,NA), rep(1,5))
@@ -60,7 +60,7 @@ firstOfRepLines <- function(mat, outTy="ind", useCol=NULL, silent=FALSE, debug=F
 #' This function allows paste columns
 #' @param mat inital matrix
 #' @param sep (character) separator
-#' @return simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
+#' @return This function returns a simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
 #' @seealso  \code{\link[base]{unique}}, \code{\link{nonAmbiguousNum}}, faster than \code{\link{firstOfRepeated}} which gives more detail in output (lines/elements/indexes of omitted)
 #' @examples
 #' .pasteCols(matrix(11:16,ncol=2), sep="_")

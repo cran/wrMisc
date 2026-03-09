@@ -2,9 +2,16 @@
 % Please edit documentation in R/nFragments.R
 \name{nFragments}
 \alias{nFragments}
-\title{Number of fragments after cut at specific character(s) within size-range}
+\title{Number Of Fragments After Cut At Specific Character(s) Within Size-range}
 \usage{
-nFragments(protSeq, cutAt, sizeRa)
+nFragments(
+  protSeq,
+  cutAt,
+  sizeRa,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{protSeq}{(character)  text to be cut}
@@ -12,12 +19,18 @@ nFragments(protSeq, cutAt, sizeRa)
 \item{cutAt}{(character) position to cut}
 
 \item{sizeRa}{(numeric,length=2) min and max size to consider}
+
+\item{silent}{(logical) suppress messages if \code{TRUE}}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-numeric vector with number of fragments for each entry 'protSeq' (names are 'protSeq')
+This function returns a numeric vector with number of fragments for each entry 'protSeq' (names are 'protSeq')
 }
 \description{
-\code{nFragments} determines number of fragments /entry within range of 'sizeRa' (numeric,length=2) when cutting after 'cutAt'
+This function determines number of fragments /entry within range of 'sizeRa' (numeric,length=2) when cutting after 'cutAt'
 }
 \examples{
 tmp <- "MSVSREDSCELDLVYVTERIIAVSFPSTANEENFRSNLREVAQMLKSKHGGNYLLFNLSERRPDITKLHAKVLEFGWPDLHTPALEKI"

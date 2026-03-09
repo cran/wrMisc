@@ -2,7 +2,7 @@
 % Please edit documentation in R/rowNormalize.R
 \name{.complCols}
 \alias{.complCols}
-\title{Search (complementing) columns for best coverage of non-NA data for rowNormalization (main)}
+\title{Search (complementing) Columns For Best Coverage Of Non-NA Data For rowNormalization (main)}
 \usage{
 .complCols(x, dat, nCombin)
 }
@@ -24,5 +24,5 @@ Context : In sparse matrix 'dat' search subsets of columns with some rows as com
 .complCols(3, dat=matrix(c(NA,12:17,NA,19),ncol=3), nCombin=3)
 }
 \seealso{
-\code{\link{rowNormalize}}
+\code{\link{rowNormalize}}; \code{\link{normalizeThis}}
 }

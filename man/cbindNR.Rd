@@ -10,6 +10,7 @@ cbindNR(
   sortOutput = TRUE,
   summarizeAs = "sum",
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -23,6 +24,8 @@ cbindNR(
 \item{summarizeAs}{(character) decide of combined values should get summed (default, 'sum') or averaged ('mean')}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }

@@ -4,17 +4,19 @@
 \alias{completeArrLst}
 \title{Complete list of arrays for same dimensions}
 \usage{
-completeArrLst(arrLst, silent = FALSE, callFrom = NULL)
+completeArrLst(arrLst, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{arrLst}{(list) list of arrays (typically 1st and 2nd dim for specific genes/objects, 3rd for different measures associated with)}
 
 \item{silent}{(logical) suppress messages}
 
+\item{debug}{(logical) additional messages for debugging}
+
 \item{callFrom}{(character) allows easier tracking of message(s) produced}
 }
 \value{
-list of arrays, now with same dimension of arrays
+This function returns a list of arrays, now with same dimension of arrays
 }
 \description{
 This functions aims to inspect repeating structues of data given as list of arrays and will try to complete 

@@ -16,7 +16,7 @@ combineReplFromListToMatr(lst, silent = FALSE, debug = FALSE, callFrom = NULL)
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-list of arrays now with same dimension of arrays (but shorter, since replicate-arrays were combined)
+This function returns a list of arrays now with same dimension of arrays (but shorter, since replicate-arrays were combined)
 }
 \description{
 Suppose multiple measures (like multiple chanels) are taken for subjects and these measures are organized as groups in a list, 

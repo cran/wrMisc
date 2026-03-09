@@ -2,20 +2,26 @@
 % Please edit documentation in R/nFragments.R
 \name{nFragments0}
 \alias{nFragments0}
-\title{Number of fragments after cut at specific character(s)}
+\title{Number Of Fragments After Cut At Specific Character(s)}
 \usage{
-nFragments0(protSeq, cutAt)
+nFragments0(protSeq, cutAt, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{protSeq}{(character) text to be cut}
 
 \item{cutAt}{(integer) position to cut}
+
+\item{silent}{(logical) suppress messages if \code{TRUE}}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-numeric vector with number of fragments for each entry 'protSeq' (names are 'protSeq')
+This function returns a numeric vector with number of fragments for each entry 'protSeq' (names are 'protSeq')
 }
 \description{
-\code{nFragments0} tells the number of fragments/entry when cutting after 'cutAt'
+This function tells the number of fragments/entry when cutting after 'cutAt'
 }
 \examples{
 tmp <- "MSVSRTMEDSCELDLVYVTERIIAVSFPSTANEENFRSNLREVAQMLKSKHGGNYLLFNLSERRPDITKLHAKVLEFGWPDLHTPALEKI" 

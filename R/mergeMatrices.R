@@ -134,8 +134,8 @@ mergeMatrixList <- function(matLst, mode="intersect", useColumn=1, na.rm=TRUE, e
 #' @param na.rm (logical) suppress \code{NA}s
 #' @param argL (list of arguments)
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of messages produced
 #' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a matrix containing all selected columns of the input matrices to fuse
 #' @seealso \code{\link{mergeMatrixList}},  \code{\link[base]{merge}},  \code{\link{mergeMatrices}} for separate entries
 #' @examples
@@ -164,10 +164,8 @@ mergeMatrixList <- function(matLst, mode="intersect", useColumn=1, na.rm=TRUE, e
     }
 
     if(debug) {message(fxNa,"mNM1"); mNM1 <- list(inpL=inpL, out=out,useColumn=useColumn,extrRowNames=extrRowNames,chLe=chLe,chDi=chDi,inpL=inpL)}
+    if(all(chLe >0) && sum(duplicated(chDi), na.rm=TRUE)==length(inpL) -1)  {   # all valid entries
 
-  if(all(chLe >0) && sum(duplicated(chDi), na.rm=TRUE)==length(inpL) -1)  {   # all valid entries
-
-    if(debug) {message(fxNa,"mNM1a") }
     ## final column-names
     useColNa <- NULL
     if(length(inpL) >1) {

@@ -1,4 +1,4 @@
-#' Filter for each group of columns for sufficient data as non-NA
+#' Filter For Each Group Of Columns For Sufficient Data As Non-NA
 #'
 #' The aim of this function is to filter for each group of columns for sufficient data as non-NA.
 #' 
@@ -14,6 +14,7 @@
 #' @param grp factor of min 2 levels describing which column of 'dat' belongs to which group (levels 1 & 2 will be used)
 #' @param presThr (numeric) min ratio of non- \code{NA} values (per group) for returning a given line & group as  \code{TRUE} 
 #' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return logical matrix (with on column for each level of \code{grp})
 #' @seealso  \code{\link{presenceFilt}}, there are also other packages totaly dedicated to filtering on CRAN and Bioconductor
@@ -33,12 +34,16 @@
 #'  (filt0c <- presenceGrpFilt(mat, rep(1:2, c(6,4)), pres=0.19))
 #'
 #' @export
-presenceGrpFilt <- function(dat, grp, presThr=0.75, silent=FALSE, callFrom=NULL) {
+presenceGrpFilt <- function(dat, grp, presThr=0.75, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## dat(matrix or data.frame)
   ## filter for each group of columns for sufficient data as non-NA
   fxNa <- .composeCallName(callFrom, newNa="presenceGrpFilt")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   if(length(grp) != ncol(dat)) stop("Number of columns of 'dat' (",ncol(dat),") does NOT match length of 'grp' (",length(grp),") !")
   if(presThr >1) { presThr <- 1; if(!silent) message(fxNa, "Argument 'presThr' may not be higher tan 1 (ie 100%), correcting")}
+  if(debug) {message(fxNa," pGF1"); pGF1 <- list(dat=dat,grp=grp,presThr=presThr)}
   ## construct unique group-names to use
   chDu <-  duplicated(grp, fromLast=FALSE)
   grpU <- if(any(chDu)) as.character(grp)[which(!chDu)] else as.character(grp)
@@ -47,3 +52,4 @@ presenceGrpFilt <- function(dat, grp, presThr=0.75, silent=FALSE, callFrom=NULL)
   for(i in 1:length(grpU)) { useCol <- which(grp ==grpU[i])
     out[,i] <- if(length(useCol) >0) {if(length(useCol) ==1) !is.na(dat[,useCol]) else rowSums(!is.na(dat[,useCol]))/length(useCol) >= presThr} else FALSE }
   out }
+  

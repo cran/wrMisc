@@ -6,7 +6,9 @@
 #' @param uniqOnly (logical) if =TRUE return unique only, if =FALSE return unique and single representative of non-unique values (with '' added to name), selection of representative of repeated: first (of sorted) or middle if >2 instances
 #' @param asList (logical) return result as list
 #' @param nameMod (character) prefix added to 1st column of 'mat' (expect 'by') for indicating non-unique/ambiguous values
-#' @param callFrom (character) allow easier tracking of message(s) produced
+#' @param debug (logical) for bug-tracking: more/enhanced messages and intermediate objects written in global name-space 
+#' @param silent (logical) suppress messages
+#' @param callFrom (character) allows easier tracking of message(s) produced
 #' @return sorted non-ambigous numeric vector (or list if 'asList'=TRUE and 'uniqOnly'=FALSE)
 #' @seealso for non-numeric use \code{\link{firstOfRepeated}} - but 1000x much slower !; \code{\link{get1stOfRepeatedByCol}}
 #' @examples
@@ -15,23 +17,23 @@
 #' head(mat2U <- nonAmbiguousMat(mat2,by="B",na="_",uniqO=FALSE),n=15)
 #' head(get1stOfRepeatedByCol(mat2,sortB="B",sortS="B"))
 #' @export
-nonAmbiguousMat <- function(mat,byCol,uniqOnly=FALSE,asList=FALSE,nameMod="amb_",callFrom=NULL) {
+nonAmbiguousMat <- function(mat, byCol, uniqOnly=FALSE, asList=FALSE, nameMod="amb_", silent=TRUE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom,newNa="nonAmbiguousMat")
-  if(is.character(byCol)) byCol <- naOmit(match(byCol,colnames(mat))) else {               # transform 'byCol' to index using match
+  if(is.character(byCol)) byCol <- naOmit(match(byCol, colnames(mat))) else {               # transform 'byCol' to index using match
     if(is.factor(byCol)) byCol <- as.numeric(as.character(byCol))}
   msg <- "Invalid 'byCol': Argument 'byCol' allows selecting one column of numeric data from 'mat', either as column-name or index"
   if(length(byCol) <1) stop(msg) else if(length(byCol) >1) {byCol <- byCol[1]; message(msg)}
-  mat <- mat[order(as.numeric(mat[,byCol]),decreasing=FALSE),]
-  y <- convToNum(mat[,byCol],remove=NULL,sciIncl=TRUE,callFrom=fxNa)
+  mat <- mat[order(as.numeric(mat[,byCol]), decreasing=FALSE),]
+  y <- convToNum(mat[,byCol], remove=NULL, sciIncl=TRUE, callFrom=fxNa)
   ab <- which(diff(y)==0)
   onlySingleLast <- FALSE
   if(length(ab) <1) return(if(asList) list(unique=mat) else mat) else {
     if(onlySingleLast) { ac <- diff(ab)
-      ac <- ab[c(which(ac >1),if(ac[length(ac)] >1) length(ab) else NULL)]}   # not yet used: only single (last) instance of repeated
+      ac <- ab[c(which(ac >1), if(ac[length(ac)] >1) length(ab) else NULL)]}   # not yet used: only single (last) instance of repeated
     nrName <- if(is.null(rownames(mat))) rownames(mat) else mat[,if(byCol==1) 2 else 1]
     nrName[c(ab,ab+1)] <- paste(nameMod,nrName[c(ab,ab+1)],sep="")
     if(is.null(rownames(mat))) mat[,if(byCol==1) 2 else 1] <- nrName else rownames(mat) <- nrName
-    out <- if(uniqOnly | asList) mat[-1*unique(sort(c(ab,ab+1))),] else NULL
-    out <- if(asList) {if(uniqOnly) list(unique=out) else list(unique=out,ambig=mat[ab,])} else {if(uniqOnly) out else mat[-ab,]}
+    out <- if(uniqOnly | asList) mat[-1*unique(sort(c(ab, ab +1))),] else NULL
+    out <- if(asList) {if(uniqOnly) list(unique=out) else list(unique=out, ambig=mat[ab,])} else {if(uniqOnly) out else mat[-ab,]}
     out } }
          

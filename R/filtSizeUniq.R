@@ -1,4 +1,4 @@
-#' Filter for unique elements
+#' Filter For UniqueElements
 #' 
 #' This function aims to identify and remove duplicated elements in a list and maintain the list-structure in the output. 
 #' \code{filtSizeUniq}  filters 'lst' (list of character-vectors or character-vector) for elements being unique (to 'ref' or if NULL to all 'lst') and of character length. 
@@ -22,7 +22,7 @@
 #' filtSizeUniq(list(A="a",B=c("b","bb","c"),D=c("dd","d","ddd","c")),ref=c(letters[c(1:26,1:3)],
 #'   "dd","dd","bb","ddd"),filtUn=TRUE,minSi=NULL)  # a,b,c,dd repeated 
 #' @export
-filtSizeUniq <- function(lst, ref=NULL, minSize=6, maxSize=36, filtUnique=TRUE, byProt=TRUE, inclEmpty=TRUE,silent=FALSE,debug=FALSE, callFrom=NULL) {
+filtSizeUniq <- function(lst, ref=NULL, minSize=6, maxSize=36, filtUnique=TRUE, byProt=TRUE, inclEmpty=TRUE, silent=FALSE,debug=FALSE, callFrom=NULL) {
   ## filter protein sequences for size/length and for unique
   fxNa <- .composeCallName(callFrom,newNa="filtSizeUniq")
   if(!isTRUE(silent)) silent <- FALSE
@@ -30,9 +30,9 @@ filtSizeUniq <- function(lst, ref=NULL, minSize=6, maxSize=36, filtUnique=TRUE, 
 
   chNa <- grep("\\.$", names(utils::head(lst)))                                   # check for attached tailing '.'
   if(!is.list(lst)) {byProt <- FALSE; inclEmpty <- FALSE}
-  if(length(chNa) <= min(2,length(lst))) names(lst) <- paste(names(lst),".",sep="")
+  if(length(chNa) <= min(2,length(lst))) names(lst) <- paste0(names(lst),".")
   pep <- unlist(lst)
-  chNa <- max(sapply(lst,length),na.rm=TRUE)
+  chNa <- max(sapply(lst,length), na.rm=TRUE)
   if(chNa >1) names(pep) <- sub("\\.$","",names(pep))                 # remove tailing '.' of names if list-element has length=1
   nPep <- length(pep)
   nAA <- nchar(pep)
@@ -62,8 +62,8 @@ filtSizeUniq <- function(lst, ref=NULL, minSize=6, maxSize=36, filtUnique=TRUE, 
     if(inclEmpty) { iniPro <- sub("\\.$","",names(lst)) 
       curPro <- names(pep) 
       newNo <- sum(!iniPro %in% curPro)
-      if(newNo >0){ pep[length(curPro)+(1:newNo)] <- lapply(1:newNo,function(x) character())
-        names(pep)[length(curPro)+(1:newNo)] <- iniPro[which(!iniPro %in% curPro)]}
+      if(newNo >0){ pep[length(curPro) +(1:newNo)] <- lapply(1:newNo,function(x) character())
+        names(pep)[length(curPro) +(1:newNo)] <- iniPro[which(!iniPro %in% curPro)]}
     }
   }
   pep }
@@ -75,7 +75,7 @@ filtSizeUniq <- function(lst, ref=NULL, minSize=6, maxSize=36, filtUnique=TRUE, 
 #' @param x main inpuy
 #' @param minSize (integer) minimum number of characters, if \code{NULL} set to 0
 #' @param maxSize (integer) maximum number of characters
-#' @return list of filtered input
+#' @return This function returns a list of filtered input
 #' @seealso \code{\link{filtSizeUniq}}; \code{\link{correctToUnique}}, \code{\link[base]{unique}}, \code{\link[base]{duplicated}}
 #' @examples
 #' aa <- 1:10

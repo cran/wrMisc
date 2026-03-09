@@ -6,10 +6,9 @@
 \usage{
 sampNoDeMArrayLM(
   MArrayObj,
-  useComp,
-  groupSep = "-",
-  lstMeans = "means",
-  lstP = c("BH", "FDR", "p.value"),
+  useComp = NULL,
+  outTy = "index",
+  groupSep = NULL,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -20,11 +19,10 @@ sampNoDeMArrayLM(
 
 \item{useComp}{(character or integer) index or name of pairwise-comparison to be addressed}
 
-\item{groupSep}{(character, length=1) separator for paitr of names}
+\item{outTy}{(character) choose if just vector of indexes or list with $ind (with \code{outTy="index"}), 
+vector of group-names (with \code{outTy="names"}) or list with $ind and $GrpNames  should get returned}
 
-\item{lstMeans}{(character, length=1) the list element containing the individual sample names, typically the matrix containing the replicate-mean values for each type of sample, the column-names get used}
-
-\item{lstP}{(character, length=1) the list element containing all pairwise comparisons performed, the column-names get used}
+\item{groupSep}{(NULL or character of length=1) separator for pair of names; if \code{NULL} a suitable separator (among '-','--','_','__','.',' ' and '  ') will be used}
 
 \item{silent}{(logical) suppress messages}
 
@@ -37,23 +35,24 @@ This function returns a numeric vector (length=2) with index indicating the colu
 }
 \description{
 When multiple series of data are tested simultaneaously (eg using \code{moderTestXgrp}), multiple pairwise comparisons get performed. 
-This function helps locating the samples, ie mean-columns, corresponding to a specific pairwise comparison.
+This function helps locating the groups of samples, eg respective mean-columns, corresponding to specific pairwise comparisons.
 }
 \details{
-As main input one gives a list or MArrayLM-object containing testing results contain the pairwise comparisons
-and a specific comparison indicated by \code{useComp} to get located in the element of mean-columns (\code{lstMeans}) among all pairwise comparisons.
+As main input one gives a list or MArrayLM-object containing testing results from pairwise comparisons,
+and specific comparisons indicated by \code{useComp} to get located in the elements of mean-columns (\code{lstMeans}).
 }
 \examples{
-grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
-set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
-  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
+grp3 <- factor(rep(LETTERS[4:2], c(2,3,3)))
+set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4), 2), ncol=8,
+  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste0(grp3,c(1:2,1:3,1:3))))
 if(requireNamespace("limma", quietly=TRUE)) {  # need limma installed...
-  test8 <- moderTestXgrp(t8, grp) 
+  test8 <- moderTestXgrp(t8, grp3) 
   head(test8$p.value)         # all pairwise comparisons available
-  sampNoDeMArrayLM(test8,1)
-  head(test8$means[,sampNoDeMArrayLM(test8,1)])
-  head(test8$means[,sampNoDeMArrayLM(test8,"C-D")]) }
-
+  sampNoDeMArrayLM(test8, 1)   
+  unique(grp3)[sampNoDeMArrayLM(test8, 1)]
+  head(test8$means[,sampNoDeMArrayLM(test8, 1)])
+  head(test8$means[,sampNoDeMArrayLM(test8, "C-D")]) }
+ 
 }
 \seealso{
 \code{\link{moderTestXgrp}}, this function gets used eg in \code{\link[wrGraph]{MAplotW}} or \code{\link[wrGraph]{VolcanoPlotW}}

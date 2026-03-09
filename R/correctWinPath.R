@@ -1,4 +1,4 @@
-#' Correct mixed slash and backslash in file path
+#' Correct Mixed Slash And Backslash In File-Path
 #'
 #' @description
 #' This function corrects paths character strings for mixed slash and backslash in file path.
@@ -8,24 +8,27 @@
 #'	 
 #' @param x (character) input path to test and correct
 #' @param asHtml (logical) option for use in html : add prefix "file:/" 
-#' @param anyPlatf (logical) if \code{TRUE}, checking will only be performed in Windows environement
+#' @param anyPlatf (logical, length=1) if \code{TRUE}, checking will only be performed in Windows environement
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
-#' @return character vector with corrected path
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allows easier tracking of messages produced
+#' @return This function returns a character vector with corrected path
 #' @seealso \code{\link[base]{tempfile}}, \code{\link[base]{file.path}}
 #' @examples
 #' path1 <- 'D:\\temp\\Rtmp6X8/working_dir\\RtmpKC/example.txt'
 #' (path1b <- correctWinPath(path1, anyPlatf=TRUE)) 
 #' (path1h <- correctWinPath(path1, anyPlatf=TRUE, asHtml=TRUE)) 
 #' @export
-correctWinPath <- function(x, asHtml=FALSE, anyPlatf=FALSE, silent=TRUE, callFrom=NULL) {
+correctWinPath <- function(x, asHtml=FALSE, anyPlatf=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## correct mixed slash and backslash in file path
   fxNa <- .composeCallName(callFrom,newNa="correctWinPath")
-  if(anyPlatf | length(grep("ming.32", R.Version()$platform)) >0) {
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(anyPlatf || length(grep("ming.32", R.Version()$platform)) >0) {
     x <- gsub("\\\\","/",x)      #"
-    if(asHtml & length(grep("[[:upper:]]:", substr(x,1,2))) >0) {
-      x <- paste("file:///",x,sep="") }
+    if(asHtml && length(grep("[[:upper:]]:", substr(x,1,2))) >0) {
+      x <- paste0("file:///",x) }
   } 
-  if(asHtml & length(grep("^/",x)) >0) x <- paste("file:///", x, sep="")
+  if(asHtml && length(grep("^/",x)) >0) x <- paste0("file:///", x,)
   x } 
   

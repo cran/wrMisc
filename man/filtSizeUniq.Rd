@@ -2,7 +2,7 @@
 % Please edit documentation in R/filtSizeUniq.R
 \name{filtSizeUniq}
 \alias{filtSizeUniq}
-\title{Filter for unique elements}
+\title{Filter For UniqueElements}
 \usage{
 filtSizeUniq(
   lst,

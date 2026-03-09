@@ -8,6 +8,7 @@
 #' @param y (vector or list) must have names to allow checking for duplicate names in x
 #' @param rmDuplicate (logical) avoid duplicating liste-elements present in both x and y (based on names of list-elements)
 #' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of message(s) produced
 #' @return If both \code{x} and \code{y} are vectors, the output will be a vector, otherwise it will be a list
 #' @seealso  \code{\link[base]{append}}; \code{\link{lrbind}}
@@ -17,7 +18,7 @@
 #' appendNR(li1, li2)
 #' append(li1, li2) 
 #' @export
-appendNR <- function(x, y, rmDuplicate=TRUE, silent=FALSE, callFrom=NULL) {
+appendNR <- function(x, y, rmDuplicate=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="appendNR")
   if(!rmDuplicate | length(x) <1 | length(y) <1) { x <- append(x, y)
   } else {
@@ -25,7 +26,7 @@ appendNR <- function(x, y, rmDuplicate=TRUE, silent=FALSE, callFrom=NULL) {
     if(any(chY)) {
       xLe <- length(x)
       x <- append(x, y[which(chY)])
-      if(!silent) message(fxNa," adding ",sum(chY)," new names/elements (",sum(!chY)," already present)")
+      if(!silent) message(fxNa,"Adding ",sum(chY)," new names/elements (",sum(!chY)," already present)")
       names(x)[xLe + seq(sum(chY))] <- names(y[which(chY)]) } }
   x }  
   

@@ -2,20 +2,24 @@
 % Please edit documentation in R/nonRedundLines.R
 \name{nonRedundLines}
 \alias{nonRedundLines}
-\title{Non-redundant lines of matrix}
+\title{Non-Redundant Lines Of Matrix}
 \usage{
-nonRedundLines(dat, callFrom = NULL)
+nonRedundLines(dat, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(matrix or data.frame) main input}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages if \code{TRUE}}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-matrix (or data.frame) without repeated lines (keep 1st occurance)..
+This function returns a matrix (or data.frame) without repeated lines (keep 1st occurance)..
 }
 \description{
-\code{nonRedundLines} reduces complexity of matrix (or data.frame) if multiple consectuive (!) lines with same values.
+This function reduces complexity of matrix (or data.frame) if multiple consectuive (!) lines with same values.
 Return matrix (or data.frame) without repeated lines (keep 1st occurance)
 }
 \examples{

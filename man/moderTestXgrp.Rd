@@ -2,14 +2,16 @@
 % Please edit documentation in R/moderTestXgrp.R
 \name{moderTestXgrp}
 \alias{moderTestXgrp}
-\title{Multiple moderated pair-wise t-tests from limma}
+\title{Multiple Moderated Pairwise t-tests From limma}
 \usage{
 moderTestXgrp(
   dat,
   grp,
+  useComparison = NULL,
   limmaOutput = TRUE,
   addResults = c("lfdr", "FDR", "Mval", "means"),
   testOrientation = "=",
+  sep = NULL,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -20,12 +22,19 @@ moderTestXgrp(
 
 \item{grp}{(factor) describes column-relationship of 'dat'   (1st factor is considered as reference -> orientation of M-values !!)}
 
+\item{useComparison}{(character or matrix) optional way to indicate which pairwise comparisons should be performed; 
+if character '--' should be used to separate 2 groups out of argument 'grp' (eg 'sample--reference'), where the 2nd entity will be taken as reference;
+of course this separator should not occur in 'grp' (if present it will be automatically repaced by '__' in 'grp' );
+if the elements of 'grp' do not contain any '-' this may also be used (and will be replaced internally by '--')}
+
 \item{limmaOutput}{(logical) return full (or extended) MArrayLM-object from limma or 'FAlSE' for only the (uncorrected) p.values}
 
 \item{addResults}{(character) types of results to add besides basic limma-output, data are assumed to be log2 ! (eg "lfdr" using fdrtool-package, "FDR" or "BH" for BH-FDR, "BY" for BY-FDR, 
 "bonferroni" for Bonferroni-correction, "qValue" for lfdr by qvalue, "Mval", "means" or "nonMod" for non-moderated test and he equivaent all (other) multiple testing corrections chosen here)}
 
 \item{testOrientation}{(character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2}
+
+\item{sep}{(\code{NULL]} or character of length=1) optional custom choice for separator for column-names of pairwise comparisons, otherwise determined as charcter(-set) not occurring in \code{grp}}
 
 \item{silent}{(logical) suppress messages}
 
@@ -34,26 +43,52 @@ moderTestXgrp(
 \item{callFrom}{(character) allow easier tracking of message(s) produced}
 }
 \value{
-This function returns a limma-type MA-object (list)
+This function returns a limma-type MA-object (list), or when problems are encountered \code{NULL}
 }
 \description{
-Runs all pair-wise combinations of moderated t-tests from package 'limma' on each line of data against 1st group from 'grp'.
+This function runs (selected or all) pairwise combinations of moderated t-tests from package 'limma' on each line of data against.
 Note: This function requires the package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} from bioconductor. 
-The limma contrast-matrix has to be read by column, the lines in the contrast-matrix containing '+1' will be compared to the '-1' lines, eg grpA-grpB .
+   The limma contrast-matrix has to be read by column, the lines in the contrast-matrix containing '+1' will be compared to the '-1' lines, eg grpA-grpB .
+}
+\details{
+When multiple pairwise comparisons will be run, first a global linear model will be estimated and the particular pairwise comparisons will then be performed using a contrast-matrix.
+This process is described with the bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} which is used underneith.
+
+By default (no \code{useComparison} given) all possible pairwise comparisons will be run using 1st group from 'grp' as reference. 
+Besides, it is also possible to custom choose which comparisons should be run (and which order of sample/reference) via the argument \code{useComparison} using
+the character vector '--' as separator for the two groups of samples (referring to argument \code{grp}) to be compared.
+This will be interpreted as 'sample--reference' (additional space around the separator, if present, will be removed), thus the second element will be used as reference. 
+Furthermore, the argument \code{useComparison} may be a matrix of 2 columns (for sample and reference) where each line represents a pairwise comparison that should be run.  
+
+As effort for compatibility to previous versions and compatibility to standard writing in limma the group-separator '-' in \code{useComparison} has limited support : 
+This (single character) separator will be internally converted to '--' and in absence of '-' in argument \code{grp}, output will have the initial  (single character) separator '-'.
+
+Concerning the separator used when reporting results for pairwise comparisons :
+If argument \code{grp} contains any '-', comparisons of groups will always (!) get reported using '--' as separator to avoid any confusion.
+In case \code{useComparison} is a matrix, the reported comparisons will have '-' if \code{grp} does not contain as well any '-', otherwise '--' will be used 
+(to support compatibility with results from limma).
+
+Please note, that in the output of this function the Benjamini-Hochberg adjusted p-values are called 'FDR' (see argument \code{addResults}).
 }
 \examples{
-grp <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
+grp3 <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
 set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
-  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste(grp,c(1:2,1:3,1:3),sep="")))
+  dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste0(grp3, c(1:2,1:3,1:3))))
 t8[3:6,1:2] <- t8[3:6,1:2] +3                    # augment lines 3:6 (c-f) 
 t8[5:8,c(1:2,6:8)] <- t8[5:8,c(1:2,6:8)] -1.5    # lower lines 
 t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines 
 ## expect to find C/A in c,d,g, (h)
 ## expect to find C/D in c,d,e,f
 ## expect to find A/D in f,g,(h) 
-test8 <- moderTestXgrp(t8, grp) 
-# If you have limma installed we can now see further
-if("list" \%in\% mode(test8)) head(test8$p.value, n=8)
+test8 <- moderTestXgrp(t8, grp3) 
+
+## Custom choice of what to compare
+test8b <- moderTestXgrp(t8, grp3, useComparison="D-A") 
+head(test8b$FDR)
+head(test8b$Mval)
+## One can also use functions from package limma to see more
+library(limma)
+topTable(test8b, n=5)
 }
 \seealso{
 \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}

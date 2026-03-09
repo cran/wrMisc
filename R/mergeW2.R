@@ -32,12 +32,12 @@
 #'   t1; t2; t3;  cbind(t1,t2)
 #' mergeW2(Mval=t1,p.value=t2,debug=FALSE)
 #' @export
-mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesLst=NULL,noMatchPursue=TRUE,standColNa=FALSE,
-  lastOfMultCols=c("p.value","Lfdr"),duplTxtSep="_",silent=FALSE,debug=FALSE,callFrom=NULL){
+mergeW2 <- function(..., nonRedundID=TRUE, convertDF=TRUE, selMerg=TRUE, inputNamesLst=NULL, noMatchPursue=TRUE, standColNa=FALSE,
+  lastOfMultCols=c("p.value","Lfdr"), duplTxtSep="_", silent=FALSE, debug=FALSE, callFrom=NULL){
   inp <- list(...)
   out = NULL
   chAnnCol <- c("mouseOver","link","uniqUniprot","Uniprot","firstOfMultUnipr","combUnipr","custMouOv","customMouseOver") # colnames in MArrayLM$annot to extract
-  chInp <- if(is.list(inputNamesLst) & length(inputNamesLst)>1) inputNamesLst else {    # names of list-elements to allowed to extract
+  chInp <- if(is.list(inputNamesLst) && length(inputNamesLst)>1) inputNamesLst else {    # names of list-elements to allowed to extract
     list(Mvalue=c("Mvalue","Mval","M.value","M.val","Mv","M"),
     Avalue=c("Avalue","Aval","Amean","A.value","A.val","Av","A"),
     Amatr=c("Amatrix","Amatri","Amatr","Amat","Ama","Am","A.matrix","A.matr","A.mat","A.m"),
@@ -79,13 +79,13 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
     names(inp) <- names(tmp)[useMaEl]
     if(length(inp2) >0) { for(i in names(inp2)) inp[[i]] <- inp2[[i]]           # (re)inject information given besides MArrayLM (replacing) 
       useMaEl <- naOmit(match(names(chInp),names(tmp)))                        # update
-      if(!silent) message(fxNa," adding ",length(inp2)," non MArrayLM objects: ",pasteC(names(inp2),quoteC="'"))}
+      if(!silent) message(fxNa,"Adding ",length(inp2)," non MArrayLM objects: ",pasteC(names(inp2),quoteC="'"))}
     ## ++ need to specify which question (MAarray may contain results for multiple comparisons !!)
     ## immediately pick relevant cols and rename p.value  & Lfdr & annot ??
     colNa <- lapply(inp,colnames)
     rmIntercept <- TRUE                                                               ## <<== supl parameter ??
     exclNa  <- "(Intercept)"
-    if(any(unlist(colNa) %in% exclNa) & rmIntercept) {                          # ready to remove cols names "(Intercept)"
+    if(any(unlist(colNa) %in% exclNa) && rmIntercept) {                          # ready to remove cols names "(Intercept)"
       useEl <- which(sapply(colNa,function(x) any(x %in% exclNa)))
       if(length(useEl) >0) for(i in useEl) {
         useCo <- which(!colnames(inp[[i]]) %in% exclNa)
@@ -101,7 +101,7 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
     cheCla <- sapply(inp,class)                                                 # update
   } else {
     if(debug) message(fxNa,"No 'MArrayLM'-object; eximine ",length(inp)," elements (",pasteC(names(inp),quoteC="'"),")")
-    if(is.list(inp) & length(inp)==1) {inp <- inp[[1]]; cheCla <- sapply(inp,class) }}
+    if(is.list(inp) && length(inp)==1) {inp <- inp[[1]]; cheCla <- sapply(inp,class) }}
   ##
   if(debug) message(fxNa,"Examine ",length(inp)," elements (",pasteC(names(inp),quoteC="'"),")")
   if(any(sapply(inp,length) <1)) {                                             ## remove empty elements
@@ -146,7 +146,7 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
   msg <- c("Potential trouble ahead, "," colnames !")
   if(any(nchar(unlist(colNa)) <1) & !silent) message(fxNa,msg[1],sum(nchar(unlist(colNa)) <1)," missing",msg[2])
   n2 <- c(length(unique(unlist(colNa))), length(unlist(colNa)))
-  if(n2[2] > n2[1] & !silent) message(fxNa,msg[1], n2[2]-n2[1]," non-unique",msg[2])
+  if(n2[2] > n2[1] && !silent) message(fxNa,msg[1], n2[2]-n2[1]," non-unique",msg[2])
   ## option: extract only last of multiple Cols (for p.value, ...)
   renameSingToStd <- TRUE
   lastOfMultCols <- names(inp)[which(stdInpNa %in% .convertNa(lastOfMultCols,chInp))]
@@ -173,46 +173,46 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
     } }
   ##
   ##  ++  main joining  ++
-  chNaLe <- sapply(inp,function(x) c(le=nrow(x),leNa=length(rownames(x)),nrNa=length(unique(rownames(x)))))       # each elem of 'inp' .. separ col
-  chNaLe <- rbind(chNaLe,nFound=rep(NA,ncol(chNaLe)))
+  chNaLe <- sapply(inp, function(x) c(le=nrow(x), leNa=length(rownames(x)), nrNa=length(unique(rownames(x)))))       # each elem of 'inp' .. separ col
+  chNaLe <- rbind(chNaLe, nFound=rep(NA,ncol(chNaLe)))
   for(i in 2:length(inp)) chNaLe[4,i] <- sum(rownames(inp[[i-1]]) %in% rownames(inp[[i]]))    # number of names matching to Mval
   ## look for unique (row)names
-  useCol4na <- chNaLe[2,-1]==chNaLe[1,1] & chNaLe[3,-1] >1                    # same length and >1 non-red names
-  if(sum(useCol4na) >1) useCol4na[-1*which.max(chNaLe[3,1+useCol4na])] <- FALSE   # for multiple potent names choose one with highest non-red
+  useCol4na <- chNaLe[2,-1]==chNaLe[1,1] && chNaLe[3,-1] >1                    # same length and >1 non-red names
+  if(sum(useCol4na) >1) useCol4na[-1*which.max(chNaLe[3, 1+useCol4na])] <- FALSE   # for multiple potent names choose one with highest non-red
   nRedID <- if(chNaLe[1,1] >0) rownames(inp[[1]]) else {
-    if(any(useCol4na)) rownames(inp[[which.max(useCol4na)+1]]) else 1:nrow(inp[[1]])}  # if names exist in Mval -> priority, else best of same le
-  if(!is.null(nRedID)) nRedID <- treatTxtDuplicates(nRedID,sep=duplTxtSep,onlyCorrectToUnique=TRUE,callFrom=fxNa)          # warning if NULL
+    if(any(useCol4na)) rownames(inp[[which.max(useCol4na) +1]]) else 1:nrow(inp[[1]])}  # if names exist in Mval -> priority, else best of same le
+  if(!is.null(nRedID)) nRedID <- treatTxtDuplicates(nRedID, sep=duplTxtSep, onlyCorrectToUnique=TRUE, callFrom=fxNa)          # warning if NULL
   ## check for identical rownames between elements to combine (cbind/merge)
   ## special case : search for annot (last element) with non-matching names but matching 1st col -> rename colnames of annot to allow simple merging
   compLastNa <- if(names(inp)[length(inp)] %in% chInp[[length(chInp)]]) {       # check if last of 'inp' in last group of 'chInp' present, ie annot
-     if(!identical(rownames(inp)[[length(inp)]],rownames(inp[[1]])) & any(all(inp[[length(inp)]][,1]==rownames(inp[[1]])),all(
+     if(!identical(rownames(inp)[[length(inp)]],rownames(inp[[1]])) && any(all(inp[[length(inp)]][,1]==rownames(inp[[1]])),all(
        inp[[length(inp)]][,1] ==gsub("\\+","; ",rownames(inp[[1]]))))) TRUE else FALSE} else FALSE
   if(compLastNa) rownames(inp[[length(inp)]]) <- rownames(inp[[1]])
   inpNa <- lapply(inp,rownames)
   chConNi <- cbind(idNa=sapply(inpNa[-1],function(x) all(x==inpNa[[1]])),
-    noNaButEqLi=sapply(inp[-1], function(x) length(rownames(x)) <1 & nrow(x)==nrow(inp[[1]])),
-    partNa=sapply(inpNa[-1],function(x) if(length(x)>0) sum(x %in% rownames(inp[[1]]),na.rm=TRUE) >0 else FALSE),
-    hasNaButNoMatch=sapply(inpNa[-1],function(x) length(x) >0 & length(x)==nrow(inp[[1]]) & all(!x %in% inpNa[[1]])))
-  if(any(chConNi[,2]) & !silent) message(fxNa,"No (row)names found in ",pasteC(names(inp)[which(chConNi[,2])+1],quoteC="'"),
+    noNaButEqLi=sapply(inp[-1], function(x) length(rownames(x)) <1 && nrow(x)==nrow(inp[[1]])),
+    partNa=sapply(inpNa[-1],function(x) if(length(x) >0) sum(x %in% rownames(inp[[1]]),na.rm=TRUE) >0 else FALSE),
+    hasNaButNoMatch=sapply(inpNa[-1],function(x) length(x) >0 & length(x)==nrow(inp[[1]]) && all(!x %in% inpNa[[1]])))
+  if(any(chConNi[,2]) && !silent) message(fxNa,"No (row)names found in ",pasteC(names(inp)[which(chConNi[,2]) +1], quoteC="'"),
     " but presume same as '",names(inp)[1],"'")
-  if(any(chConNi[,4]) & noMatchPursue) {
+  if(any(chConNi[,4]) && noMatchPursue) {
     for(j in which(chConNi[,4])) rownames(inp[[j+1]]) <- rownames(inp[[1]])
     chConNi[which(chConNi[,4]),2] <- TRUE
     txt <- c("CAUTION: none of the (row)names in "," matching, since same length presume names of '")
     if(!silent) message(fxNa,txt[1],pasteC(names(inp)[chConNi[,4]],quoteC="'"),txt[2],names(inp)[1],"'")}
-  if(debug) {cat("Counting of matching names etc 'chConNi' :\n"); print(chConNi); cat("\n")}
+  if(debug) {message(fxNa,"Counting of matching names etc 'chConNi' :\n"); print(chConNi); }
   chConNa <- chConNi[,1] | chConNi[,2] | chConNi[,3]                  # fuse for decision cbind : all names identical or (names absent & same nrow)
   ## remove elements wo names AND different length
   if(all(!chConNa)) stop(fxNa," No arguments left for merging !?!   (check input !!)")
   if(any(!chConNa)) {
     if(!silent) message(fxNa,"Cannot figure out how to join, OMIT element(s) ",pasteC(names(inp[1+which(!chConNa)]),quoteC="'"))
-    inp <- inp[c(1,1+which(chConNa))]
-    inpNa <- lapply(inp,rownames)
-    chConNi <- cbind(idNa=sapply(inpNa[-1],function(x) identical(x,inpNa[[1]])),
-      eqNumLines= sapply(inp[-1], function(x) length(rownames(x)) <1 & nrow(x)==nrow(inp[[1]])),
+    inp <- inp[c(1, 1 +which(chConNa))]
+    inpNa <- lapply(inp, rownames)
+    chConNi <- cbind(idNa=sapply(inpNa[-1],function(x) identical(x, inpNa[[1]])),
+      eqNumLines= sapply(inp[-1], function(x) length(rownames(x)) <1 && nrow(x)==nrow(inp[[1]])),
       eqNuLinesAndNoNames=rep(NA,length(inp[-1])),                                                    
-      anyNa=sapply(inpNa[-1],function(x) if(length(x)>0) sum(x %in% rownames(inp[[1]]),na.rm=TRUE)>0 else FALSE),
-      partNa=sapply(inpNa[-1],function(x) if(length(x)>0) sum(x %in% rownames(inp[[1]]),na.rm=TRUE) <nrow(inp[[1]]) else FALSE) )
+      anyNa=sapply(inpNa[-1],function(x) if(length(x) >0) sum(x %in% rownames(inp[[1]]),na.rm=TRUE) >0 else FALSE),
+      partNa=sapply(inpNa[-1],function(x) if(length(x) >0) sum(x %in% rownames(inp[[1]]),na.rm=TRUE) <nrow(inp[[1]]) else FALSE) )
     chConNi[,"eqNuLinesAndNoNames"] <- chConNi[,"eqNumLines"] & !chConNi[,"anyNa"]  
     chConNa <- chConNi[,1] | chConNi[,2] }
   out <- inp[[1]]
@@ -238,20 +238,20 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
     ## nonunique rownames/IDs : if  in place, merge does all combinations, if used as NULL -> warning message when creating toMer;
     ##  if set how to re-integrate ??
     rownames(inp[[useEl]]) <- 1:nrow(inp[[useEl]])                                   # avoid warning in case of non-unique IDs !!
-    toMer <- data.frame(id=toMerNa,inp[[useEl]],stringsAsFactors=FALSE)
+    toMer <- data.frame(id=toMerNa, inp[[useEl]], stringsAsFactors=FALSE)
     if(selMerg) {
       if(is.null(rownames(inp[[useEl]]))) {if(nrow(toMer)==nrow(out)) { toMer[,1] <- rownames(out)
         } else stop("problem with missing names in '",names(inp)[useEl],"', no ",useEl," and different nrow !!")}
       dim0 <- dim(out)
-      out <- cbind(out,matrix(NA,nrow=nrow(out),ncol=ncol(toMer)-1,dimnames=list(NULL,colnames(toMer)[-1])))
+      out <- cbind(out, matrix(NA, nrow=nrow(out), ncol=ncol(toMer)-1, dimnames=list(NULL,colnames(toMer)[-1])))
       mat <- match(rownames(out),toMer[,1])
-      n1 <- c(length(unique(naOmit(mat))),length(naOmit(mat)))
+      n1 <- c(length(unique(naOmit(mat))), length(naOmit(mat)))
       msg <- c(" : multiple assoc for "," element(s) ","(don't know which one to choose !) ;  ","from ref not found")
-      if(n1[1] <nrow(toMer) & !silent) message(fxNa," ",names(chConNa[i]),msg[1],n1[2]-n1[1],msg[2:3], sum(is.na(mat)),msg[c(2,4)])
-      out[which(!is.na(mat)),(dim0[2]+1):ncol(out)] <- as.matrix(toMer[naOmit(mat),-1])
+      if(n1[1] <nrow(toMer) && !silent) message(fxNa," ",names(chConNa[i]), msg[1],n1[2]-n1[1],msg[2:3], sum(is.na(mat)), msg[c(2,4)])
+      out[which(!is.na(mat)),(dim0[2] +1):ncol(out)] <- as.matrix(toMer[naOmit(mat),-1])
     } else {
       ## note when using merge() : does all combinations ! (ie output will have more lines than input !!), may give warning message
-      out <- merge(data.frame(id=rownames(out),out),toMer,by="id",all.x=TRUE) }
+      out <- merge(data.frame(id=rownames(out), out),toMer, by="id", all.x=TRUE) }
   }
   ## put in order matching chInp:
   ## OK with single occurance per set of names
@@ -269,7 +269,7 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
     if(sum(!is.na(useCol)) >0) {
       tmp <- as.logical(out[,naOmit(useCol)[1]])
       if(sum(is.na(tmp)) <1) out[,naOmit(useCol)[1]] <- tmp else message(
-        fxNa," cannot figure out how to convert '",colnames(out)[naOmit(useCol)[1]],"' to logical !") }}
+        fxNa,"Cannot figure out how to convert '",colnames(out)[naOmit(useCol)[1]],"' to logical !") }}
   out }
   
 #' Convert/standardize names of 'query' to standard names from 'ref' 
@@ -293,9 +293,9 @@ mergeW2 <- function(...,nonRedundID=TRUE,convertDF=TRUE,selMerg=TRUE,inputNamesL
   if(!partMatch) { out <- apply(sapply(ref,function(x) query %in% x),1,function(y) if(any(y)) which.max(y) else NA)                    # perfect match
     out[!is.na(out)] <- names(ref)[out[!is.na(out)]]
   } else {
-    se <- sapply(ref,function(x) {unique(unlist(sapply(paste("^",x,sep=""),grep,query)))})
+    se <- sapply(ref, function(x) {unique(unlist(sapply(paste("^",x,sep=""), grep, query)))})
     out <- rep(NA,length(query))
      ##cat(" pos ",unlist(se),"  insert ",rep(names(se),sapply(se,length)),"\n")
-    out[unlist(se)] <- rep(names(se),sapply(se,length)) }  #unlist(se)  
+    out[unlist(se)] <- rep(names(se), sapply(se, length)) }  #unlist(se)  
   out }
                   

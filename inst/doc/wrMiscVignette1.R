@@ -130,6 +130,15 @@ lst2
 # join list-elements (back) into single matrix
 lrbind(lst2)
 
+## ----lrbind2, echo=TRUE-------------------------------------------------------
+li2 <- list(a=11:13, b=matrix(21:26, nc=2, dimnames=list(letters[11:13],c("B","C"))), data.frame(d=41:43, e=51:53) )
+
+## cbind like (to data.frame) 
+as.data.frame(li2) 
+
+## cbind like and convert into matrix (as long as all data are of same type, ie here all numeric)
+as.matrix(as.data.frame(li2)) 
+
 ## ----mergeMatrixList, echo=TRUE-----------------------------------------------
 mat1 <- matrix(11:18, ncol=2, dimnames=list(letters[3:6],LETTERS[1:2]))
 mat2 <- matrix(21:28, ncol=2, dimnames=list(letters[2:5],LETTERS[3:4]))
@@ -489,13 +498,13 @@ aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.
 (maAa <- closeMatchMatrix(cloMa, aA, cC, lim=FALSE,origN=TRUE))  #
 (maAa <- closeMatchMatrix(cloMa, cbind(valA=81:87, aA), cbind(valC=91:99, cC), colM=2,
   colP=2, lim=FALSE))
-(maAa <- closeMatchMatrix(cloMa, cbind(aA,valA=81:87), cC, lim=FALSE, deb=TRUE))  #
+(maAa <- closeMatchMatrix(cloMa, cbind(aA,valA=81:87), cC, lim=FALSE))  #
 a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10 +1:length(c2)]
 (cloM2 <- findCloseMatch(x=a2, y=c2, com="diff", lim=0.5, sor=FALSE)) 
 (maA2 <- closeMatchMatrix(cloM2, predM=cbind(valA=81:87, a2),
   measM=cbind(valC=91:99, c2), colM=2, colP=2, lim=FALSE, asData=TRUE))
 (maA2 <- closeMatchMatrix(cloM2, cbind(id=names(a2), valA=81:87,a2), cbind(id=names(c2),
-  valC=91:99,c2), colM=3, colP=3, lim=FALSE, deb=FALSE)) 
+  valC=91:99,c2), colM=3, colP=3, lim=FALSE)) 
 
 ## ----findSimilFrom2sets, echo=TRUE--------------------------------------------
 aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,12.6,15.9,14.1)
@@ -777,13 +786,18 @@ grp1 <- gl(3,3)[-(3:4)]
 dat1
 
 ## now let's filter
-presenceGrpFilt(dat1, gr=grp1, presThr=0.75)  # stringent
-presenceGrpFilt(dat1, gr=grp1, presThr=0.25)  # less stringent
+presenceGrpFilt(dat1, grp=grp1, presThr=0.75)  # stringent
+presenceGrpFilt(dat1, grp=grp1, presThr=0.25)  # less stringent
 
+presenceGrpFilt(dat1, grp=grp1, presThr=0.25)  # less stringent
 
 ## ----presenceFilt, echo=TRUE--------------------------------------------------
-presenceFilt(dat1, gr=grp1, maxGr=1, ratM=0.1)
-presenceFilt(dat1, gr=grp1, maxGr=2, rat=0.5)
+grp2 <- factor(rep(letters[4:2],c(2,2,3)))
+presenceFilt(dat1, gr=grp2, maxGr=1, ratM=0.1)
+presenceFilt(dat1, gr=grp2, maxGr=2, rat=0.5)
+
+## ----presenceFilt2, echo=TRUE-------------------------------------------------
+presenceFilt(dat1, gr=grp2, useComp=c("d-c","b-d"), maxGr=0, ratM=0.1)
 
 ## ----cleanReplicates, echo=TRUE-----------------------------------------------
 

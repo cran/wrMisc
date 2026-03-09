@@ -2,7 +2,7 @@
 % Please edit documentation in R/get1stOfRepeatedByCol.R
 \name{get1stOfRepeatedByCol}
 \alias{get1stOfRepeatedByCol}
-\title{Get first of repeated by column}
+\title{Get First Of Repeated By Column}
 \usage{
 get1stOfRepeatedByCol(
   mat,

@@ -12,7 +12,7 @@
 \item{grp}{(factor) grouing of replicates}
 }
 \value{
-snumeric vector
+This function returns a numeric vector
 }
 \description{
 This function allows extracting NA-neighbour value

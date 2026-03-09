@@ -4,7 +4,14 @@
 \alias{cutToNgrp}
 \title{Cut numeric vector to n groups (ie convert to factor)}
 \usage{
-cutToNgrp(x, lev, NAuse = FALSE, callFrom = NULL)
+cutToNgrp(
+  x,
+  lev,
+  NAuse = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{numeric vector}
@@ -13,13 +20,17 @@ cutToNgrp(x, lev, NAuse = FALSE, callFrom = NULL)
 
 \item{NAuse}{(logical) include NAs as separate group}
 
-\item{callFrom}{(character) for better tracking of use of functions}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-list with \code{$grouped} telling which element of '\code{x}' goes in which group and \code{$legTxt} with gourp-borders for convenient use with legends
+This function returns a list with \code{$grouped} telling which element of '\code{x}' goes in which group and \code{$legTxt} with gourp-borders for convenient use with legends
 }
 \description{
-\code{cutToNgrp} is a more elaborate version of \code{\link[base]{cut}} for cutting a the content of a 
+This function is a more elaborate version of \code{\link[base]{cut}} for cutting a the content of a 
 numeric vector '\code{x}' into a given number of groups, taken from the length of '\code{lev}'.
 Besides, this function provides the group borders/limits for convention use with legends.
 }

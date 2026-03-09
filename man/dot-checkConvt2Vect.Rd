@@ -2,7 +2,7 @@
 % Please edit documentation in R/equLenNumber.R
 \name{.checkConvt2Vect}
 \alias{.checkConvt2Vect}
-\title{Convert to simple vector (similar to unlist)}
+\title{Convert To Simple Vector (similar to unlist)}
 \usage{
 .checkConvt2Vect(dat, toNumeric = TRUE)
 }
@@ -12,7 +12,7 @@
 \item{toNumeric}{(logical)}
 }
 \value{
-character (or numeric) vector
+This function returns a character (or numeric) vector
 }
 \description{
 This function allows converting 'dat' (may be list, data.frame etc) to simple vector, more elaborate than unlist()

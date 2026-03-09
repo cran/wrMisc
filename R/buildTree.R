@@ -23,8 +23,9 @@
 #' @export
 buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, debug=FALSE, callFrom=NULL) {
   fxNa <- .composeCallName(callFrom, newNa="buildTree")
-  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
-    if(!isTRUE(silent)) silent <- FALSE }
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   datOK <- length(disDat) >0
   if(length(dim(disDat)) <2) disDat <- matrix(disDat, nrow=1, dimnames=list("1",names(disDat))) # assume as single entry
   rowNa <- rownames(disDat)
@@ -33,6 +34,7 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
   disDat <- if(sum(is.na(chCol[1:2])) <1) {
     cbind(beg=as.integer(disDat[,chCol[1]]), end=as.numeric(disDat[,chCol[2]]))
   } else disDat <- as.matrix(disDat[,1:2])
+  if(debug) {message(fxNa,"bTr1"); bTr1 <- list(disDat=disDat,startFr=startFr,posCo=posCo,datOK=datOK,chCol=chCol,disDat=disDat)}
   rownames(disDat) <- rowNa
   chSlash <- grep("/", rownames(disDat))
   if(length(chSlash) >0) message(fxNa,"TROUBLE ahead, names of nodes should NOT contain '/' !!")
@@ -46,7 +48,8 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
   } else { datOK <- FALSE
     if(!silent) message(fxNa,"NOTE: Package 'data.tree' missing ! Please install from CRAN first .. returning NULL)")   
   }   
-
+  if(debug) {message(fxNa,"bTr2"); bTr2 <- list(disDat=disDat,startFr=startFr,posCo=posCo,datOK=datOK,chCol=chCol,disDat=disDat)}
+  
   if(datOK && requireNamespace("data.tree", quietly=TRUE)) {  
   	## main  
     ## check for dupl
@@ -117,14 +120,14 @@ buildTree <- function(disDat, startFr=NULL, posCo=c("beg","end"), silent=FALSE, 
     list(paths=out, usedNodes=sort(names(chSup)[which(!chSup)]), tree=setX ) 
   } }
 
-#' Grow tree
+#' Grow Tree
 #'
 #' This function allows growing tree-like structures (data.tree objects)
 #' 
 #' @param tm (list) main input, $disDat .. matrix with integer start & end sites for fragments; $lo (logical) which fragments may be grown; $start (integer) index for which line of $disDat to start; $it numeric version of $lo; $preN for previous tree objects towards root; $iter for iterator (starting at 1))
 #' @param setX .. data.tree object (main obj from root)
 #' @param addToObj .. data.tree object (branch on which to add new branches/nodes) 
-#' @return list
+#' @return This function returns a list
 #' @seealso  \code{\link{buildTree}}
 #' @examples
 #' .datSlope(c(3:6))

@@ -25,7 +25,7 @@ reorgByCluNo(
 
 \item{meanCol}{(character or integer) alternative summarizing data for intra-cluster sorting (instead of geometric mean)}
 
-\item{addInfo}{(logical) allows adding of columns 'index', 'geoMean' and 'cluNo'  (or array if \code{FALSE})}
+\item{addInfo}{(logical) allows  of columns 'index', 'geoMean' and 'cluNo'  (or array if \code{FALSE})}
 
 \item{retList}{(logical) return as list of matrixes (or array if \code{FALSE})}
 

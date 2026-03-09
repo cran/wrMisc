@@ -2,24 +2,30 @@
 % Please edit documentation in R/triCoord.R
 \name{triCoord}
 \alias{triCoord}
-\title{Pairwise x,y combinations}
+\title{Pairwise x,y Combinations}
 \usage{
-triCoord(n, side = "upper")
+triCoord(n, side = "upper", silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{n}{(integer) number of elements for making all pair-wise combinations}
 
 \item{side}{(character) "upper" or "lower"}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-2-column matrix wiyh indexes for all pairwise combnations of 1:n
+This function returns a 2-column matrix with indexes for all pairwise combinations of 1:n
 }
 \description{
-\code{triCoord} gets pairwise combinations for 'n' elements; returns matrix with x & y coordinates to form all pairwise groups for 1:n elements
+This function gets pairwise combinations for 'n' elements; returns matrix with x & y coordinates to form all pairwise groups for 1:n elements
 }
 \examples{
 triCoord(4)
 }
 \seealso{
-\code{\link[base]{lower.tri}} or \code{upper.tri}, simpler version \code{\link{upperMaCoord}}
+\code{\link{upperMaCoord}}, \code{\link{getPWseparator}}, \code{\link{indexGroupsFromPW}}, \code{\link{diffCombin}}; \code{\link[utils]{combn}}, \code{\link[base]{lower.tri}} or \code{upper.tri}, simpler version \code{\link{upperMaCoord}}
 }

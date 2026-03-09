@@ -2,20 +2,32 @@
 % Please edit documentation in R/rmDupl2colMatr.R
 \name{rmDupl2colMatr}
 \alias{rmDupl2colMatr}
-\title{Remove lines of matrix redundant /duplicated for 1st and 2nd column}
+\title{Remove Lines Of Matrix Redundant /Duplicated For 1st And 2nd Column}
 \usage{
-rmDupl2colMatr(mat, useCol = c(1, 2))
+rmDupl2colMatr(
+  mat,
+  useCol = c(1, 2),
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{(matrix or data.frame) main input}
 
 \item{useCol}{(integer, length=2) columns to consider/use when looking for duplicated entries}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix with duplictaed lines removed
+This function returns a matrix where duplictaed lines are removed
 }
 \description{
-\code{rmDupl2colMatr} removes lines of matrix that are redundant /duplicated for 1st and 2nd column (irrespective of content of their columns).
+This function removes lines of matrix that are redundant /duplicated for 1st and 2nd column (irrespective of content of their columns).
 The first occurance of redundant /duplicated elements is kept.
 }
 \examples{

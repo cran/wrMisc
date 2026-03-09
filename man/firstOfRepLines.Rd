@@ -2,7 +2,7 @@
 % Please edit documentation in R/firstOfRepLines.R
 \name{firstOfRepLines}
 \alias{firstOfRepLines}
-\title{Reduce to first occurance of repeated lines}
+\title{Reduce To First Occurance Of Repeated Lines}
 \usage{
 firstOfRepLines(
   mat,
@@ -27,7 +27,7 @@ firstOfRepLines(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
+This function returns a simplified/non-redundant vector/matrix (ie fewer lines for matrix), or respective index
 }
 \description{
 This function concatenattes all columns of input-matrix and then searches like \code{unique} for unique elements, optionally the indexes of unique elements may get returned.

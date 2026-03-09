@@ -2,14 +2,16 @@
 % Please edit documentation in R/presenceFilt.R
 \name{presenceFilt}
 \alias{presenceFilt}
-\title{Filter lines of matrix for max number of NAs}
+\title{Filter Lines Of Matrix For Max Number Of NAs}
 \usage{
 presenceFilt(
   dat,
   grp,
+  useComparison = NULL,
   maxGrpMiss = 1,
   ratMaxNA = 0.8,
   minVal = NULL,
+  sep = NULL,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -20,11 +22,17 @@ presenceFilt(
 
 \item{grp}{factor of min 2 levels describing which column of 'dat' belongs to which group (levels 1 & 2 will be used)}
 
+\item{useComparison}{(character or matrix) optional argument allowing to specify which pairwise comparions sould be performed, default \code{useComparison=NULL} will run all pairwise comparisons;
+may be character combining two group-names (from argument \code{grp}) separated by a '-' (eg 'A-B') or matrix where the rownames design the elements to be compared as pairwise;
+Note : the names of the groups may not contain any '-' to avoid confucing them with pairwise separators !}
+
 \item{maxGrpMiss}{(numeric) at least 1 group has not more than this number of NAs (otherwise marke line as bad)}
 
-\item{ratMaxNA}{(numeric) at least 1 group reaches this content of non-\code{NA} values}
+\item{ratMaxNA}{(numeric) at least 1 group below this content of \code{NA} values}
 
 \item{minVal}{(default NULL or numeric), any value below will be treated like \code{NA}}
+
+\item{sep}{(character) in case \code{useComparison} is not given all pairwise comparisons will be done, the separator to be used when combining names of groups can be given using this argument}
 
 \item{silent}{(logical) suppress messages}
 
@@ -33,7 +41,7 @@ presenceFilt(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-logical matrix (with separate col for each pairwise combination of 'grp' levels) indicating if line of 'dat' acceptable based on \code{NA}s (and values minVal)
+This function returns a logical matrix (with separate col for each pairwise combination of 'grp' levels) indicating if line of 'dat' acceptable based on \code{NA}s (and values minVal)
 }
 \description{
 This function produces a logical matrix to be used as filter for lines of 'dat' for sufficient presence of non-\code{NA} values (ie limit number of NAs per line). 
@@ -48,16 +56,21 @@ mat[,15] <- NA
 mat[c(2:3,9),14:15] <- NA
 mat[c(1,10),13:15] <- NA
 mat
-presenceFilt(mat ,rep(LETTERS[4:2], c(5,6,4)))
-presenceFilt(mat, rep(1:2,c(9,6)))
+presenceFilt(mat, substr(colnames(mat),1,1))
+# custom 2 groups
+presenceFilt(mat, rep(1:2,c(9,6)))         # D1- C4, C5 - B4
 
 # one more example 
 dat1 <- matrix(1:56, ncol=7)
-dat1[c(2,3,4,5,6,10,12,18,19,20,22,23,26,27,28,30,31,34,38,39,50,54)] <- NA
-dat1; presenceFilt(dat1,gr=gl(3,3)[-(3:4)], maxGr=0)
+dat1[c(2:6,10,12,18,19,20,22,23,26:28,30,31,34,38,39,50,54)] <- NA
+grp3 <- letters[c(3,3,2,2,1,1,1)]
+colnames(dat1) <- correctToUnique(grp3, sep="") 
+dat1
+## At least one group wo any NAs
+presenceFilt(dat1, grp3, maxGr=0)
 presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=1, ratM=0.1)
 presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=2, rat=0.5)
 }
 \seealso{
-\code{\link{presenceGrpFilt}},  there are also other packages totaly dedicated to filtering on CRAN and Bioconductor
+\code{\link{presenceGrpFilt}},   there are also other packages on CRAN and Bioconductor dedicated to filtering
 }

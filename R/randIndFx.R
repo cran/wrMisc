@@ -39,7 +39,7 @@ randIndFx <- function(ma, method="ARI", adjSense=TRUE, silent=FALSE, debug=FALSE
     maCo <- maCo[order(maCo[,1], maCo[,2]),]                                 # need proper order for upper.tri
     di <- try(apply(maCo, 1, function(x) flexclust::comPart(ma[x[1],],ma[x[2],], type=method)), silent=TRUE)
     if(inherits(di, "try-error")) message(fxNa,"Problem running flexclust::comPart !   class ",class(di)," mode ",mode(di)," ",di)
-    out <- matrix(NA, nrow=nrow(ma), ncol=nrow(ma), dimnames=list(rownames(ma),colnames(ma)))
+    out <- matrix(NA_real_, nrow=nrow(ma), ncol=nrow(ma), dimnames=list(rownames(ma),colnames(ma)))
     out[upper.tri(out)] <- rev(di)                    # not used any more by as.dist()
     out[lower.tri(out)] <- di
     if(adjSense){

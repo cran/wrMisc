@@ -1,4 +1,4 @@
-#' Extract just one series, ie channel, of list of arrays
+#' Extract Just One Series, ie One Channel, Of List Of Arrays
 #'
 #' This function was designed for handeling measurements stored as list of multiple arrays, like eg compound-screens using microtiter-plates where multiple parameters ('channels') 
 #' were recorded for each well (element).
@@ -9,7 +9,10 @@
 #' @param cha (integer) channel number
 #' @param na.rm (logical) default =TRUE to remove NAs
 #' @param rowSep (character) separator for rows
-#' @return list with just single channel extracted
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allows easier tracking of messages produced
+#' @return This function returns a list with just single channel extracted
 #' @seealso \code{\link[wrMisc]{organizeAsListOfRepl}}
 #' @examples
 #' arr1 <- array(1:24,dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
@@ -19,13 +22,16 @@
 #' arrL1 <- list(pl1=arr1,pl2=arr2)
 #' extr1chan(arrL1,ch=2)
 #' @export
-extr1chan <- function(arrLst,cha,na.rm=TRUE,rowSep="__"){
+extr1chan <- function(arrLst, cha, na.rm=TRUE, rowSep="__", silent=FALSE, debug=FALSE, callFrom=NULL){
+  fxNa <- .composeCallName(callFrom, newNa="extr1chan")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   ## extract single channel of list of arrays (3rd dim of each array) and return row-appended matrix
   msg <- "'cha' should be numeric of length 1"
   for(pl in 1:length(arrLst)) out <- if(pl ==1) arrLst[[pl]][,,cha] else rbind(out,arrLst[[pl]][,,cha])
   plNa <- names(arrLst)
   if(is.null(plNa)) plNa <- as.character(1:length(arrLst))
-  if(!is.null(rowSep)) rownames(out) <- paste(rep(plNa,sapply(arrLst,nrow)), rownames(out),sep=rowSep)
+  if(!is.null(rowSep)) rownames(out) <- paste(rep(plNa, sapply(arrLst,nrow)), rownames(out), sep=rowSep)
   if(na.rm) out <- out[ which(rowSums(is.na(out)) < ncol(arrLst[[1]])),]
   out }
    

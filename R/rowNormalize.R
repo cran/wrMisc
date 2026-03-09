@@ -34,9 +34,9 @@
 #' @param maxFact (numeric, length=2) max normalization factor
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
-#' @param callFrom (character) This function allows easier tracking of messages produced
+#' @param callFrom (character) allows easier tracking of messages produced
 #' @return This function returns a matrix of normalized data
-#' @seealso \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
+#' @seealso \code{\link{normalizeThis}}, \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
 #' @examples
 #' ## sparse matrix  normalization
 #' set.seed(2); AA <- matrix(rbinom(110,10,0.05), nrow=10)
@@ -50,7 +50,7 @@
 #'
 #' @export
 rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, proportMode=TRUE, minQuant=NULL, sparseLim=0.4, nCombin=3, omitNonAlignable=FALSE, maxFact=10, silent=FALSE, debug=FALSE, callFrom=NULL) {
-  ## integrate to normalizeThis ?
+  ## integrated to normalizeThis 
   ## method (character) normalization method applied to slection of complete lines from subsets of \code{nCombin} columns, sent to with normalizeThis()
   ##   however, if less than 25 common lines found "average" normalization will be used
   ## proportMode (logical) .. switch between normalizing by multiplicative (proportional) or additive factor
@@ -66,7 +66,7 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
   ## In consequence, chances of finding lines without any \code{NA} are higher when initially fewer columns (argument \code{nCombin}) are normalized first and then combined with other sets of comumns in an iterative way.
   fxNa <- .composeCallName(callFrom, newNa="rowNormalize")
   ## proportional mode : need to add small value to avoid divBy0 !
-  if(any(length(dim(dat)) !=2, dim(dat) < 2:1)) stop("Invalid argument 'dat'; must be matrix or data.frame with min 2 lines and 1 col")
+  if(length(dat) ==0 || any(length(dim(dat)) !=2, dim(dat) < 2:1)) stop("Invalid argument 'dat'; must be matrix or data.frame with min 2 lines and 1 col")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   sep <- "_"                        # separator used internally with column-numbers
@@ -87,11 +87,11 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
 
   refVal <- if(sum(!is.na(dat[refLines, refGrp])) >10) stats::median(dat[refLines, refGrp], na.rm=TRUE) else mean(dat[refLines, refGrp], na.rm=TRUE)
   if(refVal==0) refVal <- 1
-  if(debug) {message(fxNa,"  srn0b \n")}
+  if(debug) {message(fxNa,"  srn0b"); srn0b <- list(dat=dat,method=method,refLines=refLines,refGrp=refGrp,proportMode=proportMode,minQuant=minQuant,sparseLim=sparseLim,nCombin=nCombin,omitNonAlignable=omitNonAlignable, refVal=refVal)}
 
   ## may be better/faster to random-shuffle column-order of combOfN ? (allow reaching last quicker)
   chNa <- sum(is.na(dat[refLines,])) / length(dat[refLines,])   # ratio of NAs
-  if(debug) message(fxNa," Data contain ",round(100*chNa/length(dat),2),"% NA, using partial/iterative approach for sparse data")
+  if(debug) message(fxNa,"Data contain ",signif(100*chNa, 3),"% NA, using partial/iterative approach for sparse data")
   if(chNa > sparseLim) {
     if(ncol(dat) <= 9 ) {
       combOfN <- utils::combn(ncol(dat), nCombin)              # the combinations (all, ie max 126) ..
@@ -103,6 +103,7 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
       chStaSto <- staSto[,2] > ncol(dat)
       if(any(chStaSto)) staSto[which(chStaSto),] <- rep(ncol(dat) -c((nCombin-1), 0), each=sum(chStaSto))
       combOfN <- apply(staSto, 1, function(x) x[1]:x[2])
+      if(debug) {message(fxNa,"  srn0c"); srn0c <- list(dat=dat,method=method,refLines=refLines,refGrp=refGrp,proportMode=proportMode,minQuant=minQuant,sparseLim=sparseLim,nCombin=nCombin,omitNonAlignable=omitNonAlignable, refVal=refVal,combOfN=combOfN)}
       if( TRUE) {  ## large data-sets : complete by few additional cross-references
         suplGrpFac <- round(log2(ncol(dat)))           ##  used for extending consecutive splits by additional non-consecutive sets : split into x subgroups for shuffeling tsart-sites
         stepW <- c(floor(nCombin/2), ceiling(nCombin/2))
@@ -116,10 +117,11 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
         ## now filter away replicated/redundant combinations or combinations with intra-repeats (of specific cols) or combiantions suggesting col-numbers out of bound
         chDu <- duplicated(apply(combOfN, 2, function(x) paste0(sort(x), collapse=sep))) | apply(combOfN, 2, function(x) any(duplicated(x))) | apply(combOfN, 2, max) > ncol(dat)
         if(any(chDu)) combOfN <- if(sum(!chDu) >1) combOfN[,-which(chDu)] else as.matrix(combOfN[,-which(chDu)])
-        if(debug) {message("srn1"); srn1 <- list(dat=dat,combOfN=combOfN,nSeg=nSeg,sparseLim=sparseLim,refLines=refLines,refGrp=refGrp,refVal=refVal,method=method,proportMode=proportMode,sparseLim=sparseLim,nCombin=nCombin)}
-        }
+      }
+      if(debug) {message("srn1"); srn1 <- list(dat=dat,combOfN=combOfN,nSeg=nSeg,sparseLim=sparseLim,refLines=refLines,refGrp=refGrp,refVal=refVal,method=method,proportMode=proportMode,sparseLim=sparseLim,nCombin=nCombin,combOfN=combOfN)}
 
     }
+    if(debug) {message(fxNa,"  srn0c"); srn0c <- list(dat=dat,method=method,refLines=refLines,refGrp=refGrp,proportMode=proportMode,minQuant=minQuant,sparseLim=sparseLim,nCombin=nCombin,omitNonAlignable=omitNonAlignable, refVal=refVal)}
     ## sort dat ??
 
     comUse <- apply(combOfN[,], 2, function(x) which(rowSums(is.na(dat[refLines,x])) == 0) )   # index of valid/complete lines (no NA) per set of nCombin cols
@@ -151,8 +153,8 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
     if(debug) {message(fxNa," final rendering  srnG")}
     out <- dat / rep(fact, each=nrow(dat))
   } else {
-    if(debug) { message(fxNa,"This data/selection contains only few or no NAs, no need for iterative sparse alignment .. srn9a") }
-    ch1 <- colSums(!is.na(dat[refLines,]))
+    if(debug) { message(fxNa,"This data/selection contains only some/few or no NAs, no need for iterative sparse alignment .. srn9a") }
+    ch1 <- colSums(!is.na(dat[refLines,]))      # nNA per columns
     ## proportional mode : .rowNorm() adds small value to avoid divBy0 !
     if(any(ch1 ==0) && length(refLines) < nrow(dat) && omitNonAlignable && !silent) message(fxNa,"Note : ",sum(ch1 ==0)," columns are all NA when using ",length(refLines)," refLines, resuting columns will be retured as NaN")
     out <- .rowNorm(dat, refLines, method, proportMode)
@@ -166,7 +168,7 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
   out }
 
 
-#' Search (complementing) columns for best coverage of non-NA data for rowNormalization (main)
+#' Search (complementing) Columns For Best Coverage Of Non-NA Data For rowNormalization (main)
 #'
 #' This function was designed to complete the selection of columns of sparse matrix 'dat' with sets of 'nCombin' columns at complete 'coverage'
 #' Context : In sparse matrix 'dat' search subsets of columns with some rows as complete (no NA).
@@ -175,7 +177,7 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
 #' @param dat (matrix) .. init data, smay be parse matrix with numerous NA
 #' @param nCombin (integer) .. number of columns used to make complete subset
 #' @return This function returns a matrix of column-indexes complementing (nCombin rows)
-#' @seealso \code{\link{rowNormalize}}
+#' @seealso \code{\link{rowNormalize}}; \code{\link{normalizeThis}}
 #' @examples
 #' .complCols(3, dat=matrix(c(NA,12:17,NA,19),ncol=3), nCombin=3)
 #' @export
@@ -206,7 +208,7 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
     } else c(z4[[1]][1:(nCombin -1)], x)} else NULL }
 
 
-#' Obtain normalization factor (main)
+#' Obtain Normalization Factor (main)
 #'
 #' This function was designed to obtain normalization factors.
 #' 
@@ -224,7 +226,7 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) This function allows easier tracking of messages produced
 #' @return This function returns a matrix of column-indexes complementing (nCombin rows)
-#' @seealso \code{\link{rowNormalize}}
+#' @seealso \code{\link{rowNormalize}}; \code{\link{normalizeThis}}
 #' @examples
 #' ma1 <- matrix(11:41, ncol=3)
 #' @export
@@ -314,9 +316,9 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
   finFa }
 
 
-#' Row-normalization procedure on matrix or data.frame 'dat'
+#' Row-normalization Procedure On Matrix Or Data.frame (main)
 #'
-#' This function was performs a row-normalization procedure on matrix or data.frame 'dat'
+#' This function performs a row-normalization procedure on matrix or data.frame 'dat'
 #' 
 #' @param dat (matrix) .. init data, smay be parse matrix with numerous NA
 #' @param refLi (NULL or numeric) allows to consider only specific lines of 'dat' when determining normalization factors (all data will be normalized)
@@ -329,26 +331,26 @@ rowNormalize <- function(dat, method="median", refLines=NULL, refGrp=NULL, propo
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) This function allows easier tracking of messages produced
 #' @return This function returns a matrix of normalized data same dimensions as 'dat'
-#' @seealso \code{\link{rowNormalize}}
+#' @seealso \code{\link{rowNormalize}}; \code{\link{normalizeThis}} 
 #' @examples
 #' .rowNorm(matrix(11:31, ncol=3), refLi=1, method="mean", proportMode=TRUE)
 #' @export
-.rowNorm <- function(dat, refLi, method, proportMode, maxFact=10, fact0val=10, retFact=FALSE, callFrom=NULL, debug=FALSE, silent=FALSE) {
+.rowNorm <- function(dat, refLi, method, proportMode, maxFact=10, fact0val=10, retFact=FALSE, debug=FALSE, silent=FALSE, callFrom=NULL) {
   ## row-normalization procedure on matrix or data.frame 'dat'
   ## return matrix of same dimensions as 'dat'
   ## note : problem with values=0 in proportional mode (div/0) => replace 0 values by maxAbsVal/fact0val (proportMode only, nor replacement needed in additive mode)
   ## maxFact .. max normalization factor
   ## should be resistant to low degree of NAs
   suplVa <- NULL
-  if(proportMode && any(dat==0, na.rm=TRUE)) {suplVa <- max(abs(dat), na.rm=TRUE)/fact0val; while(any((-1*suplVa) %in% dat, na.rm=TRUE)) suplVa <- suplVa*0.02; dat <- dat + suplVa } # substitute 0 by value 10000x smaller than smallest pos value
+  if(!"additive" %in% proportMode && any(dat==0, na.rm=TRUE)) {suplVa <- max(abs(dat), na.rm=TRUE)/fact0val; while(any((-1*suplVa) %in% dat, na.rm=TRUE)) suplVa <- suplVa*0.02; dat <- dat + suplVa } # substitute 0 by value 10000x smaller than smallest pos value
   if(length(dim(dat)) <2) dat <- matrix(dat, nrow=1, dimnames=list(NULL, names(dat)))
-  rowMe <- if("median" %in% method & length(refLi) >10) {             # per row mean or median (for each line of refLi)
+  rowMe <- if("median" %in% method && length(refLi) >10) {             # per row mean or median (for each line of refLi)
     if(length(refLi) >1) apply(dat[refLi,], 1, stats::median, na.rm=TRUE) else stats::median(dat[refLi,], na.rm=TRUE)
   } else {
     if(length(refLi) >1) rowMeans(dat[refLi,], na.rm=TRUE) else mean(dat[refLi,], na.rm=TRUE)}
-  corFa <- if(proportMode) dat[refLi,]/ rep(rowMe, ncol(dat)) else dat[refLi,] -rep(rowMe, ncol(dat))  # cor-factors
+  corFa <- if(!"additive" %in% proportMode) dat[refLi,]/ rep(rowMe, ncol(dat)) else dat[refLi,] -rep(rowMe, ncol(dat))  # cor-factors
   if(length(dim(corFa)) >1) corFa <- if("median" %in% method && length(refLi) >10) apply(corFa, 2, stats::median, na.rm=TRUE) else colMeans(corFa, na.rm=TRUE)  # per column cor-factor
   if(retFact) corFa else { corFa <- rep(corFa, each=nrow(dat))
-    if(proportMode) dat / corFa else dat - corFa }
+    if(!"additive" %in% proportMode) dat / corFa else dat - corFa }
   }
   

@@ -46,7 +46,7 @@ low values (small groups have higher chances of more common elements)}
 
 \item{debug}{(logical) additional messages for debugging}
 
-\item{callFrom}{(character) This function allows easier tracking of messages produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
 This function returns a matrix of normalized data
@@ -86,5 +86,5 @@ AA[2,c(2,6,7)] <- 1; AA[3,8] <- 1;
 
 }
 \seealso{
-\code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
+\code{\link{normalizeThis}}, \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
 }

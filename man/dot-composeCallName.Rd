@@ -2,7 +2,7 @@
 % Please edit documentation in R/equLenNumber.R
 \name{.composeCallName}
 \alias{.composeCallName}
-\title{Compose sequence of (function-)calls}
+\title{Compose Sequence Of (Function-)Calls}
 \usage{
 .composeCallName(newNa, add2Head = "", add2Tail = " : ", callFrom = NULL)
 }
@@ -16,7 +16,7 @@
 \item{callFrom}{(character) may also contain multiple separate names (ie length >1), will be concatenated using ' -> '}
 }
 \value{
-character vector (history of who called whom)
+This function returns a character vector (history of who called whom)
 }
 \description{
 This function was designed for tracing the hierarchy of function-calls.

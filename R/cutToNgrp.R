@@ -1,6 +1,6 @@
 #' Cut numeric vector to n groups (ie convert to factor) 
 #'
-#' \code{cutToNgrp} is a more elaborate version of \code{\link[base]{cut}} for cutting a the content of a 
+#' This function is a more elaborate version of \code{\link[base]{cut}} for cutting a the content of a 
 #' numeric vector '\code{x}' into a given number of groups, taken from the length of '\code{lev}'.
 #' Besides, this function provides the group borders/limits for convention use with legends.
 #'
@@ -8,23 +8,28 @@
 #' @param lev (character or numeric), the length of this argument tells the number of groups to be used for cutting
 #' @param NAuse (logical) include NAs as separate group
 #' @param callFrom (character) for better tracking of use of functions
-#' @return list with \code{$grouped} telling which element of '\code{x}' goes in which group and \code{$legTxt} with gourp-borders for convenient use with legends
+#' @param silent (logical) suppress messages
+#' @param debug (logical) additional messages for debugging
+#' @param callFrom (character) allows easier tracking of messages produced
+#' @return This function returns a list with \code{$grouped} telling which element of '\code{x}' goes in which group and \code{$legTxt} with gourp-borders for convenient use with legends
 #' @seealso \code{\link[base]{cut}}
 #' @examples
 #' set.seed(2019); dat <- runif(30) +(1:30)/2
 #' cutToNgrp(dat,1:5)
 #' plot(dat,col=(1:5)[as.numeric(cutToNgrp(dat,1:5)$grouped)])
 #' @export
-cutToNgrp <- function (x, lev, NAuse=FALSE,callFrom=NULL) {
+cutToNgrp <- function (x, lev, NAuse=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ##
   fxNa <- .composeCallName(callFrom,newNa="cutToNgrp")
-  ra <- range(x, na.rm=TRUE)
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+   ra <- range(x, na.rm=TRUE)
   if(length(lev) <2) message(fxNa," 'lev' indicates to make only ",length(lev)," groups,  do you really want this ?")
   if(diff(ra) > 0) {
-    ndig <- round(1.5+log(length(lev)))
+    ndig <- round(1.5 +log(length(lev)))
     br <- signif(seq(ra[1] -diff(ra)*0.001, ra[2]+diff(ra)*0.001, length.out=length(lev) +1), digits=ndig)
     if(max(br) < ra[2]) br[length(br)] <- signif(br[length(br)] +(br[2] -br[1])/12, digits=ndig) 
-    chBr <- duplicated(br,fromLast=FALSE)
+    chBr <- duplicated(br, fromLast=FALSE)
     if(any(chBr)) {
       br <- signif(seq(ra[1] -diff(ra)*0.001, ra[2], length.out=length(lev) +1), digits=ndig +1)
       chBr <- duplicated(br,fromLast=FALSE)
