@@ -2,7 +2,7 @@
 % Please edit documentation in R/gitDataUrl.R
 \name{gitDataUrl}
 \alias{gitDataUrl}
-\title{Convert ulr-name for reading in raw-mode}
+\title{Convert GitHub Url-Name For Reading In Raw-Mode}
 \usage{
 gitDataUrl(
   urlName,
@@ -15,8 +15,8 @@ gitDataUrl(
 \arguments{
 \item{urlName}{(charachter) main url-address}
 
-\item{replTxt}{(NULL or matrix) adjust/ custom-modify search- and replacement items; should be matrix with 2 columns, 
-the 1st colimn entries will be used as 'search-for' and the 2nd as 'replace by' fro each row.}
+\item{replTxt}{(NULL or matrix) adjust/ custom-modify search- and replacement items; default settings will exchange the beginning of the site to 'raw.githubusercontent.com' and then exchange 'blob' to 'refs/head'
+otherwise should be matrix with 2 columns, the 1st colimn entries will be used as 'search-for' and the 2nd as 'replace by' for each row}
 
 \item{silent}{(logical) suppress messages}
 
@@ -28,17 +28,20 @@ the 1st colimn entries will be used as 'search-for' and the 2nd as 'replace by' 
 corrected urlName
 }
 \description{
-This functions converts a given urlName so that from data from git-hub can be read correctly that tabular data.
-Thus, this will remove '/blob/' and change starting characters to 'raw.githubusercontent.com'
+This functions converts a given urlName so that (tabular) data from GitHub (https://github.com/) can data be read correctly as tabular data.
+}
+\details{
+Thus, this will exchange the beginning of the site to 'raw.githubusercontent.com' and then exchange 'blob' to 'refs/head' .
+Alternatively, the user may custom define all terms to get exchanged (as matrix with 2 columns 'old' and 'new').          
+
+Note : The default spearator from  \code{\link[utils]{read.delim}} may suit better for reading the data.
 }
 \examples{
 url1 <- paste0("https://github.com/bigbio/proteomics-metadata-standard/blob/",
-  "master/annotated-projects/PXD001819/PXD001819.sdrf.tsv") 
-gitDataUrl(url1)
-
-
+  "main/datasets/PXD001819/PXD001819.sdrf.tsv") 
+rbind(ini=url1, new=gitDataUrl(url1))
 
 }
 \seealso{
-\code{\link[base]{sub}};
+\code{\link[base]{sub}}; \code{\link[utils]{read.delim}}
 }

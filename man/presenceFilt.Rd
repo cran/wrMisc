@@ -12,6 +12,7 @@ presenceFilt(
   ratMaxNA = 0.8,
   minVal = NULL,
   sep = NULL,
+  experSetup = NULL,
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
@@ -33,6 +34,8 @@ Note : the names of the groups may not contain any '-' to avoid confucing them w
 \item{minVal}{(default NULL or numeric), any value below will be treated like \code{NA}}
 
 \item{sep}{(character) in case \code{useComparison} is not given all pairwise comparisons will be done, the separator to be used when combining names of groups can be given using this argument}
+
+\item{experSetup}{(list) optional experimental setup}
 
 \item{silent}{(logical) suppress messages}
 
@@ -56,6 +59,7 @@ mat[,15] <- NA
 mat[c(2:3,9),14:15] <- NA
 mat[c(1,10),13:15] <- NA
 mat
+# default : at least 1 group with max 1 NA and one group below 80\% NA
 presenceFilt(mat, substr(colnames(mat),1,1))
 # custom 2 groups
 presenceFilt(mat, rep(1:2,c(9,6)))         # D1- C4, C5 - B4

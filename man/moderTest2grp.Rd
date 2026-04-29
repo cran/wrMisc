@@ -2,7 +2,7 @@
 % Please edit documentation in R/moderTest2grp.R
 \name{moderTest2grp}
 \alias{moderTest2grp}
-\title{Moderated Pair-Wise t-test From Limma}
+\title{Moderated Pairwise t-test From Limma}
 \usage{
 moderTest2grp(
   dat,
@@ -34,7 +34,7 @@ moderTest2grp(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function returns a limma-type object of class \code{MArrayLM}
+This function returns a limma-type object of class \code{MArrayLM} (which can be handeled like a list)
 }
 \description{
 This function runs moderated t-test from package \code{limma} on each line of data.

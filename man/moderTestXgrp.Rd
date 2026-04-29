@@ -22,10 +22,15 @@ moderTestXgrp(
 
 \item{grp}{(factor) describes column-relationship of 'dat'   (1st factor is considered as reference -> orientation of M-values !!)}
 
-\item{useComparison}{(character or matrix) optional way to indicate which pairwise comparisons should be performed; 
-if character '--' should be used to separate 2 groups out of argument 'grp' (eg 'sample--reference'), where the 2nd entity will be taken as reference;
-of course this separator should not occur in 'grp' (if present it will be automatically repaced by '__' in 'grp' );
-if the elements of 'grp' do not contain any '-' this may also be used (and will be replaced internally by '--')}
+\item{useComparison}{(numeric, character or matrix) optional way to indicate which pairwise comparisons should be performed :
+if \code{useComparison="all"} all pairwise comparisons possible will be performed,
+otherise pairwise comparisons may be chosen using indexes (the ith instance of all possible pairwise comparisons);
+a character vector citing the concatenated levels of  argument \code{grp}; may be used (in this case it may be necessary to specify the separator used in argument argument \code{sep} ;
+please note, it is important to check that a custom selected separator \code{sep} does not occur inside the groups from \code{grp});
+finally, the argument \code{useComparison} may be or as matrix of 2 columns where each row specifies a different comparison, 
+the matrix mat contain the names of the levels of argument \code{grp} or an index relative to the levels of argument \code{grp};
+In all cases where 2 groups are specified this will be read as 'sample-reference' - thus, the 2nd entity will be taken as reference;
+Of course this separator should not occur in 'grp' (if present it will be automatically repaced by '__' in 'grp' ).}
 
 \item{limmaOutput}{(logical) return full (or extended) MArrayLM-object from limma or 'FAlSE' for only the (uncorrected) p.values}
 
@@ -34,16 +39,16 @@ if the elements of 'grp' do not contain any '-' this may also be used (and will 
 
 \item{testOrientation}{(character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2}
 
-\item{sep}{(\code{NULL]} or character of length=1) optional custom choice for separator for column-names of pairwise comparisons, otherwise determined as charcter(-set) not occurring in \code{grp}}
+\item{sep}{(\code{NULL]} or character of length=1) optional custom choice for separator for column-names of pairwise comparisons, otherwise determined as character(-set) not occurring in \code{grp}}
 
 \item{silent}{(logical) suppress messages}
 
 \item{debug}{(logical) additional messages for debugging}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function returns a limma-type MA-object (list), or when problems are encountered \code{NULL}
+This function returns a limma-type MA-object (which can be handeled like a list), or when problems are encountered \code{NULL}
 }
 \description{
 This function runs (selected or all) pairwise combinations of moderated t-tests from package 'limma' on each line of data against.
@@ -54,7 +59,8 @@ Note: This function requires the package \href{https://bioconductor.org/packages
 When multiple pairwise comparisons will be run, first a global linear model will be estimated and the particular pairwise comparisons will then be performed using a contrast-matrix.
 This process is described with the bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} which is used underneith.
 
-By default (no \code{useComparison} given) all possible pairwise comparisons will be run using 1st group from 'grp' as reference. 
+By default (\code{useComparison=NULL}), the first of all possible pairwise comparisons will be run.
+If you would like to run all comparisons, plase set \code{useComparison="all"}.
 Besides, it is also possible to custom choose which comparisons should be run (and which order of sample/reference) via the argument \code{useComparison} using
 the character vector '--' as separator for the two groups of samples (referring to argument \code{grp}) to be compared.
 This will be interpreted as 'sample--reference' (additional space around the separator, if present, will be removed), thus the second element will be used as reference. 
@@ -68,7 +74,9 @@ If argument \code{grp} contains any '-', comparisons of groups will always (!) g
 In case \code{useComparison} is a matrix, the reported comparisons will have '-' if \code{grp} does not contain as well any '-', otherwise '--' will be used 
 (to support compatibility with results from limma).
 
-Please note, that in the output of this function the Benjamini-Hochberg adjusted p-values are called 'FDR' (see argument \code{addResults}).
+Please note, that in the output of this function the Benjamini-Hochberg (BH) adjusted p-values are called 'FDR' (see argument \code{addResults}).
+
+the output caontains a list-element named \code{setup} summarizing the global setup as captured (names of groups of samples), including the names of the pairwise combinations that were tested.
 }
 \examples{
 grp3 <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
@@ -83,13 +91,21 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 test8 <- moderTestXgrp(t8, grp3) 
 
 ## Custom choice of what to compare
-test8b <- moderTestXgrp(t8, grp3, useComparison="D-A") 
+test8b <- moderTestXgrp(t8, grp3, useComparison=c("D-A","C-A")) 
 head(test8b$FDR)
 head(test8b$Mval)
+
+## Custom choice as matrix
+comp4 <- matrix(LETTERS[c(4,3,3,1)], ncol=2)
+test4 <- moderTestXgrp(t8, grp3, useComparison=comp4)
+
+## Names of pairwise comparisons performed
+test4$setup$concat
+
 ## One can also use functions from package limma to see more
 library(limma)
 topTable(test8b, n=5)
 }
 \seealso{
-\code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
+\code{\link{moderTest2grp}} for simplified single comparisons (with fewer options/flexibility), \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
 }

@@ -772,7 +772,7 @@ str(datAll)
 
 ## ----readGit1, echo=TRUE------------------------------------------------------
 ## An example url with tabulated data :
-url1 <- "https://github.com/bigbio/proteomics-metadata-standard/blob/master/annotated-projects/PXD001819/PXD001819.sdrf.tsv"
+url1 <- "https://github.com/bigbio/sdrf-annotated-datasets/blob/main/datasets/PXD001819/PXD001819.sdrf.tsv"
 gitDataUrl(url1)
 
 ## ----readGit2, echo=TRUE------------------------------------------------------
@@ -908,6 +908,30 @@ t8[6:7,3:5] <- t8[6:7,3:5] +2.2                  # augment lines
 test8 <- moderTestXgrp(t8, grp) 
 head(test8$p.value, n=8) 
 
+## ----moderTestXgrp2, echo=TRUE------------------------------------------------
+test8a <- moderTestXgrp(t8, grp, useComparison="all")
+head(test8a$p.value, n=3) 
+
+## ----moderTestXgrp3, echo=TRUE------------------------------------------------
+## multiple ways for choosing same comparison(s)
+test8b <- moderTestXgrp(t8, grp, useCo=c("A-D"))   # name of comparison(s) 
+test8c <- moderTestXgrp(t8, grp, useCo=2)          # the 2nd of all possible
+test8d <- moderTestXgrp(t8, grp, useCo=cbind(samp="A", ref="D"))
+test8e <- moderTestXgrp(t8, grp, useCo=cbind(samp=1, ref=3))
+
+head(test8b$p.value, n=3) 
+head(test8c$p.value, n=3) 
+head(test8d$p.value, n=3) 
+head(test8e$p.value, n=3) 
+
+identical(test8b, test8c)
+identical(test8b, test8d)
+
+## ----moderTestXgrp4, echo=TRUE------------------------------------------------
+## all comparisons with more explicite pairwise combined names
+test8f <- moderTestXgrp(t8, grp, sep="combine2", useCo="all") 
+head(test8f$p.value, n=8)
+
 ## ----pVal2lfdr, echo=TRUE-----------------------------------------------------
 set.seed(2017); t8 <- matrix(round(rnorm(160,10,0.4),2), ncol=8, dimnames=list(letters[1:20],
   c("AA1","BB1","CC1","DD1","AA2","BB2","CC2","DD2")))
@@ -946,6 +970,44 @@ replicateStructure(strX[,1:4], method="combAll")
 replicateStructure(strX[,1:4], method="combAll", exclNoRepl=FALSE)
 replicateStructure(strX[,1:4], method="combNonOrth", exclNoRepl=TRUE)
 replicateStructure(strX, method="lowest")
+
+## ----convPairwiseSetup1, echo=TRUE--------------------------------------------
+## concatenated names of groups
+convPairwiseSetup(c("B-C","D-A"), LETTERS[1:4])
+
+## separate names of groups
+convPairwiseSetup(c("B","C"), LETTERS[1:3])
+convPairwiseSetup(2:3, LETTERS[1:3])
+convPairwiseSetup(2:3, LETTERS[1:3], sep="__")
+convPairwiseSetup(matrix(c("B","D","C","A"), ncol=2), LETTERS[1:4])
+
+## ----suggestSeparator1, echo=TRUE---------------------------------------------
+getPWseparator(grp=LETTERS[1:3])
+getPWseparator(grp=c("B-C","D","E")) 
+getPWseparator(grp=c("B-C","D","E"), includeGrp=TRUE) 
+
+## ----suggestSeparator2, echo=TRUE---------------------------------------------
+potSep <- c("-", "D", " -compared to- ")
+getPWseparator(grp=c("B-C","D","E"), includeGrp=TRUE, potSep=potSep)
+
+## ----suggestSeparator3, echo=TRUE---------------------------------------------
+getPWseparator(grp=c("B-C","D","E"), includeGrp=TRUE) 
+
+## ----identifySeparator1, echo=TRUE--------------------------------------------
+## Identify separator used
+getPWseparator(compNames=c("B-C","B-D","C-D")) 
+getPWseparator(compNames=c("B-C","B-D","C-D"), includeGrp=TRUE)
+
+## ----identifySeparator2, echo=TRUE--------------------------------------------
+## Identify separator used
+findHeadAndTail(LETTERS[4:2], c("D-X","D-C"))
+
+grp1 <- c("C","ACC","CC","B.B","B.BA","B","CA")
+pwNa1 <- "B.B-CC" 
+findHeadAndTail(grp1, pwNa1)
+
+pwNa2 <- c("B.B-CC", "CA-ACC")
+findHeadAndTail(grp1, pwNa2)
 
 ## ----std1, echo=TRUE----------------------------------------------------------
 dat <- matrix(2*round(runif(100),2), ncol=4)

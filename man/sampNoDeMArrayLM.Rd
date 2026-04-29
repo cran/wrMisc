@@ -9,20 +9,23 @@ sampNoDeMArrayLM(
   useComp = NULL,
   outTy = "index",
   groupSep = NULL,
+  combPwSep = "combine1",
   silent = FALSE,
   debug = FALSE,
   callFrom = NULL
 )
 }
 \arguments{
-\item{MArrayObj}{(list or MArray-object) main input}
+\item{MArrayObj}{(list or MArray-object) main input, object to examine and extract pairwise question information}
 
-\item{useComp}{(character or integer) index or name of pairwise-comparison to be addressed}
+\item{useComp}{(character or integer, length=1) index or name of pairwise-comparison to be addressed}
 
-\item{outTy}{(character) choose if just vector of indexes or list with $ind (with \code{outTy="index"}), 
-vector of group-names (with \code{outTy="names"}) or list with $ind and $GrpNames  should get returned}
+\item{outTy}{(character) choose if just vector of indexes (with \code{outTy="index0"}), matrix of indexes (organized by pairwise questions, with \code{outTy="index"}), 
+or matrix of group-names (with \code{outTy="names"}) or list with $index0 (osrted unique vector or indexes),  $pwGrpNa, $pwIndex, $concat, $sep and $compIndex will get returned}
 
 \item{groupSep}{(NULL or character of length=1) separator for pair of names; if \code{NULL} a suitable separator (among '-','--','_','__','.',' ' and '  ') will be used}
+
+\item{combPwSep}{(character) sequence of separators for building combined names (may be combPwSep='combine1' or 'combine2'); will be used in pwSeparatorList()}
 
 \item{silent}{(logical) suppress messages}
 
@@ -31,7 +34,9 @@ vector of group-names (with \code{outTy="names"}) or list with $ind and $GrpName
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function returns a numeric vector (length=2) with index indicating the columns of (replicate) mean-values corresponding to the comparison specified in \code{useComp}
+This function returns if \code{outTy="names"} a numeric vector with indexes indicating the sorted (!!) columns of (replicate) mean-values corresponding to the comparison specified in \code{useComp};
+  or if \code{outTy="names"} or  \code{outTy="pwGrpNa"} :  the (separated) names of pairwise groups will be returned as matrix (each pairwise question as separate line) 
+  or if \code{outTy="list"} a list with $index0 (sorted unique vector or indexes), $pwGrpNa (the separated pairwise group-names), $pwIndex (the ith pairwise comparison), $concat (the concatenated pairwise names), $sep (pairwise separator) and $compIndex
 }
 \description{
 When multiple series of data are tested simultaneaously (eg using \code{moderTestXgrp}), multiple pairwise comparisons get performed. 
@@ -40,19 +45,24 @@ This function helps locating the groups of samples, eg respective mean-columns, 
 \details{
 As main input one gives a list or MArrayLM-object containing testing results from pairwise comparisons,
 and specific comparisons indicated by \code{useComp} to get located in the elements of mean-columns (\code{lstMeans}).
+
+Note, that that the numeric indexes should be used with caution as they refer to the levels of the groups which are sorted
+and thus not necessarily in the order of other elements like the group-means. 
+
+This function allows finding inverted questions (eg 'D-C' even though 'C-D' was actually run in testing), but the result will always be presented in the initial order
 }
 \examples{
 grp3 <- factor(rep(LETTERS[4:2], c(2,3,3)))
 set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4), 2), ncol=8,
   dimnames=list(paste(letters[],rep(1:8,each=26),sep=""), paste0(grp3,c(1:2,1:3,1:3))))
 if(requireNamespace("limma", quietly=TRUE)) {  # need limma installed...
-  test8 <- moderTestXgrp(t8, grp3) 
+  test8 <- moderTestXgrp(t8, grp3, useComparison="all") 
   head(test8$p.value)         # all pairwise comparisons available
-  sampNoDeMArrayLM(test8, 1)   
-  unique(grp3)[sampNoDeMArrayLM(test8, 1)]
-  head(test8$means[,sampNoDeMArrayLM(test8, 1)])
-  head(test8$means[,sampNoDeMArrayLM(test8, "C-D")]) }
- 
+  sampNoDeMArrayLM(test8, 3)   
+  levels(grp3)[sampNoDeMArrayLM(test8, 3)]
+  head(test8$means[,sampNoDeMArrayLM(test8, 3, outTy="names")], 3)      
+  head(test8$means[,sampNoDeMArrayLM(test8, "D-C", outTy="names")], 3) # inverted question
+} 
 }
 \seealso{
 \code{\link{moderTestXgrp}}, this function gets used eg in \code{\link[wrGraph]{MAplotW}} or \code{\link[wrGraph]{VolcanoPlotW}}

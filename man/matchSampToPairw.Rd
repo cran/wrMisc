@@ -44,7 +44,7 @@ However, if the character(s) from \code{sep} do appear inside \code{grpNa} no ma
 
 If some \code{grpNa} are not found in \code{pairwNa} this will be marked as NA.  
 
-In the most recent version the function checks also if a double version of \code{sep} may fit better to \code{grpNa}
+This function checks also if a double version of \code{sep} may fit better to \code{grpNa}
 and will adjust \code{sep} accordingly (eg adjust sep='-' to '--').
 }
 \examples{

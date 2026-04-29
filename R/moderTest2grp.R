@@ -1,4 +1,4 @@
-#' Moderated Pair-Wise t-test From Limma
+#' Moderated Pairwise t-test From Limma
 #'
 #' This function runs moderated t-test from package \code{limma} on each line of data.
 #' Note: This function requires the package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} from bioconductor being installed. 
@@ -14,7 +14,7 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return This function returns a limma-type object of class \code{MArrayLM}
+#' @return This function returns a limma-type object of class \code{MArrayLM} (which can be handeled like a list)
 #' @seealso \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}, \code{\link[stats]{p.adjust}}
 #' @examples
 #' set.seed(2017); t8 <- matrix(round(rnorm(1520,10,0.4),2), ncol=8,
@@ -100,8 +100,10 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
         apply(out$p.value, 2, stats::p.adjust, meth="BH")} else stats::p.adjust(out$p.value, meth="BH")
       if("BY" %in% toupper(addResults)) out$BY <- if(is.matrix(out$p.value)) {
         apply(out$p.value, 2, stats::p.adjust, meth="BY")} else stats::p.adjust(out$p.value, meth="BY")
-      if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool")) {out$lfdr <- if(is.matrix(out$p.value)) {
-        apply(out$p.value, 2, pVal2lfdr)} else pVal2lfdr(out$p.value) }    
+      if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool")) {
+        if(!silent && nrow(dat) <200) message(fxNa,"Please NOTE that fdrtool() (from package fdrtool) considers that there are TOO FEW input test statistics for reliable FDR calculations !   (..originally giving a warning)")
+        out$lfdr <- if(is.matrix(out$p.value)) {
+        suppressWarnings(apply(out$p.value, 2, pVal2lfdr))} else suppressWarnings(pVal2lfdr(out$p.value)) }    
       if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) { out$qVal <- if(is.matrix(out$p.value)) {
         try(apply(out$p.value, 2, function(x) qvalue::qvalue(x,lfdr.out=TRUE)$lfdr), silent=TRUE)
           } else try(qvalue::qvalue(out$p.value,lfdr.out=TRUE)$lfdr, silent=TRUE) 
@@ -120,7 +122,7 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       out$nonMod.p <- apply(dat, 1, function(x) stats::t.test(x[gr1], x[gr2], alternative=altHyp)$p.value)
       if(any(c("FDR","BH") %in% toupper(addResults))) out$nonMod.FDR <- stats::p.adjust(out$nonMod.p, method="BH") 
       if("BY" %in% toupper(addResults)) out$nonMod.BY <- stats::p.adjust(out$nonMod.p, method="BY")
-      if(any(c("lfdr") %in% tolower(addResults)) && requireNamespace("fdrtool")) out$nonMod.lfdr <- try(pVal2lfdr(out$nonMod.p), silent=TRUE) 
+      if(any(c("lfdr") %in% tolower(addResults)) && requireNamespace("fdrtool")) out$nonMod.lfdr <- suppressWarnings(try(pVal2lfdr(out$nonMod.p), silent=TRUE)) 
       if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) { 
         out$nonMod.qVal <- try(qvalue::qvalue(out$nonMod.p, lfdr.out=TRUE)$lfdr, silent=TRUE)
         if(inherits(out$nonMod.qVal, "try-error")) {

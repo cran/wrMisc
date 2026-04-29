@@ -8,7 +8,8 @@
 #' When multiple pairwise comparisons will be run, first a global linear model will be estimated and the particular pairwise comparisons will then be performed using a contrast-matrix.
 #' This process is described with the bioconductor package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} which is used underneith.
 #' 
-#' By default (no \code{useComparison} given) all possible pairwise comparisons will be run using 1st group from 'grp' as reference. 
+#' By default (\code{useComparison=NULL}), the first of all possible pairwise comparisons will be run.
+#' If you would like to run all comparisons, plase set \code{useComparison="all"}.
 #' Besides, it is also possible to custom choose which comparisons should be run (and which order of sample/reference) via the argument \code{useComparison} using
 #' the character vector '--' as separator for the two groups of samples (referring to argument \code{grp}) to be compared.
 #' This will be interpreted as 'sample--reference' (additional space around the separator, if present, will be removed), thus the second element will be used as reference. 
@@ -22,24 +23,31 @@
 #' In case \code{useComparison} is a matrix, the reported comparisons will have '-' if \code{grp} does not contain as well any '-', otherwise '--' will be used 
 #' (to support compatibility with results from limma).
 #' 
-#' Please note, that in the output of this function the Benjamini-Hochberg adjusted p-values are called 'FDR' (see argument \code{addResults}).
+#' Please note, that in the output of this function the Benjamini-Hochberg (BH) adjusted p-values are called 'FDR' (see argument \code{addResults}).
+#' 
+#' the output caontains a list-element named \code{setup} summarizing the global setup as captured (names of groups of samples), including the names of the pairwise combinations that were tested.
 #'
 #' @param dat matrix or data.frame with rows for multiple (independent) tests, use ONLY with 2 groups; assumed as log2-data !!!
 #' @param grp (factor) describes column-relationship of 'dat'   (1st factor is considered as reference -> orientation of M-values !!)
-#' @param useComparison (character or matrix) optional way to indicate which pairwise comparisons should be performed; 
-#'   if character '--' should be used to separate 2 groups out of argument 'grp' (eg 'sample--reference'), where the 2nd entity will be taken as reference;
-#'   of course this separator should not occur in 'grp' (if present it will be automatically repaced by '__' in 'grp' );
-#'   if the elements of 'grp' do not contain any '-' this may also be used (and will be replaced internally by '--') 
+#' @param useComparison (numeric, character or matrix) optional way to indicate which pairwise comparisons should be performed :
+#'      if \code{useComparison="all"} all pairwise comparisons possible will be performed,
+#'      otherise pairwise comparisons may be chosen using indexes (the ith instance of all possible pairwise comparisons);
+#'      a character vector citing the concatenated levels of  argument \code{grp}; may be used (in this case it may be necessary to specify the separator used in argument argument \code{sep} ;
+#'      please note, it is important to check that a custom selected separator \code{sep} does not occur inside the groups from \code{grp});
+#'      finally, the argument \code{useComparison} may be or as matrix of 2 columns where each row specifies a different comparison, 
+#'      the matrix mat contain the names of the levels of argument \code{grp} or an index relative to the levels of argument \code{grp};
+#'      In all cases where 2 groups are specified this will be read as 'sample-reference' - thus, the 2nd entity will be taken as reference;
+#'      Of course this separator should not occur in 'grp' (if present it will be automatically repaced by '__' in 'grp' ).
 #' @param limmaOutput (logical) return full (or extended) MArrayLM-object from limma or 'FAlSE' for only the (uncorrected) p.values
 #' @param addResults (character) types of results to add besides basic limma-output, data are assumed to be log2 ! (eg "lfdr" using fdrtool-package, "FDR" or "BH" for BH-FDR, "BY" for BY-FDR, 
 #'   "bonferroni" for Bonferroni-correction, "qValue" for lfdr by qvalue, "Mval", "means" or "nonMod" for non-moderated test and he equivaent all (other) multiple testing corrections chosen here)
 #' @param testOrientation (character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2
-#' @param sep (\code{NULL]} or character of length=1) optional custom choice for separator for column-names of pairwise comparisons, otherwise determined as charcter(-set) not occurring in \code{grp}
+#' @param sep (\code{NULL]} or character of length=1) optional custom choice for separator for column-names of pairwise comparisons, otherwise determined as character(-set) not occurring in \code{grp}
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return This function returns a limma-type MA-object (list), or when problems are encountered \code{NULL}
-#' @seealso \code{\link{moderTest2grp}} for single comparisons, \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a limma-type MA-object (which can be handeled like a list), or when problems are encountered \code{NULL}
+#' @seealso \code{\link{moderTest2grp}} for simplified single comparisons (with fewer options/flexibility), \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
 #' @examples
 #' grp3 <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
 #' set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
@@ -53,9 +61,17 @@
 #' test8 <- moderTestXgrp(t8, grp3) 
 #' 
 #' ## Custom choice of what to compare
-#' test8b <- moderTestXgrp(t8, grp3, useComparison="D-A") 
+#' test8b <- moderTestXgrp(t8, grp3, useComparison=c("D-A","C-A")) 
 #' head(test8b$FDR)
 #' head(test8b$Mval)
+#' 
+#' ## Custom choice as matrix
+#' comp4 <- matrix(LETTERS[c(4,3,3,1)], ncol=2)
+#' test4 <- moderTestXgrp(t8, grp3, useComparison=comp4)
+#' 
+#' ## Names of pairwise comparisons performed
+#' test4$setup$concat
+#'
 #' ## One can also use functions from package limma to see more
 #' library(limma)
 #' topTable(test8b, n=5)
@@ -66,7 +82,13 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     if(!isTRUE(silent)) silent <- FALSE }
   if(!isFALSE(limmaOutput)) limmaOutput <- TRUE
   runTest <- TRUE
-  comp <- sep1 <- indX <- useComparisonNa <- NULL
+  pwIndex <- sep1 <- indX <- useComparisonNa <- NULL
+  .extrSep2 <- function(comb , indiv) {     ## extract separator by striping indiv elements (iniv) from combined pairwise names (comb)  .. move to wrMisc ??
+    fx2 <- function(x, y) sub(paste0(protectSpecChar(x),"$"),"", sub(paste0("^",protectSpecChar(x)),"", y))   # remove x from head and tail   (eg rm C from end)
+    for(i in indiv) comb <- fx2(i, comb)
+    unique(comb[which(nchar(comb) >0)])   # will/might return NULL when sep==""
+  }
+  
   if(any(length(dat) <1, length(dim(dat)) !=2, dim(dat) < c(1,3))) { runTest <- FALSE
     warning(fxNa,"Invalid argument 'dat'; must be matrix or data.frame with min 1 lines and 3 columns") }
   if(runTest) {  
@@ -80,7 +102,7 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     checkPkg <- function(pkg) requireNamespace(pkg, quietly=TRUE)
     checkPkgs <- sapply(packages, checkPkg)
     if(!checkPkgs[1]) { runTest <- FALSE; message(fxNa,"NOTE: Package 'limma' not found ! Unable to run tests. Please install first from Bioconductor")} } 
-  if(debug) {message(fxNa,"mTX0"); mTX0 <- list(dat=dat,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest)}
+  if(debug) {message(fxNa,"mTX0"); mTX0 <- list(dat=dat,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,sep=sep)}
     
   if(runTest && requireNamespace("limma")) {
     if(limmaOutput && length(addResults) >0) if("all" %in% addResults) addResults <- c("BH", "BY","lfdr","qValue","bonferroni","Mval","means","nonMod")
@@ -104,90 +126,45 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     ## prepare modeling - initial design-matrix 
     datDesign <- stats::model.matrix(~ -1 + grp)                  # can't use directly, need contrasts !!
     colnames(datDesign) <- sub("^grp","", colnames(datDesign))
-    if(debug) {message(fxNa,"mTX0a"); mTX0a <- list(dat=dat,useComparison=useComparison,grp=grp,datDesign=datDesign)}
+    if(debug) {message(fxNa,"mTX0a"); mTX0a <- list(dat=dat,useComparison=useComparison,grp=grp,datDesign=datDesign,sep=sep)}    # ,compNames=compNames
 
     ## option 1: no useComparison (NULL) => do all pw combin as before
     ## option 2: useComparison as char vector (using '--' as sep, need to check if index)   
-    ## option 3: useComparison as 2-dim (bnumeric) matrix (need to check if index, indexes should refer to unique(gr) and NOT to levels(gr) !), as from wrProteo
+    ## option 3: useComparison as 2-dim (numeric) matrix (need to check if index, indexes should refer to unique(gr) and NOT to levels(gr) !), as from wrProteo
 
-    ### ADJUST argument 'useComparison' ie split if required, map to index of levels of grp    (wr 29dec25, 15jan26)
-    ## find invalid useComparison
-    if(length(useComparison) > 0 && is.list(useComparison) && "useComparison" %in% names(useComparison)){
-      if("sep" %in% names(useComparison)) sep1 <- useComparison$sep
-      if("useComparisonNa" %in% names(useComparison)) useComparisonNa <- useComparison$useComparisonNa
-      useComparison <- useComparison$useComparison
+    ## note : sep .. as user-provided; sep1 .. finally used (en from automat determin)    
+    if(length(sep) >1) {
+      message(fxNa,"Expecting argument 'sep' to be of length=1, trimming to 1st (not NA and min 1 character long)")
+      sep <- sep[which(!is.na(sep) & nchar(sep) >0)]
+      if(length(sep) >1) sep <- sep[1]
     }
-  	if(length(useComparison) > 0 && any(is.na(useComparison))) {
-  	  useComparison <- NULL
-  	  message(fxNa, "Argument 'useComparison' may NOT contain any NAs, ignoring")
-  	}
-    if(debug) {message(fxNa,"mTX0b"); mTX0b <- list(dat=dat,useComparison=useComparison,grp=grp,datDesign=datDesign)}
-    if(length(useComparison) > 0 && is.character(useComparison) && length(dim(useComparison)) <1 && any(nchar(useComparison) <2)) {
-      useComparison <- NULL
-      if(!silent) message(fxNa,"Invalid entry for useComparisonuseComparison)) <1 &&  (must be numeric or character as combination of groups)")
-    }
-    #indX <- NULL
-    if(debug) {message(fxNa,"mTX0c"); mTX0c <- list(dat=dat,useComparison=useComparison,grp=grp,datDesign=datDesign,comp=comp,sep1=sep1)}
+    ## check & convert useComparison
+    # useComparison=NULL #  => 1st comparison # if(identical("all",useComparison)) useComparison <- NULL
 
-    ## useComparison may be 1) character (concatenated grp-names), 2) matrix of indixes 3) matrix of grp-names
+    chComp <- convPairwiseSetup(useComparison, grp=grp, experSetup=NULL, sep=sep, silent=silent, debug=debug, callFrom=fxNa)
+    pwIndex <- chComp$pwIndex
+    chComp$grp <- grp
+  	names(grp) <- colnames(dat)
 
-    if(length(useComparison) !=0) {   # create all pairwise combin for compatibility with selective useComparison
-      if(length(dim(useComparison)) <2) {  # address 2) split character
-        sepL <- wrMisc::indexGroupsFromPW(compNames=useComparison, grp=grp, potSep=unique(sep1, c("-","---","_","___","."," ","  ")), includeGrp=TRUE, silent=silent, debug=debug, callFrom=fxNa)
-        ##comp <- sepL$ind                   # note sepL$ind  is relativ to levels(grp) !!  need to convert
-        comp <- matrix(match(sepL$ind, unique(as.numeric(grp))), ncol=2, dimnames=dimnames(sepL$ind))
-        useComparisonNa <- sepL$GrpNames 
-        sep2 <- sepL$sep
-        if(length(sep1)==1) { if(sep2 != sep1) warning(fxNa,"Problem with separator ? External separator given different to automatic ")
-        } else sep1 <- sep2
-        
-      } else {
-        if(is.data.frame(useComparison)) useComparison <- as.matrix(useComparison)
-        if(length(dim(useComparison))==2) {
-          if(is.character(useComparison)) {  #  address 3b) convert character matrix to indexes  
-            useComparisonNa <- useComparison
-            comp <- matrix(match(useComparison, naOmit(unique(as.character(grp)))), ncol=2, dimnames=dimnames(useComparison))
-          } else comp <- useComparison
-          chCo <- unique(comp)
-          if(any(is.na(chCo) | comp > length(levels(grp)) | comp <1)) {
-            if(!silent) message(fxNa,"NOTE : invalid 'useComparison', indexes should match unique(grp); ignoring")
-            comp <- NULL
-          }
-        }
-      }
-    }
-    if(debug) {message(fxNa,"mTX0d"); mTX0d <- list(dat=dat,useComparison=useComparison,grp=grp,datDesign=datDesign,comp=comp,sep1=sep1)}
-    
-    ## complete as default if useComparison was NULL or invalid 
-
-    if(length(sep1)==0) sep1 <- getPWseparator(grp=grp,silent=silent, debug=debug, callFrom=fxNa)
-    grUn <- unique(naOmit(as.character(grp)))
-    if(length(useComparison)==0) {
-      useComparisonNa <- t(utils::combn(sort(unique(as.character(grp))), 2))
-      if(debug) {message(fxNa,"mTX0e"); mTX0e <- list(dat=dat,useComparison=useComparison,grp=grp,datDesign=datDesign,comp=comp,sep1=sep1,useComparisonNa=useComparisonNa,grUn=grUn)}
-      dimnames(useComparisonNa) <- list(paste0(useComparisonNa[,1], sep1, useComparisonNa[,2]), c("samp","ref"))
-      comp <- matrix(match(useComparisonNa, grUn), ncol=2, dimnames=dimnames(useComparisonNa))
-      if(debug) message(fxNa,"Automatic comp has ",row(comp)," comparisons")
-    }
-    if(length(useComparisonNa)==0)  useComparisonNa <- cbind(samp=grUn[comp[,1]], ref=grUn[comp[,2]])
-    if(debug) {message(fxNa,"mTX2a"); mTX2a <- list(dat=dat,grp=grp,useComparison=useComparison,sep=sep,sep1=sep1,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,datDesign=datDesign,comp=comp,indX=indX) }
+    concatNa <- if(length(sep)==0) chComp$concat else { paste(chComp$pwGrpNa[,1], chComp$pwGrpNa[,2], sep=sep)	}
+	
+    pwGrpNa <- chComp$pwGrpNa
+    sep1 <- chComp$sep
+    grpNa <- chComp$grpNa
+    ## now pwIndex (matrix of index for question-parts) is finished           
+    if(debug) {message(fxNa,"mTX2a"); mTX2a <- list(dat=dat,grp=grp,useComparison=useComparison,sep=sep,sep1=sep1,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,datDesign=datDesign,pwIndex=pwIndex,chComp=chComp,grpNa=grpNa, indX=indX) }   #concatNa=concatNa,
     convSingSep <- FALSE                  # initialize
-    
-
-    #if(length(sep1)==0) sep1 <- indX$sep
-    #comp <- indX$ind
-    #compNa <- indX$GrpNames
- 
-    if(debug) {message(fxNa,"mTX3"); mTX3 <- list(dat=dat,grp=grp,useComparison=useComparison,sep1=sep1,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,datDesign=datDesign,comp=comp )}
+     
+    if(debug) {message(fxNa,"mTX3"); mTX3 <- list(dat=dat,grp=grp,useComparison=useComparison,sep1=sep1,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,datDesign=datDesign,pwIndex=pwIndex,pwGrpNa=pwGrpNa,grpNa=grpNa )}
   }
     
   ## main testing
-  if(runTest && requireNamespace("limma") && length(comp) >0 && length(dat) >0) {
+  if(runTest && requireNamespace("limma") && length(pwIndex) >0 && length(dat) >0 && all(!is.na(pwIndex))) {
     ## contrast matrix
     ## see eg   https://support.bioconductor.org/p/57268/; https://www.biostars.org/p/157068/
-  	contr.matr <- matrix(0, nrow=length(levels(grp)), ncol=nrow(comp), 
-  		dimnames=list(levels(grp), rownames(comp)))
-  	for(j in 1:nrow(comp)) contr.matr[comp[j, ], j] <- c(1,-1)
+  	contr.matr <- matrix(0, nrow=length(levels(grp)), ncol=nrow(pwIndex), 
+  		dimnames=list(levels(grp), rownames(pwIndex)))
+  	for(j in 1:nrow(pwIndex)) contr.matr[pwIndex[j, ], j] <- c(1,-1)
   	if(debug) { message(fxNa, "mTX3") }
     globFilt <- 1:nrow(dat)                                       # so far apply testing to all lines
     
@@ -195,14 +172,16 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     fit0 <- try(limma::lmFit(dat[globFilt,], datDesign), silent=TRUE)          # testing part 1
     if(inherits(fit0, "try-error")) { runTest <- FALSE
        warning(fxNa,"Problem running lmFit(), unable to run tests; check if package 'limma' is properly installed !")}
-    if(debug) {message(fxNa,"mTX4"); mTX4 <- list(dat=dat,fit0=fit0,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,comp=comp, contr.matr=contr.matr) }       
+    if(debug) {message(fxNa,"mTX4"); mTX4 <- list(dat=dat,fit0=fit0,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,pwIndex=pwIndex, contr.matr=contr.matr,pwGrpNa=pwGrpNa) }       
   } else runTest <- FALSE
   
   if(runTest && requireNamespace("limma")) {
     fit1 <- limma::eBayes(limma::contrasts.fit(fit0, contrasts=contr.matr))  # variant to run all contrasts at same time
-    if(debug) {message(fxNa,"mTX4b"); mTX4b <- list(dat=dat,fit0=fit0,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,comp=comp, contr.matr=contr.matr) }       
-    compNa <- colnames(fit1$contrasts)
-    if(is.null(compNa) && !silent) message(fxNa," Note: Could not find names of (multiple) comparisons !")
+    if(debug) {message(fxNa,"mTX4b"); mTX4b <- list(dat=dat,fit0=fit0,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest, contr.matr=contr.matr,pwIndex=pwIndex,pwGrpNa=pwGrpNa,grpNa=grpNa,sep1=sep1,altHyp=altHyp) } # concatNa=concatNa,      
+    ## note rownames(fit1$contrasts) may not be sufficient (- in case of 'A-B', 'B-A')
+    #concatNa <- paste(useComparisonNa[,1],useComparisonNa[,2], sep=sep1)
+      #if(debug) message(fxNa," Note: Could not find names of (multiple) comparisons .. reconstructing") }
+    
     fit1$means <- rowGrpMeans(dat, grp)  
     
     ## separate running of contrasts, like gxTools, need then to extract & combine all pValues
@@ -222,24 +201,22 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
       if(any(ch)) fit1$p.value[which(ch),] <- fit1$p.value[which(ch),]/2
       if(any(!ch)) fit1$p.value[which(!ch),] <- 1- fit1$p.value[which(!ch),]/2        # !(A > B)  .. A <= B
     }
-    if(is.null(colnames(fit1$t))) colnames(fit1$t) <- compNa
-    if(is.null(colnames(fit1$p.value))) colnames(fit1$p.value) <- compNa
-    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue") && !silent) message(fxNa,"NOTE: package 'qvalue' not installed from CRAN, can't calulate ...")
-    if(debug) {message(fxNa,"mTX5"); mTX5 <- list(dat=dat,fit0=fit0,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,useComparisonNa=useComparisonNa,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,comp=comp, contr.matr=contr.matr)  }       
+    if(is.null(colnames(fit1$t))) colnames(fit1$t) <- concatNa
+    if(is.null(colnames(fit1$p.value))) colnames(fit1$p.value) <- concatNa
+    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue") && !silent) message(fxNa,"NOTE: Package 'qvalue' not installed from CRAN, can't calulate ...")
+    if(debug) {message(fxNa,"mTX5"); mTX5 <- list(dat=dat,fit0=fit0,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,pwIndex=pwIndex, grpNa=grpNa,contr.matr=contr.matr,pwGrpNa=pwGrpNa)  }       
 
     ## add various multiple testing corrections
     if(!limmaOutput) out <- fit1$p.value[,2] else { out <- fit1
       ## further inspect & correct values of 'addResults' ?
       if("Mval" %in% addResults) { 
-        comp2 <- matrix(match(useComparisonNa, unique(grp)), ncol=2, dimnames=dimnames(comp))   # levels(grp) is sorted, fit1$means is NOT, need to translate index 
-        
-        out$Mval <- apply(comp2,1, function(x) fit1$means[,x[1]] - fit1$means[,x[2]]) }      
+        out$Mval <- apply(pwGrpNa,1, function(x) fit1$means[,which(colnames(fit1$means)==x[1])] - fit1$means[,which(colnames(fit1$means)==x[2])]) }      
       if(any(c("FDR","BH") %in% toupper(addResults))) out$FDR <- if(is.matrix(out$p.value)) {
         apply(out$p.value, 2, stats::p.adjust, meth="BH")} else stats::p.adjust(out$p.value, meth="BH")
       if("BY" %in% toupper(addResults)) out$BY <- if(is.matrix(out$p.value)) {
         apply(out$p.value, 2, stats::p.adjust, meth="BY")} else stats::p.adjust(out$p.value, meth="BY")
       if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool")) {out$lfdr <- if(is.matrix(out$p.value)) {
-        apply(out$p.value, 2, pVal2lfdr)} else pVal2lfdr(out$p.value) }    
+        suppressWarnings(apply(out$p.value, 2, pVal2lfdr))} else suppressWarnings(pVal2lfdr(out$p.value)) }    
       if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) { out$qVal <- if(is.matrix(out$p.value)) {
         try(apply(out$p.value, 2, function(x) qvalue::qvalue(x,lfdr.out=TRUE)$lfdr), silent=TRUE)} else try(qvalue::qvalue(out$p.value,lfdr.out=TRUE)$lfdr, silent=TRUE) 
         if(inherits(out$qVal, "try-error")) { 
@@ -258,35 +235,38 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
       names(grX) <- levels(grp)
       altHyp <- testOrientation
       if(altHyp =="=") altHyp <- "two.sided"
-      comp <- triCoord(leLev)
-      out$nonMod.p <- apply(comp,1,function(y) apply(dat, 1, function(x) stats::t.test(x[which(grp==levels(grp)[y[1]])], x[which(grp==levels(grp)[y[2]])], alternative=altHyp)$p.value) )
-      colnames(out$nonMod.p) <- compNa
+      pwIndex <- triCoord(leLev)
+      out$nonMod.p <- apply(pwIndex,1,function(y) apply(dat, 1, function(x) stats::t.test(x[which(grp==levels(grp)[y[1]])], x[which(grp==levels(grp)[y[2]])], alternative=altHyp)$p.value) )
+      colnames(out$nonMod.p) <- concatNa
       if(any(c("FDR","BH") %in% toupper(addResults))) {
         if(length(dim(out$nonMod.p)) ==2) { out$nonMod.FDR <- apply(out$nonMod.p, 2, stats::p.adjust, method="BH")
-        colnames(out$nonMod.FDR)  <- compNa } else out$nonMod.FDR <- stats::p.adjust(out$nonMod.p, method="BH")
+        colnames(out$nonMod.FDR)  <- concatNa } else out$nonMod.FDR <- stats::p.adjust(out$nonMod.p, method="BH")
       }
       if(any("BY" %in% toupper(addResults))) {
         if(length(dim(out$nonMod.p)) ==2) { out$nonMod.BY <- apply(out$nonMod.p, 2, stats::p.adjust, method="BY")
-        colnames(out$nonMod.BY)  <- compNa } else out$nonMod.BY <- stats::p.adjust(out$nonMod.p, method="BY")
+        colnames(out$nonMod.BY)  <- concatNa } else out$nonMod.BY <- stats::p.adjust(out$nonMod.p, method="BY")
       }
       if(any("lfdr" %in% tolower(addResults)) && requireNamespace("fdrtool")) {
         if(length(dim(out$nonMod.p)) ==2) { out$nonMod.lfdr <- apply(out$nonMod.p, 2, pVal2lfdr)
-        colnames(out$nonMod.lfdr)  <- compNa } else out$nonMod.lfdr <- pVal2lfdr(out$nonMod.p)
+        colnames(out$nonMod.lfdr)  <- concatNa } else out$nonMod.lfdr <- suppressWarnings(pVal2lfdr(out$nonMod.p))
       }
       if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) {
         out$nonMod.qVal <- if(length(dim(out$nonMod.p))==2) try(apply(out$nonMod.p, 2, qvalue::qvalue), silent=TRUE) else try(qvalue::qvalue(out$nonMod.p), silent=TRUE)
         if(inherits(out$nonMod.qVal, "try-error")) { if(!silent) message(fxNa,"Problem with pi0 estimation (non-shrinked p-values) for qValue, setting pi0=1 like BH-FDR")
           out$nonMod.qVal <- if(length(dim(out$nonMod.p))==2) apply(out$nonMod.p, 2, qvalue::qvalue,pi0=1, lfdr.out=TRUE) else qvalue::qvalue(out$nonMod.p,pi0=1, lfdr.out=TRUE)
         }
-        if(length(dim(out$nonMod.p)) ==2) colnames(out$nonMod.qVal)  <- compNa 
+        if(length(dim(out$nonMod.p)) ==2) colnames(out$nonMod.qVal)  <- concatNa 
       }
       if(any(c("bonferroni","bonf") %in% tolower(addResults))) {
         if(length(dim(out$nonMod.p)) ==2) { out$nonMod.bonf <- apply(out$nonMod.p, 2, stats::p.adjust, method="bonferroni")
-        colnames(out$nonMod.bonf)  <- compNa } else out$nonMod.lfdr <- stats::p.adjust(out$nonMod.p, method="bonferroni")
+        colnames(out$nonMod.bonf)  <- concatNa } else out$nonMod.lfdr <- stats::p.adjust(out$nonMod.p, method="bonferroni")
       }
 
     }
+
+    out$setup <- chComp  #list(sep=sep1, grpNa=grpNa, pwGrpNa=pwGrpNa, pxIndex=pwIndex)             # document sep used
     if(debug) {message(fxNa,"mTX6"); mTX6 <- list(dat=dat,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,out=out,addResults=addResults,limmaOutput=limmaOutput) }       
+    
     if(convSingSep) {
       ## reset comparison to initial '-'
       for(i in 1:length(out)) if(length(dim(out[[i]])) >0) { ch1 <- grepl("--", colnames(out[[i]])); if(any(ch1)) colnames(out[[i]])[which(ch1)] <- sub("--","-", colnames(out[[i]])[which(ch1)]) }
@@ -296,4 +276,4 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     
     out
   } }  
-        
+             

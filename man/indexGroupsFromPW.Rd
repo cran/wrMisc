@@ -7,7 +7,7 @@
 indexGroupsFromPW(
   compNames,
   grp = NULL,
-  potSep = c("-", "---", "_", "___", ".", " ", "  ", "--", "__"),
+  potSep = pwSeparatorList("combine1"),
   includeGrp = FALSE,
   silent = FALSE,
   debug = FALSE,
@@ -21,7 +21,7 @@ indexGroupsFromPW(
 
 \item{potSep}{(character) potential separators to be checked if occuring in \code{useComp}; the first fitting will used}
 
-\item{includeGrp}{(logical) instead of matrix, rather return list with $ind, $GrpNames (group-names corresponding to index), $sep (separator used to split) and $grpTy}
+\item{includeGrp}{(logical) instead of matrix, rather return list with $pwInd, $pwGrpNames (group-names corresponding to index), $sep (separator used to split) and $grpNa}
 
 \item{silent}{(logical) suppress messages}
 
@@ -31,7 +31,7 @@ indexGroupsFromPW(
 }
 \value{
 This function returns a numeric matrix with indexes corresponding to (sorted) group-names as they appear in \code{compNames};
-  or if \code{includeGrp=TRUE} a list with $ind (matrix indexes for each \code{compNames}), $GrpNames (group-names corresponding to index), $sep (separator used to split) and $grpTy (sorted names of types of groups)
+  or if \code{includeGrp=TRUE} a list with $ind (matrix indexes for each \code{compNames}), $grpNames (group-names corresponding to index), $sep (separator used to split) and $grpNa (sorted names of types of groups)
 }
 \description{
 This function allows matching which groups are cited in a pairwise concatenated manner.
@@ -43,5 +43,5 @@ indexGroupsFromPW(c("C-B","B-D","C-D"))
 indexGroupsFromPW(c("C-B","B-D","C-D"), grp=rep(LETTERS[1:6],2), includeGrp=TRUE) 
 }
 \seealso{
-\code{\link{moderTestXgrp}} (colnames of testing results from this function may be used); \code{\link{replacePWseparator}}; \code{\link{getPWseparator}}  used internally  \code{\link{.getPWseparator}}
+\code{\link{moderTestXgrp}} (colnames of testing results from this function may be used); \code{\link{replacePWseparator}}; used internally \code{\link{getPWseparator}},  \code{\link{pwSeparatorList}}, \code{\link{.getPWseparator}}
 }

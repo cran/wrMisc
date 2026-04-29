@@ -28,7 +28,7 @@
 #'  
 #' @export
 rmSharedWords <- function(x, sep=c("_"," ","."), anySep=TRUE, newSep=NULL, minLe=2, na.omit=FALSE, fixed=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
-  ## function to trim redundant words (@separator) similar to wrMisc::trimRedundText()
+  ## function to trim redundant words (@separator) similar to trimRedundText()
   ## remove common/repeated words as occuring in each instance of x; words are separarated by sep (ignoring NAs); separators must be consistent (no mixing of separators allowed)
   ## special characters will be automatically protected, order does NOT matter, multiple repeats will be removed, too
   ## note : anySep=TRUE will consider all separators at one time (), thus combinations with different separators won't be distinguished

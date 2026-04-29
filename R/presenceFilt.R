@@ -13,6 +13,7 @@
 #' @param ratMaxNA (numeric) at least 1 group below this content of \code{NA} values
 #' @param minVal (default NULL or numeric), any value below will be treated like \code{NA}
 #' @param sep (character) in case \code{useComparison} is not given all pairwise comparisons will be done, the separator to be used when combining names of groups can be given using this argument
+#' @param experSetup (list) optional experimental setup
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
@@ -26,7 +27,7 @@
 #' mat[c(2:3,9),14:15] <- NA
 #' mat[c(1,10),13:15] <- NA
 #' mat
-## default : at least 1 group with max 1 NA and one group below 80% NA
+#' # default : at least 1 group with max 1 NA and one group below 80% NA
 #' presenceFilt(mat, substr(colnames(mat),1,1))
 #' # custom 2 groups
 #' presenceFilt(mat, rep(1:2,c(9,6)))         # D1- C4, C5 - B4
@@ -42,7 +43,7 @@
 #' presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=1, ratM=0.1)
 #' presenceFilt(dat1, gr=gl(2,4)[-1], maxGr=2, rat=0.5)
 #' @export
-presenceFilt <- function(dat, grp, useComparison=NULL, maxGrpMiss=1, ratMaxNA=0.8, minVal=NULL, sep=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){           
+presenceFilt <- function(dat, grp, useComparison=NULL, maxGrpMiss=1, ratMaxNA=0.8, minVal=NULL, sep=NULL, experSetup=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){           
   fxNa <- .composeCallName(callFrom, newNa="presenceFilt")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
@@ -51,6 +52,11 @@ presenceFilt <- function(dat, grp, useComparison=NULL, maxGrpMiss=1, ratMaxNA=0.
   if(length(dim(dat)) !=2) stop(msg)
   if(ncol(dat) <2) stop(msg)
   if(is.data.frame(dat)) dat <- as.matrix(dat)
+  if(length(experSetup) >1 && is.list(experSetup)) {
+    if(length(grp)==0 && "grp" %in% names(useComparison)) grp <- experSetup$grpNa
+    if(length(useComparison)==0 && "pwGrpNa" %in% names(useComparison)) useComparison <- experSetup$pwGrpNa
+    if(length(sep)==0 && "sep" %in% names(useComparison)) sep <- experSetup$sep
+  }
   if(!is.factor(grp)) grp <- as.factor(grp)
 
   ## prepare 
@@ -82,7 +88,7 @@ presenceFilt <- function(dat, grp, useComparison=NULL, maxGrpMiss=1, ratMaxNA=0.
   ch1 <- NaRat > ratMaxNA & byGrp
   
   if(any(ch1)) byGrp[which(ch1)] <- FALSE
-  if(debug) {message(fxNa,"pFi2"); pFi2 <- list(dat=dat,grp=grp,useComparison=useComparison,maxGrpMiss=maxGrpMiss,ratMaxNA=ratMaxNA,nGrp=nGrp,byGrp=byGrp,nNa=nNa,NaRat=NaRat)}
+  if(debug) {message(fxNa,"pFi2"); pFi2 <- list(dat=dat,grp=grp,useComparison=useComparison,maxGrpMiss=maxGrpMiss,ratMaxNA=ratMaxNA,nGrp=nGrp,byGrp=byGrp,nNa=nNa,NaRat=NaRat,sep=sep,experSetup=experSetup)}
 
   ## filter for absol count
   ## combine groups
@@ -93,9 +99,15 @@ presenceFilt <- function(dat, grp, useComparison=NULL, maxGrpMiss=1, ratMaxNA=0.
     dimnames(useComparison) <- list(utils::combn(levels(grp), 2, paste, collapse=sep), c("samp","ref")) 
   } else if(length(dim(useComparison)) <2) {
     if(debug) {message(fxNa,"Trying to convert 'useComparison' to matrix of indexes")}
-    useComparison <- try(indexGroupsFromPW(compNames=useComparison, grp=unique(grp), includeGrp=FALSE, silent=silent, debug=debug, callFrom=fxNa))
+    sep <- getPWseparator(grp=grp, silent=silent, debug=debug, callFrom=fxNa)
+    experSetup <- convPairwiseSetup(useComparison, grp=grp, experSetup=experSetup, sep=sep, silent=silent, debug=debug, callFrom=fxNa)
+    useComparison <- experSetup$pwIndex 
+
+    #bad# useComparison <- try(indexGroupsFromPW(compNames=useComparison, grp=unique(grp), includeGrp=FALSE, silent=silent, debug=debug, callFrom=fxNa))
     if(inherits(useComparison, "try-error")) {useComparison <- NULL; message(fxNa,"Failed to convert 'useComparison")}
   }   
+  if(debug) {message(fxNa,"pFi3"); pFi3 <- list(dat=dat,grp=grp,useComparison=useComparison,maxGrpMiss=maxGrpMiss,ratMaxNA=ratMaxNA,nGrp=nGrp,byGrp=byGrp,nNa=nNa,NaRat=NaRat,sep=sep)}
+  
   if(length(dim(useComparison)) !=2 && all(dim(useComparison) >= c(1,2))) {
     if(!silent) message(fxNa,"Invalid 'useComparison', must be matrix or data.fame with 2 columns;  returning NULL")
   } else {
