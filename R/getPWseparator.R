@@ -62,7 +62,7 @@ getPWseparator <- function(compNames=NULL, grp=NULL, potSep=c("-","---","_","___
       chS <- try(sapply(potSep2, grepl, grp), silent=TRUE)
       if(debug) {message(fxNa,"gPWS1"); gPWS1 <- list(compNames=compNames,grp=grp,potSep=potSep,potSep2=potSep2,chS=chS)}
       if(!inherits(chS, "try-error")) {
-        chS <- colSums(chS)
+        chS <- if(length(dim(chS)) ==2) colSums(chS) else 0 + (!chS)
         if(any(chS ==0)) sep <- potSep[which(chS==0)[1]]
       } else if(!silent) message(fxNa,"FAILED checking for suitable SEPARATOR (maybe content of 'potSep' contains special characters that need getting protected ?)")
     } else warning(fxNa,"Arguments 'grp' and 'compNames' seems empty, nothing to do")

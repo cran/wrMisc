@@ -27,7 +27,6 @@ suppressPackageStartupMessages({
 
 ## ----setup1-------------------------------------------------------------------
 library("wrMisc")
-library("knitr")
 
 ## This is 'wrMisc' version number :
 packageVersion("wrMisc")
@@ -77,16 +76,25 @@ system.time(cv1Gr <- rowGrpCV(dat1, grp1))
 head(cv1Gr)
 
 ## ----rowGrpNA1, echo=TRUE-----------------------------------------------------
-mat2 <- c(22.2, 22.5, 22.2, 22.2, 21.5, 22.0, 22.1, 21.7, 21.5, 22, 22.2, 22.7,
-   NA, NA, NA, NA, NA, NA, NA, 21.2,   NA, NA, NA, NA,
-   NA, 22.6, 23.2, 23.2,  22.4, 22.8, 22.8, NA,  23.3, 23.2, NA, 23.7,
-   NA, 23.0, 23.1, 23.0,  23.2, 23.2, NA, 23.3,  NA, NA, 23.3, 23.8)
-mat2 <- matrix(mat2, ncol=12, byrow=TRUE)
-## The definition of the groups (ie replicates)
-gr4 <- gl(3, 4, labels=LETTERS[1:3])
+mat2 <- matrix(1, nrow=200, ncol=40)
+set.seed(2026); mat2[sample.int(prod(dim(mat2)), nrow(mat2), replace=FALSE)] <- NA
+set.seed(2025); grp2 <- as.factor(sample.int(n=8, size=ncol(mat2), replace=TRUE))
+  table(grp2)
 
 ## ----rowGrpNA2, echo=TRUE-----------------------------------------------------
-rowGrpNA(mat2,gr4)
+## number of NAs per row and group
+head(rowGrpNA(mat2, grp2))
+
+## ----rowGrpNA3, echo=TRUE-----------------------------------------------------
+head(rowGrpNA(mat2, grp2, mode="ratio"))
+head(rowGrpNA(mat2, grp2, mode="complete"))
+
+## ----rowGrpNA4, echo=TRUE-----------------------------------------------------
+## mimick output from testing from package wrProteo
+dat1 <- list(isNA =mat2, setup=list(grp=grp2))
+head(rowGrpNA(dat1, mode="simple"))
+head(rowGrpNA(dat1, mode="complete"))
+head(rowGrpNA(dat1, mode="ratioCollapse"))
 
 ## ----naOmit, echo=TRUE--------------------------------------------------------
 aA <- c(11:13,NA,10,NA)
@@ -779,6 +787,16 @@ gitDataUrl(url1)
 dataPxd <- try(read.delim(gitDataUrl(url1), sep='\t', header=TRUE))
 str(dataPxd)
 
+## ----vectorDistAngle1, echo=TRUE----------------------------------------------
+x <- matrix(c(0, 3, 0.5, 4, 1, 1), ncol=2, byrow=TRUE)
+y <- matrix(c(0, 0, 1, 3, 0.5, 5), ncol=2, byrow=TRUE)
+(vectDist <- vectorDistAngle(x, y))
+
+## ----vectorDistAngle2, echo=TRUE----------------------------------------------
+plot(cbind(x=as.numeric(x), y=as.numeric(y)), main="Example for vectorDistAngle()",las=1)
+arrows(x[,1], y[,1], x[,2], y[,2])
+text(x[,2], 0.1 +y[,2], paste0("dist=",round(vectDist[,1],2),", angle=",round(vectDist[,2],2)), adj=1)
+
 ## ----presenceGrpFilt1, echo=TRUE----------------------------------------------
 dat1 <- matrix(1:56,ncol=7)
 dat1[c(2,3,4,5,6,10,12,18,19,20,22,23,26,27,28,30,31,34,38,39,50,54)] <- NA
@@ -862,6 +880,47 @@ mean(x)
 mean(x, trim=0.15)       # symmetric trimming
 mean(x[x < 25])          # manual trimming
 trimmedMean(x, trim=c(l=0, u=0.7))   # asymmetric trim
+
+## ----blockNormalize1, echo=TRUE-----------------------------------------------
+## Basic usage with vectors 
+x <- c(1, 5, 3, 7, 2)
+y <- (1:5)*10
+## Align distributions (default: x and y will have identical distributions)
+norm1 <- blockNormalize(x, y)
+table(sort(norm1$x) == sort(norm1$y))  # all TRUE with 'quantile.block'
+
+## ----blockNormalize2, echo=TRUE-----------------------------------------------
+## matrix-example (like with omics-data)
+set.seed(2026); mat1 <- matrix(rnorm(70), nrow=10, dimnames=list(letters[1:10],LETTERS[1:7])) *5  # 10 lines x 10 samples
+set.seed(2025); mat2 <- matrix(rnorm(70, mean=5), nrow=10)^2 -15
+mat2[which(mat2 < 1.8)] <- mat2[which(mat2 < 1.8)] + 32
+
+norm2 <- blockNormalize(mat1, mat2, method="rescale", range=c(0.1, 10))
+sapply(norm2, range)
+
+norm3 <- blockNormalize(mat1, mat2, method="median")
+sapply(norm3, quantile, c(0.25,0.5,0.75), na.rm=TRUE)
+
+norm4 <- blockNormalize(mat1, mat2, method="quantile.block")
+sapply(norm4, quantile, c(0.25,0.5,0.75), na.rm=TRUE)
+
+## ----blockNormalize3, echo=TRUE-----------------------------------------------
+layout(matrix(1:4, ncol=2))
+boxplot(cbind(mat1, NA, mat2), main="initial", las=1)
+boxplot(cbind(norm2$x, NA, norm2$y), main="rescale block", las=1)
+boxplot(cbind(norm3$x, NA, norm3$y), main="median block", las=1)
+boxplot(cbind(norm4$x, NA, norm4$y), main="quantile.block", las=1)
+
+## ----blockNormalize4, echo=TRUE-----------------------------------------------
+## the overall distribution of blocks
+layout(matrix(1:4, ncol=2))
+boxplot(cbind(mat1=as.numeric(mat1), mat2=as.numeric(mat2)), main="initial (overall)",las=1)
+boxplot(cbind(mat1=as.numeric(norm2$x), mat2=as.numeric(norm2$x)), 
+  main="rescale block norm (overall)",las=1)
+boxplot(cbind(mat1=as.numeric(norm3$x), mat2=as.numeric(norm3$x)), 
+  main="median block norm (overall)",las=1)
+boxplot(cbind(mat1=as.numeric(norm4$x), mat2=as.numeric(norm4$x)), 
+  main="quantile.block norm (overall)",las=1)
 
 ## ----rnormW1, echo=TRUE-------------------------------------------------------
 ## some sample data :

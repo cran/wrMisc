@@ -82,7 +82,7 @@ readXlsxBatch <- function(fileNames=NULL, path=".", fileExtension="xlsx", exclud
 
     ## main reading
     outL <- list()
-    if(length(useFi) >0 && requireNamespace("readxl")) {
+    if(length(useFi) >0 && requireNamespace("readxl", quietly=TRUE)) {
       for(i in 1:length(useFi)) {
         sheets <- try(readxl::excel_sheets(useFi[i]))
         if("try-error" %in% class(sheets)) { sheetInd <- NULL

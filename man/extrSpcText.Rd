@@ -2,7 +2,7 @@
 % Please edit documentation in R/extrSpcText.R
 \name{extrSpcText}
 \alias{extrSpcText}
-\title{Extract specific text}
+\title{Extract Specific Text}
 \usage{
 extrSpcText(
   txt,

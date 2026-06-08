@@ -58,8 +58,8 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
     ## pwGrpNa may also be obj from testing
     if(any(c("list","MArrayLM") %in% class(pwGrpNa))) {
 
-      ## A) sep :  check for present predefined sep  (from wrProteo::testRobustToNAimputation() or wrMisc::moderTestXgrp()    
-      ch1 <- length(pwGrpNa$grpSep) ==1      ## need to create $grpSep for  wrProteo::testRobustToNAimputation() or wrMisc::moderTestXgrp()
+      ## A) sep :  check for present predefined sep  (from wrProteo::testRobustToNAimputation() or moderTestXgrp()    
+      ch1 <- length(pwGrpNa$grpSep) ==1      ## need to create $grpSep for  wrProteo::testRobustToNAimputation() or moderTestXgrp()
       ch2 <- length(pwGrpNa$setup$sep) ==1   ## from importFx
       ## other places to check ?
       if(any(ch1, ch2)) {
@@ -91,14 +91,14 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
             ## B2, regular extraction of pwGrpNa1 (multiple pw comparisons)
             if("t" %in% names(pwGrpNa) && length(colnames(pwGrpNa$t)) >0) pwGrpNa1 <- colnames(pwGrpNa$t) else {
               if("p.value" %in% names(pwGrpNa) && length(colnames(pwGrpNa$p.value)) >0) pwGrpNa1 <- colnames(pwGrpNa$p.value) else {
-                ## also check $design (would need to concatenate later) ? (gives no of samples & groups) note : $contrasts NOT present in result from wrMisc::moderTest2grp() !!
+                ## also check $design (would need to concatenate later) ? (gives no of samples & groups) note : $contrasts NOT present in result from moderTest2grp() !!
                 warning(fxNa,"Unable to locate 'pwGrpNa' in input")
               }
             }  
           }
         }
       } 
-      if(debug) {message(fxNa,"yy1"); yy1 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1)}
+      if(debug) {message(fxNa,"yy1"); yy1 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,combPwSep=combPwSep)}
 
       ## C) grpNa : look names of groups (grpNa)
       if("grpNa" %in% names(pwGrpNa) && length(pwGrpNa$grpNa) >0) grpNa1 <- pwGrpNa$grpNa else {
@@ -118,7 +118,7 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
 
       ## D) useComparisonNa : recuperate useComparisonNa
       if(length(pwGrpNa$setup$useComparisonNa) >0) useComparisonNa <- pwGrpNa$setup$useComparisonNa     
-      if(debug) {message(fxNa,"yy2"); yy2 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,useComparisonNa=useComparisonNa)}
+      if(debug) {message(fxNa,"yy2"); yy2 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,useComparisonNa=useComparisonNa,combPwSep=combPwSep)}
       
       ## pwGrpNa D) recuperate /restore (core) pwGrpNa  (and dismiss other info attached)
       pwGrpNa <- pwGrpNa1             # dismiss rest of MArrayLM-object 
@@ -161,7 +161,8 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
       if(length(out) !=1) {               ## if failed so far, go for strspl
         out <- indexGroupsFromPW(grpNa, grp=grpNa, includeGrp=TRUE, silent=silent, debug=debug, callFrom=fxNa)   # uses strspl        
       }    
-    } 
+    }
+    if(datOK && length(out$index) !=0) out$pwIndex <- out$index   # prepare for shift of element 'index' to 'pwIndex'
   }      
   out }                
        

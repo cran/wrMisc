@@ -17,7 +17,7 @@
 This function returns a modified character vector
 }
 \description{
-Trim character string: keep only text before 'sep' (length=1 !)
+This functions trims character strings: It keeps only text before 'sep' (length=1 !)
 }
 \examples{
 .retain1stPart("abc = def")

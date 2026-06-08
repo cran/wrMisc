@@ -107,7 +107,7 @@ readTabulatedBatch <- function(query, path=NULL, dec=".", header="auto", strip.w
       if(identical(header,"auto") && !chPa[2]) header <- FALSE   # option 'auto' only avail with  data.table
       if(!isFALSE(filterAsInf)) filterAsInf <- TRUE
       if(debug) {message(fxNa,"rTB5")}
-      datLi <- if(requireNamespace("data.table")) {
+      datLi <- if(requireNamespace("data.table", quietly=TRUE)) {
         lapply(fiPa, function(x) { 
           y <- as.data.frame(data.table::fread(x, sep="\t", dec=dec, header=header,strip.white=strip.white, blank.lines.skip=blank.lines.skip,fill=fill))
           if(length(filtCol)==1) { if(ncol(y) < filtCol) filtCol <- NULL else if(!is.numeric(y[,filtCol])) filtCol <- NULL}

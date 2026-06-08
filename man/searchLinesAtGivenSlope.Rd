@@ -51,7 +51,7 @@ searchLinesAtGivenSlope(
 This functions returns a matrix of line-characteristics  (or if indexPoints is \code{TRUE} then list (line-characteristics & index & lm-results)
 }
 \description{
-\code{searchLinesAtGivenSlope} searchs among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
+This function searches among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
  ie search optimal (slope-) offset parameter(s) for (regression) line(s) with given slope ('coef').
  Note: larger data-sets : segment residuals to 'coeff' & select most homogenous
 }

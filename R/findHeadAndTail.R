@@ -42,7 +42,7 @@ findHeadAndTail <- function(grpNa, pairwNa, reportAs="list", sortGrp=TRUE, rmAmb
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(!isTRUE(silent)) silent <- FALSE
 
-  if(any(is.na(pairwNa))) pairwNa <- wrMisc::naOmit(pairwNa)
+  if(any(is.na(pairwNa))) pairwNa <- naOmit(pairwNa)
   if(all(is.na(grpNa))) grpNa <- NULL
   datOK <- length(pairwNa) >0 && length(grpNa) >0
   if(datOK) { 
@@ -51,7 +51,7 @@ findHeadAndTail <- function(grpNa, pairwNa, reportAs="list", sortGrp=TRUE, rmAmb
     if(any(chDup)) grpNa <- grpNa[which(!chDup)]
     grpNaIni <- grpNa    
     grpNaIni2 <- grpNa <- grpNa[order(nchar(grpNa), decreasing=TRUE)]
-    grpNaIni3 <- grpNa <- wrMisc::protectSpecChar(grpNa)
+    grpNaIni3 <- grpNa <- protectSpecChar(grpNa)
     sep <- NULL    
     ## need to sort decreasing by length (no of characters) since some grpNa may be shorter version of others    
     ## main grep from ends
@@ -99,10 +99,10 @@ findHeadAndTail <- function(grpNa, pairwNa, reportAs="list", sortGrp=TRUE, rmAmb
         ## isolate sep
         if(any(c("li","list","all") %in% reportAs)) {
           chSep <- nchar(pairwNa) -chLe 
-          if(length(unique(wrMisc::naOmit(chSep))) >1) warning(fxNa,"It looks like finding non-unique separator")         
+          if(length(unique(naOmit(chSep))) >1) warning(fxNa,"It looks like finding non-unique separator")         
           sep <- unique(substr(pairwNa, nchar(out[,1]) +1, nchar(out[,1]) +0 +unique(chSep)))
           if(length(sep) >1) {          
-            sep <- wrMisc::naOmit(unique(sub("^ +","", sub(" +$","", sep))) ) # trim heading or tailing spaces
+            sep <- naOmit(unique(sub("^ +","", sub(" +$","", sep))) ) # trim heading or tailing spaces
           }
         } 
         ## located index

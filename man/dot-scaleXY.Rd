@@ -7,7 +7,7 @@
 .scaleXY(x, minim = 2, maxim = 3)
 }
 \arguments{
-\item{x}{numeric vector to be re-scalded}
+\item{x}{numeric vector to be re-scaled}
 
 \item{minim}{(numeric) minimum value for resultant vactor}
 

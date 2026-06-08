@@ -7,7 +7,7 @@
 .scale01(x)
 }
 \arguments{
-\item{x}{numeric vector to be re-scalded}
+\item{x}{numeric vector to be re-scaled}
 }
 \value{
 This function returns a numeric vector of same length with re-scaled values

@@ -72,7 +72,7 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
   } else  chDu <- sum(duplicated(x)) 
   ## BBmisc
   if(identical(method, "BBmisc")) {
-    if(requireNamespace("BBmisc")) {
+    if(requireNamespace("BBmisc", quietly=TRUE)) {
       mo <- try(sapply(rangeSign, function(y) BBmisc::computeMode(signif(x, y))), silent=TRUE)
       if(inherits(mo, "try-error")) { method <- "density"
         warning(fxNa,"UNABLE to calulate BBmisc::computeMode(),  setting 'method' to 'density'")

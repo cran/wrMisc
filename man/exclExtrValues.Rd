@@ -2,7 +2,7 @@
 % Please edit documentation in R/exclExtrValues.R
 \name{exclExtrValues}
 \alias{exclExtrValues}
-\title{Exclude extreme values (based on distance to mean)}
+\title{Exclude Extreme Values (Based On Distance To Mean)}
 \usage{
 exclExtrValues(
   dat,
@@ -12,6 +12,7 @@ exclExtrValues(
   showNA = FALSE,
   goodValues = TRUE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -30,10 +31,12 @@ exclExtrValues(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-numeric vector wo extremle values or index-position of extreme values
+This function returns a numeric vector without extreme values or index-position of extreme values
 }
 \description{
 This function aims to identify extreme values (values most distant to mean, thus potential outlyers), mark them as NA or directely exclude them (depending on '\code{showNAs}').

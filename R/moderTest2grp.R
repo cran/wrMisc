@@ -50,7 +50,7 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
   checkPkg <- function(pkg) requireNamespace(pkg, quietly=TRUE)
   checkPkgs <- sapply(packages, checkPkg)
   if(!checkPkgs[1]) {message(fxNa,"NOTE: Package 'limma' not found ! Please install first from Bioconductor"); runTest <- FALSE}
-  if(runTest  && requireNamespace("limma")) {   
+  if(runTest  && requireNamespace("limma", quietly=TRUE)) {   
     if(limmaOutput && length(addResults) >0) if("all" %in% addResults) addResults <- c("BH", "BY","lfdr","qValue","bonferroni","Mval","means","nonMod")
     if(!checkPkgs[2] && any("lfdr" %in% tolower(addResults))) {
       if(!silent) message(fxNa,"Package 'fdrtool' not found, omitting .. Please install from CRAN for enabeling 'lfdr'")
@@ -91,7 +91,7 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       if(any(ch)) fit1$p.value[which(ch),] <- fit1$p.value[which(ch),]/2
       if(any(!ch)) fit1$p.value[which(!ch),] <- 1- fit1$p.value[which(!ch),]/2        # !(A > B)  .. A <= B
     }
-    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue") && !silent) message(fxNa,"NOTE: package 'qvalue' not installed from CRAN, can't calulate ...")
+    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue", quietly=TRUE) && !silent) message(fxNa,"NOTE: package 'qvalue' not installed from CRAN, can't calulate ...")
 
     if(!limmaOutput) out <- fit1$p.value[,2] else { out <- fit1
       ## further inspect & correct values of 'addResults' ?
@@ -100,11 +100,11 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
         apply(out$p.value, 2, stats::p.adjust, meth="BH")} else stats::p.adjust(out$p.value, meth="BH")
       if("BY" %in% toupper(addResults)) out$BY <- if(is.matrix(out$p.value)) {
         apply(out$p.value, 2, stats::p.adjust, meth="BY")} else stats::p.adjust(out$p.value, meth="BY")
-      if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool")) {
+      if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool", quietly=TRUE)) {
         if(!silent && nrow(dat) <200) message(fxNa,"Please NOTE that fdrtool() (from package fdrtool) considers that there are TOO FEW input test statistics for reliable FDR calculations !   (..originally giving a warning)")
         out$lfdr <- if(is.matrix(out$p.value)) {
         suppressWarnings(apply(out$p.value, 2, pVal2lfdr))} else suppressWarnings(pVal2lfdr(out$p.value)) }    
-      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) { out$qVal <- if(is.matrix(out$p.value)) {
+      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue", quietly=TRUE)) { out$qVal <- if(is.matrix(out$p.value)) {
         try(apply(out$p.value, 2, function(x) qvalue::qvalue(x,lfdr.out=TRUE)$lfdr), silent=TRUE)
           } else try(qvalue::qvalue(out$p.value,lfdr.out=TRUE)$lfdr, silent=TRUE) 
         if(inherits(out$qVal, "try-error")) {  
@@ -122,8 +122,8 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       out$nonMod.p <- apply(dat, 1, function(x) stats::t.test(x[gr1], x[gr2], alternative=altHyp)$p.value)
       if(any(c("FDR","BH") %in% toupper(addResults))) out$nonMod.FDR <- stats::p.adjust(out$nonMod.p, method="BH") 
       if("BY" %in% toupper(addResults)) out$nonMod.BY <- stats::p.adjust(out$nonMod.p, method="BY")
-      if(any(c("lfdr") %in% tolower(addResults)) && requireNamespace("fdrtool")) out$nonMod.lfdr <- suppressWarnings(try(pVal2lfdr(out$nonMod.p), silent=TRUE)) 
-      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) { 
+      if(any(c("lfdr") %in% tolower(addResults)) && requireNamespace("fdrtool", quietly=TRUE)) out$nonMod.lfdr <- suppressWarnings(try(pVal2lfdr(out$nonMod.p), silent=TRUE)) 
+      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue", quietly=TRUE)) { 
         out$nonMod.qVal <- try(qvalue::qvalue(out$nonMod.p, lfdr.out=TRUE)$lfdr, silent=TRUE)
         if(inherits(out$nonMod.qVal, "try-error")) {
           if(!silent) message(fxNa,"Problem with pi0 estimation (non-shrinked p-values) fro qValue, setting pi0=1 like BH-FDR")

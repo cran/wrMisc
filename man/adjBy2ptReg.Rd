@@ -2,7 +2,7 @@
 % Please edit documentation in R/adjBy2ptReg.R
 \name{adjBy2ptReg}
 \alias{adjBy2ptReg}
-\title{Linear rescaling of numeric vertor or matrix}
+\title{Adjust Values By Two-Point Regression}
 \usage{
 adjBy2ptReg(
   dat,
@@ -15,35 +15,36 @@ adjBy2ptReg(
 )
 }
 \arguments{
-\item{dat}{numeric vector, matrix or data.frame}
+\item{dat}{A numeric vector or matrix of values to adjust.}
 
-\item{lims}{(list, length=2) should be list giving limits (list(lo=c(min,max),hi=c(min,max)) in data allowing identifying which points will be used for determining slope & offset}
+\item{lims}{A list of two numeric vectors, each of length 1 or 2, representing the lower and upper limits for rescaling.
+Example: `lims = list(c(5, 9), c(60, 90))`.}
 
-\item{regrTo}{(numeric, length=2) to which characteristics data should be regressed}
+\item{regrTo}{A numeric vector of length 2 defining the target range for rescaling (default: `c(0.1, 0.9)`).}
 
-\item{refLines}{(NULL or integer) optional subselection of lines of dat (will be used internal as refDat)}
+\item{refLines}{Optional numeric or character vector specifying reference lines (rows) in `dat` to use for rescaling.
+If `NULL`, all rows are used.}
 
-\item{silent}{(logical) suppress messages}
+\item{silent}{Logical. If `TRUE`, suppresses messages (default: `FALSE`).}
 
-\item{debug}{(logical) display additional messages for debugging}
+\item{debug}{Logical. If `TRUE`, prints debugging messages (default: `FALSE`).}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{callFrom}{Character string for tracking messages (default: `NULL`).}
 }
 \value{
-This function returns a matrix (of same dimensions as inlut matrix) with normalized values
+A numeric vector or matrix with adjusted values.
 }
 \description{
-\code{adjBy2ptReg} takes data within window defined by 'lims' and determines linear transformation so that these points get the regression characteristics 'regrTo', 
-all other points (ie beyond the limits) will follow the same transformation.
-In other words, this function performs 'linear rescaling', by adjusting (normalizing) the vector 'dat' by linear regression so that points falling in 'lims'
-(list with upper & lower boundaries) will end up as 'regrTo'.
+This function performs linear rescaling of numeric data based on specified limits (ie a specified window).
+Values are adjusted to fit within a target range defined by `regrTo`.
+}
+\details{
+Since this function shares sigificant overlap with \code{\link{scaleXY}} (which has more advanced options) it is rather suggested to use _scaleXY()_ instead. 
+The function _adjBy2ptReg()_ will may deprecated in the future.
 }
 \examples{
-set.seed(2016); dat1 <- round(runif(50,0,100),1)
-## extreme values will be further away :
-adjBy2ptReg(dat1,lims=list(c(5,9), c(60,90)))
-plot(dat1, adjBy2ptReg(dat1, lims=list(c(5,9),c(60,90))))
-}
-\seealso{
-\code{\link{normalizeThis}}
+set.seed(2016); dat1 <- round(runif(50, 0, 100), 1)
+adjBy2ptReg(dat1, lims = list(c(5, 9), c(60, 90)))
+plot(dat1, adjBy2ptReg(dat1, lims=list(c(5,9), c(60,90))))
+
 }

@@ -1,9 +1,10 @@
 #' Search Points Forming Lines At Given Slope
 #'
-#' \code{searchLinesAtGivenSlope} searchs among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
+#' This function searches among set of points (2-dim) those forming line(s) with user-defined slope ('coeff'),
 #'  ie search optimal (slope-) offset parameter(s) for (regression) line(s) with given slope ('coef').
 #'  Note: larger data-sets : segment residuals to 'coeff' & select most homogenous
 #' 
+#' @details
 #' Note: The package MASS is required when using as \code{lmCompare=TRUE}.
 #' For larger data the function will try using the package \code{NbClust} (available from CRAN) if installed.
 #' 
@@ -152,7 +153,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   } else out <- offT
   ## compare to lm fit                                            
   if(debug) message(fxNa,"  ..ready to refine ",length(refCluNo)," groups by lm (conserve = ",is.list(out),")")
-  if(lmCompare && requireNamespace("MASS")) {for(i in 1:length(refCluNo)) {
+  if(lmCompare && requireNamespace("MASS", quietly=TRUE)) {for(i in 1:length(refCluNo)) {
     j <- refCluNo[i]
     dat2 <- as.data.frame(matrix(dat[filt1[which(bestPart$cluster==j)],1:2], ncol=2))
     colnames(dat2) <- c("slope","B")     # LETTERS[1:2]
@@ -373,7 +374,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   dat1 <- signif(naOmit(dat1), 5)
   if(length(unique(dat1)) ==1)  {
     if(!silent) message(fxNa,"All (slightly rounded) values identical ! (keep all)")
-    out <- 1:length(dat1)
+    out <- seq_len(length(dat1))
     return(if(keepOnly) out else list(keep=out, drop=NULL))
   } else {
     his1 <- graphics::hist(dat1, breaks="FD", plot=FALSE)

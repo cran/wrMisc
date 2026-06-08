@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkGroupOrderSEM.R
 \name{checkGrpOrderSEM}
 \alias{checkGrpOrderSEM}
-\title{Check order of multiple groups including non-overlapping SEM-margins}
+\title{Check Order Of Multiple Groups Including Non-Overlapping SEM-Margins}
 \usage{
 checkGrpOrderSEM(
   x,
@@ -11,6 +11,7 @@ checkGrpOrderSEM(
   revRank = TRUE,
   shrink1sampSd = TRUE,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -19,31 +20,37 @@ checkGrpOrderSEM(
 
 \item{grp}{(factor) to organize replicate columns of (x)}
 
-\item{sdFact}{(numeric) is proportional factor how many units of SEM will be used for defining lower & upper bounds of each group}
+\item{sdFact}{(numeric) is proportional factor how many times the SD will be used for defining lower & upper bounds of each group (ie \code{sdFact=2} will mimick 95-percent confidence intervals)}
 
-\item{revRank}{(logical) optionally revert ranks}
+\item{revRank}{(logical) (not implemented yet : optionally revert rank)}
 
 \item{shrink1sampSd}{(logical)}
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-logical vector if order correct (as expected based on ranks)
+This function returns a list with $rankExp as logical vector telling if group-ranges are asending and $lims wityh the sd-based group-limits
 }
 \description{
-\code{checkGrpOrderSEM} tests each line of 'x' if expected order of (replicate-) groups (defined in 'grp') appears intact,
- while inluding SEM of groups (replicates) via a proportional weight 'sdFact' as (avGr1-gr1SEM) < (avGr1+gr1SEM) < (avGr2-gr2SEM) < (avGr2+gr2SEM).  
-Used for comparing groups of measures with expected profile (by matching expected order)
-to check if data in 'x' represting groups ('grp') as lines follow.  
+This function tests each line of 'x' if expected order of (replicate-) groups (defined in 'grp') appears intact,
+ while inluding SEM of groups (replicates) via a proportional weight 'sdFact' as (avGr1-gr1SEM) < (avGr1+gr1SEM) < (avGr2-gr2SEM) < (avGr2+gr2SEM).
+}
+\details{
+This function may be used for comparing groups of measures with expected profiles (by matching expected order)
+to check if data in 'x' represt ascending groups ('grp') .  
 Groups of size=1: The sd (and SEM) can't be estimated directly without any replicates, however, an estimate can be given by shrinking if 'shrink1sampSd'=TRUE 
 under the hypothesis that the overall mechanisms determining the variances is constant across all samples.
 }
 \examples{
-mat1 <- matrix(rep(11:24,3)[1:40],byrow=TRUE,ncol=8)
-checkGrpOrderSEM(mat1,grp=gl(3,3)[-1])
+mat1 <- matrix(rep(11:24,3)[1:40], byrow=TRUE, ncol=8)
+dimnames(mat1) <- list(letters[1:nrow(mat1)], paste(rep(LETTERS[3:1], each=3)[-1], 
+  rep(1:3, 3)[-1], sep="."))
+checkGrpOrderSEM(mat1, grp=gl(3,3, labels=LETTERS[3:1])[-1])
 }
 \seealso{
-takes only 10% more time than \code{\link[wrMisc]{checkGrpOrder}} wo considering intra-group sd
+takes only 10% more time than \code{\link[wrMisc]{checkGrpOrder}} without considering intra-group sd
 }

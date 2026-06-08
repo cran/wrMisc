@@ -2,9 +2,16 @@
 % Please edit documentation in R/findUsableGroupRange.R
 \name{findUsableGroupRange}
 \alias{findUsableGroupRange}
-\title{Select groups within given range}
+\title{Select Groups Within Given Range}
 \usage{
-findUsableGroupRange(dat, grp, maxNA = 1, callFrom = NULL)
+findUsableGroupRange(
+  dat,
+  grp,
+  maxNA = 1,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{dat}{(matrix or data.frame) main input}
@@ -13,19 +20,26 @@ findUsableGroupRange(dat, grp, maxNA = 1, callFrom = NULL)
 
 \item{maxNA}{(interger) max number of tolerated NAs}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix with boundaries of 1st and last usable column (NA if there were no suitable groups found)
+This function returns a matrix with boundaries of 1st and last usable column (NA if there were no suitable groups found)
 }
 \description{
-This function aims to help finding streches/segments of data with a given maximum number of NA-instances.
+This function aims to help finding stretches/segments of data with a given maximum number of NA-instances.
+}
+\details{
+To find groups within a specific range, this function searches independently each line of the input-matrix 'dat' for sretches with a given maximum of NA-instances (\code{'maxNA'}). 
 This function is used to inspect/filter each lines of 'dat' for a subset with sufficient presence/absence of NA values (ie limit number of NAs per level of 'grp').
 Note :  optimal perfomance with n.lines >> n.groups
 }
 \examples{
-dat1 <- matrix(1:56,nc=7)
+dat1 <- matrix(1:56, ncol=7)
 dat1[c(2,3,4,5,6,10,12,18,19,20,22,23,26,27,28,30,31,34,38,39,50,54)] <- NA
 rownames(dat1) <- letters[1:nrow(dat1)]
-findUsableGroupRange(dat1,gl(3,3)[-(3:4)])
+findUsableGroupRange(dat1, gl(3,3)[-(3:4)])
 }

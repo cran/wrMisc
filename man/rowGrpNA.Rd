@@ -2,32 +2,74 @@
 % Please edit documentation in R/rowGrpNA.R
 \name{rowGrpNA}
 \alias{rowGrpNA}
-\title{Count number of NAs per row and group of columns}
+\title{Count Number Of NAs Per Row And Group Of Columns}
 \usage{
-rowGrpNA(mat, grp)
+rowGrpNA(
+  mat,
+  grp = NULL,
+  initColOrder = TRUE,
+  mode = "simple",
+  digits = 2,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
-\item{mat}{(matrix of data.frame) data to count the number of \code{NA}s}
+\item{mat}{(matrix, data.frame, list or 'MArrayLM') data to count the number of \code{NAs}; 
+in case of furnishing a list or MArrayLM-class a list-element called 'isNA' will be used as \code{mat} or all \code{NA} positions of list-element called 'raw'}
 
-\item{grp}{(character or factor) defining which columns should be grouped (considered as replicates)}
+\item{grp}{(character or factor) defining which columns should be grouped (considered as replicates). If \code{grp} is not provided and \code{mat} is list or 'MArrayLM'-class containg a
+list-element 'setup' (as produced with testing from package  \href{https://CRAN.R-project.org/package=wrProteo}{wrProteo} the group-association will be taken from there}
+
+\item{initColOrder}{(logical) if\code{FALSE} the columns may be in (alphabetically) sorted order}
+
+\item{mode}{(character) switch between different types of output :
+- \code{mode="simple"} will return simply the number of \code{NAs} per line and group as integer
+- \code{mode="simpleCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group (as character)
+- \code{mode="complete"} will return number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character)
+- \code{mode="completeCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character)
+- \code{mode="ratio"} will return the ratio of \code{NAs} per line and group (as numeric)
+- \code{mode="ratioCollapse"} will collapse all columns into single chain of characters with the ratio of \code{NAs} per line and group(as character)}
+
+\item{digits}{(integer, length=1) number of decimal digits from rounding (when ratios are calculated)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-matrix with number of \code{NA}s per group
+This function returns typically a matrix (or numeric vector if all grouping falls in a single class or charcter-vector if all groups get collapsed in single chain of characters)  with number of \code{NA}s per group
 }
 \description{
-This functions allows easy counting the number of NAs per row in data organized in multiple sub-groups as columns.
+This functions allows easy counting of the number of NAs per row in data organized in multiple sub-groups as columns.
+}
+\details{
+First of all, this function allows counting the number of \code{NAs} per line and sub-group of columns as defined by argument \code{grp}. 
+Furthermore, the counting can be expressed relative to the size of the sub-groups, either as ratio or by giving the \code{NA}-count 
+using \code{mode="ratio"} and the size of the sub-group using \code{mode="complete"} .
+Finally, all results may get collaped in as single (character) vector, however, the names of the groups do not get conserved.
 }
 \examples{
-mat2 <- c(22.2, 22.5, 22.2, 22.2, 21.5, 22.0, 22.1, 21.7, 21.5, 22, 22.2, 22.7,
-   NA, NA, NA, NA, NA, NA, NA, 21.2,   NA, NA, NA, NA,
-   NA, 22.6, 23.2, 23.2,  22.4, 22.8, 22.8, NA,  23.3, 23.2, NA, 23.7,
-   NA, 23.0, 23.1, 23.0,  23.2, 23.2, NA, 23.3,  NA, NA, 23.3, 23.8)
-mat2 <- matrix(mat2, ncol=12, byrow=TRUE)
-gr4 <- gl(3, 4, labels=LETTERS[1:3])
-# overal number of NAs per row
+mat2 <- matrix(1, nrow=200, ncol=40)
+mat2[sample.int(prod(dim(mat2)), nrow(mat2), replace=FALSE)] <- NA
+grp2 <- as.factor(sample.int(n=8, size=ncol(mat2), replace=TRUE))
+  table(grp2)
+## overal number of NAs per row
 rowSums(is.na(mat2)) 
-# number of NAs per row and group
-rowGrpNA(mat2, gr4)
+
+## number of NAs per row and group
+head(rowGrpNA(mat2, grp2))
+head(rowGrpNA(mat2, grp2, mode="simple"))
+head(rowGrpNA(mat2, grp2, mode="complete"))
+
+## mimick output from testing from package wrProteo
+dat1 <- list(isNA =mat2, setup=list(grp=grp2))
+head(rowGrpNA(dat1, mode="simple"))
+head(rowGrpNA(dat1, mode="complete"))
+head(rowGrpNA(dat1, mode="ratioCollapse"))
 }
 \seealso{
 \code{\link{rowGrpMeans}}, \code{\link{rowSds}}, \code{\link[base]{colSums}}

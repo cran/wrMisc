@@ -2,35 +2,62 @@
 % Please edit documentation in R/scaleXY.R
 \name{scaleXY}
 \alias{scaleXY}
-\title{Scale data to given minimum and maxiumum}
+\title{Rescale Data To Given Minimum- And Maxiumum- Values}
 \usage{
-scaleXY(x, min = 0, max = 1)
+scaleXY(
+  x,
+  min = 0,
+  max = NULL,
+  q = c(0, 1),
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
-\item{x}{(numeric) vector to rescacle}
+\item{x}{(numeric vector, matrix or data.frame) object to rescacle}
 
-\item{min}{(numeric) minimum value in output}
+\item{min}{(numeric) minimum value in output, if of length=2 and max not given/valid its 2nd value will be used as max}
 
-\item{max}{(numeric) maximum value in output}
+\item{max}{(numeric) maximum value in output, defaults to 1 if not specified or use 2nd value of min (if min of length=2)}
+
+\item{q}{(numeric, length=2) vector giving quantile values to be used for setting frame of normalization (defaults to lowest and highest values expected)}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-vector of rescaled data (in dimensions as input)
+This function returns a vector (or matrix) of rescaled data (in dimensions of input)
 }
 \description{
-This is a convenient way to scale data to given minimum and maxiumum without full standarization, ie without deviding by the sd.
+This function allows convenient rescaling of data in the sence that the range covered will be adjusted to user-specified values.  
+Instead of fixed min and max values for the output it is also possible to fix 2 given quantiles for user-specified values (and rescale by linear transformation).
 }
 \examples{
-dat <- matrix(2*round(runif(100),2), ncol=4)
-range(dat)
-dat1 <- scaleXY(dat, 1,100)
-range(dat1)
-summary(dat1)
+## simple vector
+scale(11:19)    # standardizes (base R), is not 'rescaling'
+scaleXY(11:19)  # range form 0 to 1
+scaleXY(11:19, min=1, max=10)
+scaleXY(11:19, c(1, 10))          # min & max as single argument
+# rescale matrix with NA
+## rescale to 20th and 80th quantile (ie other than min or max) 
+scaleXY(11:19, min=1, max=10, q=c(0.2, 0.8))
 
-## scale for each column individually
-dat2 <- apply(dat, 2, scaleXY, 1, 100)
+## rescale matrix with NA
+mat1 <- matrix(11:20, ncol=2, dimnames=list(letters[1:5], c("A","B")))
+mat1[2,1] <- NA
+scaleXY(mat1)
+scaleXY(mat1, min=1, max=10, q=c(0.2, 0.8))
+
+## rescale for each column individually
+dat2 <- apply(mat1, 2, scaleXY, 1, 100)
 range(dat2)
 summary(dat2)
+ 
 }
 \seealso{
-\code{\link[base]{scale}}
+\code{\link[base]{scale}}, \code{\link{normalizeThis}},  \code{\link{blockNormalize}}
 }

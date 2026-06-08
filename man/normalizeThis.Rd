@@ -81,7 +81,7 @@ LOG-SCALE : With the analysis of 'Omics'-data it is very common to work with dat
 In this case the argument \code{mode} should be set to \code{additive} (or \code{log} or \code{logarithmic}).
 At normalization a constant factor will be added (or subtracted) using this mode. This corresponds to a multiplicative factor on regular scale.
 Please note that (at this point) the methods 'slope', 'exponent', 'twoPointSlope' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
-(you may look at the original documenation for more details, see \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
+(you may look at the original documenation for more details, see \code{\link{exponNormalize}},  \code{\link{scaleXY}} or \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
 
 Normalization using \code{method="rowNormalize"} runs \code{\link{rowNormalize}} from this package.
 In this case, the working hypothesis is, that all values in each row are expected to be the same.
@@ -117,5 +117,5 @@ cor(dat1[c(1:10,91:100),4],rowMeans(dat1[c(1:10,91:100),1:2],na.rm=TRUE),use="co
 cor(dat1[,3],rowMeans(dat1[,1:2],na.rm=TRUE)^ (1/seq(2,5,length.out=100)),use="complete.obs")
 }
 \seealso{
-\code{\link{rowNormalize}}, \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
+\code{\link{rowNormalize}}, \code{\link{exponNormalize}},  \code{\link{scaleXY}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
 }

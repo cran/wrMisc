@@ -16,7 +16,7 @@
 #' In this case the argument \code{mode} should be set to \code{additive} (or \code{log} or \code{logarithmic}).
 #' At normalization a constant factor will be added (or subtracted) using this mode. This corresponds to a multiplicative factor on regular scale.
 #' Please note that (at this point) the methods 'slope', 'exponent', 'twoPointSlope' and 'vsn' don't distinguish between additive and proportional modes, but take take the data 'as is'
-#' (you may look at the original documenation for more details, see \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
+#' (you may look at the original documenation for more details, see \code{\link{exponNormalize}},  \code{\link{scaleXY}} or \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}).
 #'
 #' Normalization using \code{method="rowNormalize"} runs \code{\link{rowNormalize}} from this package.
 #' In this case, the working hypothesis is, that all values in each row are expected to be the same.
@@ -54,7 +54,7 @@
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allows easier tracking of messages produced
 #' @return This function returns a matrix of normalized data (same dimensions as input)
-#' @seealso  \code{\link{rowNormalize}}, \code{\link{exponNormalize}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
+#' @seealso  \code{\link{rowNormalize}}, \code{\link{exponNormalize}},  \code{\link{scaleXY}}, \code{\link{adjBy2ptReg}}, \code{\link[vsn]{justvsn}}
 #' @examples
 #' set.seed(2015); rand1 <- round(runif(300)+rnorm(300,0,2),3)
 #' dat1 <- cbind(ser1=round(100:1+rand1[1:100]), ser2=round(1.2*(100:1+rand1[101:200])-2),
@@ -131,7 +131,7 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
       params$useExp <- sort(unique(c(round(1 /(1 +abs(useExp -useExp[1])), 4), round(1 +abs(useExp -useExp[1]), 3)))) }
     method <- "exponent"
   }
-  if("vsn" %in% method && !requireNamespace("vsn")) {
+  if("vsn" %in% method && !requireNamespace("vsn", quietly=TRUE)) {
     method <- "mean"
     if(!silent) message(fxNa,"NOTE: Please install package 'vsn' first from CRAN, resetting argument 'method' to default 'mean'")
   }
@@ -205,8 +205,9 @@ normalizeThis <- function(dat, method=c("mean","average","median","trimMean","ro
       sparseLim=param$sparseLim, nCombin=param$nCombin, omitNonAlignable=param$omitNonAlignable, maxFact=param$maxFact, silent=silent, debug=debug, callFrom=fxNa),
     slope=.normConstSlope(mat=dat, useQuant=param$useQ, refLines=param$refLines, diagPlot=FALSE),
     exponent=try(exponNormalize(dat, useExpon=param$useExp, refLines=param$refLines)$datNor, silent=TRUE),
+    #twoPointSlope=try(scaleXY(dat, lims=param$useQ, refLines=param$refLines), silent=TRUE),
     twoPointSlope=try(adjBy2ptReg(dat, lims=param$useQ, refLines=param$refLines), silent=TRUE),
-    vsn=if(requireNamespace("vsn")) try(vsn::justvsn(dat), silent=TRUE) else NULL ) 
+    vsn=if(requireNamespace("vsn", quietly=TRUE)) try(vsn::justvsn(dat), silent=TRUE) else NULL ) 
   }
 
 

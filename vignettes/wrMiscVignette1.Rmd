@@ -2,30 +2,30 @@
 title: "Getting started with wrMisc"
 author: Wolfgang Raffelsberger
 date: '`r Sys.Date()`'
+encoding: UTF-8  
 output:
   knitr:::html_vignette:
     toc: true
     fig_caption: yes
   pdf_document:
     highlight: null
-    number_sections: no
+    number_sections: no  
 vignette: >
   %\VignetteIndexEntry{wrMiscVignette1}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 
 ## Introduction
 
-This package contains a collection of various (low-level) tools which may be of general interest. 
+This package contains a collection of various (low-level) tools which may be of general interest, in particular in the context of working with 'omics'-data. 
 These functions were accumulated over a number of years of data-wrangling when treating high-throughput data from biomedical applications.
 Besides, these functions are further used/integrated in more specialized functions dedicated to specific applications in the packages [wrProteo](https://CRAN.R-project.org/package=wrProteo), [wrGraph](https://CRAN.R-project.org/package=wrGraph) or [wrTopDownFrag](https://CRAN.R-project.org/package=wrTopDownFrag). 
 All these packages are available on [CRAN](https://cran.r-project.org/).
 
 If you are not familiar with [R](https://www.r-project.org/) you may find many introductory documents on the official R-site 
 in [contributed documents](https://cran.r-project.org/other-docs.html) or under [Documentation/Manuals](https://cran.r-project.org/manuals.html).
-Of course, numerous other documents/sites with tutorials and courses exist, too.
+Of course, numerous other documents/videos/sites with tutorials and courses exist, too.
 
 
 ### Dependencies and Compilation
@@ -33,10 +33,9 @@ One of the aims was to write a package easy to install, with low system requirem
 All code is written in pure R and does not need any special compilers.
 The number of obligatory dependencies was kept to a minumum.
 
-Most of additional packages used in some of the functions were declared as 'suggested' (ie not obligatory), to allow installation of _wrMisc_ even if some these additional packages can't be installed/compiled by the user's instance.
+Most of additional packages used in some of the functions were declared as 'suggested' (ie not obligatory), to allow installation of _wrMisc_ even if some these additional packages can't be installed/compiled at the user's side.
 When a feature/function of one of the 'suggested' packages is about to be used, its presence/installation will be checked and,
 only if found as missing, the user will be prompted a message inviting to install specific package(s) before using these specific functions.
-This helps to avoid not being able installing this package at all if some dependencies may fail to get installed themselves.
 
 
 ### Installation And Loading
@@ -84,7 +83,6 @@ Before using the functions of this package, we actually need to load the package
 
 ```{r setup1}
 library("wrMisc")
-library("knitr")
 
 ## This is 'wrMisc' version number :
 packageVersion("wrMisc")
@@ -180,21 +178,36 @@ Some data, like with quantitative proteomics measures, may contain an elevated n
 Furthermore, many other packages on CRAN and Bioconductor cover this topic, see also the [missing data task-view](https://CRAN.R-project.org/view=MissingData) on CRAN.
 Similar as above there is an easy way to count the number of _NAs_ to get an overview how NAs are distributed. 
 
-Let's assume we have measures from 3 groups/samples with 4 replicates each :
+Let's assume we have measures for 200 features (eg gene-abundaces) from 8 groups of samples :
 ```{r rowGrpNA1, echo=TRUE}
-mat2 <- c(22.2, 22.5, 22.2, 22.2, 21.5, 22.0, 22.1, 21.7, 21.5, 22, 22.2, 22.7,
-   NA, NA, NA, NA, NA, NA, NA, 21.2,   NA, NA, NA, NA,
-   NA, 22.6, 23.2, 23.2,  22.4, 22.8, 22.8, NA,  23.3, 23.2, NA, 23.7,
-   NA, 23.0, 23.1, 23.0,  23.2, 23.2, NA, 23.3,  NA, NA, 23.3, 23.8)
-mat2 <- matrix(mat2, ncol=12, byrow=TRUE)
-## The definition of the groups (ie replicates)
-gr4 <- gl(3, 4, labels=LETTERS[1:3])
+mat2 <- matrix(1, nrow=200, ncol=40)
+set.seed(2026); mat2[sample.int(prod(dim(mat2)), nrow(mat2), replace=FALSE)] <- NA
+set.seed(2025); grp2 <- as.factor(sample.int(n=8, size=ncol(mat2), replace=TRUE))
+  table(grp2)
 ```
 
 Now we can easily count the number of NAs per row and set of replicates.
 ```{r rowGrpNA2, echo=TRUE}
-rowGrpNA(mat2,gr4)
+## number of NAs per row and group
+head(rowGrpNA(mat2, grp2))
 ```
+
+It is also possible to return the ratio of NA values or both the number of _NAs_ and the size of the sub-groups.
+```{r rowGrpNA3, echo=TRUE}
+head(rowGrpNA(mat2, grp2, mode="ratio"))
+head(rowGrpNA(mat2, grp2, mode="complete"))
+```
+
+This function allows also treating objects created by testing from package [wrProteo](https://CRAN.R-project.org/package=wrProteo), the group-information is typically already available in such objects.
+Finally, all results may get collapsed in single column/vector when using any of the _..Collapse_ modes.
+```{r rowGrpNA4, echo=TRUE}
+## mimick output from testing from package wrProteo
+dat1 <- list(isNA =mat2, setup=list(grp=grp2))
+head(rowGrpNA(dat1, mode="simple"))
+head(rowGrpNA(dat1, mode="complete"))
+head(rowGrpNA(dat1, mode="ratioCollapse"))
+```
+
 
 
 ### Fast NA-omit For Very Large Objects
@@ -388,7 +401,7 @@ listBatchReplace(lst1, search="efg", repl="EFG", silent=FALSE)
 ```
 
 
-### Organize Values Into list and Sort By Names 
+### Organize Values Into List And Sort By Names 
 
 Named numeric or character vectors can be organized into lists using `listGroupsByNames()`, 
 based on their names (only the part before any extensions starting with a point gets considered).
@@ -1290,7 +1303,7 @@ adjustUnitPrefix(x3, unit=checkUnitPrefix(x3))
 
 ### Merging Multiple Named Vectors To Matrix
 
-The function `mergeVectors()` allows merging for multiple named vectors (each element needs to be named).
+The function `mergeVectors()` allows merging of multiple named vectors (each element needs to be named !).
 Basically, all elements carrying the same name across different input-vectors will be aligned in the same column of the output (input-vectors appear as lines).
 Different to _merge()_ which allows merging only 2 data.frames, here multiple vectors may be merge at once.
 
@@ -1305,8 +1318,9 @@ mergeVectors(vect1=x1, vect2=x2, vect3=x3)
 mergeVectors(vect1=x1, vect2=x2, vect3=x3, inclInfo=TRUE)   # return list with additional info
 ```
 
-In the example below we'll add another vector _without_ named elements.
-As you can see a message tells the this vector was been ignored/omitted.
+In the example below we'll add another vector, nuty this time _without_ named elements.
+In the absence of names there are no anchors and in consequence the last vector cannot get merged to the rest.
+You can see a message telling that this vector was ignored/omitted.
 
 ```{r mergeVectors3, echo=TRUE}
 x4 <- 41:44            # no names - not conform for merging and will be ignored
@@ -1336,7 +1350,7 @@ matchMatrixLinesToRef(mat0[,-2], ref=mat0[,2], inclInfo=TRUE)   # needs 'reverse
 
 ### Order Matrix According To Reference
 
-The function `orderMatrToRef()` has the aim of facilitating brining a matrix of text/data in the order of a given reference (character vector).
+The function `orderMatrToRef()` has the aim of facilitating bringing a matrix of text/data in the order of a given reference (character vector).
 This function will try all columns of the input-matrix to see which gives the best coverage/ highest number of matches to the reference.
 If no hits are found, this function will try by partial matching (using _grep()_) all entries of the reference and vice-versa all entries of the matrix.
 
@@ -1561,7 +1575,8 @@ allTxt <- readTabulatedBatch(fiNa, path1)
 str(allTxt)
 ```
 
-### Reading Incomplete Tables
+
+### Reading/Importing Incomplete Tables
 
 Sometimes were may get confronted with data which look like 'incomplete' tables. 
 In such cases some rows do not contain as many elements/columns as other columns. 
@@ -1607,12 +1622,35 @@ str(dataPxd)
 
 
 
-## Normalization   {#Normalization}
+
+## Data Vectorization   {#Vectorization}
+
+In many scientific domains raw data often come as coordinates in form of pairs of start/end points. 
+While correlation measures linear association, vector-based metricsâ€”distance and angleâ€”capture both magnitude and direction of change.
+The  `vectorDistAngle()` function helps by transforming paired coordinates into polar form (distance and angle).
+
+
+```{r vectorDistAngle1, echo=TRUE}
+x <- matrix(c(0, 3, 0.5, 4, 1, 1), ncol=2, byrow=TRUE)
+y <- matrix(c(0, 0, 1, 3, 0.5, 5), ncol=2, byrow=TRUE)
+(vectDist <- vectorDistAngle(x, y))
+```
+Below, a graphical representation of the the example-vectors (which were initially defined by their start- and end-points).
+```{r vectorDistAngle2, echo=TRUE}
+plot(cbind(x=as.numeric(x), y=as.numeric(y)), main="Example for vectorDistAngle()",las=1)
+arrows(x[,1], y[,1], x[,2], y[,2])
+text(x[,2], 0.1 +y[,2], paste0("dist=",round(vectDist[,1],2),", angle=",round(vectDist[,2],2)), adj=1)
+```
+
+---
+
+
+## Normalization 
 
 The main reason of normalization is to remove variability in the data which is not directly linked to the (original/biological) concept of a given experiment. 
 High throughput data from real world measurements may easily contain various deformations due to technical reasons, eg slight temperature variations, electromagnetic interference, instability of reagents etc. 
 In particular, transferring constant amounts of liquids/reagents in highly repeated steps over large experiments is often also very challenging, small variations of the amounts of liquid (or similar) are typically addressed by normalization. However, applying aggressive normalization to the data also brings considerable risk of starting to loose some of the effects one intended to study.
-At some point it may rather be better to eliminate a few samples or branches of an experiment to avoid too invasive intervention. This shows that quality control can be tightly linked to decisions about data-normalization. 
+At some point it may rather be better to eliminate a few samples or branches of an experiment to avoid too invasive intervention. This shows that quality control can be tightly linked to decisions about data-normalization.                      {#Normalization}
 In conclusion, normalization may be far more challenging than simply running some algorithms.. 
 
 In general, the use has to assume/define some hypothesis to justify intervention.
@@ -1640,17 +1678,19 @@ A special case of problematic data concerns _NA_-values.
 
 ### Filter Lines Of Matrix To Reduce Content Of NAs
 
-Frequent _NA_-values may represent another potential issue. With NA-values there is no general optimal advice.
+Frequent _NA_-values may represent another potential issue. Unfortunately, there is no general optimal advice for handeling NA-values.
 To get started, you should try to investigate how and why NA-values occurred to check if there is a special 'meaning' to them.
 For example, on some measurement systems values below detection limit may be simply reported as NAs.
-If the lines of your data represent different features quantified (eg proteins), than lines with mostly NA-values represent features
-that may not be well exploited anyway. Therefore many times one tries to filter away lines of 'bad' data. 
-Of course, if there is a column (sample) with an extremely high content of NAs, one should also investigate what might be particular 
-with this column (sample), to see if one might be better of to eliminate the entire column.
 
+High number of NAs in specific columns may point to technical problems or very different samples.
+If the second case doesn't seem to apply, one might consider eliminiating such columns of low-quality data. 
 
+If the lines of your data represent different features quantified (eg proteins, or transcripts), then lines almost entirely composed of NA-values represent features
+that may not be well exploited anyway. Therefore many times one tries to filter away lines of 'bad' data (ie too high content of NAs).
+ 
+                                     
 Please note, that imputing _NA_-values represents another option instead of filtering and removing, multiple other packages address this in detail, too.
-All decisions of which approach to use should be data-driven.
+All decisions of which approach to choose should be data-driven.
 
 
 #### Filter For Each Group Of Columns For Sufficient Data As Non-NA
@@ -1706,7 +1746,7 @@ cleanReplicates(mat3, nOutl=3)
 ```
 
 
-### The Function normalizeThis()
+### The Function normalizeThis()      {#NormalizeThis}
 
 In biological high-throughput data columns typically represent different samples, which may be organized as replicates. 
 During high-throughput experiments thousands of (independent) elements are measured (eg abundance of gene-products), they are represented by rows.
@@ -1765,11 +1805,11 @@ boxplot(no4, main="slope normalization", las=1)
 ```
 
 
-### Normalize By Rows
+### Normalize By Rows        {#RowNormalize}
 
 The standard approach for normalizing relies on consisting all columns as collections of data who's distribution is not supposed to change.
-In some cases/projects we may want to formulate a much more 'aggressive' hypothesis : We consider the content of all columns strictly as the same.
-For example this may be the case when comparing with technical replicates only.
+In some cases/projects we may want to formulate a much more 'engaged' hypothesis : We consider the content of all columns strictly as the same.
+For example this may be the case when comparing a dataset consisting of technical replicates only (the data may have many 'holes', ie may have sparse character).
 In such cases one may use the function `rowNormalize()` which tries to find the average or mean optimal within-line normalization factor.
 
 Besides, an additional mode of operation for _sparse data_ has been added :
@@ -1828,7 +1868,7 @@ coordOfFilt(ma1, ma1 >37)
 
 Under certain circumstances using the trimmed mean may be more stable towards outlyer values.
 The base function  `mean()` allows to preform symmetric trimming, thus with more trimming the result will start converging to the _mean_.
-The function `trimmedMean()` gives more flexible options for assinging different upper- and lower fractions of the initial data to be trimmed.
+The function `trimmedMean()` (from this package) gives more flexible options for assinging different upper- and lower fractions of the initial data to be trimmed.
 When outlyer values always appear at the high (or low) end of data, such proceeding may be useful.
 However, the user is encouraged to use this with caution since there is also a risk of introducing bias.
 
@@ -1840,6 +1880,85 @@ mean(x, trim=0.15)       # symmetric trimming
 mean(x[x < 25])          # manual trimming
 trimmedMean(x, trim=c(l=0, u=0.7))   # asymmetric trim
 ```
+
+
+###  Blockwise Normalization Of 2 or 3 Data-Sets   {#blockNormalize}
+
+In some instances you may want to make data-sets globally comparable without completely "normamlizing" all columns, in order to preseve some of the inherent structure of each of the data-sets.
+Such procedures typically consiste in rescaling each data-set to common boundaries or to have the same overall median (without median-normalizing each column).
+
+Instead of normalizing all columns of joined data-sets the alternative of blockwise procedures treat each initial data-set as a given block without addressing each column independently.
+The function `blockNormalize()` performs block quantile normalization on 2 or 3 datasets (vectors, matrices or data.frames) to align their overall distributions while preserving the internal rank structure within each block.
+This function was designed to make 2 or 3 data-sets globally comparable without intervening too much to the internal structures.
+
+As result, all output blocks (up to 2 blocks) will have identical distributions (the mean of their sorted values)
+The relative ordering (ie ranks) within each original block is preserved.
+This function resembles somehow to the function normalizeBetweenArrays() from package limma, which does quantile normalization - but not for arbitrary blocks (using entire arrays only).
+
+
+```{r blockNormalize1, echo=TRUE}
+## Basic usage with vectors 
+x <- c(1, 5, 3, 7, 2)
+y <- (1:5)*10
+## Align distributions (default: x and y will have identical distributions)
+norm1 <- blockNormalize(x, y)
+table(sort(norm1$x) == sort(norm1$y))  # all TRUE with 'quantile.block'
+```
+
+
+The primary us of this function will likely consist in normalizing matrixes or data.frames
+```{r blockNormalize2, echo=TRUE}
+## matrix-example (like with omics-data)
+set.seed(2026); mat1 <- matrix(rnorm(70), nrow=10, dimnames=list(letters[1:10],LETTERS[1:7])) *5  # 10 lines x 10 samples
+set.seed(2025); mat2 <- matrix(rnorm(70, mean=5), nrow=10)^2 -15
+mat2[which(mat2 < 1.8)] <- mat2[which(mat2 < 1.8)] + 32
+
+norm2 <- blockNormalize(mat1, mat2, method="rescale", range=c(0.1, 10))
+sapply(norm2, range)
+
+norm3 <- blockNormalize(mat1, mat2, method="median")
+sapply(norm3, quantile, c(0.25,0.5,0.75), na.rm=TRUE)
+
+norm4 <- blockNormalize(mat1, mat2, method="quantile.block")
+sapply(norm4, quantile, c(0.25,0.5,0.75), na.rm=TRUE)
+```
+
+The resulting distribution :
+```{r blockNormalize3, echo=TRUE}
+layout(matrix(1:4, ncol=2))
+boxplot(cbind(mat1, NA, mat2), main="initial", las=1)
+boxplot(cbind(norm2$x, NA, norm2$y), main="rescale block", las=1)
+boxplot(cbind(norm3$x, NA, norm3$y), main="median block", las=1)
+boxplot(cbind(norm4$x, NA, norm4$y), main="quantile.block", las=1)
+```
+
+You can see that relative variability inside each dataset will show up differently depending on the normalization procedure chosen.
+
+Under some circumstances you may want to define different now ranges for each data-set.
+This might be of interest if the data-sets follow somehow different distributions, in particuar in respect to (rare) extreme values.
+In some cases it my be of interest to not provide absolute boundaries but given quantiles for lower and/or upper boundaries. 
+
+In some cases it my be of interest not defining absolute boundaries but rather use quantiles for lower and/or upper boundaries. 
+
+the overal distributions look like this:
+```{r blockNormalize4, echo=TRUE}
+## the overall distribution of blocks
+layout(matrix(1:4, ncol=2))
+boxplot(cbind(mat1=as.numeric(mat1), mat2=as.numeric(mat2)), main="initial (overall)",las=1)
+boxplot(cbind(mat1=as.numeric(norm2$x), mat2=as.numeric(norm2$x)), 
+  main="rescale block norm (overall)",las=1)
+boxplot(cbind(mat1=as.numeric(norm3$x), mat2=as.numeric(norm3$x)), 
+  main="median block norm (overall)",las=1)
+boxplot(cbind(mat1=as.numeric(norm4$x), mat2=as.numeric(norm4$x)), 
+  main="quantile.block norm (overall)",las=1)
+```
+
+In some cases (rare) extreme values may have strong impact on the outcome of re-scaling.
+In such cases you can rather define two quantiles of the data to get normalized to predefined values, and the remaining data will get adjusted in a linear fashion.
+This way it is poissible to align the major part of 2 datasets while extreme values live their 'own lives' (if you choose to conserve their extreme character).
+Otherwise the  _method="quantile.block"_ will help bringing extreme values closer to the main bulk of data.
+
+
 
 
 
@@ -2160,6 +2279,8 @@ Sometimes it is sufficient to only set the minimum and maximum to a given range.
 datR2 <- apply(dat, 2, scaleXY, 1, 100)
 summary(datR2); sd(datR2)
 ```
+
+Please note that this function shares some overlap with _adjBy2ptReg()_ (which has less options and will get deprecated in the future)
 
 
 ### Characterize Clustering Results

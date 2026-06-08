@@ -1,4 +1,4 @@
-#' Extract specific text
+#' Extract Specific Text
 #'
 #' This function extracts/cuts text-fragments out of \code{txt} following specific anchors defined by arguments \code{cutFrom} and \code{cutTo}.
 #'
@@ -24,7 +24,6 @@ extrSpcText <- function(txt, cutFrom=" GN=", cutTo=" PE=", missingAs=NA, exclFro
   fxNa <- .composeCallName(callFrom, newNa="extrSpcText")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
-  if(!isTRUE(silent)) silent <- FALSE
   seFr <- gregexpr(cutFrom, txt)
   seTo <- gregexpr(cutTo, txt)
   chOc <- cbind(fr=sapply(seFr, length), to=sapply(seTo, length))
@@ -73,10 +72,11 @@ extrSpcText <- function(txt, cutFrom=" GN=", cutTo=" PE=", missingAs=NA, exclFro
   if(!after) {ch <- out=="" & pos <0; if(any(ch)) out[which(ch)] <- x[which(ch)]}
   names(out) <- x
   out }
-
+ 
+ 
 #' Trim character string: keep only text before 'sep'
 #'
-#' Trim character string: keep only text before 'sep' (length=1 !)
+#' This functions trims character strings: It keeps only text before 'sep' (length=1 !)
 #' 
 #' @param chr character vector to be treated
 #' @param sep (character) saparator
@@ -96,4 +96,5 @@ extrSpcText <- function(txt, cutFrom=" GN=", cutTo=" PE=", missingAs=NA, exclFro
   if(any(naOmit(chrCh >0))) { trimNo <- which(chrCh >0)
     chr[trimNo] <- substr(chr[trimNo], 1, chrCh[trimNo] -offSet)}
   chr }
-    
+     
+ 

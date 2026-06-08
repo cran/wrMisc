@@ -104,7 +104,7 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     if(!checkPkgs[1]) { runTest <- FALSE; message(fxNa,"NOTE: Package 'limma' not found ! Unable to run tests. Please install first from Bioconductor")} } 
   if(debug) {message(fxNa,"mTX0"); mTX0 <- list(dat=dat,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,sep=sep)}
     
-  if(runTest && requireNamespace("limma")) {
+  if(runTest && requireNamespace("limma", quietly=TRUE)) {
     if(limmaOutput && length(addResults) >0) if("all" %in% addResults) addResults <- c("BH", "BY","lfdr","qValue","bonferroni","Mval","means","nonMod")
     if(!checkPkgs[2] && any("lfdr" %in% tolower(addResults))) {
       if(!silent) message(fxNa,"Package 'fdrtool' not found, omitting .. Please install from CRAN for enabeling 'lfdr'")
@@ -159,7 +159,7 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
   }
     
   ## main testing
-  if(runTest && requireNamespace("limma") && length(pwIndex) >0 && length(dat) >0 && all(!is.na(pwIndex))) {
+  if(runTest && requireNamespace("limma", quietly=TRUE) && length(pwIndex) >0 && length(dat) >0 && all(!is.na(pwIndex))) {
     ## contrast matrix
     ## see eg   https://support.bioconductor.org/p/57268/; https://www.biostars.org/p/157068/
   	contr.matr <- matrix(0, nrow=length(levels(grp)), ncol=nrow(pwIndex), 
@@ -175,7 +175,7 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     if(debug) {message(fxNa,"mTX4"); mTX4 <- list(dat=dat,fit0=fit0,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,pwIndex=pwIndex, contr.matr=contr.matr,pwGrpNa=pwGrpNa) }       
   } else runTest <- FALSE
   
-  if(runTest && requireNamespace("limma")) {
+  if(runTest && requireNamespace("limma", quietly=TRUE)) {
     fit1 <- limma::eBayes(limma::contrasts.fit(fit0, contrasts=contr.matr))  # variant to run all contrasts at same time
     if(debug) {message(fxNa,"mTX4b"); mTX4b <- list(dat=dat,fit0=fit0,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest, contr.matr=contr.matr,pwIndex=pwIndex,pwGrpNa=pwGrpNa,grpNa=grpNa,sep1=sep1,altHyp=altHyp) } # concatNa=concatNa,      
     ## note rownames(fit1$contrasts) may not be sufficient (- in case of 'A-B', 'B-A')
@@ -203,7 +203,7 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     }
     if(is.null(colnames(fit1$t))) colnames(fit1$t) <- concatNa
     if(is.null(colnames(fit1$p.value))) colnames(fit1$p.value) <- concatNa
-    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue") && !silent) message(fxNa,"NOTE: Package 'qvalue' not installed from CRAN, can't calulate ...")
+    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue", quietly=TRUE) && !silent) message(fxNa,"NOTE: Package 'qvalue' not installed from CRAN, can't calulate ...")
     if(debug) {message(fxNa,"mTX5"); mTX5 <- list(dat=dat,fit0=fit0,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,pwIndex=pwIndex, grpNa=grpNa,contr.matr=contr.matr,pwGrpNa=pwGrpNa)  }       
 
     ## add various multiple testing corrections
@@ -215,9 +215,9 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
         apply(out$p.value, 2, stats::p.adjust, meth="BH")} else stats::p.adjust(out$p.value, meth="BH")
       if("BY" %in% toupper(addResults)) out$BY <- if(is.matrix(out$p.value)) {
         apply(out$p.value, 2, stats::p.adjust, meth="BY")} else stats::p.adjust(out$p.value, meth="BY")
-      if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool")) {out$lfdr <- if(is.matrix(out$p.value)) {
+      if("lfdr" %in% tolower(addResults) && requireNamespace("fdrtool", quietly=TRUE)) {out$lfdr <- if(is.matrix(out$p.value)) {
         suppressWarnings(apply(out$p.value, 2, pVal2lfdr))} else suppressWarnings(pVal2lfdr(out$p.value)) }    
-      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) { out$qVal <- if(is.matrix(out$p.value)) {
+      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue", quietly=TRUE)) { out$qVal <- if(is.matrix(out$p.value)) {
         try(apply(out$p.value, 2, function(x) qvalue::qvalue(x,lfdr.out=TRUE)$lfdr), silent=TRUE)} else try(qvalue::qvalue(out$p.value,lfdr.out=TRUE)$lfdr, silent=TRUE) 
         if(inherits(out$qVal, "try-error")) { 
           if(!silent) message(fxNa," Problem with pi0 estimation, setting pi0=1 like BH-FDR")
@@ -246,11 +246,11 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
         if(length(dim(out$nonMod.p)) ==2) { out$nonMod.BY <- apply(out$nonMod.p, 2, stats::p.adjust, method="BY")
         colnames(out$nonMod.BY)  <- concatNa } else out$nonMod.BY <- stats::p.adjust(out$nonMod.p, method="BY")
       }
-      if(any("lfdr" %in% tolower(addResults)) && requireNamespace("fdrtool")) {
+      if(any("lfdr" %in% tolower(addResults)) && requireNamespace("fdrtool", quietly=TRUE)) {
         if(length(dim(out$nonMod.p)) ==2) { out$nonMod.lfdr <- apply(out$nonMod.p, 2, pVal2lfdr)
         colnames(out$nonMod.lfdr)  <- concatNa } else out$nonMod.lfdr <- suppressWarnings(pVal2lfdr(out$nonMod.p))
       }
-      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue")) {
+      if(any(c("qval","qvalue") %in% tolower(addResults)) && requireNamespace("qvalue", quietly=TRUE)) {
         out$nonMod.qVal <- if(length(dim(out$nonMod.p))==2) try(apply(out$nonMod.p, 2, qvalue::qvalue), silent=TRUE) else try(qvalue::qvalue(out$nonMod.p), silent=TRUE)
         if(inherits(out$nonMod.qVal, "try-error")) { if(!silent) message(fxNa,"Problem with pi0 estimation (non-shrinked p-values) for qValue, setting pi0=1 like BH-FDR")
           out$nonMod.qVal <- if(length(dim(out$nonMod.p))==2) apply(out$nonMod.p, 2, qvalue::qvalue,pi0=1, lfdr.out=TRUE) else qvalue::qvalue(out$nonMod.p,pi0=1, lfdr.out=TRUE)
