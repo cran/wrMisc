@@ -54,5 +54,6 @@ convPairwiseSetup(matrix(c("B","D","C","A"), ncol=2), LETTERS[1:4])
 
 }
 \seealso{
-\code{\link{presenceFilt}}, \code{\link{getPWseparator}}, \code{\link{indexGroupsFromPW}}, \code{\link{getPairwiseSetup}}, \code{\link[base]{strsplit}}
+\code{\link{presenceFilt}}, \code{\link{getPWseparator}}, \code{\link{indexGroupsFromPW}}, \code{\link{getPairwiseSetup}}, \code{\link[base]{strsplit}};
+  \code{\link{getPWseparator}} for default optimal separator; this function is used in \code{\link{moderTestXgrp}}
 }

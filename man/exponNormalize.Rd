@@ -50,7 +50,7 @@ Note: 'refGrp' not yet coded optimally to extract numeric part of character vect
 \item{debug}{(logical) additional messages for debugging}
 }
 \value{
-This functuion returns a matrix of normalized data
+This function returns a matrix of normalized data
 }
 \description{
 This function normalizes 'dat' by optimizing exponent function (ie dat ^exp) to fit best to 'ref' (default: average of each line of 'dat').
@@ -75,5 +75,5 @@ plot(dat1[,2],dat1[,3],type="b",main="init",ylab="ref")
 plot(dat2c$datNor[,2],dat1[,3],type="b",main="norm 2",ylab="ref"); 
 }
 \seealso{
-more eveolved than \code{\link[wrMisc]{normalizeThis}} with arugment set to 'exponent'
+more eveolved than \code{\link{normalizeThis}} with arugment set to 'exponent'
 }

@@ -1,4 +1,4 @@
-#' Multiple Moderated Pairwise t-tests From limma
+#' Multiple Moderated Pairwise t-tests From Limma
 #'
 #' This function runs (selected or all) pairwise combinations of moderated t-tests from package 'limma' on each line of data against.
 #' Note: This function requires the package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma} from bioconductor. 
@@ -42,12 +42,13 @@
 #' @param addResults (character) types of results to add besides basic limma-output, data are assumed to be log2 ! (eg "lfdr" using fdrtool-package, "FDR" or "BH" for BH-FDR, "BY" for BY-FDR, 
 #'   "bonferroni" for Bonferroni-correction, "qValue" for lfdr by qvalue, "Mval", "means" or "nonMod" for non-moderated test and he equivaent all (other) multiple testing corrections chosen here)
 #' @param testOrientation (character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2
-#' @param sep (\code{NULL]} or character of length=1) optional custom choice for separator for column-names of pairwise comparisons, otherwise determined as character(-set) not occurring in \code{grp}
+#' @param sep (character) optional custom choice for separator for column-names of pairwise comparisons (if \code{sep=NULL} the function getPWseparator() will be used to determine optimal separator) 
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a limma-type MA-object (which can be handeled like a list), or when problems are encountered \code{NULL}
-#' @seealso \code{\link{moderTest2grp}} for simplified single comparisons (with fewer options/flexibility), \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
+#' @seealso \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma};
+#'    \code{\link{getPWseparator}} and \code{\link{convPairwiseSetup}} for orgnizing experimental setup; \code{\link{moderTest2grp}} for simplified single comparisons (with much fewer options/flexibility) 
 #' @examples
 #' grp3 <- factor(rep(LETTERS[c(3,1,4)],c(2,3,3)))
 #' set.seed(2017); t8 <- matrix(round(rnorm(208*8,10,0.4),2), ncol=8,
@@ -78,12 +79,12 @@
 #' @export
 moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addResults=c("lfdr","FDR","Mval","means"), testOrientation="=", sep=NULL, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="moderTestXgrp")
-  if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
-    if(!isTRUE(silent)) silent <- FALSE }
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) { silent <- FALSE } else { debug <- FALSE }
   if(!isFALSE(limmaOutput)) limmaOutput <- TRUE
   runTest <- TRUE
   pwIndex <- sep1 <- indX <- useComparisonNa <- NULL
-  .extrSep2 <- function(comb , indiv) {     ## extract separator by striping indiv elements (iniv) from combined pairwise names (comb)  .. move to wrMisc ??
+  .extrSep2 <- function(comb , indiv) {     ## extract separator by striping indiv elements (iniv) from combined pairwise names (comb)  .. move to separate fx ??
     fx2 <- function(x, y) sub(paste0(protectSpecChar(x),"$"),"", sub(paste0("^",protectSpecChar(x)),"", y))   # remove x from head and tail   (eg rm C from end)
     for(i in indiv) comb <- fx2(i, comb)
     unique(comb[which(nchar(comb) >0)])   # will/might return NULL when sep==""

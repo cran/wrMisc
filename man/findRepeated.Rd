@@ -2,25 +2,33 @@
 % Please edit documentation in R/findRepeated.R
 \name{findRepeated}
 \alias{findRepeated}
-\title{Find repeated elements}
+\title{Find Repeated Elements}
 \usage{
-findRepeated(x, nonRepeated = FALSE, silent = FALSE, callFrom = NULL)
+findRepeated(
+  x,
+  nonRepeated = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{character vector}
 
-\item{nonRepeated}{(logical) if \code{=TRUE}, return list with elements \code{$rep} and \code{$nonrep}}
+\item{nonRepeated}{(logical) if \code{nonRepeated=TRUE} return list with elements \code{$rep} and \code{$nonrep}}
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-(named) list of indexes for each of the repeated values, or NULL if all values unique
+This function returns a (named) list of indexes for each of the repeated values, or NULL if all values unique
 }
 \description{
-\code{findRepeated} gets index of repeated items/values in vector 'x' (will be treated as character). 
-Return (named) list of indexes for each of the repeated values, or \code{NULL} if all values are unique.
+This function gets index of repeated items/values in vector 'x' (will be treated as character). 
+It returns (named) list of indexes for each of the repeated values, or \code{NULL} if all values are unique.
 This approach is similar but more basic compared to \code{\link{get1stOfRepeatedByCol}}.
 }
 \examples{

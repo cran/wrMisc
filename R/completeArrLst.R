@@ -1,8 +1,9 @@
-#' Complete list of arrays for same dimensions
+#' Complete List Of Arrays For Same Dimensions
 #'
 #' This functions aims to inspect repeating structues of data given as list of arrays and will try to complete 
 #' arrays with fewer lines or columns (as this may appear eg with the very last set of high-thourput sceening data 
-#' if fewer measures remain in the last set). Thus, the dimensions of the arrays are compared and 
+#' if fewer measures remain in the last set). 
+#' Thus, the dimensions of the arrays are compared and 
 #' cases with fewer (lost) columns (eg fewer experimental replicates) will be adjust/complete  by adding column(s) of NA.
 #' Used eg when at reading mircotiterplate data the last set is not complete.
 #' @param arrLst (list) list of arrays (typically 1st and 2nd dim for specific genes/objects, 3rd for different measures associated with)
@@ -10,7 +11,7 @@
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allows easier tracking of message(s) produced
 #' @return This function returns a list of arrays, now with same dimension of arrays 
-#' @seealso \code{\link[wrMisc]{organizeAsListOfRepl}}, \code{\link[wrMisc]{extr1chan}}
+#' @seealso \code{\link{organizeAsListOfRepl}}, \code{\link{extr1chan}}
 #' @examples
 #' arr1 <- array(1:24,dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
 #'   paste("col",1:3,sep=""),c("ch1","ch2")))
@@ -22,7 +23,10 @@
 completeArrLst <- function(arrLst, silent=FALSE, debug=FALSE, callFrom=NULL){
   ## adjust/complete cases with fewer (lost) columns (replicates) by adding column(s) of NA
   ## to obtain same dimension of arrays in list
-  fxNa <- .composeCallName(callFrom,newNa="completeArrLst")
+  fxNa <- .composeCallName(callFrom, newNa="completeArrLst")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE  
+  
   dims <- sapply(arrLst,dim)
   corPos <- apply(dims, 1, function(x) which(x < max(x,na.rm=TRUE)))
   maxDim <- apply(dims, 1, max,na.rm=TRUE)

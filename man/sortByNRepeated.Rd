@@ -2,7 +2,7 @@
 % Please edit documentation in R/sortByNRepeated.R
 \name{sortByNRepeated}
 \alias{sortByNRepeated}
-\title{Make a list of common occurances sorted by number of repeats}
+\title{Make A List Of Common Occurances Sorted By Number Of Repeats}
 \usage{
 sortByNRepeated(
   x,
@@ -49,5 +49,5 @@ sortByNRepeated(x=LETTERS[1:11], y=LETTERS[c(3:13,5:4)], z=LETTERS[6:12])
 
 }
 \seealso{
-\code{\link[base]{table}},  \code{\link[wrMisc]{replicateStructure}}
+\code{\link[base]{table}},  \code{\link{replicateStructure}}
 }

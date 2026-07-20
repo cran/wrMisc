@@ -39,11 +39,11 @@ Designed for checking if threshold used with findCloseMatch() may be set more st
 \examples{
 set.seed(2019); aa <- sample(12:15,20,repl=TRUE) +round(runif(20),2)-0.5
 bb <- 11:18
-match1 <- findCloseMatch(aa,bb,com="diff",lim=0.65)
+match1 <- findCloseMatch(aa, bb, com="diff", lim=0.65)
 head(match1)
-(tmp3 <- countCloseToLimits(match1,lim=c(0.5,0.35,0.2)))
-(tmp4 <- countCloseToLimits(match1,lim=0.7))
+(tmp3 <- countCloseToLimits(match1, lim=c(0.5,0.35,0.2)))
+(tmp4 <- countCloseToLimits(match1, lim=0.7))
 }
 \seealso{
-\code{\link[wrMisc]{findCloseMatch}}
+\code{\link{findCloseMatch}}
 }

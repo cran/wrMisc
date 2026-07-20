@@ -19,7 +19,8 @@
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allows easier tracking of messages produced
 #' @return This function returns a list with $data, $nNA, $randParam, $NAneigLst, $seed, $filt, and $annot  
-#' @seealso \code{\link{presenceFilt}}, \code{\link{getPWseparator}}, \code{\link{indexGroupsFromPW}}, \code{\link{getPairwiseSetup}}, \code{\link[base]{strsplit}}
+#' @seealso \code{\link{presenceFilt}}, \code{\link{getPWseparator}}, \code{\link{indexGroupsFromPW}}, \code{\link{getPairwiseSetup}}, \code{\link[base]{strsplit}};
+#'   \code{\link{getPWseparator}} for default optimal separator; this function is used in \code{\link{moderTestXgrp}}
 #' @examples
 #' convPairwiseSetup(c("B-C","D-A"), LETTERS[1:4])
 #' convPairwiseSetup(c("B","C"), LETTERS[1:3])
@@ -217,6 +218,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
     rownames(pwGrpNa) <- rownames(pwIndex) <- concat <- paste0(pwGrpNa[,1], sep, pwGrpNa[,2])        
 
   }
+  if(length(pwGrpNa) <= 676) names(pwGrpNa) <- if(length(pwGrpNa) <27) LETTERS[1:length(pwGrpNa)] else paste0(rep(LETTERS, each=26),rep(LETTERS, 26))[1:length(pwGrpNa)] 
   if(debug) {message(fxNa,"cUC6"); cUC6 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwGrpNa=pwGrpNa, pwIndex=pwIndex, pwComb=pwComb, grpNa=grpNa)}
   if(length(pwGrpNa) >0 && length(dim(pwGrpNa)) !=2) pwGrpNa <- matrix(pwGrpNa, byrow=TRUE, ncol=2) 
   if(length(pwIndex) >0 && length(dim(pwIndex)) !=2) pwIndex <- matrix(pwIndex, byrow=TRUE, ncol=2)

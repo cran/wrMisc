@@ -91,10 +91,10 @@ head(rowGrpNA(mat2, grp2, mode="complete"))
 
 ## ----rowGrpNA4, echo=TRUE-----------------------------------------------------
 ## mimick output from testing from package wrProteo
-dat1 <- list(isNA =mat2, setup=list(grp=grp2))
+dat1 <- list(quant=mat2, isNA =is.na(mat2), setup=list(grp=grp2))
 head(rowGrpNA(dat1, mode="simple"))
 head(rowGrpNA(dat1, mode="complete"))
-head(rowGrpNA(dat1, mode="ratioCollapse"))
+head(rowGrpNA(dat1, mode="ratioCollapse"), 3)
 
 ## ----naOmit, echo=TRUE--------------------------------------------------------
 aA <- c(11:13,NA,10,NA)
@@ -566,6 +566,11 @@ stableMode(dat, method="allModes")
 aa <- c("abc","abcde","ab.c","ab.c.e","ab*c","ab\\d")
 grepl("b.", aa)             # all TRUE
 grepl(protectSpecChar("b."), aa)
+
+## ----truncateVect1, echo=TRUE-------------------------------------------------
+txt1 <- c("abc", "abcdefgh", NA, "abc/def/gh")
+truncateVect(txt1, nMax=7, appendChar="..")
+truncateVect(txt1, nMax=7, sep="/", appendChar="..")
 
 ## ----trimRedundText1, echo=TRUE-----------------------------------------------
 txt1 <- c("abcd","abcde","abcdefg","abcdE",NA,"abcdEF")

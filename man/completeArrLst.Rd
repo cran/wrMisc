@@ -2,7 +2,7 @@
 % Please edit documentation in R/completeArrLst.R
 \name{completeArrLst}
 \alias{completeArrLst}
-\title{Complete list of arrays for same dimensions}
+\title{Complete List Of Arrays For Same Dimensions}
 \usage{
 completeArrLst(arrLst, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
@@ -21,7 +21,8 @@ This function returns a list of arrays, now with same dimension of arrays
 \description{
 This functions aims to inspect repeating structues of data given as list of arrays and will try to complete 
 arrays with fewer lines or columns (as this may appear eg with the very last set of high-thourput sceening data 
-if fewer measures remain in the last set). Thus, the dimensions of the arrays are compared and 
+if fewer measures remain in the last set). 
+Thus, the dimensions of the arrays are compared and 
 cases with fewer (lost) columns (eg fewer experimental replicates) will be adjust/complete  by adding column(s) of NA.
 Used eg when at reading mircotiterplate data the last set is not complete.
 }
@@ -34,5 +35,5 @@ arrL3 <- list(pl1=arr1,pl3=arr3)
 completeArrLst(arrL3)
 }
 \seealso{
-\code{\link[wrMisc]{organizeAsListOfRepl}}, \code{\link[wrMisc]{extr1chan}}
+\code{\link{organizeAsListOfRepl}}, \code{\link{extr1chan}}
 }

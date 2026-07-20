@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wolfgang Raffelsberger" />
 
-<meta name="date" content="2026-06-08" />
+<meta name="date" content="2026-07-20" />
 
 <title>Getting started with wrMisc</title>
 
@@ -62,7 +62,7 @@ ul.task-list{list-style: none;}
 
 <h1 class="title toc-ignore">Getting started with wrMisc</h1>
 <h4 class="author">Wolfgang Raffelsberger</h4>
-<h4 class="date">2026-06-08</h4>
+<h4 class="date">2026-07-20</h4>
 
 
 <div id="TOC">
@@ -182,6 +182,8 @@ Occuring Value (traditional mode)</a></li>
 <li><a href="#Text-Manipulations" id="toc-Text-Manipulations">Text-Manipulations</a>
 <ul>
 <li><a href="#protect-special-characters" id="toc-protect-special-characters">Protect Special Characters</a></li>
+<li><a href="#trimming-text-character-to-specific-length" id="toc-trimming-text-character-to-specific-length">Trimming Text
+Character To Specific Length</a></li>
 <li><a href="#trimming-redundant-text" id="toc-trimming-redundant-text">Trimming Redundant Text</a></li>
 <li><a href="#removing-redundantshared-words" id="toc-removing-redundantshared-words">Removing Redundant/Shared
 Words</a></li>
@@ -368,7 +370,7 @@ the package first (best on a fresh R-session):</p>
 
 ## This is &#39;wrMisc&#39; version number :
 packageVersion(&quot;wrMisc&quot;)</code></pre>
-<pre><code>## [1] &#39;2.1.0&#39;</code></pre>
+<pre><code>## [1] &#39;2.1.1&#39;</code></pre>
 </div>
 </div>
 <div id="speed-optimized-functions-in-the-package-wrmisc" class="section level2">
@@ -424,7 +426,7 @@ row:</p>
 ##       0       0       0</code></pre>
 <pre class="r"><code>system.time(sd2 &lt;- apply(dat1, 1, sd))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.03    0.00    0.03</code></pre>
+##    0.05    0.00    0.07</code></pre>
 <p>On most systems the equivalent calculation using <em>apply()</em>
 will run much slower compared to <code>rowSds</code>.</p>
 <p>Note, there is a minor issue with rounding :</p>
@@ -440,7 +442,7 @@ for every row using <code>rowCVs</code> :</p>
 ##       0       0       0</code></pre>
 <pre class="r"><code>system.time(cv2 &lt;- apply(dat1, 1, sd) / rowMeans(dat1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.03    0.00    0.03</code></pre>
+##    0.04    0.00    0.05</code></pre>
 <pre class="r"><code># typically the calculation using rowCVs is much faster
 head(cv1)</code></pre>
 <pre><code>## [1] 0.18101959 0.09855083 0.07076678 0.06800894 0.04213940 0.04788568</code></pre>
@@ -467,7 +469,7 @@ system.time(mean1Gr &lt;- rowGrpMeans(dat1, grp1))</code></pre>
 <pre class="r"><code>## Now the sd for each row and group
 system.time(sd1Gr &lt;- rowGrpSds(dat1, grp1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.02    0.00    0.00</code></pre>
+##    0.00    0.00    0.02</code></pre>
 <pre class="r"><code># will give us a matrix with the sd for each group &amp; line 
 head(sd1Gr)</code></pre>
 <pre><code>##                A          B         C
@@ -484,7 +486,7 @@ sd1Gr[1,] == c(sd(dat1[1,1:3]), sd(dat1[1,4:7]), sd(dat1[1,8:10]))</code></pre>
 <pre class="r"><code># The CV :
 system.time(cv1Gr &lt;- rowGrpCV(dat1, grp1))</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.00    0.00    0.01</code></pre>
+##       0       0       0</code></pre>
 <pre class="r"><code>head(cv1Gr)</code></pre>
 <pre><code>##                A          B          C
 ## [1,] 0.194279471 0.19545033 0.17625186
@@ -515,25 +517,32 @@ set.seed(2025); grp2 &lt;- as.factor(sample.int(n=8, size=ncol(mat2), replace=TR
 replicates.</p>
 <pre class="r"><code>## number of NAs per row and group
 head(rowGrpNA(mat2, grp2))</code></pre>
-<pre><code>##      5.nNA 4.nNA 2.nNA 1.nNA 7.nNA 6.nNA 3.nNA 8.nNA
-## [1,]     0     0     0     0     0     0     0     1
-## [2,]     0     0     0     0     0     0     0     0
-## [3,]     0     0     0     1     0     0     0     0
-## [4,]     0     0     1     0     1     0     0     0
-## [5,]     0     0     0     0     0     0     0     0
-## [6,]     0     0     0     0     0     0     0     0</code></pre>
+<pre><code>##      5 4 2 1 7 6 3 8
+## [1,] 0 0 0 0 0 0 0 1
+## [2,] 0 0 0 0 0 0 0 0
+## [3,] 0 0 0 1 0 0 0 0
+## [4,] 0 0 1 0 1 0 0 0
+## [5,] 0 0 0 0 0 0 0 0
+## [6,] 0 0 0 0 0 0 0 0</code></pre>
 <p>It is also possible to return the ratio of NA values or both the
 number of <em>NAs</em> and the size of the sub-groups.</p>
 <pre class="r"><code>head(rowGrpNA(mat2, grp2, mode=&quot;ratio&quot;))</code></pre>
-<pre><code>##      5.nNArat 4.nNArat 2.nNArat 1.nNArat 7.nNArat 6.nNArat 3.nNArat 8.nNArat
-## [1,]        0        0     0.00     0.00     0.00        0        0     0.33
-## [2,]        0        0     0.00     0.00     0.00        0        0     0.00
-## [3,]        0        0     0.00     0.17     0.00        0        0     0.00
-## [4,]        0        0     0.11     0.00     0.17        0        0     0.00
-## [5,]        0        0     0.00     0.00     0.00        0        0     0.00
-## [6,]        0        0     0.00     0.00     0.00        0        0     0.00</code></pre>
+<pre><code>##      nNA.rat.5 nNA.rat.4 nNA.rat.2 nNA.rat.1 nNA.rat.7 nNA.rat.6 nNA.rat.3
+## [1,]         0         0      0.00      0.00      0.00         0         0
+## [2,]         0         0      0.00      0.00      0.00         0         0
+## [3,]         0         0      0.00      0.17      0.00         0         0
+## [4,]         0         0      0.11      0.00      0.17         0         0
+## [5,]         0         0      0.00      0.00      0.00         0         0
+## [6,]         0         0      0.00      0.00      0.00         0         0
+##      nNA.rat.8
+## [1,]      0.33
+## [2,]      0.00
+## [3,]      0.00
+## [4,]      0.00
+## [5,]      0.00
+## [6,]      0.00</code></pre>
 <pre class="r"><code>head(rowGrpNA(mat2, grp2, mode=&quot;complete&quot;))</code></pre>
-<pre><code>##      5.nNA 4.nNA 2.nNA 1.nNA 7.nNA 6.nNA 3.nNA 8.nNA
+<pre><code>##      nNA.5 nNA.4 nNA.2 nNA.1 nNA.7 nNA.6 nNA.3 nNA.8
 ## [1,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;0/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;1/3&quot;
 ## [2,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;0/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;0/3&quot;
 ## [3,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;1/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;0/3&quot;
@@ -546,26 +555,25 @@ group-information is typically already available in such objects.
 Finally, all results may get collapsed in single column/vector when
 using any of the <em>..Collapse</em> modes.</p>
 <pre class="r"><code>## mimick output from testing from package wrProteo
-dat1 &lt;- list(isNA =mat2, setup=list(grp=grp2))
+dat1 &lt;- list(quant=mat2, isNA =is.na(mat2), setup=list(grp=grp2))
 head(rowGrpNA(dat1, mode=&quot;simple&quot;))</code></pre>
-<pre><code>##      5.nNA 4.nNA 2.nNA 1.nNA 7.nNA 6.nNA 3.nNA 8.nNA
-## [1,]     0     0     0     0     0     0     0     1
-## [2,]     0     0     0     0     0     0     0     0
-## [3,]     0     0     0     1     0     0     0     0
-## [4,]     0     0     1     0     1     0     0     0
-## [5,]     0     0     0     0     0     0     0     0
-## [6,]     0     0     0     0     0     0     0     0</code></pre>
+<pre><code>##      5 4 2 1 7 6 3 8
+## [1,] 0 0 0 0 0 0 0 1
+## [2,] 0 0 0 0 0 0 0 0
+## [3,] 0 0 0 1 0 0 0 0
+## [4,] 0 0 1 0 1 0 0 0
+## [5,] 0 0 0 0 0 0 0 0
+## [6,] 0 0 0 0 0 0 0 0</code></pre>
 <pre class="r"><code>head(rowGrpNA(dat1, mode=&quot;complete&quot;))</code></pre>
-<pre><code>##      5.nNA 4.nNA 2.nNA 1.nNA 7.nNA 6.nNA 3.nNA 8.nNA
+<pre><code>##      nNA.5 nNA.4 nNA.2 nNA.1 nNA.7 nNA.6 nNA.3 nNA.8
 ## [1,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;0/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;1/3&quot;
 ## [2,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;0/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;0/3&quot;
 ## [3,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;1/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;0/3&quot;
 ## [4,] &quot;0/4&quot; &quot;0/3&quot; &quot;1/9&quot; &quot;0/6&quot; &quot;1/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;0/3&quot;
 ## [5,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;0/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;0/3&quot;
 ## [6,] &quot;0/4&quot; &quot;0/3&quot; &quot;0/9&quot; &quot;0/6&quot; &quot;0/6&quot; &quot;0/4&quot; &quot;0/5&quot; &quot;0/3&quot;</code></pre>
-<pre class="r"><code>head(rowGrpNA(dat1, mode=&quot;ratioCollapse&quot;))</code></pre>
-<pre><code>## [1] &quot;0 0 0 0 0 0 0 0.33&quot;    &quot;0 0 0 0 0 0 0 0&quot;       &quot;0 0 0 0.17 0 0 0 0&quot;   
-## [4] &quot;0 0 0.11 0 0.17 0 0 0&quot; &quot;0 0 0 0 0 0 0 0&quot;       &quot;0 0 0 0 0 0 0 0&quot;</code></pre>
+<pre class="r"><code>head(rowGrpNA(dat1, mode=&quot;ratioCollapse&quot;), 3)</code></pre>
+<pre><code>## [1] &quot;0 0 0 0 0 0 0 0.33&quot; &quot;0 0 0 0 0 0 0 0&quot;    &quot;0 0 0 0.17 0 0 0 0&quot;</code></pre>
 </div>
 </div>
 <div id="fast-na-omit-for-very-large-objects" class="section level3">
@@ -2455,7 +2463,7 @@ perception.</p>
 ## [5,]  396    4
 ## [6,]    0    0</code></pre>
 <pre class="r"><code>elimCloseCoord(da1)</code></pre>
-<pre><code>## elimCloseCoord :  reducing &#39;x&#39; from 15 to 7 lines</code></pre>
+<pre><code>## elimCloseCoord : Reducing &#39;x&#39; from 15 to 7 lines</code></pre>
 <pre><code>##    [,1] [,2]
 ## 1     0  0.0
 ## 2    99  1.0
@@ -2543,6 +2551,22 @@ grepl(&quot;b.&quot;, aa)             # all TRUE</code></pre>
 <pre><code>## [1] TRUE TRUE TRUE TRUE TRUE TRUE</code></pre>
 <pre class="r"><code>grepl(protectSpecChar(&quot;b.&quot;), aa)</code></pre>
 <pre><code>## [1] FALSE FALSE  TRUE  TRUE FALSE FALSE</code></pre>
+</div>
+<div id="trimming-text-character-to-specific-length" class="section level3">
+<h3>Trimming Text Character To Specific Length</h3>
+<p>The function <code>truncateVect()</code> gives for convenience more
+options than <em>substr</em>. It is possible to add extra text when
+truncation has occured (default ‘…’) so that the user can see that
+truncation of longer entries has been performed.</p>
+<p>Furthermore, using the argument _sep it is possible to respect
+entities between separators (within a string of characters) and only cut
+at/before such separators. The resulting text vecor may thus be shorter
+than specified globally with argument <em>nMax</em>.</p>
+<pre class="r"><code>txt1 &lt;- c(&quot;abc&quot;, &quot;abcdefgh&quot;, NA, &quot;abc/def/gh&quot;)
+truncateVect(txt1, nMax=7, appendChar=&quot;..&quot;)</code></pre>
+<pre><code>## [1] &quot;abc&quot;      &quot;abcdef..&quot; NA         &quot;abc/de..&quot;</code></pre>
+<pre class="r"><code>truncateVect(txt1, nMax=7, sep=&quot;/&quot;, appendChar=&quot;..&quot;)</code></pre>
+<pre><code>## [1] &quot;abc&quot;      &quot;abcdef..&quot; NA         &quot;abc..&quot;</code></pre>
 </div>
 <div id="trimming-redundant-text" class="section level3">
 <h3>Trimming Redundant Text</h3>
@@ -3326,31 +3350,31 @@ str(dataPxd)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    27 obs. of  27 variables:
 ##  $ source.name                                : chr  &quot;Sample 1&quot; &quot;Sample 1&quot; &quot;Sample 1&quot; &quot;Sample 2&quot; ...
 ##  $ characteristics.organism.                  : chr  &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; &quot;Saccharomyces cerevisiae&quot; ...
-##  $ characteristics.organism.part.             : chr  &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; ...
+##  $ characteristics.organism.part.             : chr  &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; ...
 ##  $ characteristics.disease.                   : chr  &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; &quot;not available&quot; ...
-##  $ characteristics.cell.type.                 : chr  &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; ...
-##  $ characteristics.mass.                      : chr  &quot;2 mg&quot; &quot;2 mg&quot; &quot;2 mg&quot; &quot;2 mg&quot; ...
-##  $ characteristics.spiked.compound.           : chr  &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=125 amol;CN=UPS1;CV=Standards Research Group&quot; ...
+##  $ characteristics.protein_coding_gene.       : chr  &quot;UPS1&quot; &quot;UPS1&quot; &quot;UPS1&quot; &quot;UPS1&quot; ...
+##  $ characteristics.concentration.of.          : chr  &quot;12500 amol&quot; &quot;12500 amol&quot; &quot;12500 amol&quot; &quot;125 amol&quot; ...
 ##  $ characteristics.biological.replicate.      : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ characteristics.material.type.             : chr  &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; ...
-##  $ assay.name                                 : chr  &quot;run 1&quot; &quot;run 2&quot; &quot;run 3&quot; &quot;run 4&quot; ...
+##  $ characteristics.cell.type.                 : chr  &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; &quot;not applicable&quot; ...
+##  $ Material.Type                              : chr  &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; &quot;lysate&quot; ...
 ##  $ technology.type                            : chr  &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; &quot;proteomic profiling by mass spectrometry&quot; ...
+##  $ assay.name                                 : chr  &quot;run 1&quot; &quot;run 2&quot; &quot;run 3&quot; &quot;run 4&quot; ...
 ##  $ comment.label.                             : chr  &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; &quot;AC=MS:1002038;NT=label free sample&quot; ...
 ##  $ comment.instrument.                        : chr  &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; &quot;AC=MS:1001742;NT=LTQ Orbitrap Velos&quot; ...
+##  $ comment.proteomics.data.acquisition.method.: chr  &quot;data-dependent acquisition&quot; &quot;data-dependent acquisition&quot; &quot;data-dependent acquisition&quot; &quot;data-dependent acquisition&quot; ...
 ##  $ comment.precursor.mass.tolerance.          : chr  &quot;5 ppm&quot; &quot;5 ppm&quot; &quot;5 ppm&quot; &quot;5 ppm&quot; ...
 ##  $ comment.fragment.mass.tolerance.           : chr  &quot;0.8 Da&quot; &quot;0.8 Da&quot; &quot;0.8 Da&quot; &quot;0.8 Da&quot; ...
 ##  $ comment.cleavage.agent.details.            : chr  &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; &quot;NT=trypsin/P;AC=MS:1001313&quot; ...
 ##  $ comment.modification.parameters.           : chr  &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; &quot;NT=Carbamidomethyl;TA=C;MT=fixed;AC=UNIMOD:4&quot; ...
 ##  $ comment.modification.parameters..1         : chr  &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; &quot;NT=Oxidation;MT=variable;TA=M;AC=UNIMOD:35&quot; ...
 ##  $ comment.modification.parameters..2         : chr  &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; &quot;NT=Acetyl;AC=UNIMOD:67;PP=Protein N-term;MT=variable&quot; ...
+##  $ comment.dissociation.method.               : chr  &quot;AC=MS:1000133;NT=CID&quot; &quot;AC=MS:1000133;NT=CID&quot; &quot;AC=MS:1000133;NT=CID&quot; &quot;AC=MS:1000133;NT=CID&quot; ...
 ##  $ comment.technical.replicate.               : int  1 2 3 1 2 3 1 2 3 1 ...
 ##  $ comment.fraction.identifier.               : int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ comment.file.uri.                          : chr  &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R1.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R2.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_12500amol_R3.raw&quot; &quot;https://ftp.pride.ebi.ac.uk/pride/data/archive/2015/12/PXD001819/UPS1_125amol_R1.raw&quot; ...
-##  $ comment.proteomics.data.acquisition.method.: chr  &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; &quot;NT=Data-dependent acquisition;AC=PRIDE:0000627&quot; ...
-##  $ comment.data.file.                         : chr  &quot;UPS1_12500amol_R1.raw&quot; &quot;UPS1_12500amol_R2.raw&quot; &quot;UPS1_12500amol_R3.raw&quot; &quot;UPS1_125amol_R1.raw&quot; ...
-##  $ comment.sdrf.version.                      : chr  &quot;v1.1.0&quot; &quot;v1.1.0&quot; &quot;v1.1.0&quot; &quot;v1.1.0&quot; ...
-##  $ comment.sdrf.template.                     : chr  &quot;NT=ms-proteomics;VV=v1.1.0&quot; &quot;NT=ms-proteomics;VV=v1.1.0&quot; &quot;NT=ms-proteomics;VV=v1.1.0&quot; &quot;NT=ms-proteomics;VV=v1.1.0&quot; ...
-##  $ factor.value.spiked.compound.              : chr  &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=12500 amol;CN=UPS1;CV=Standards Research Group&quot; &quot;CT=mixture;QY=125 amol;CN=UPS1;CV=Standards Research Group&quot; ...</code></pre>
+##  $ comment.data.file.                         : chr  &quot;UPS1_12500amol_R1.mzML&quot; &quot;UPS1_12500amol_R2.mzML&quot; &quot;UPS1_12500amol_R3.mzML&quot; &quot;UPS1_125amol_R1.mzML&quot; ...
+##  $ factor.value.protein_coding_gene.          : chr  &quot;UPS1&quot; &quot;UPS1&quot; &quot;UPS1&quot; &quot;UPS1&quot; ...
+##  $ factor.value.concentration.of.             : chr  &quot;12500 amol&quot; &quot;12500 amol&quot; &quot;12500 amol&quot; &quot;125 amol&quot; ...</code></pre>
 <hr />
 </div>
 </div>
@@ -3358,10 +3382,10 @@ str(dataPxd)</code></pre>
 <h2>Data Vectorization</h2>
 <p>In many scientific domains raw data often come as coordinates in form
 of pairs of start/end points. While correlation measures linear
-association, vector-based metricsâ€”distance and angleâ€”capture both
-magnitude and direction of change. The <code>vectorDistAngle()</code>
-function helps by transforming paired coordinates into polar form
-(distance and angle).</p>
+association, vector-based metricsÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âdistance and
+angleÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âcapture both magnitude and direction of change.
+The <code>vectorDistAngle()</code> function helps by transforming paired
+coordinates into polar form (distance and angle).</p>
 <pre class="r"><code>x &lt;- matrix(c(0, 3, 0.5, 4, 1, 1), ncol=2, byrow=TRUE)
 y &lt;- matrix(c(0, 0, 1, 3, 0.5, 5), ncol=2, byrow=TRUE)
 (vectDist &lt;- vectorDistAngle(x, y))</code></pre>
@@ -4207,6 +4231,8 @@ convPairwiseSetup(c(&quot;B-C&quot;,&quot;D-A&quot;), LETTERS[1:4])</code></pre>
 ##     samp ref
 ## B-C &quot;B&quot;  &quot;C&quot;
 ## D-A &quot;D&quot;  &quot;A&quot;
+## attr(,&quot;names&quot;)
+## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot;
 ## 
 ## $pwIndex
 ##     samp ref
@@ -4226,6 +4252,8 @@ convPairwiseSetup(c(&quot;B&quot;,&quot;C&quot;), LETTERS[1:3])</code></pre>
 <pre><code>## $pwGrpNa
 ##     samp ref
 ## B-C &quot;B&quot;  &quot;C&quot;
+## attr(,&quot;names&quot;)
+## [1] &quot;A&quot; &quot;B&quot;
 ## 
 ## $pwIndex
 ##     samp ref
@@ -4244,6 +4272,8 @@ convPairwiseSetup(c(&quot;B&quot;,&quot;C&quot;), LETTERS[1:3])</code></pre>
 ##     samp ref
 ## A-C &quot;A&quot;  &quot;C&quot;
 ## B-C &quot;B&quot;  &quot;C&quot;
+## attr(,&quot;names&quot;)
+## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot;
 ## 
 ## $pwIndex
 ##     samp ref
@@ -4263,6 +4293,8 @@ convPairwiseSetup(c(&quot;B&quot;,&quot;C&quot;), LETTERS[1:3])</code></pre>
 ##      samp ref
 ## A__C &quot;A&quot;  &quot;C&quot;
 ## B__C &quot;B&quot;  &quot;C&quot;
+## attr(,&quot;names&quot;)
+## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot;
 ## 
 ## $pwIndex
 ##      samp ref
@@ -4282,6 +4314,8 @@ convPairwiseSetup(c(&quot;B&quot;,&quot;C&quot;), LETTERS[1:3])</code></pre>
 ##     samp ref
 ## B-C &quot;B&quot;  &quot;C&quot;
 ## D-A &quot;D&quot;  &quot;A&quot;
+## attr(,&quot;names&quot;)
+## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot;
 ## 
 ## $pwIndex
 ##     samp ref
@@ -4689,14 +4723,11 @@ Tree-Structures</h3>
 <pre class="r"><code>path1 &lt;- matrix(c(17,19,18,17, 4,4,2,3), ncol=2,
   dimnames=list(c(&quot;A/B/C/D&quot;,&quot;A/B/G/D&quot;,&quot;A/H&quot;,&quot;A/H/I&quot;), c(&quot;sumLen&quot;,&quot;n&quot;)))
 contribToContigPerFrag(path1)</code></pre>
-<pre><code>##   sumLe n.frag len.rat
-## A    19      4   1.000
-## B    19      4   1.000
-## C    17      4   0.895
-## D    19      4   1.000
-## G    19      4   1.000
-## H    18      2   0.947
-## I    17      3   0.895</code></pre>
+<pre><code>##         sumLe n.frag len.rat
+## A/B/C/D    17      4   0.895
+## A/B/G/D    19      4   1.000
+## A/H        18      2   0.947
+## A/H/I      17      3   0.895</code></pre>
 </div>
 <div id="count-same-start--and-end--sites-of-edges-or-fragments" class="section level3">
 <h3>Count Same Start- And End- Sites Of Edges (Or Fragments)</h3>
@@ -4801,10 +4832,10 @@ space ’ ’ (which I prefer to avoid in file-names). Please look at the
 function’s help-page for all available options.</p>
 <pre class="r"><code>## To get started
 Sys.Date()</code></pre>
-<pre><code>## [1] &quot;2026-06-08&quot;</code></pre>
+<pre><code>## [1] &quot;2026-07-20&quot;</code></pre>
 <pre class="r"><code>## Compact English names (in European order), no matter what your local settings are :
 sysDate() </code></pre>
-<pre><code>## [1] &quot;08jun26&quot;</code></pre>
+<pre><code>## [1] &quot;20jul26&quot;</code></pre>
 <p>The table below shows a number of options to write the date in
 English or using local month-names :</p>
 <pre class="r"><code>tabD &lt;- cbind(paste0(&quot;univ&quot;,1:6), c(sysDate(style=&quot;univ1&quot;), sysDate(style=&quot;univ2&quot;), 
@@ -4818,39 +4849,39 @@ knitr::kable(tabD, caption=&quot;Various ways of writing current date&quot;)</co
 <tbody>
 <tr class="odd">
 <td align="left">univ1</td>
-<td align="left">08jun26</td>
+<td align="left">20jul26</td>
 <td align="left">local1</td>
-<td align="left">08jui26</td>
+<td align="left">20jui26</td>
 </tr>
 <tr class="even">
 <td align="left">univ2</td>
-<td align="left">08Jun26</td>
+<td align="left">20Jul26</td>
 <td align="left">local2</td>
-<td align="left">08Jui26</td>
+<td align="left">20Jui26</td>
 </tr>
 <tr class="odd">
 <td align="left">univ3</td>
-<td align="left">08June2026</td>
+<td align="left">20July2026</td>
 <td align="left">local3</td>
-<td align="left">08Juin2026</td>
+<td align="left">20Juil.2026</td>
 </tr>
 <tr class="even">
 <td align="left">univ4</td>
-<td align="left">08june2026</td>
+<td align="left">20july2026</td>
 <td align="left">local4</td>
-<td align="left">08juin2026</td>
+<td align="left">20juil.2026</td>
 </tr>
 <tr class="odd">
 <td align="left">univ5</td>
-<td align="left">2026-06-08</td>
+<td align="left">2026-07-20</td>
 <td align="left">local5</td>
-<td align="left">8-juin-2026</td>
+<td align="left">20-juil.-2026</td>
 </tr>
 <tr class="even">
 <td align="left">univ6</td>
-<td align="left">2026-159</td>
+<td align="left">2026-201</td>
 <td align="left">local6</td>
-<td align="left">2026juin08</td>
+<td align="left">2026juil.20</td>
 </tr>
 </tbody>
 </table>
@@ -4864,7 +4895,7 @@ UdS), <a href="http://www.cnrs.fr/en">CNRS</a>, <a href="https://www.unistra.fr/
 </div>
 <div id="session-info" class="section level2">
 <h2>Session-Info</h2>
-<pre><code>## R version 4.6.0 (2026-04-24 ucrt)
+<pre><code>## R version 4.6.1 (2026-06-24 ucrt)
 ## Platform: x86_64-w64-mingw32/x64
 ## Running under: Windows 11 x64 (build 26100)
 ## 
@@ -4883,22 +4914,22 @@ UdS), <a href="http://www.cnrs.fr/en">CNRS</a>, <a href="https://www.unistra.fr/
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] limma_3.68.2 wrMisc_2.1.0
+## [1] limma_3.68.4 wrMisc_2.1.1
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.2.1        compiler_4.6.0    
-##  [5] Rcpp_1.1.1-1.1     tidyselect_1.2.1   stringr_1.6.0      jquerylib_0.1.4   
-##  [9] splines_4.6.0      scales_1.4.0       yaml_2.3.12        fastmap_1.2.0     
-## [13] statmod_1.5.2      plyr_1.8.9         ggplot2_4.0.3      R6_2.6.1          
-## [17] BBmisc_1.13.1      generics_0.1.4     fdrtool_1.2.18     knitr_1.51        
-## [21] backports_1.5.1    tibble_3.3.1       checkmate_2.3.4    bslib_0.11.0      
-## [25] pillar_1.11.1      RColorBrewer_1.1-3 rlang_1.2.0        stringi_1.8.7     
-## [29] cachem_1.1.0       xfun_0.57          sass_0.4.10        S7_0.2.2          
-## [33] wrGraph_1.3.15.10  otel_0.2.0         cli_3.6.6          magrittr_2.0.5    
-## [37] digest_0.6.39      grid_4.6.0         lifecycle_1.0.5    vctrs_0.7.3       
-## [41] qvalue_2.44.0      evaluate_1.0.5     glue_1.8.1         data.table_1.18.4 
-## [45] farver_2.1.2       reshape2_1.4.5     rmarkdown_2.31     pkgconfig_2.0.3   
-## [49] tools_4.6.0        htmltools_0.5.9</code></pre>
+##  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.2.1        compiler_4.6.1    
+##  [5] Rcpp_1.1.2         tidyselect_1.2.1   stringr_1.6.0      dichromat_2.0-0.1 
+##  [9] jquerylib_0.1.4    splines_4.6.1      scales_1.4.0       yaml_2.3.12       
+## [13] fastmap_1.2.0      statmod_1.5.2      plyr_1.8.9         ggplot2_4.0.3     
+## [17] R6_2.6.1           BBmisc_1.13.1      generics_0.1.4     fdrtool_1.2.18    
+## [21] knitr_1.51         backports_1.5.1    tibble_3.3.1       checkmate_2.3.4   
+## [25] pillar_1.11.1      bslib_0.11.0       RColorBrewer_1.1-3 rlang_1.3.0       
+## [29] stringi_1.8.7      cachem_1.1.0       xfun_0.60          sass_0.4.10       
+## [33] S7_0.2.2           wrGraph_1.3.16.1   otel_0.2.0         cli_3.6.6         
+## [37] magrittr_2.0.5     digest_0.6.39      grid_4.6.1         lifecycle_1.0.5   
+## [41] vctrs_0.7.3        qvalue_2.44.0      evaluate_1.0.5     glue_1.8.1        
+## [45] data.table_1.18.4  farver_2.1.2       reshape2_1.4.5     rmarkdown_2.31    
+## [49] pkgconfig_2.0.3    tools_4.6.1        htmltools_0.5.9</code></pre>
 </div>
 
 

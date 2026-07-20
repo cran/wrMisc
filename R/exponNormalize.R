@@ -17,8 +17,8 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allows easier tracking of messages produced
-#' @return This functuion returns a matrix of normalized data
-#' @seealso more eveolved than \code{\link[wrMisc]{normalizeThis}} with arugment set to 'exponent'
+#' @return This function returns a matrix of normalized data
+#' @seealso more eveolved than \code{\link{normalizeThis}} with arugment set to 'exponent'
 #' @examples
 #' set.seed(2016); dat1 <- matrix(c(runif(200)+rep(1:10,20)),nc=10)
 #' head(rowGrpCV(dat1,gr=gl(4,3,labels=LETTERS[1:4])[2:11]))
@@ -58,7 +58,7 @@ exponNormalize <- function(dat, useExpon, dynExp=TRUE, nStep=20, startExp=1, sim
       m1=seq(useExpon[1], useExpon[2], length.out=nStep),
       m2=seq(startExp, useExpon, length.out=nStep),
       m3=seq(useExpon[1], useExpon[2], length.out=nStep) ) }
-  if(length(dim(useExpon)) >1 & dynExp & nStep >1) {    # diff/indep expon series for each col of data
+  if(length(dim(useExpon)) >1 && dynExp && nStep >1) {    # diff/indep expon series for each col of data
     useExpon <- apply(useExpon,2,.sw,startExp,nStep)
     if(!silent) message(fxNa," column-specific exponent testing of ",nrow(useExpon)," x ",ncol(useExpon)," exponents")
   } else {

@@ -2,9 +2,16 @@
 % Please edit documentation in R/contribToContigPerFrag.R
 \name{contribToContigPerFrag}
 \alias{contribToContigPerFrag}
-\title{Characterize individual contribution of single edges in tree-structures}
+\title{Characterize Individual Contribution Of Single Edges In Tree-Structures}
 \usage{
-contribToContigPerFrag(joinMat, fullLength = NULL, nDig = 3)
+contribToContigPerFrag(
+  joinMat,
+  fullLength = NULL,
+  nDig = 3,
+  silent = FALSE,
+  callFrom = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{joinMat}{(matrix) matrix with concatenated edges as rownames (separated by slashes), column \code{sumLen} for total length and column \code{n} for number of edges}
@@ -12,19 +19,27 @@ contribToContigPerFrag(joinMat, fullLength = NULL, nDig = 3)
 \item{fullLength}{(integer) custom total length (useful if the concatenated edges do not cover 100 percent of the original precursor whose fragments are studied)}
 
 \item{nDig}{(integer) rounding: number of digits for 3rd column \code{len.rat} in output}
+
+\item{silent}{(logical) suppress messages}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
+
+\item{debug}{(logical) additional messages for debugging}
 }
 \value{
-matrix of 3 columns: with length of longest tree-branches where given edge participates (column \code{sumLen}), the (total) number of edges therein (col \code{n.frag}) and a relative value (\code{len.rat})
+This function returns a matrix of 3 columns for each node identified in rownames of \code{joinMatr} for length of longest tree-branches where given edge participates (column \code{sumLen}), the (total) number of edges therein (col \code{n.frag}) and a relative value (\code{len.rat})
 }
 \description{
 This function helps investigating tree-like structures with the aim of indicating how much individual tree components contribute 
 to compose long stretches.
+}
+\details{
 \code{contribToContigPerFrag} characterizes individual (isolated) contribution of single edges in tree-structures. 
 Typically used to process/exploit summarized trees (as matrix) made by \code{\link{buildTree}} which makes use of the package \href{https://CRAN.R-project.org/package=data.tree}{data.tree}.
 For example if A,B and C can be joined aa well and B +D, this function will check if A+B+C is longer and if A contributes to the longest tree.
 }
 \examples{
-path1 <- matrix(c(17,19,18,17, 4,4,2,3),ncol=2,
+path1 <- matrix(c(17,19,18,17, 4,4,2,3), ncol=2,
   dimnames=list(c("A/B/C/D","A/B/G/D","A/H","A/H/I"),c("sumLen","n")))
 contribToContigPerFrag(path1)
 }

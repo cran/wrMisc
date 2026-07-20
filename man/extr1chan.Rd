@@ -48,5 +48,5 @@ arrL1 <- list(pl1=arr1,pl2=arr2)
 extr1chan(arrL1,ch=2)
 }
 \seealso{
-\code{\link[wrMisc]{organizeAsListOfRepl}}
+\code{\link{organizeAsListOfRepl}}
 }

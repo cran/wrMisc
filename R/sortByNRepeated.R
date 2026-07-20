@@ -1,4 +1,4 @@
-#' Make a list of common occurances sorted by number of repeats  
+#' Make A List Of Common Occurances Sorted By Number Of Repeats  
 #'
 #' The aim of this function is to count the number of occurances of words when comaring separate vectors (\code{x}, \code{y} and \code{z}) or from a list (given as \code{x})
 #' and to give an output sorted by their frequency.
@@ -19,14 +19,14 @@
 #' @param debug (logical) additional messages for debugging 
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a list sorted by number of occurances. The names of the list indicate the number of repeats. 	
-#' @seealso  \code{\link[base]{table}},  \code{\link[wrMisc]{replicateStructure}} 
+#' @seealso  \code{\link[base]{table}},  \code{\link{replicateStructure}} 
 #' @examples
 #' sortByNRepeated(x=LETTERS[1:11], y=LETTERS[3:13], z=LETTERS[6:12])
 #' sortByNRepeated(x=LETTERS[1:11], y=LETTERS[c(3:13,5:4)], z=LETTERS[6:12])
 #' 
 #' @export
 sortByNRepeated <- function(x, y=NULL, z=NULL, filterIntraRep=TRUE, silent=TRUE, debug=FALSE, callFrom=NULL) {
-  ## move to wrMisc with combineAsN()
+  ## fuse/link with  wrMisc::combineAsN() ??
   ## make list of common occurances sorted by number of repeats based on list of character-entries/words (eg peptide sequ) or up to 3 separate character vectors
   ## the name of output indicates number onf times all elements of the vector are repeated
   ## for 4 sets of data provide 'x' in form of list conatining all data
@@ -48,7 +48,7 @@ sortByNRepeated <- function(x, y=NULL, z=NULL, filterIntraRep=TRUE, silent=TRUE,
   if(length(x) <2) { if(!silent) message(fxNa,"Only ",length(x)," set(s) of data provided", if(length(x) <1 | filterIntraRep)" nothing to do !")
     if(length(x) ==1) {             ## simple case : single vector to treat
       chDu <- duplicated(x[[1]])
-      if(any(chDu) & filterIntraRep) x[[1]] <- unique(naOmit(x[[1]]))
+      if(any(chDu) && filterIntraRep) x[[1]] <- unique(naOmit(x[[1]]))
       out2 <- table(table(x[[1]]))
       out <- rep(0, max(as.integer(names(out2))))
       out[match(as.integer(names(out2)), 1:max(as.integer(names(out2))) )] <- out2

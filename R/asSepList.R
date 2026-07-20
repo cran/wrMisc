@@ -1,7 +1,7 @@
-#' Organize Data as Separate List-Entries
+#' Organize Data As Separate List-Entries
 #'
 #' \code{asSepList} allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
-#' (differnt to \code{\link[wrMisc]{partUnlist}} which maintains the original structure). This function also works with lists of lists.
+#' (differnt to \code{\link{partUnlist}} which maintains the original structure). This function also works with lists of lists.
 #' This function may be helpful for reorganizing data for plots.
 #'
 #' @param y list to be separated/split in vectors

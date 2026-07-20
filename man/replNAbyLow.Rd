@@ -2,7 +2,7 @@
 % Please edit documentation in R/replNAbyLow.R
 \name{replNAbyLow}
 \alias{replNAbyLow}
-\title{Replace NAs by low values}
+\title{Replace NAs By Low Balues}
 \usage{
 replNAbyLow(
   x,
@@ -13,6 +13,7 @@ replNAbyLow(
   absOnly = FALSE,
   seed = NULL,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -33,16 +34,20 @@ replNAbyLow(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-numeric matrix (same dim as 'x') with \code{NA} replaced
+This function retuirns a numeric matrix (same dim as 'x') with \code{NA} replaced
 }
 \description{
 With several screening techniques used in hight-throughput biology values at/below detection limit are returned as \code{NA}.
 However, the resultant \code{NA}-values may be difficult to analyse properly, simply ignoring \code{NA}-values mat not be a good choice.
 When (technical) replicate measurements are available, one can look for cases where one gave an \code{NA} while the other did not 
-with the aim of investigating such 'NA-neighbours'.  
+with the aim of investigating such 'NA-neighbours'.
+}
+\details{
 \code{replNAbyLow} locates and replaces \code{NA} values by (random) values from same line & same group 'grp'. 
 The origin of NAs should be predominantly absence of measure (quantitation) due to signal below limit of detection
 and not saturation at upper detection limit or other technical problems.  
@@ -52,7 +57,8 @@ using their means and sd, or a uniform random model (min and max of neighbour va
 Then numeric matrix (same dim as 'x') with \code{NA} replaced is returned.
 }
 \examples{
-dat <- matrix(round(rnorm(30),2),ncol=6); grD <- gl(2,3)
+dat <- matrix(round(rnorm(30),2),ncol=6)
+grD <- gl(2,3)
 dat[sort(sample(1:30,9,repl=FALSE))] <- NA
 dat; replNAbyLow(dat,gr=grD)
 }

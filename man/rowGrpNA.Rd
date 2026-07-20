@@ -22,17 +22,17 @@ in case of furnishing a list or MArrayLM-class a list-element called 'isNA' will
 \item{grp}{(character or factor) defining which columns should be grouped (considered as replicates). If \code{grp} is not provided and \code{mat} is list or 'MArrayLM'-class containg a
 list-element 'setup' (as produced with testing from package  \href{https://CRAN.R-project.org/package=wrProteo}{wrProteo} the group-association will be taken from there}
 
-\item{initColOrder}{(logical) if\code{FALSE} the columns may be in (alphabetically) sorted order}
+\item{initColOrder}{(logical) if\code{FALSE} the columns may be in (alphabetically) sorted order (and thus not in the order of argument \code{grp})}
 
-\item{mode}{(character) switch between different types of output :
-- \code{mode="simple"} will return simply the number of \code{NAs} per line and group as integer
-- \code{mode="simpleCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group (as character)
-- \code{mode="complete"} will return number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character)
-- \code{mode="completeCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character)
-- \code{mode="ratio"} will return the ratio of \code{NAs} per line and group (as numeric)
-- \code{mode="ratioCollapse"} will collapse all columns into single chain of characters with the ratio of \code{NAs} per line and group(as character)}
+\item{mode}{(character) allows to switch between different types of output :
+\code{mode="simple"} will return simply the number of \code{NAs} per line and group as integer;
+\code{mode="simpleCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group (as character);
+\code{mode="complete"} will return number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character);
+\code{mode="completeCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character);
+\code{mode="ratio"} will return the ratio of \code{NAs} per line and group (as numeric);
+\code{mode="ratioCollapse"} will collapse all columns into single chain of characters with the ratio of \code{NAs} per line and group(as character);}
 
-\item{digits}{(integer, length=1) number of decimal digits from rounding (when ratios are calculated)}
+\item{digits}{(integer, length=1) number of decimal digits from rounding (when ratios are calculated);}
 
 \item{silent}{(logical) suppress messages}
 
@@ -41,32 +41,42 @@ list-element 'setup' (as produced with testing from package  \href{https://CRAN.
 \item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-This function returns typically a matrix (or numeric vector if all grouping falls in a single class or charcter-vector if all groups get collapsed in single chain of characters)  with number of \code{NA}s per group
+This function returns a matrix (or numeric vector if all grouping falls in a single class or charcter-vector if all groups get collapsed in single chain of characters)  with number of \code{NA}s per group
 }
 \description{
-This functions allows easy counting of the number of NAs per row in data organized in multiple sub-groups as columns.
+This functions allows easy counting of the number of NAs per row and group in data organized multiple sub-groups (in columns).
 }
 \details{
 First of all, this function allows counting the number of \code{NAs} per line and sub-group of columns as defined by argument \code{grp}. 
 Furthermore, the counting can be expressed relative to the size of the sub-groups, either as ratio or by giving the \code{NA}-count 
-using \code{mode="ratio"} and the size of the sub-group using \code{mode="complete"} .
-Finally, all results may get collaped in as single (character) vector, however, the names of the groups do not get conserved.
+using \code{mode} and all results may also get collasped in as single (character) vector, however, the names of the groups do not get conserved.
+
+  This function has several options via tehe argument 'mode':
+    - \code{mode="simple"} will return simply the number of \code{NAs} per line and group as integer;
+    - \code{mode="simpleCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group (as character);
+    - \code{mode="complete"} will return number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character);
+    - \code{mode="completeCollapse"} will collapse all columns into single chain of characters with the number of \code{NAs} per line and group accompanied by the number of columns associated with the very group (as character);
+    - \code{mode="ratio"} will return the ratio of \code{NAs} per line and group (as numeric);
+    - \code{mode="ratioCollapse"} will collapse all columns into single chain of characters with the ratio of \code{NAs} per line and group(as character);
+
+With \code{mode="complete"} or \code{mode="ratio"} the resulting column-names will state 'nNA.' plus 'ratio.' (if a ratio-mode was chosen).
 }
 \examples{
-mat2 <- matrix(1, nrow=200, ncol=40)
-mat2[sample.int(prod(dim(mat2)), nrow(mat2), replace=FALSE)] <- NA
-grp2 <- as.factor(sample.int(n=8, size=ncol(mat2), replace=TRUE))
+mat2 <- matrix(1:72, nrow=9, ncol=8, dimnames=list(letters[1:9],LETTERS[1:8]))
+set.seed(2025); mat2[sample.int(prod(dim(mat2)), 2*nrow(mat2), replace=FALSE)] <- NA
+set.seed(2026); grp2 <- as.factor(sample.int(n=3, size=ncol(mat2), replace=TRUE))
   table(grp2)
+
 ## overal number of NAs per row
 rowSums(is.na(mat2)) 
 
 ## number of NAs per row and group
 head(rowGrpNA(mat2, grp2))
-head(rowGrpNA(mat2, grp2, mode="simple"))
 head(rowGrpNA(mat2, grp2, mode="complete"))
+head(rowGrpNA(mat2, grp2, mode="ratio"))   
 
 ## mimick output from testing from package wrProteo
-dat1 <- list(isNA =mat2, setup=list(grp=grp2))
+dat1 <- list(isNA =is.na(mat2), setup=list(grp=grp2))
 head(rowGrpNA(dat1, mode="simple"))
 head(rowGrpNA(dat1, mode="complete"))
 head(rowGrpNA(dat1, mode="ratioCollapse"))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/closeMatchMatrix.R
 \name{closeMatchMatrix}
 \alias{closeMatchMatrix}
-\title{Reorganize results of search for close (similar) values in matrix-view}
+\title{Reorganize Results Of Search For Close (Similar) Values In Matrix-view}
 \usage{
 closeMatchMatrix(
   closeMatch,
@@ -20,11 +20,11 @@ closeMatchMatrix(
 )
 }
 \arguments{
-\item{closeMatch}{(list) output from \code{\link[wrMisc]{findCloseMatch}}, ie list with hits for each 'x' (1st argument) : named vectors of value & x index in name; run with 'sortMatch'=F}
+\item{closeMatch}{(list) output from \code{\link{findCloseMatch}}, ie list with hits for each 'x' (1st argument) : named vectors of value & x index in name; run with 'sortMatch'=F}
 
-\item{predMatr}{(vector or matrix) predicted values, the column 'colPred' indicates which column is used for matching from \code{\link[wrMisc]{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching}
+\item{predMatr}{(vector or matrix) predicted values, the column 'colPred' indicates which column is used for matching from \code{\link{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching}
 
-\item{measMatr}{(vector or matrix) measured values, the column 'colMeas' indicates which column is used for matching from \code{\link[wrMisc]{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching}
+\item{measMatr}{(vector or matrix) measured values, the column 'colMeas' indicates which column is used for matching from \code{\link{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching}
 
 \item{prefMatch}{(character, length=2) prefixes ('^x' and/or '^y') thay may have been added by \code{findCloseMatch}}
 
@@ -40,18 +40,20 @@ closeMatchMatrix(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 
 \item{debug}{(logical) for bug-tracking: more/enhanced messages}
 }
 \value{
-results as matrix-view based on initial results from \code{\link[wrMisc]{findCloseMatch}}, including optional columns of suppelemental data for both sets of data for comparison. Returns \code{NULL} when nothing within limits
+This function returns  results as matrix-view based on initial results from \code{\link{findCloseMatch}}, including optional columns of suppelemental data for both sets of data for comparison. Returns \code{NULL} when nothing within limits
 }
 \description{
-\code{closeMatchMatrix} reorganizes/refines results from simple search of similar values of 2 sets of data by \code{\link[wrMisc]{findCloseMatch}} (as list for one-to many relations) to more human friendly/readable matrix.
-This function returns results combining two sets of data which were initially compared (eg measured and threoretical values) as matrix-view using output of \code{\link[wrMisc]{findCloseMatch}} and both original datastes
+This function reorganizes/refines results from simple search of similar values of 2 sets of data by \code{\link{findCloseMatch}} (as list for one-to many relations) to more human friendly/readable matrix.
+This function returns results combining two sets of data which were initially compared (eg measured and threoretical values) as matrix-view using output of \code{\link{findCloseMatch}} and both original datastes
+}
+\details{
 Additional information (covariables, annotation, ...) may be included as optional columns for either 'predMatr' or 'measMatr'.
-Note : It is important to run \code{\link[wrMisc]{findCloseMatch}} with \code{sortMatch=FALSE} !
+Note : It is important to run \code{\link{findCloseMatch}} with \code{sortMatch=FALSE} !
 Note : Results presented based on view of 'predMatr', so if multiple 'measMatr' are at within tolared distance, lines of 'measMatr' will be repeated;
 Note : Distances  'disToMeas' and 'ppmToPred' are oriented : neg value if measured is lower than predicted (and pos values if higher than predicted);
 Note : Returns \code{NULL} when nothing within given limits of comparison;
@@ -73,5 +75,5 @@ a2 <- aA; names(a2) <- letters[1:length(a2)];  c2 <- cC; names(c2) <- letters[10
   valC=91:99,c2),colM=3,colP=3,lim=FALSE,deb=FALSE)) 
 }
 \seealso{
-\code{\link[wrMisc]{findCloseMatch}}, \code{\link[wrMisc]{checkSimValueInSer}}
+\code{\link{findCloseMatch}}, \code{\link{checkSimValueInSer}}
 }

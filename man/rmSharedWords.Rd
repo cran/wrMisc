@@ -49,8 +49,6 @@ Heading separators will be removed in any case (even if not followed by a 'word'
 
 Special characters will be automatically protected.
 When looking for repeated words, the order of such words does NOT matter, multiple repeats will be removed, too.
- 
-#'
 }
 \examples{
 x1 <- c("aa_A1 yy_zz.txt", NA, "B2 yy_aa_aa_zz.txt")

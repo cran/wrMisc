@@ -2,13 +2,14 @@
 % Please edit documentation in R/combinatIntTable.R
 \name{combinatIntTable}
 \alias{combinatIntTable}
-\title{Planing for making all multiplicative combinations}
+\title{Planing For Making All Multiplicative Combinations}
 \usage{
 combinatIntTable(
   nMax,
   include0 = TRUE,
   asList = FALSE,
   callFrom = NULL,
+  debug = FALSE,
   silent = TRUE
 )
 }
@@ -19,15 +20,17 @@ combinatIntTable(
 
 \item{asList}{(logical) return result as list or as array}
 
-\item{callFrom}{(character) allow easier tracking of messages produced}
+\item{callFrom}{(character) allow easier tracking of messages produced d}
+
+\item{debug}{(logical) additional messages for debugging}
 
 \item{silent}{(logical) suppress messages}
 }
 \value{
-list or array (as 2- or 3 dim) with possible number of occurances for each of the 3 elements in nMax. Read results vertical : out[[1]] or out[,,1] .. (multiplicative) table for 1st element of nMax; out[,,2] .. for 2nd
+This function retruns a list or array (as 2- or 3 dim) with possible number of occurances for each of the 3 elements in nMax. Read results vertical : out[[1]] or out[,,1] .. (multiplicative) table for 1st element of nMax; out[,,2] .. for 2nd
 }
 \description{
-Provide all combinations for each of n elements of vector 'nMax' (positive integer, eg number of max multiplicative value). 
+This function provides all combinations for each of n elements of vector 'nMax' (positive integer, eg number of max multiplicative value). 
 For example, imagine, we have 3 cities and the (maximum) voting participants per city.
 Results must be read vertically and allow to see all total possible compositons.
 }

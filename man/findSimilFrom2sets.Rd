@@ -2,7 +2,7 @@
 % Please edit documentation in R/findSimilFrom2sets.R
 \name{findSimilFrom2sets}
 \alias{findSimilFrom2sets}
-\title{Find similar numeric values from two vectors/matrixes}
+\title{Find Similar Numeric Values From Two Vectors/Matrixes}
 \usage{
 findSimilFrom2sets(
   predMatr,
@@ -42,7 +42,7 @@ findSimilFrom2sets(
 This function returns a matrix (predMatr) with add'l columns for index to and 'grp' (group of similar values (1-to-many)), 'nGrp' (n of grp), 'isBest' or 'nBest', 'disToMeas' (distance/difference between pair) &  'ppmToPred' (distance in ppm)
 }
 \description{
-\code{findSimilFrom2sets} compares to vectors or matrixes and returns combined view including only all close (by \code{\link[wrMisc]{findCloseMatch}}).
+This function compares to vectors or matrixes and returns combined view including only all close (by \code{\link{findCloseMatch}}).
 Return matrix (predMatr) with add'l columns for index to and 'grp' (group of similar values (1-to-many)), 'nGrp' (n of grp), 'isBest' or 'nBest', 'disToMeas' 
 (distance/difference between pair) &  'ppmToPred' (distance in ppm).
 Note: too wide 'limitComp' will result in large window and many 'good' hits will compete (and be mutually exlcuded) if selection 'bestOnly' is selected

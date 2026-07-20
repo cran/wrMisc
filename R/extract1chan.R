@@ -13,7 +13,7 @@
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allows easier tracking of messages produced
 #' @return This function returns a list with just single channel extracted
-#' @seealso \code{\link[wrMisc]{organizeAsListOfRepl}}
+#' @seealso \code{\link{organizeAsListOfRepl}}
 #' @examples
 #' arr1 <- array(1:24,dim=c(4,3,2),dimnames=list(c(LETTERS[1:4]),
 #'   paste("col",1:3,sep=""),c("ch1","ch2")))

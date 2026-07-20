@@ -2,17 +2,23 @@
 % Please edit documentation in R/cutAtMultSites.R
 \name{cutAtMultSites}
 \alias{cutAtMultSites}
-\title{Cut character-vector at multiple sites}
+\title{Cut Character-Vector At Multiple Sites}
 \usage{
-cutAtMultSites(y, cutAt)
+cutAtMultSites(y, cutAt, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{y}{character vector (better if of length=1, otherwise one won't know which fragment stems from which input)}
 
 \item{cutAt}{(character) search subtsting, ie 'cutting rule'}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-modified (ie cut) character vector
+This function returns a modified (ie cut) character vector
 }
 \description{
 This function cuts character vector after 'cutAt' (ie keep the search subtsting 'cutAt', different to \code{strsplit}). 
@@ -23,5 +29,5 @@ tmp <- "MSVSRTMEDSCELDLVYVTERIIAVSFPSTANEENFRSNLREVAQMLKSKHGGNYLLFNLSERRPDITKLHA
 cutAtMultSites(c(tmp,"ojioRij"),c("R","K"))
 }
 \seealso{
-\code{\link[base]{strsplit}}, \code{\link[wrMisc]{nFragments0}}, \code{\link[wrMisc]{nFragments}}
+\code{\link[base]{strsplit}}, \code{\link{nFragments0}}, \code{\link{nFragments}}
 }

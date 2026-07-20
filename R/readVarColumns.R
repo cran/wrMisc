@@ -18,22 +18,25 @@
 #' @param refCo (integer) for custom choice of column to be used as row-names (default will use 1st text-column)
 #' @param supNa (character) base for constructing name for columns wo names (+counter starting at 2), default column-name to left of 1st col wo colname
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging 
+#' @param callFrom (character) allow easier tracking of messages produced 
 #' @return This function returns a matrix (character or numeric)
 #' @seealso for regular 'complete' data \code{\link[utils]{read.table}} and its argument \code{flush}  
 #' @examples
-#' path1 <- system.file("extdata",package="wrMisc")
+#' path1 <- system.file("extdata", package="wrMisc")
 #' fiNa <- "Names1.tsv"
-#' datAll <- readVarColumns(fiName=file.path(path1,fiNa))
+#' datAll <- readVarColumns(fiName=file.path(path1, fiNa))
 #' str(datAll)
 #' @export
-readVarColumns <- function(fiName, path=NULL, sep="\t", header=TRUE, emptyFields=NA, refCo=NULL, supNa=NULL, silent=FALSE, callFrom=NULL) {
+readVarColumns <- function(fiName, path=NULL, sep="\t", header=TRUE, emptyFields=NA, refCo=NULL, supNa=NULL, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## slightly slower function for reading variable tabular content of files: This function allows reading variable number of elements per line (via parsing each line separately).
   ##  read content of file using separator 'sep'; 1st line is expectd to caintain some headers, missing headers will be replaced by the content of 'emptyFields'
   ## 'emptyFields'  (NA or character) content of fields
   ## 'refCo'  (integer) for custom choice of column to be used as row-names (default will use 1st text-column)
   ## 'supNa' (character) base for constructing name for columns wo names (+counter starting at 2), default column-name to left of 1st col wo colname
   fxNa <- .composeCallName(callFrom, newNa="readVarColumns")
+  if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) { silent <- FALSE } else { debug <- FALSE }
   fiName <- if(length(path) >0) {if(nchar(path) >0) file.path(path, fiName) else fiName} else fiName
   if(!file.exists(fiName)) { dataOK <- FALSE
     warning("PROBLEM : Can't find file '",fiName,"'")

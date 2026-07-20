@@ -70,5 +70,5 @@ te4[,,1]
 
 }
 \seealso{
-\code{\link[base]{table}},  \code{\link[wrMisc]{replicateStructure}}
+\code{\link[base]{table}},  \code{\link{replicateStructure}}
 }

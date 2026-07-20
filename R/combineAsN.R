@@ -31,7 +31,7 @@
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns an array with 3 dimensions : i)  ii) the combinations of \code{nCombin} list-elements,
 #'   iii) the number of counts (n), sem (standard error of the mean), CI (confidence interval) and sd
-#' @seealso  \code{\link[base]{table}},  \code{\link[wrMisc]{replicateStructure}}
+#' @seealso  \code{\link[base]{table}},  \code{\link{replicateStructure}}
 #' @examples
 #' ## all list-elements are considered equal
 #' tm1 <- list(a1=LETTERS[1:17], a2=LETTERS[3:19], a3=LETTERS[6:20], a4=LETTERS[8:22])
@@ -56,7 +56,7 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
   fxNa <- .composeCallName(callFrom, newNa="combineAsN")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
-  reqPa <- c("utils","wrMisc")
+  reqPa <- c("utils")
   chPa <- sapply(reqPa, requireNamespace, quietly=TRUE)
   if(any(!chPa)) stop("package(s) '",paste(reqPa[which(!chPa)], collapse="','"),"' not found ! Please install first from CRAN")
   ## sanity checks
@@ -79,7 +79,7 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
   if(length(lst) <2 || nCombin <2) { datOK <- FALSE; if(!silent) message(fxNa,"Nothing to do")
   } else datOK <- TRUE
 
-  if(datOK & nCombin ==2 & remDouble) { remDouble <- FALSE
+  if(datOK && nCombin ==2 && remDouble) { remDouble <- FALSE
     if(debug) message(fxNa,"Setting 'nCombin=2' AND 'remDouble=TRUE' makes no sense (nothing will match), running as 'remDouble=FALSE' ")}
 
   if(datOK) {
@@ -148,7 +148,7 @@ combineAsN <- function(lst, lev=NULL, nCombin=3, remDouble=TRUE, silent=FALSE, d
         if(debug) {message(fxNa,"cA3g")}
         for(i in 1:(dim(out)[3])) out[,,i] <- comCou3[(i-1)*nrow(out) +(1:nrow(out)),]
       } else {
-        out <- array(c(comCou2, rep(NA, nrow(comCou2)*ncol(comCou2)*3)), dim=c(nrow(comCou2),ncol(comCou2),4),
+        out <- array(c(comCou2, rep(NA, nrow(comCou2)*ncol(comCou2)*3)), dim=c(nrow(comCou2), ncol(comCou2),4),
           dimnames=list(rownames(comCou2), colnames(comCou2),c("n","sem","CI","sd")))
       }
     }

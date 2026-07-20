@@ -13,19 +13,20 @@
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns an integer vector with counts for number of list-elements with at least one absolue value below threshold, names
-#' @seealso \code{\link[wrMisc]{findCloseMatch}}
+#' @seealso \code{\link{findCloseMatch}}
 #' @examples
 #' set.seed(2019); aa <- sample(12:15,20,repl=TRUE) +round(runif(20),2)-0.5
 #' bb <- 11:18
-#' match1 <- findCloseMatch(aa,bb,com="diff",lim=0.65)
+#' match1 <- findCloseMatch(aa, bb, com="diff", lim=0.65)
 #' head(match1)
-#' (tmp3 <- countCloseToLimits(match1,lim=c(0.5,0.35,0.2)))
-#' (tmp4 <- countCloseToLimits(match1,lim=0.7))
+#' (tmp3 <- countCloseToLimits(match1, lim=c(0.5,0.35,0.2)))
+#' (tmp4 <- countCloseToLimits(match1, lim=0.7))
 #' @export
 countCloseToLimits <- function(closeMatch, limitIdent=5, prefix="lim_", silent=FALSE, debug=FALSE, callFrom=NULL) {
-  fxNa <- .composeCallName(callFrom,newNa="countCloseToLimits")
+  fxNa <- .composeCallName(callFrom, newNa="countCloseToLimits")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+
   limitIdent <- unique(limitIdent)
   if(length(limitIdent) ==1) {x <- floor(log10(signif(limitIdent,1)))
     x <- c(10^c((x-1):x), 10^c((x-1):x)/5, 4 *round(seq(limitIdent/40,limitIdent/4, length.out=20),2), limitIdent)     # default series of limits

@@ -13,6 +13,7 @@ readVarColumns(
   refCo = NULL,
   supNa = NULL,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -33,6 +34,8 @@ readVarColumns(
 
 \item{silent}{(logical) suppress messages}
 
+\item{debug}{(logical) additional messages for debugging}
+
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
@@ -51,9 +54,9 @@ Note, for numeric data the comma is assumed to be US-Style (as '.').
 Note, that it is assumed, that any missing fields for the complete tabular view are missing on the right (ie at the end of line) !
 }
 \examples{
-path1 <- system.file("extdata",package="wrMisc")
+path1 <- system.file("extdata", package="wrMisc")
 fiNa <- "Names1.tsv"
-datAll <- readVarColumns(fiName=file.path(path1,fiNa))
+datAll <- readVarColumns(fiName=file.path(path1, fiNa))
 str(datAll)
 }
 \seealso{

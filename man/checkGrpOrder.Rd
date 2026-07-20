@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkGroupOrder.R
 \name{checkGrpOrder}
 \alias{checkGrpOrder}
-\title{checkGrpOrder}
+\title{Check Order Of Groups}
 \usage{
 checkGrpOrder(
   x,
@@ -14,7 +14,7 @@ checkGrpOrder(
 )
 }
 \arguments{
-\item{x}{matrix or data.frame}
+\item{x}{matrix or data.frame, main input}
 
 \item{rankExp}{(numeric) expected order for values in columns, default 'rankExp' =1:ncol(x)}
 
@@ -27,10 +27,10 @@ checkGrpOrder(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-vector of logical values
+This function returns a vector of logical values
 }
 \description{
-\code{checkGrpOrder} tests each line of 'x' if expected order appears. 
+This function tests each line of 'x' if expected order appears. 
 Used for comparing groups of measures with expected profile (simply by mataching expected order)
 }
 \examples{
@@ -39,5 +39,5 @@ checkGrpOrder(mat1)
 checkGrpOrder(mat1,c(1,4,3,2))
 }
 \seealso{
-\code{\link[wrMisc]{checkGrpOrderSEM}}
+\code{\link{checkGrpOrderSEM}}
 }

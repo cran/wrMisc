@@ -2,9 +2,9 @@
 % Please edit documentation in R/simpleFragFig.R
 \name{simpleFragFig}
 \alias{simpleFragFig}
-\title{Simple figure showing line from start- to end-sites of edges (or fragments) defined by their start- and end-sites
+\title{Simple Figure Showing Line From Start- To End-Sites Of Edges (Or Fragments) Defined By Their Start- And End-Sites
  
-\code{simpleFragFig} draws figure showing start- and end-sites of edges (or fragments)}
+This function draws av figure showing start- and end-sites of edges (or fragments) .}
 \usage{
 simpleFragFig(
   frag,
@@ -32,17 +32,17 @@ simpleFragFig(
 \item{useCex}{(numeric) expansion factor, see also \code{\link[graphics]{par}}}
 }
 \value{
-matrix with mean values
+This function returns a plot only
 }
 \description{
-Simple figure showing line from start- to end-sites of edges (or fragments) defined by their start- and end-sites
+Simple Figure Showing Line From Start- To End-Sites Of Edges (Or Fragments) Defined By Their Start- And End-Sites
  
-\code{simpleFragFig} draws figure showing start- and end-sites of edges (or fragments)
+This function draws av figure showing start- and end-sites of edges (or fragments) .
 }
 \examples{
 frag2 <- cbind(beg=c(2,3,7,13,13,15,7,9,7, 3,7,5,7,3),end=c(6,12,8,18,20,20,19,12,12, 4,12,7,12,4)) 
 rownames(frag2) <- c("A","E","B","C","D","F","H","G","I", "J","K","L","M","N")
-simpleFragFig(frag2,fullSize=21,sortByHead=TRUE) 
+simpleFragFig(frag2, fullSize=21, sortByHead=TRUE) 
 buildTree(frag2)
 }
 \seealso{

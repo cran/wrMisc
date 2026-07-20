@@ -9,7 +9,7 @@
 #' Special characters will be automatically protected.
 #' When looking for repeated words, the order of such words does NOT matter, multiple repeats will be removed, too.
 #'  
-#' #' 
+#' 
 #' @param x (character) main input for making non-redundant
 #' @param sep (character) separator(s) to be used
 #' @param anySep (logical) if \code{TRUE}, will consider all separators at one time (), thus combinations with different separators won't be distinguished
@@ -33,7 +33,6 @@ rmSharedWords <- function(x, sep=c("_"," ","."), anySep=TRUE, newSep=NULL, minLe
   ## special characters will be automatically protected, order does NOT matter, multiple repeats will be removed, too
   ## note : anySep=TRUE will consider all separators at one time (), thus combinations with different separators won't be distinguished
   ## note : heading separators will be removed in any case
-  ## move to wrMisc ??
   #example#   x1 <- c("aa_A1 yy_zz.txt", NA, "B2 yy_aa_aa_zz.txt"); rmSharedWords(x1)
   fxNa <- .composeCallName(callFrom, newNa="rmSharedWords")
   if(!isTRUE(silent)) silent <- FALSE

@@ -2,7 +2,7 @@
 % Please edit documentation in R/elimCloseCoord.R
 \name{elimCloseCoord}
 \alias{elimCloseCoord}
-\title{Eliminate close (overlapping) points (in x & y space)}
+\title{Eliminate Close (Overlapping) Points (in x & y space)}
 \usage{
 elimCloseCoord(
   dat,
@@ -25,15 +25,15 @@ elimCloseCoord(
 
 \item{nDig}{(integer) number of significant digits used for rounding, if two 'similar' values are identical after this rounding the second will be eliminated.}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
+\item{callFrom}{(character) allows easier tracking of messages produced}
 
 \item{silent}{(logical) suppress messages}
 }
 \value{
-resultant matrix/data.frame
+This function returns the resultant matrix/data.frame
 }
 \description{
-\code{elimCloseCoord} reduces number of rows in 'dat' by eliminating lines where x & y coordinates (columns of matrix '\code{dat}' defined by '\code{useCol}') are identical (overlay points) or very close.
+This function reduces number of rows in 'dat' by eliminating lines where x & y coordinates (columns of matrix '\code{dat}' defined by '\code{useCol}') are identical (overlay points) or very close.
 The stringency for 'close' values may be fine-tuned using \code{nDig}), this function uses internally \code{\link{firstOfRepeated}}.
 }
 \examples{

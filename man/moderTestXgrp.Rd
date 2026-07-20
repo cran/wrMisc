@@ -2,7 +2,7 @@
 % Please edit documentation in R/moderTestXgrp.R
 \name{moderTestXgrp}
 \alias{moderTestXgrp}
-\title{Multiple Moderated Pairwise t-tests From limma}
+\title{Multiple Moderated Pairwise t-tests From Limma}
 \usage{
 moderTestXgrp(
   dat,
@@ -39,7 +39,7 @@ Of course this separator should not occur in 'grp' (if present it will be automa
 
 \item{testOrientation}{(character) for one-sided test (">","greater" or "<","less"), NOTE : 2nd grp is considered control/reference, '<' will identify grp1 < grp2}
 
-\item{sep}{(\code{NULL]} or character of length=1) optional custom choice for separator for column-names of pairwise comparisons, otherwise determined as character(-set) not occurring in \code{grp}}
+\item{sep}{(character) optional custom choice for separator for column-names of pairwise comparisons (if \code{sep=NULL} the function getPWseparator() will be used to determine optimal separator)}
 
 \item{silent}{(logical) suppress messages}
 
@@ -107,5 +107,6 @@ library(limma)
 topTable(test8b, n=5)
 }
 \seealso{
-\code{\link{moderTest2grp}} for simplified single comparisons (with fewer options/flexibility), \code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}
+\code{\link[limma]{lmFit}} and the \code{eBayes}-family of functions in package \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma};
+   \code{\link{getPWseparator}} and \code{\link{convPairwiseSetup}} for orgnizing experimental setup; \code{\link{moderTest2grp}} for simplified single comparisons (with much fewer options/flexibility)
 }

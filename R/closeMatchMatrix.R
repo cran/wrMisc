@@ -1,15 +1,17 @@
-#' Reorganize results of search for close (similar) values in matrix-view 
+#' Reorganize Results Of Search For Close (Similar) Values In Matrix-view 
 #'
-#' \code{closeMatchMatrix} reorganizes/refines results from simple search of similar values of 2 sets of data by \code{\link[wrMisc]{findCloseMatch}} (as list for one-to many relations) to more human friendly/readable matrix.
-#' This function returns results combining two sets of data which were initially compared (eg measured and threoretical values) as matrix-view using output of \code{\link[wrMisc]{findCloseMatch}} and both original datastes
+#' This function reorganizes/refines results from simple search of similar values of 2 sets of data by \code{\link{findCloseMatch}} (as list for one-to many relations) to more human friendly/readable matrix.
+#' This function returns results combining two sets of data which were initially compared (eg measured and threoretical values) as matrix-view using output of \code{\link{findCloseMatch}} and both original datastes
+#'  
+#' @details  
 #' Additional information (covariables, annotation, ...) may be included as optional columns for either 'predMatr' or 'measMatr'.
-#' Note : It is important to run \code{\link[wrMisc]{findCloseMatch}} with \code{sortMatch=FALSE} !
+#' Note : It is important to run \code{\link{findCloseMatch}} with \code{sortMatch=FALSE} !
 #' Note : Results presented based on view of 'predMatr', so if multiple 'measMatr' are at within tolared distance, lines of 'measMatr' will be repeated;
 #' Note : Distances  'disToMeas' and 'ppmToPred' are oriented : neg value if measured is lower than predicted (and pos values if higher than predicted);
 #' Note : Returns \code{NULL} when nothing within given limits of comparison;  
-#' @param closeMatch (list) output from \code{\link[wrMisc]{findCloseMatch}}, ie list with hits for each 'x' (1st argument) : named vectors of value & x index in name; run with 'sortMatch'=F
-#' @param predMatr (vector or matrix) predicted values, the column 'colPred' indicates which column is used for matching from \code{\link[wrMisc]{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching
-#' @param measMatr (vector or matrix) measured values, the column 'colMeas' indicates which column is used for matching from \code{\link[wrMisc]{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching
+#' @param closeMatch (list) output from \code{\link{findCloseMatch}}, ie list with hits for each 'x' (1st argument) : named vectors of value & x index in name; run with 'sortMatch'=F
+#' @param predMatr (vector or matrix) predicted values, the column 'colPred' indicates which column is used for matching from \code{\link{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching
+#' @param measMatr (vector or matrix) measured values, the column 'colMeas' indicates which column is used for matching from \code{\link{findCloseMatch}}; if column 'id' present this column will be used as identifier for matching
 #' @param prefMatch (character, length=2) prefixes ('^x' and/or '^y') thay may have been added by \code{findCloseMatch} 
 #' @param colPred (integer or text, length=1) column of 'predMatr' with main values of comparison
 #' @param colMeas (integer or text, length=1) column of 'measMatr' with main measures of comparison
@@ -17,10 +19,10 @@
 #' @param asDataFrame (logical) convert results to data.frame if non-numeric matrix produced (may slightly slow down big results)
 #' @param origNa (logical) will try to use original names of objects 'predMatr','measMatr', if they are not multi-column and not conflicting other output-names (otherwise 'predMatr','measMatr' will appear)
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of message(s) produced
+#' @param callFrom (character) allows easier tracking of messages produced
 #' @param debug (logical) for bug-tracking: more/enhanced messages
-#' @return results as matrix-view based on initial results from \code{\link[wrMisc]{findCloseMatch}}, including optional columns of suppelemental data for both sets of data for comparison. Returns \code{NULL} when nothing within limits
-#' @seealso  \code{\link[wrMisc]{findCloseMatch}}, \code{\link[wrMisc]{checkSimValueInSer}}  
+#' @return This function returns  results as matrix-view based on initial results from \code{\link{findCloseMatch}}, including optional columns of suppelemental data for both sets of data for comparison. Returns \code{NULL} when nothing within limits
+#' @seealso  \code{\link{findCloseMatch}}, \code{\link{checkSimValueInSer}}  
 #' @examples
 #' aA <- c(11:17); bB <- c(12.001,13.999); cC <- c(16.2,8,9,12.5,15.9,13.5,15.7,14.1,5)
 #' (cloMa <- findCloseMatch(aA,cC,com="diff",lim=0.5,sor=FALSE))       
@@ -37,11 +39,12 @@
 #' (maA2 <- closeMatchMatrix(cloM2,cbind(id=names(a2),valA=81:87,a2),cbind(id=names(c2),
 #'   valC=91:99,c2),colM=3,colP=3,lim=FALSE,deb=FALSE)) 
 #' @export
-closeMatchMatrix <- function(closeMatch, predMatr, measMatr, prefMatch=c("^x","^y"), colPred=1, colMeas=1, limitToBest=TRUE, asDataFrame=FALSE, origNa=TRUE,silent=FALSE,callFrom=NULL,debug=FALSE){
+closeMatchMatrix <- function(closeMatch, predMatr, measMatr, prefMatch=c("^x","^y"), colPred=1, colMeas=1, limitToBest=TRUE, asDataFrame=FALSE, origNa=TRUE, silent=FALSE, callFrom=NULL, debug=FALSE){
   fxNa <- .composeCallName(callFrom,newNa="closeMatchMatrix")
   namesMXY <- c(deparse(substitute(closeMatch)), deparse(substitute(predMatr)), deparse(substitute(measMatr)))
-  if(debug) silent <- FALSE
-  if(debug) {message(fxNa,".. xxidentToMatr2a\n")}
+  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
+  if(!isTRUE(silent)) silent <- FALSE
+  if(debug) {message(fxNa,".. xxidentToMatr2a")}
   if(length(closeMatch) <1) message(fxNa," INPUT EMPTY, NOTHING TO DO !!")
   if(length(dim(predMatr)) <2) {
     predMatr <- cbind(id=if(is.null(names(predMatr))) 1:length(predMatr) else names(predMatr), predMatr)
@@ -78,7 +81,7 @@ closeMatchMatrix <- function(closeMatch, predMatr, measMatr, prefMatch=c("^x","^
   chCloMaN2 <- nchar(unlist(sapply(closeMatch, names))) 
   if(any(chCloMaN2 <1, na.rm=TRUE)) message(fxNa,txt[1],sum(chCloMaN2 <1)," out of ",sum(sapply(closeMatch,length))," indiv ",txt[2])   ##if(is.null(colnames(predMatr))) colnames(predMatr) <- "predMatr"
   nMatch <- sapply(closeMatch,length)
-  if(debug) {message(fxNa,".. xxidentToMatr2c\n")}
+  if(debug) {message(fxNa,".. xxidentToMatr2c")}
   ## main joining of predMatr & measMatr
   measNa <- sub(prefMatch[2],"", unlist(lapply(closeMatch, names)))         # names of measured (y) to each 'y'
   if(length(grep("[[:alpha:]]", measNa)) <1) measNa <- as.integer(measNa)        

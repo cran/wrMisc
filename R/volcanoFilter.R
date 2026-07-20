@@ -61,8 +61,8 @@ volcanoFilter <- function(Mvalue, pValue=NULL, useComp=1, filtFin=NULL, FCthrs=N
   annotColumn=c("SpecType","GeneName","EntryName","Accession","Species","Contam"), silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## centralized filtering function for export & Volcano-plot 
   fxNa <- .composeCallName(callFrom, newNa="volcanoFilter")
-  if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(!isTRUE(silent)) silent <- FALSE
+  if(isTRUE(debug)) { silent <- FALSE } else { debug <- FALSE }
   datOK <- length(Mvalue) !=0
   ## set defaults
   if(length(FCthrs) !=1 || !is.finite(FCthrs)) FCthrs <- 1        # ie lin scale=2

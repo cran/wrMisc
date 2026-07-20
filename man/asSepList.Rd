@@ -2,7 +2,7 @@
 % Please edit documentation in R/asSepList.R
 \name{asSepList}
 \alias{asSepList}
-\title{Organize Data as Separate List-Entries}
+\title{Organize Data As Separate List-Entries}
 \usage{
 asSepList(
   y,
@@ -40,7 +40,7 @@ This function returns a list, partially unlisted to vectors
 }
 \description{
 \code{asSepList} allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
-(differnt to \code{\link[wrMisc]{partUnlist}} which maintains the original structure). This function also works with lists of lists.
+(differnt to \code{\link{partUnlist}} which maintains the original structure). This function also works with lists of lists.
 This function may be helpful for reorganizing data for plots.
 }
 \examples{

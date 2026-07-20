@@ -18,7 +18,7 @@
 #' @param debug (logical) additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns a list with $rankExp as logical vector telling if group-ranges are asending and $lims wityh the sd-based group-limits
-#' @seealso takes only 10% more time than \code{\link[wrMisc]{checkGrpOrder}} without considering intra-group sd 
+#' @seealso takes only 10% more time than \code{\link[{checkGrpOrder}} without considering intra-group sd 
 #' @examples
 #' mat1 <- matrix(rep(11:24,3)[1:40], byrow=TRUE, ncol=8)
 #' dimnames(mat1) <- list(letters[1:nrow(mat1)], paste(rep(LETTERS[3:1], each=3)[-1], 
@@ -26,12 +26,12 @@
 #' checkGrpOrderSEM(mat1, grp=gl(3,3, labels=LETTERS[3:1])[-1])
 #' @export
 checkGrpOrderSEM <- function(x, grp, sdFact=1, revRank=TRUE, shrink1sampSd=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL){
-  fxNa <- .composeCallName(callFrom,newNa="checkGrpOrderSEM")
+  fxNa <- .composeCallName(callFrom, newNa="checkGrpOrderSEM")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(length(dim(x)) !=2) stop(fxNa," 'x' should be data.frame or matrix of 2 dimensions")
   if(length(grp) != ncol(x)) stop(fxNa," 'grp' should be of length of number of cols in 'x'")
-  if(length(grp) <1 | sum(is.na(grp)) == length(grp)) stop(" 'grp' appears to be empty or all NAs")
+  if(length(grp) <1 | sum(is.na(grp)) == length(grp)) stop(fxNa," 'grp' appears to be empty or all NAs")
   if(!is.factor(grp)) grp <- as.factor(grp)
   
   ## main

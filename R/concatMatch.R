@@ -41,7 +41,6 @@
 #' concatMatch(x1, tab1)
 #' @export
 concatMatch <- function(x, table, sep=",", sepPattern=NULL, globalPat="digitExtension", nomatch=NA_integer_, incomparables=NULL, extensPat=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {
-  ## move to wrMisc ?
   ## idea : find where x (eg fasta) matche(s) IN table (MQresult, has concat)
   ## both \code{x} and \code{table} may contain concatenated IDs
   ## match-like function including each of concatenated terms/IDss, add'l option to remove add'l pattern like terminal lowercase extension

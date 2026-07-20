@@ -52,5 +52,5 @@ dimnames(mat1) <- list(letters[1:nrow(mat1)], paste(rep(LETTERS[3:1], each=3)[-1
 checkGrpOrderSEM(mat1, grp=gl(3,3, labels=LETTERS[3:1])[-1])
 }
 \seealso{
-takes only 10% more time than \code{\link[wrMisc]{checkGrpOrder}} without considering intra-group sd
+takes only 10% more time than \code{\link[{checkGrpOrder}} without considering intra-group sd
 }
