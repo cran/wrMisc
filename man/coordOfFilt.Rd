@@ -2,9 +2,16 @@
 % Please edit documentation in R/coordOfFilt.R
 \name{coordOfFilt}
 \alias{coordOfFilt}
-\title{get coordinates of values/points in matrix according to filtering condition}
+\title{Get Coordinates Of Values/Points In Matrix According To Filtering Condition}
 \usage{
-coordOfFilt(mat, cond, sortByRows = FALSE, silent = FALSE, callFrom = NULL)
+coordOfFilt(
+  mat,
+  cond,
+  sortByRows = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{(matrix or data.frame) matrix or data.frame}
@@ -15,10 +22,12 @@ coordOfFilt(mat, cond, sortByRows = FALSE, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-matrix columns 'row' and 'col'
+This function returns a  matrix with the columns 'row' and 'col'
 }
 \description{
 Get coordinates of values/points in matrix according to filtering condition

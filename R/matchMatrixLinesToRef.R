@@ -1,15 +1,15 @@
-#' Match All Lines of Matrix To Reference Note
+#' Match All Lines Of Matrix To Reference Note
 #'
 #' This function allows adjusting the order of lines of a matrix \code{mat} to a reference character-vector \code{ref},
 #' even when initial direct matching of character-strings using \code{match} is not possible/successful.
 #' In this case, various variants of using \code{grep} will be used to see if unambiguous matching is possible of characteristic parts of the text.
-#' All columns of \code{mat} will be tested an the column giving the bes resuts will be used.
+#' Besides, it will tested if common preceeding text ('words') or leading Os don't allow successful direct macthing.
 #'
 #' @details
 #' This function tests all columns of \code{mat} to find perfect matching results to the reference \code{ref}.
-#' In case of multiple results the
 #' In case no direct matching is possible, \code{grep} will be used to find the best partial matching.
-#' The orderof the rows of input \code{mat} will be adjusted according to the matching results.
+#' All columns of \code{mat} will be tested an the column giving the best resuts will be used.
+#' The order of the rows of input \code{mat} will be adjusted according to the matching results.
 #'
 #' If \code{addRef=TRUE}, the reference will be included as additional column to the results, too.
 #'
@@ -31,8 +31,13 @@
 #'   d=c("hgf","hgf","vxc","nvnn"), e=c("_vv_","_ww_","_xx_","_yy_"))
 #' matchMatrixLinesToRef(mat0[,1:4], ref=mat0[,5])
 #' matchMatrixLinesToRef(mat0[,1:4], ref=mat0[1:3,5], inclInfo=TRUE)
-#'
-#' matchMatrixLinesToRef(mat0[,-2], ref=mat0[,2], inclInfo=TRUE)   # needs 'reverse grep'
+#' matchMatrixLinesToRef(mat0[,-2], ref=substring(mat0[,2], 2, 3), inclInfo=TRUE)   
+#' 
+#' ## reverse grep (grep ref in all columns of mat)
+#' matchMatrixLinesToRef(mat0, ref=c("iyy","vv","iw","gx"), inclInfo=TRUE)   
+#' 
+#' ## trimming of heading 0s
+#' matchMatrixLinesToRef(matrix(11:18, ncol=2), ref=c("018","16","0015","017"))
 #' @export
 matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=FALSE, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## find best column for matching lines of mat (matrix) to ref (char vector) via two way grep
@@ -60,10 +65,10 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
         if(debug) {message(fxNa, "mMLR1"); mMLR1 <- list(out=out,mat=mat,ref=ref,newOr=newOr,goodCol=goodCol,matElim=matElim,chIdenCol=chIdenCol,addRef=addRef)}
         outDiNa <- list(rownames(mat), colnames(out)[-1*which(colnames(out) %in% colnames(matElim))])
         rmCol <- which(colnames(out) %in% colnames(matElim))
-        out <- if(length(rmCol) < ncol(out) -1) out[,-1*rmCol] else matrix( out[,-1*rmCol], nrow=nrow(mat), dimnames=list(outDiNa[[1]], outDiNa[[1]][-1*rmCol]))
+        out <- if(length(rmCol) < ncol(out) -1) out[,-1*rmCol] else matrix( out[, -1*rmCol], nrow=nrow(mat), dimnames=list(outDiNa[[1]], outDiNa[[1]][-1*rmCol]))
         if(length(chIdenCol) >0) {
           iniColNa <- colnames(out)
-          if(is.logical(chIdenCol) && length(names(chIdenCol)) >0) out <- out[,-1*which(iniColNa %in% names(chIdenCol)[which(chIdenCol)])]
+          if(is.logical(chIdenCol) && length(names(chIdenCol)) >0) out <- out[, -1*which(iniColNa %in% names(chIdenCol)[which(chIdenCol)])]
           if(length(out) >0 && length(dim(out)) <1) out <- matrix(out, nrow=nrow(mat), dimnames=list(names(out), iniColNa[-1*which(iniColNa %in% names(chIdenCol)[which(chIdenCol)])]))  
         }
       } 
@@ -72,7 +77,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
 
   if(length(mat)==1) { out <- mat; if(!silent) message(fxNa,"length of '",namesXY[1],"'(mat) ==1, nothing to do - return as input"); datOK <- FALSE}
   if(datOK) { if(length(dim(mat)) <2) mat <- matrix(mat, nrow=length(mat), dimnames=list(names(mat), namesXY[1]))
-    if(length(ref) <1) { datOK <- FALSE
+    if(length(ref) ==0) { datOK <- FALSE
       stop(fxNa,"Argument '",namesXY[2],"' has incorrect length (found ",length(ref),") !")}}
   if(datOK) if(nrow(mat)==1) {out <- mat; if(!silent) message(fxNa,"'",namesXY[1],"' has single row, nothing to do - return as input"); datOK <- FALSE}
 
@@ -92,7 +97,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
       } else matUse <- mat
       if(debug) {message(fxNa,"mMLR2"); mMLR2 <- list(mat=mat,matUse=matUse,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
       ## exclude specified column(s) : exclCol
-      if(length(exclCol) >0) {
+      if(length(exclCol) !=0) {
         exclCol <- if(is.character(exclCol)) naOmit(colnames(matUse) %in% exclCol) else as.integer(naOmit(exclCol[which(exclCol >0 & exclCol <= ncol(mat))] ))
         if(length(exclCol) >0) {
           exclCol <- sort(unique(exclCol)) 
@@ -103,11 +108,11 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
             matUse <- if(length(exclCol) +1 ==ncol(matUse)) matrix(matUse[,-exclCol], ncol=1, dimnames=list(rownames(matUse), colnames(matUse)[-exclCol])) else matUse[,-exclCol] }  
         }
       }
-      if(length(matUse) >0) {  
+      if(length(matUse) !=0) {  
         ## try simple match
         sMa <- apply(if(length(matUse) >0) matUse else mat, 2, function(x) match(ref, x))
         chNa <- colSums(is.na(sMa))
-        if(any(chNa==0)) { newOr <- sMa[,which(chNa==0)[1]]
+        if(any(chNa==0)) { newOr <- sMa[, which(chNa==0)[1]]
           out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, goodCol=NULL, matElim=matElim, chIdenCol=NULL, addRef=addRef)  #  goodCol=chNa, matElim=matElim, chIdenCol=chIdenCol,
           byCol <- which(chNa==0)[1]
           msgM <- "direct match"
@@ -127,19 +132,25 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
           if(any(chNa==0)) {     ## should be sufficient for ProteomeDiscoverer file-list
             newOr <- sMa[,which(chNa==0)[1]]
             out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, addRef=addRef)  #
-            #old#out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, goodCol=chNa, matElim=matElim, chIdenCol=chIdenCol, addRef=addRef)  #
             byCol <- which(chNa==0)[1]
             msgM <- "direct match after trimming redundant text"
             if(debug) {message(fxNa,"mMLR3c"); mMLR3c <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat2=mat2,ref2=ref2,sMa=sMa)}
           } else {
             ## direct matching not successful, check check for all ref starting with X, retry direct matching (automatic conversion of colnames starting with digits)
             if(all(grepl("^X[[:digit:]]", ref))) { ref2 <- sub("^X","", ref2); ref <- sub("^X","", ref)}
+            ## also : try removing heading 0s (only when in front of other digits)
+            chZerM <- apply(mat2, 2, function(x) grepl("^0+[1-9]", x))
+            chZerR <- grepl("^0+[1-9]", ref2)
+            if(any(chZerR)) ref2[which(chZerR)] <- sub("^0+", "", ref2[which(chZerR)])
+            if(any(colSums(chZerM) !=0)) {
+              chZerM <- which(colSums(chZerM) !=0)
+              mat2[, chZerM] <- sub("^0+", "", mat2[, chZerM]) }
             sMa <- apply(mat2, 2, function(x) match(ref2, x))
             chNa <- colSums(is.na(sMa))
+            if(debug) {message(fxNa,"mMLR3d"); mMLR3d <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat2=mat2,ref2=ref2,sMa=sMa )}
             if(any(chNa==0)) {     ## should be sufficient for ProteomeDiscoverer file-list
               newOr <- sMa[,which(chNa==0)[1]]
               out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, addRef=addRef)  #
-              #old#out <- .applyOrder(mat=mat, ref=ref, newOr=newOr, goodCol=chNa, matElim=matElim, chIdenCol=chIdenCol, addRef=addRef)  #
               byCol <- which(chNa==0)[1]
               msgM <- "direct match after trimming redundant text (removed 'X' from ref)"
             }
@@ -167,7 +178,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
               ## check by harmonizing/trimming enumerators
               mat3 <- apply(mat2, 2, rmEnumeratorName, nameEnum=c("Number","No","#","Replicate","Sample","Speciem"), sepEnum=c(" ","-","_"), newSep="_No", incl=c("anyCase","trim1"), silent=debug, debug=debug, callFrom=fxNa)
               chCol <- colSums(mat2 ==mat3) < nrow(mat2)      # see if change in all elements in a given column
-              if(debug) {message(fxNa,"mMLR5"); mMLR5 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat2=mat2,ref2=ref2,chCol=chCol,refPoss=refPoss) }
+              if(debug) {message(fxNa,"mMLR5"); mMLR5 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chNa=chNa,mat2=mat2,mat3=mat3,ref2=ref2,chCol=chCol,refPoss=refPoss) }
 
               if(any(chCol)) {
                 if(debug) message(fxNa,"Enumerators exist, try matching after harmonizing style ..")
@@ -203,18 +214,19 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
                 chRL <- sapply(chRev, sapply, length)       # number of grp hits
                 if(length(dim(chRL)) !=2) {
                   useEl <- sapply(chRev, function(x) length(dim(x))!=2) & sapply(chRev, function(x) !is.list(x))  # select list-element with single hits
-                  if(any(useEl)) mat <- mat[,which(useEl)[1], drop=FALSE] else {
+                  if(any(useEl)) mat <- mat[, which(useEl)[1], drop=FALSE] else {
                     useEl <- sapply(chRev, function(x) length(dim(x))==2) & sapply(chRev, function(x) !is.list(x))
-                    if(any(useEl)) mat <- mat[,which(useEl)[1], drop=FALSE] else stop(fxNa,"Unable to match  mMLR5d")
+                    if(any(useEl)) mat <- mat[, which(useEl)[1], drop=FALSE] else stop(fxNa,"Unable to match  mMLR5d")
                   }
                   mat2 <- as.matrix(mat)
                   chRev <- apply(mat2, 2, function(x) sapply(x, grep, ref2))
                   chRL <- sapply(chRev, sapply, length)       # number of grp hits
+                  if(debug) {message(fxNa,"mMLR6"); mMLR6 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chRev=chRev,chRL=chRL) }
                 }
 
                 ch1 <- (if(length(dim(chRL)) >1) colSums(chRL) ==1 else sum(chRL==1)) ==length(ref)
                 if(any(ch1)) { newOr <- if(is.list(chRev)) order(unlist(chRev[[which(ch1)[1]]], use.names=FALSE)) else chRev[,which(ch1)[1]]         # new order for mat
-                  if(debug) {message(fxNa,"mMLR6"); mMLR6 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chRev=chRev,chRL=chRL,ch1=ch1) }
+                  if(debug) {message(fxNa,"mMLR7"); mMLR7 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out,chRev=chRev,chRL=chRL,ch1=ch1) }
                   out <- cbind(if(any(dim(mat)==1, length(newOr)==1)) matrix(mat[newOr,], ncol=ncol(mat), dimnames=list(rownames(mat)[newOr], colnames(mat))) else mat[newOr,, drop=FALSE],
                     if(any(dim(matElim)==1, length(newOr)==1)) matrix(matElim[newOr,], ncol=ncol(matElim), dimnames=list(rownames(matElim)[newOr], colnames(matElim))) else matElim[newOr,, drop=FALSE])
                   if(length(matElim) >0) out <- out[,match(names(chIdenCol), colnames(out)), drop=FALSE]   # adjust init col-order
@@ -227,7 +239,7 @@ matchMatrixLinesToRef <- function(mat, ref, exclCol=NULL, addRef=TRUE, inclInfo=
           }
         }
       }  
-      if(debug) {message(fxNa,"mMLR7"); mMLR7 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
+      if(debug) {message(fxNa,"mMLR8"); mMLR8 <- list(mat=mat,ref=ref,matElim=matElim,chIdenCol=chIdenCol,out=out )}
       if(length(msg) >0 && !silent) message(fxNa, msg,"!  Returning NULL")
       if(debug && length(newOr) >0) message(fxNa,"Successfully found new order by ",msgM," : ",pasteC(newOr, quoteC="'"))
     }

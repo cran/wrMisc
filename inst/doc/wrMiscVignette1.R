@@ -567,6 +567,13 @@ aa <- c("abc","abcde","ab.c","ab.c.e","ab*c","ab\\d")
 grepl("b.", aa)             # all TRUE
 grepl(protectSpecChar("b."), aa)
 
+## ----asShortNa1, echo=TRUE----------------------------------------------------
+txt1 <- c("BB", "CC", "GHJ", "C3", "C3", "C3H", "cdf")
+txt2 <- c("BB", "CC", "GHJ", paste0("C",1:26))
+asShortNa(txt1[1:3])  # like substr()
+asShortNa(txt1)
+asShortNa(txt2)
+
 ## ----truncateVect1, echo=TRUE-------------------------------------------------
 txt1 <- c("abc", "abcdefgh", NA, "abc/def/gh")
 truncateVect(txt1, nMax=7, appendChar="..")

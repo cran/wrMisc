@@ -1,4 +1,4 @@
-#' Contingenty tables for fit of ranking 
+#' Contingenty Tables For Fit Of Ranking 
 #'
 #' Count the number of instances where the corresponding columns of 'dat' have a value matching the group number as specified by 'grp'.
 #' Counting will be performed/repeated independently for each line of 'dat'.
@@ -7,7 +7,10 @@
 #' 
 #' @param dat (matrix or data.frame of integer values) ranking of multiple features (lines), equal ranks may occur   
 #' @param grp (integer) expected ranking
-#' @return array (1st dim is rows of dat, 2nd is unique(grp), 3rd dim is ok/bad)
+#' @param silent (logical) suppress messages
+#' @param debug (logical) display additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns an array (1st dim is rows of dat, 2nd is unique(grp), 3rd dim is ok/bad)
 #' @seealso \code{\link[stats]{lm}}
 #' @examples
 #' # Let's create a matrix with ranks (equal ranks do occur)
@@ -22,23 +25,24 @@
 #' fisher.test(cTab[,c(3,1)])          # test li1 against ref
 #' fisher.test(cTab[,c(3,2)])          # test li2 against ref
 #' @export
-rankToContigTab <- function(dat,grp) {
+rankToContigTab <- function(dat, grp, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## It is supposed that the columns of dat can be cut in multiple groups according to (sorted) grp
   ## Then the number of instances where the corresponding columns of dat have a value matching the group number is counted
   ## returns array  (1st dim is rows of dat, 2nd is unique(grp), 3rd dim is ok/bad)
+  fxNa <- .composeCallName(callFrom, newNa="rankToContigTab")
   grUnq <- unique(grp)
   chSo <- sort(grUnq)==grUnq 
-  if(length(dim(dat)) <2) dat <- matrix(as.numeric(dat),nrow=1,dimnames=list(NULL,names(dat)))
-  if(any(!chSo)) { message("need to re-sort groups !")
+  if(length(dim(dat)) <2) dat <- matrix(as.numeric(dat), nrow=1, dimnames=list(NULL, names(dat)))
+  if(any(!chSo)) { message(fxNa,"need to re-sort groups !")
     newOrd <- order(grp)
     oldRa <- rank(grp)          # for setting back in old order
     dat <- dat[,newOrd]
     grp <- grp[newOrd]
     grUnq <- unique(grp)  
   } else newOrd <- NULL
-  lims <- sapply(grUnq,function(x) range(which(grp==x)))
-  out <- array(dim=c(nrow(dat),length(grUnq),2),dimnames=list(rownames(dat),grUnq,c("ok","bad")))
+  lims <- sapply(grUnq, function(x) range(which(grp==x)))
+  out <- array(dim=c(nrow(dat), length(grUnq),2), dimnames=list(rownames(dat), grUnq, c("ok","bad")))
   for(i in 1:length(grUnq)) { z <- dat[,lims[1,i]:lims[2,i]]
-    out[,i,] <- if(nrow(z) >1) cbind(ok=rowSums(z ==i,na.rm=TRUE),bad=rowSums(z !=i,na.rm=TRUE)) else c(ok=sum(z ==i,na.rm=TRUE),bad=sum(z !=i,na.rm=TRUE)) }
+    out[,i,] <- if(nrow(z) >1) cbind(ok=rowSums(z ==i, na.rm=TRUE), bad=rowSums(z !=i, na.rm=TRUE)) else c(ok=sum(z ==i, na.rm=TRUE), bad=sum(z !=i, na.rm=TRUE)) }
   out }  
   

@@ -1,4 +1,4 @@
-#' Filter for unique elements
+#' Filter For Unique Elements
 #' 
 #' This function aims to apply a given filter-citerium, a matrix or vector of \code{FALSE/TRUE} which is typically combined with a second layer   
 #' which filters for a min content of filer-passing values per line for the first/main criterium.
@@ -9,8 +9,9 @@
 #' @param filt (logical) vector of \code{FALSE/TRUE} to use for filtering. If this a matrix is given, the value of \code{minLineRatio} will be applied as threshod of min content of \code{TRUE} for each line of \code{filt} 
 #' @param minLineRatio (numeric) in case \code{filt} is a matrix of \code{FALSE/TRUE}, this value will be used as threshold of min content of \code{TRUE} for each line of \code{filt} 
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return filtered list 
+#' @param debug (logical) display additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
+#' @return This function returns a filtered list 
 #' @seealso \code{\link{correctToUnique}}, \code{\link[base]{unique}}, \code{\link[base]{duplicated}}, \code{\link{extrColsDeX}} 
 #' @examples
 #' set.seed(2020); dat1 <- round(runif(80),2)
@@ -19,7 +20,7 @@
 #' filterList(list1, list1$m1[,1] >0.4) 
 #' filterList(list1, list1$m1 >0.4) 
 #' @export
-filterList <- function(lst,filt,minLineRatio=0.5,silent=FALSE,callFrom=NULL) {
+filterList <- function(lst, filt, minLineRatio=0.5, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ##  adjust all elements of lst to filtering
   ## minLineRatio (numeric) min ratio of columns where 
   ## assumes that all elements of lst are in correct order !

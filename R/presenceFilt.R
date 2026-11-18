@@ -2,13 +2,14 @@
 #'
 #' This function produces a logical matrix to be used as filter for lines of 'dat' for sufficient presence of non-\code{NA} values (ie limit number of NAs per line). 
 #' Filter abundance/expression data for min number and/or ratio of non-\code{NA} values in at east 1 of multiple groups.
-#' This type of procedure is common in proteomics and tanscriptomics, where a \code{NA} can many times be assocoaued with quantitation below detetction limit.
+#' This type of procedure is common in proteomics and tanscriptomics, where a \code{NA} can many times be associated with quantitation below detetction limit.
 #'
 #' @param dat matrix or data.frame (abundance or expression-values which may contain some \code{NA}s).
 #' @param grp factor of min 2 levels describing which column of 'dat' belongs to which group (levels 1 & 2 will be used)
-#' @param useComparison (character or matrix) optional argument allowing to specify which pairwise comparions sould be performed, default \code{useComparison=NULL} will run all pairwise comparisons;
+#' @param useComparison (character or matrix or list) optional argument allowing to specify which pairwise comparions sould be performed, default \code{useComparison=NULL} will run all pairwise comparisons;
 #'   may be character combining two group-names (from argument \code{grp}) separated by a '-' (eg 'A-B') or matrix where the rownames design the elements to be compared as pairwise;
-#'   Note : the names of the groups may not contain any '-' to avoid confucing them with pairwise separators !
+#'   Note : the names of the groups may not contain any '-' to avoid confusing them with pairwise separators !
+#'   If is list, $grpNa, $pwGrpNa (to be used as \code{useComparison}) and $sep will be extracted
 #' @param maxGrpMiss (numeric) at least 1 group has not more than this number of NAs (otherwise marke line as bad)
 #' @param ratMaxNA (numeric) at least 1 group below this content of \code{NA} values
 #' @param minVal (default NULL or numeric), any value below will be treated like \code{NA}

@@ -7,7 +7,7 @@
 rowCVs(dat, autoconvert = NULL, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{dat}{(numeric) matix}
+\item{dat}{(numeric) matrix}
 
 \item{autoconvert}{(NULL or character) allows converting simple vectors in matrix of 1 row (autoconvert="row")}
 

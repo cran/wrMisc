@@ -1,4 +1,4 @@
-#' Replace NAs By Low Balues
+#' Replace NAs By Low Values
 #'
 #' With several screening techniques used in hight-throughput biology values at/below detection limit are returned as \code{NA}.
 #' However, the resultant \code{NA}-values may be difficult to analyse properly, simply ignoring \code{NA}-values mat not be a good choice.
@@ -24,7 +24,7 @@
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging 
 #' @param callFrom (character) allow easier tracking of messages produced 
-#' @return This function retuirns a numeric matrix (same dim as 'x') with \code{NA} replaced
+#' @return This function returns a numeric matrix (same dim as 'x') with \code{NA} replaced
 #' @seealso \code{\link{naOmit}}, \code{\link[stats]{na.fail}}
 #' @examples
 #' dat <- matrix(round(rnorm(30),2),ncol=6)
@@ -48,7 +48,7 @@ replNAbyLow <- function(x, grp, quant=0.8, signific=3, unif=TRUE, absOnly=FALSE,
     if(!silent) message(fxNa, "Random model as ", if(unif) c("uniform ", signif(min(lowVa), signific)," to ",
       signif(max(lowVa), signific)) else c("Gaussian mean=",signif(mean(lowVa), signific), sd=signif(stats::sd(lowVa), signific)))
     if(!is.null(seed)) {if(is.numeric(seed)) set.seed(round(seed[1])) else if(!silent) message(fxNa, "Ignoring invalid 'seed'")}
-    raVa <- if(unif) signif(stats::rnorm(nEstim, mean(lowVa), stats::sd(lowVa)), digits=signific) else {
+    raVa <- if(isFALSE(unif)) signif(stats::rnorm(nEstim, mean(lowVa), stats::sd(lowVa)), digits=signific) else {
       signif(stats::runif(nEstim, min(lowVa), max(lowVa)), digits=signific)}
     if(absOnly && any(raVa <0, na.rm=TRUE) && !silent) {message(fxNa, "Force ",sum(raVa <0)," to positive"); raVa <- abs(raVa)}
     tmp <- unique(raVa)

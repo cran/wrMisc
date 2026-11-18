@@ -3,7 +3,7 @@
 #' This function determines the stand error (sd) of the median for each row by bootstraping each row of 'dat'.
 #' Note: requires package \href{https://CRAN.R-project.org/package=boot}{boot}
 #'
-#' @param dat (numeric) matix, main input 
+#' @param dat (numeric) matrix, main input 
 #' @param nBoot (integer) number if iterations for bootstrap
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allows easier tracking of messages produced

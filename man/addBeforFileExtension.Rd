@@ -2,7 +2,7 @@
 % Please edit documentation in R/addBeforFileExtension.R
 \name{addBeforFileExtension}
 \alias{addBeforFileExtension}
-\title{Add Text Before File-Extension}
+\title{Add Text Before File-Extension (Deprecated)}
 \usage{
 addBeforFileExtension(
   x,

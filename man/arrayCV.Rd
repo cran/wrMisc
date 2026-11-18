@@ -2,24 +2,26 @@
 % Please edit documentation in R/arrayCV.R
 \name{arrayCV}
 \alias{arrayCV}
-\title{CV of array}
+\title{CV Rows In Array}
 \usage{
-arrayCV(arr, byDim = 3, silent = TRUE, callFrom = NULL)
+arrayCV(arr, byDim = 3, silent = TRUE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{arr}{(3-dim) array of numeric data like where replicates are along one dimesion of the array}
+\item{arr}{(3-dim) array of numeric data like where replicates are along one dimension of the array}
 
 \item{byDim}{(integer) over which dimension repliates are found}
 
-\item{silent}{(logical) suppres messages}
+\item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-matrix of CV values
+This function returns a matrix of CV values
 }
 \description{
-\code{arrayCV} gets CVs for replicates in 2 or 3 dim array and returns CVs as matrix.
+This function gets CVs for replicates in 2 or 3 dim array and returns CVs as matrix.
 This function may be used to calculate CVs from replicate microtiter plates (eg 8x12) where replicates are typically done as multiple plates,
 ie initial matrixes that are the organized into arrays.
 }

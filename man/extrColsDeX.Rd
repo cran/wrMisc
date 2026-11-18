@@ -2,9 +2,16 @@
 % Please edit documentation in R/extrColsDeX.R
 \name{extrColsDeX}
 \alias{extrColsDeX}
-\title{Flexible extraction of columns}
+\title{Flexible Extraction Of Columns}
 \usage{
-extrColsDeX(x, extrCol, doExtractCols = FALSE, callFrom = NULL, silent = FALSE)
+extrColsDeX(
+  x,
+  extrCol,
+  doExtractCols = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{x}{(matrix or data.frame) main input (where data should be extracted from)}
@@ -13,12 +20,14 @@ extrColsDeX(x, extrCol, doExtractCols = FALSE, callFrom = NULL, silent = FALSE)
 
 \item{doExtractCols}{(logical) if default \code{FALSE} only the column indexes will be returned}
 
-\item{callFrom}{(character) allows easier tracking of message(s) produced}
-
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-integer-vector (if\code{doExtractCols=FALSE} return depending on input \code{matrix} or \code{data.frame})
+This function returns an integer-vector (if\code{doExtractCols=FALSE} return depending on input \code{matrix} or \code{data.frame})
 }
 \description{
 This function provides flexible checking if a set of columns may be extracted from a matrix or data.frame 'x'.

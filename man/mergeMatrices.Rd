@@ -37,7 +37,7 @@ This function returns a matrix containing all selected columns of the input matr
 }
 \description{
 This function allows merging of multiple matrix-like objects.
-The matix-rownames will be used to align common elements, either be returning all common elements \code{mode='intersect'} or containg all elements \code{mode='union'} (the result may contains additional \code{NA}s).
+The matrix-rownames will be used to align common elements, either be returning all common elements \code{mode='intersect'} or containg all elements \code{mode='union'} (the result may contains additional \code{NA}s).
 }
 \details{
 Custom column-names can be given by entering matrices like named arguments (see examples below).

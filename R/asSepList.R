@@ -1,10 +1,10 @@
 #' Organize Data As Separate List-Entries
 #'
-#' \code{asSepList} allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
+#' This function allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
 #' (differnt to \code{\link{partUnlist}} which maintains the original structure). This function also works with lists of lists.
 #' This function may be helpful for reorganizing data for plots.
 #'
-#' @param y list to be separated/split in vectors
+#' @param y (list) to be separated/split in vectors
 #' @param minLen (integer) min length (or number of rows), as add'l element to eliminate arguments given without names when asSepList is called in vioplot2
 #' @param asNumeric (logical) to transform all list-elements in simple numeric vectors (won't work if some entries are character)
 #' @param exclElem (character) optinal names to exclude if any (lazy matching) matches (to exclude other arguments be misinterpreted as data)
@@ -92,12 +92,12 @@ asSepList <- function(y, minLen=4, asNumeric=TRUE, exclElem=NULL, sep="_", fillN
     ## check length
     chLe <- sapply(y, length) < minLen
     if(any(chLe, na.rm=TRUE)) { y <- y[which(!chLe)]
-      if(all(chLe, na.rm=TRUE) & !silent) message(fxNa,"All elements of ',namesY,' below length-limit (",minLen,") - nothing remains") }
+      if(all(chLe, na.rm=TRUE) && !silent) message(fxNa,"All elements of ',namesY,' below length-limit (",minLen,") - nothing remains") }
     ## convert to numeric
     if(isTRUE(asNumeric)) { chMode <- sapply(y, function(x) "numeric" %in% mode(x))
-      if(any(!chMode)) y[which(!chMode)] <- lapply(y, convToNum, callFrom=fxNa,silent=silent) }
+      if(any(!chMode)) y[which(!chMode)] <- lapply(y[which(!chMode)], convToNum, callFrom=fxNa,silent=silent) }
     if(debug) {message(fxNa,"aSL5   Length of list output (after minLen-filter) ",length(y))}
-  } else if(debug(fxNa,"Empty input, nothing to do"))
+  } else { if(debug) message(fxNa,"Empty input, nothing to do")}
   if(debug) message(fxNa,"Returning list of length ",length(y))
   y }
 

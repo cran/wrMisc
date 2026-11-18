@@ -17,7 +17,7 @@ asSepList(
 )
 }
 \arguments{
-\item{y}{list to be separated/split in vectors}
+\item{y}{(list) to be separated/split in vectors}
 
 \item{minLen}{(integer) min length (or number of rows), as add'l element to eliminate arguments given without names when asSepList is called in vioplot2}
 
@@ -39,7 +39,7 @@ asSepList(
 This function returns a list, partially unlisted to vectors
 }
 \description{
-\code{asSepList} allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
+This function allows reorganizing most types of input into a list with separate numeric vectors. For example, matrixes or data.frames will be split into separate columns
 (differnt to \code{\link{partUnlist}} which maintains the original structure). This function also works with lists of lists.
 This function may be helpful for reorganizing data for plots.
 }

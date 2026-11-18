@@ -8,7 +8,7 @@
 #' @details
 #' The argument \code{method} allows options that treat (summarize) all columns independently or to select one line (based on argument \code{refCol})
 #' 
-#' @param matr data.frame matrix of data to be summarized by comlumn (may do different method for text and numeric comlumns)
+#' @param matr data.frame matrix of data to be summarized by column (may do different method for text and numeric comlumns)
 #' @param meth (character) summarization method, may be 'mean','aver','median','sd','CV', 'min','max','first','last','maxOfRef','minOfRef','maxAbsLast','minAbsLast',
 #'  'medianComplete' or 'meanComplete', 'n' (number of non-\code{NA} elements),'n.NA' (number of \code{NA} elements), 'NULL' (returns \code{NULL})
 #' @param refCol (character or integr) column to be used as reference
@@ -77,7 +77,7 @@ summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, supl=NUL
 #' In case of character entries the 'median' of sorted values will be returned
 #' 
 #'  
-#' @param x data.frame matrix of data to be summarized by comlumn 
+#' @param x data.frame matrix of data to be summarized by column 
 #' @param me (character, length=1) summarization method (eg 'min','max','mean','mean.trim','median','sd','CV', 'medianComplete' or 'meanComplete' etc, see \code{\link{summarizeCols}})
 #' @param nEq (logical) if TRUE, add additional column indicating the number of equal lines for choice (only with min or max) 
 #' @param vectAs1row (logical) if TRUE will interprete non-matrix 'x' as matrix with 1 row (correct effect of automatic conversion when extracting 1 line) 
@@ -123,23 +123,24 @@ summarizeCols <- function(matr, meth="median", refCol=NULL, nEqu=FALSE, supl=NUL
     x <- if(length(compl) >1) x[compl,] else if(length(compl) ==1) matrix(x[compl,], nrow=1, dimnames=list(rownames(x)[compl],colnames(x)))}
   if(debug) {message(fxNa,"sCc1   me=",me); sCc1 <- list()}
   
-  out <- switch(me,  Null=NULL,
-    maxOfRef= if(is.numeric(x[,ncol(x)])) x[which.max(x[,ncol(x)]),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=TRUE)),],   # checks last column only
-    minOfRef= if(is.numeric(x[,ncol(x)])) x[which.min(x[,ncol(x)]),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=FALSE)),],
-    maxAbsOfRef= if(is.numeric(x[,ncol(x)])) x[which.max(abs(x[,ncol(x)])),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=TRUE)),],   # checks last column only
-    minOfRef= if(is.numeric(x[,ncol(x)])) x[which.min(abs(x[,ncol(x)])),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=FALSE)),],
-    median=apply(x[,numCol], 2, stats::median, na.rm=TRUE),    #   all columns
-    mean=colMeans(x[,numCol], na.rm=TRUE),
-    mean.trim=apply(x, 2, trimmedMean, trim=supl, callFrom=fxNa, silent=silent), 
-    top3mean=NA,   # apply(x, 2, top3mean, callFrom=fxNa),
-    max=apply(x, 2, max, na.rm=TRUE), 
-    min=apply(x, 2, min, na.rm=TRUE),
-    summary=if(is.matrix(x)) apply(x, 2, summary) else sapply(x, summary),
-    sd=colSds(x, callFrom=fxNa),
-    CV=colCVs(x, callFrom=fxNa),
-    n=colSums(!is.na(x)),               # will count number of non-NA values (per column)
-    n.NA=colSums(is.na(x)),             # will count number of NA values (per column)
-    lastLi= x[nrow(x),], last= x[nrow(x),], firstLi= x[1,], first=x[1,])
+  out <- switch(me,  
+    Null = NULL,   # there may be a method called 'Null'
+    maxOfRef = if(is.numeric(x[,ncol(x)])) x[which.max(x[,ncol(x)]),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=TRUE)),],   # checks last column only
+    minOfRef = if(is.numeric(x[,ncol(x)])) x[which.min(x[,ncol(x)]),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=FALSE)),],
+    maxAbsOfRef = if(is.numeric(x[,ncol(x)])) x[which.max(abs(x[,ncol(x)])),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=TRUE)),],   # checks last column only
+    minOfRef = if(is.numeric(x[,ncol(x)])) x[which.min(abs(x[,ncol(x)])),] else x[which(x[,ncol(x)]== sort(x[,ncol(x)], decreasing=FALSE)),],
+    median = apply(x[,numCol], 2, stats::median, na.rm=TRUE),    #   all columns
+    mean = colMeans(x[,numCol], na.rm=TRUE),
+    mean.trim = apply(x, 2, trimmedMean, trim=supl, callFrom=fxNa, silent=silent), 
+    top3mean = NA,   # apply(x, 2, top3mean, callFrom=fxNa),
+    max = apply(x, 2, max, na.rm=TRUE), 
+    min = apply(x, 2, min, na.rm=TRUE),
+    summary  =if(is.matrix(x)) apply(x, 2, summary) else sapply(x, summary),
+    sd = colSds(x, callFrom=fxNa),
+    CV = colCVs(x, callFrom=fxNa),
+    n = colSums(!is.na(x)),               # will count number of non-NA values (per column)
+    n.NA = colSums(is.na(x)),             # will count number of NA values (per column)
+    lastLi = x[nrow(x),], last= x[nrow(x),], firstLi= x[1,], first=x[1,])
   if(length(dim(out)) <1) out <- if(is.matrix(x)) matrix(out, ncol=ncol(x), dimnames=list(NULL, colnames(x))) else {if(length(numCol)==1) as.data.frame(out) else t(as.data.frame(out))} 
   if(debug) {message(fxNa,"sCc2"); sCc2 <- list(x=x,out=out,me=me,numCol=numCol,txtCol=txtCol,nEq=nEq,silent=silent,debug=debug)}
     

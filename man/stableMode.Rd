@@ -47,7 +47,9 @@ The argument \code{method} allows to choose among (so far) 4 different methods a
 If "density" is chosen, the most dense region of sqrt(n) values will be chosen; 
 if "binning", the data will be binned (like in histograms) via rounding to a user-defined number of significant values ("rangeSign").
 If \code{method} is set to "BBmisc", the function \code{computeMode()} from package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc} will be used.
-If "mode" is chosen, the first most frequently occuring (exact) value will be returned, if "allModes", all ties will be returned. This last mode also works with character input.
+If "mode" is chosen, the first most frequently occuring (exact) value will be returned, if "allModes", all ties will be returned. This last mode also works with character input. 
+
+Please keep in mind, that estimating the mode in continuous numeric data may be ambiguous and finally depends on how 'mode' is actually defined , reflected by different search-strategies.
 }
 \examples{
 set.seed(2012); dat <- round(c(rnorm(50), runif(100)),3)

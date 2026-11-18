@@ -31,7 +31,7 @@ checkGrpOrderSEM <- function(x, grp, sdFact=1, revRank=TRUE, shrink1sampSd=TRUE,
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(length(dim(x)) !=2) stop(fxNa," 'x' should be data.frame or matrix of 2 dimensions")
   if(length(grp) != ncol(x)) stop(fxNa," 'grp' should be of length of number of cols in 'x'")
-  if(length(grp) <1 | sum(is.na(grp)) == length(grp)) stop(fxNa," 'grp' appears to be empty or all NAs")
+  if(length(grp) <1 || sum(is.na(grp)) == length(grp)) stop(fxNa," 'grp' appears to be empty or all NAs")
   if(!is.factor(grp)) grp <- as.factor(grp)
   
   ## main
@@ -40,7 +40,7 @@ checkGrpOrderSEM <- function(x, grp, sdFact=1, revRank=TRUE, shrink1sampSd=TRUE,
   sdsNaCol <- colSums(is.na(sds)) ==nrow(x)
   if(isTRUE(shrink1sampSd) && sum(sdsNaCol) >0) {
     if(!silent) message(fxNa, sum(sdsNaCol)," single-column groups : estimating possible sd based on other samples/groups")
-    sds[,which(sdsNaCol)] <- stats::median(naOmit(as.numeric(sds)), na.rm=TRUE) }
+    sds[, which(sdsNaCol)] <- stats::median(naOmit(as.numeric(sds)), na.rm=TRUE) }
   nMa <- matrix(rep(naOmit(as.numeric(table(grp))[order(unique(grp))]), each=nrow(x)), nrow=nrow(x))
   lims <- list(low=avs - sdFact*sds, hi=avs + sdFact*sds)
   if(debug) {message(fxNa,"chGO1")}

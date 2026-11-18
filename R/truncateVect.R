@@ -1,4 +1,4 @@
-#' Truncating Text Vector To Specific Length
+#' Truncating Text/Character Vector To Specific Length
 #'
 #' This function allows truncating a text vector (or matrix of text) at nMax number of characters with optional adding of truncation/ending sign and trimming after last separator.
 #' 
@@ -19,13 +19,13 @@
 #' @param x (character or matrix of text) main input, text to be truncated
 #' @param nMax (integer, length=1) max length in number of characters to be returned
 #' @param sep (character or \code{NULL}) optional separator to be considered : Truncation will happen before the separator; set to  \code{NULL} for ignoring
-#' @param appendChar (character, length=1) optional set of characters to add at end when trucation has happened (default '...'); set to  \code{NULL} or  \code{""} for not appending anything
-#' @param startFrom (integer, length=1) designes the first character to be extracted (see also \code{\link[base]{substr}} ) 
+#' @param appendChar (character, length=1) optional set of characters to add at end when truncation has happened (default '...'); set to  \code{NULL} or  \code{""} for not appending anything
+#' @param startFrom (integer, length=1) designs the first character to be extracted (see also \code{\link[base]{substr}} ) 
 #' @param silent (logical) suppress messages
 #' @param debug (logical) display additional messages for debugging
 #' @param callFrom (character) allow easier tracking of messages produced
-#' @return This function returns a data.frame or matrix (if no annotation added) with values (and annotation) conform to fiter criteria
-#' @seealso \code{\link[base]{substr}} 
+#' @return This function returns a character vector (of same length as initial) with truncated text
+#' @seealso \code{\link{asShortNa}},  \code{\link[base]{substr}} 
 #' @examples
 #' txt <- c("abc", "abcdefgh", "abc/def/gh")
 #' truncateVect(txt, nMax=7, appendChar="..")
@@ -34,6 +34,7 @@
 #' @export
 truncateVect <- function(x, nMax=20, sep=NULL, appendChar="...", startFrom=1, silent=FALSE, debug=FALSE, callFrom=NULL) {
   ## truncate text vector (or matrix of text) at nMax number of characters, optional adding of truncation/ending sign and trimming after last separator
+  ## fuse with asShortNa?
   fxNa <- .composeCallName(callFrom, newNa="truncateVect")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) { silent <- FALSE } else { debug <- FALSE }
@@ -55,12 +56,17 @@ truncateVect <- function(x, nMax=20, sep=NULL, appendChar="...", startFrom=1, si
     chLe <- le > nMax
     if(any(chLe, na.rm=TRUE)) {
       sep <- if(length(sep)==1 && (is.na(sep) || sep=="")) NULL else sep[1]
-      if(length(appendChar)==1 && is.na(appendChar)) {
-        appendChar <- "" }
-      x[which(le > nMax)] <- substr(x[which(le > nMax)], startFrom, max(1, startFrom + nMax - nchar(appendChar) ))   #+ if(length(sep)==1) min(nchar(sep), 3) else 0)
-      if(length(sep)==1) { sep <- protectSpecChar(sep)
-        x[which(le > nMax)] <- sub(paste0(sep,"[^(",sep,")]*$"),"",  x[which(le > nMax)]) }
-      if(length(appendChar) ==1 && isTRUE(nchar(appendChar) !=0) ) x[which(le > nMax)] <- paste0(x[which(le > nMax)], appendChar)  
+      if(length(appendChar)==1 && is.na(appendChar)) { appendChar <- "" }
+      isLong <- which(le > nMax)
+      if(length(isLong) !=0) {
+        if(debug) message(fxNa,"tVe2")      
+        ## preliminary cut
+        x[isLong] <- substr(x[isLong], startFrom, max(1, startFrom + nMax - nchar(appendChar) ))   #+ if(length(sep)==1) min(nchar(sep), 3) else 0)
+        ## refine cut (adjust to 'words')
+        if(length(sep)==1) { sep <- protectSpecChar(sep)
+          x[isLong] <- sub(paste0(sep,"[^(",sep,")]*$"),"",  x[isLong]) }  # cut at last occurrance of sep (not including last sep)
+        if(length(appendChar) ==1 && isTRUE(nchar(appendChar) !=0) ) x[isLong] <- paste0(x[isLong], appendChar)  
+      }
   } }
   if(length(iniDim)==0) x else matrix(x, nrow=iniDim[1], ncol=iniDim[2], dimnames=iniDimNa)    
 }              

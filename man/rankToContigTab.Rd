@@ -2,17 +2,23 @@
 % Please edit documentation in R/rankToContigTab.R
 \name{rankToContigTab}
 \alias{rankToContigTab}
-\title{Contingenty tables for fit of ranking}
+\title{Contingenty Tables For Fit Of Ranking}
 \usage{
-rankToContigTab(dat, grp)
+rankToContigTab(dat, grp, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
 \item{dat}{(matrix or data.frame of integer values) ranking of multiple features (lines), equal ranks may occur}
 
 \item{grp}{(integer) expected ranking}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-array (1st dim is rows of dat, 2nd is unique(grp), 3rd dim is ok/bad)
+This function returns an array (1st dim is rows of dat, 2nd is unique(grp), 3rd dim is ok/bad)
 }
 \description{
 Count the number of instances where the corresponding columns of 'dat' have a value matching the group number as specified by 'grp'.

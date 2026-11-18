@@ -1118,6 +1118,22 @@ grepl("b.", aa)             # all TRUE
 grepl(protectSpecChar("b."), aa)
 ```
 
+### Trimming Text Character To Shortes Possible 'Code-Names'
+
+The function `asShortNa()` aims to create one- or two-letter abbreviations, all as upper letters. 
+In case of more than 27 to 676 different entries two-(upper-) letter abbreviations will be created.
+If possible (all entries with different starting letters), the starting letter(s) will be used.
+In case multiple (different) initial entries start with the same letter, letters from the end of the alphabet will be used as short names. 
+
+```{r asShortNa1, echo=TRUE}
+txt1 <- c("BB", "CC", "GHJ", "C3", "C3", "C3H", "cdf")
+txt2 <- c("BB", "CC", "GHJ", paste0("C",1:26))
+asShortNa(txt1[1:3])  # like substr()
+asShortNa(txt1)
+asShortNa(txt2)
+```
+
+
 
 ### Trimming Text Character To Specific Length
 
@@ -1132,7 +1148,6 @@ txt1 <- c("abc", "abcdefgh", NA, "abc/def/gh")
 truncateVect(txt1, nMax=7, appendChar="..")
 truncateVect(txt1, nMax=7, sep="/", appendChar="..")
 ```
-
 
 
 ### Trimming Redundant Text
@@ -1642,7 +1657,7 @@ str(dataPxd)
 ## Data Vectorization   {#Vectorization}
 
 In many scientific domains raw data often come as coordinates in form of pairs of start/end points. 
-While correlation measures linear association, vector-based metricsÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âdistance and angleÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âcapture both magnitude and direction of change.
+While correlation measures linear association, vector-based metricsÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âdistance and angleÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âcapture both magnitude and direction of change.
 The  `vectorDistAngle()` function helps by transforming paired coordinates into polar form (distance and angle).
 
 

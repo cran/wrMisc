@@ -30,17 +30,17 @@ blockNormalize(
   This is useful for making datasets directly comparable.
 - `"rescale"`: Rescales each dataset **independently** to the range specified by `range`.
   Preserves the shape of each distribution but standardizes the scale (e.g., to `[0, 1]`).
-- `"median"`: This precedure works in a proportional matter. It centers each dataset by deviding by its group median and multiplying by the overall median.
+- `"median"`: This precedure works in a proportional matter. It centers each dataset by dividing by its group median and multiplying by the overall median.
   This removes location differences while preserving spread.
 - `"logMedian"`: This precedure is adoped for log-data. It centers each dataset by subtracting its group-median and addding the overall median.
   Removes location differences while preserving spread.
 - `"none"`: No normalization}
 
-\item{range}{(numeric vector, length=2) vector specifying the target values to be used in case \code{method="rescale"} for rescaling;
+\item{range}{(numeric, length=2) vector specifying the target values to be used in case \code{method="rescale"} for rescaling;
 Default values 0 and 1 point to the min and max values to be adjusted to the value specified in this argument, ie the 'range'.
-When argument \code{method="q"} is other than 0 and 1, the respective quantiles will get adjusted to the values of this arument, other data will treated in a linear fashion.}
+When argument \code{method="rescale"} and content of \code{q} is other than 0 and 1, the respective quantiles will get adjusted to the values of this argument, other data will treated in a linear fashion.}
 
-\item{q}{(numeric vector, length=2) vector specifying the quantiles to be used in case \code{method="rescale"} for rescaling;
+\item{q}{(numeric, length=2) vector specifying the quantiles to be used in case \code{method="rescale"} for rescaling;
 Default values 0 and 1 point to the min and max values to be adjusted to the value specified in this argument}
 
 \item{silent}{(logical) suppress messages}

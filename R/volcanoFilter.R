@@ -82,7 +82,7 @@ volcanoFilter <- function(Mvalue, pValue=NULL, useComp=1, filtFin=NULL, FCthrs=N
         ## 1.1)  check useComp
         MArrayLMobj <- TRUE
         setup <- if(length(Mvalue$setup) !=0 && length(Mvalue$setup$pwGrpNa) !=0) Mvalue$setup else try(getPairwiseSetup(Mvalue, sep=NULL, silent=silent, debug=debug, callFrom=fxNa), silent=TRUE)
-        if(inherits(setup, "try-error")) stop(fxNa,"Unabale to establish experimental setup")
+        if(inherits(setup, "try-error")) stop(fxNa,"Unable to establish experimental setup")
         if(debug) { message(fxNa,"vFi1b"); vFi1b <- list(Mvalue=Mvalue,pValue=pValue,useComp=useComp,filtFin=filtFin,FCthrs=FCthrs,setup=setup,fxNa=fxNa )}
 
         if(length(setup$index) !=0 && length(setup$pwIndex)==0) names(setup)[which(names(setup) =="index")] <- "pwIndex"  # check/correct  name (not needed at >= wrMisc-2.1.0)
@@ -102,7 +102,7 @@ volcanoFilter <- function(Mvalue, pValue=NULL, useComp=1, filtFin=NULL, FCthrs=N
 
         ## 1.2)  locate p.value
         pcol <- naOmit(match(c("p.value","pvalue","pval","p"), tolower(names(Mvalue))))
-        if(length(pcol)==0) {datOK <- FALSE; warning(fxNa,"No list-element lookiing like p.values found ! (bad input ?)")} else {
+        if(length(pcol)==0) {datOK <- FALSE; warning(fxNa,"No list-element looking like p.values found ! (bad input ?)")} else {
           if(length(pcol) >1) { if(!silent) message(fxNa,"Confusing object, multiple columns look like p.value, using 1st (",names(Mvalue)[pcol[1]],")")
             pcol <- pcol[1]
           }
@@ -112,7 +112,7 @@ volcanoFilter <- function(Mvalue, pValue=NULL, useComp=1, filtFin=NULL, FCthrs=N
         if(datOK) {
           if(length(FdrType) >1) FdrType <- FdrType[which(FdrType %in% names(Mvalue))][1]
           if(length(FdrType) ==0 || is.na(FdrType)) { FdrType <- "BH"; if(!silent) message(fxNa,"Setting 'FdrType' to default 'BH'")}
-          if(any("FDR" %in% FdrType, na.rm=TRUE)) FdrType <- "BH"     # assume FDR referrs to BH
+          if(any("FDR" %in% FdrType, na.rm=TRUE)) FdrType <- "BH"     # assume FDR refers to BH
 
           chFDR <- FdrType %in% names(Mvalue) 
           if(!chFDR) { if("FDR" %in% names(Mvalue)) names(Mvalue)[which(names(Mvalue)=="FDR")] <- "BH"    # also possibly adjust Mvalue -(needed if from wrMisc::moderTest2grp)
@@ -144,7 +144,7 @@ volcanoFilter <- function(Mvalue, pValue=NULL, useComp=1, filtFin=NULL, FCthrs=N
           ## use pValue from complex object (if available, only if not check if custom provided)      
           if(length(pcol) >0) { names(pcol) <- c("p.value","pvalue","pval","p")[pcol]             
             if(all(dim(Mvalue[[pcol]]) >= c(length(FDRval),useComp) )) pVal <- Mvalue[[pcol]][,useComp] else {
-              if(length(pValue)==FDRval) pValue
+              if(length(pValue) ==length(FDRval)) pValue
             } }         
         }
         if(debug) {message(fxNa,"vFi3"); vFi3 <- list(Mvalue=Mvalue,pValue=pValue,pVal=pVal,useComp=useComp,useCompNa=useCompNa,filtFin=filtFin,FCthrs=FCthrs,FdrThrs=FdrThrs,setup=setup,datOK=datOK,fxNa=fxNa)}
@@ -152,7 +152,7 @@ volcanoFilter <- function(Mvalue, pValue=NULL, useComp=1, filtFin=NULL, FCthrs=N
         ## 1.4)  check means  & extract Mval
         chMeans <- length(Mvalue$means) !=0 && nrow(Mvalue$means) >2 && ncol(Mvalue$means) >= max(setup$pwIndex[useComp,])
         if(datOK && chMeans) Mval <- Mvalue$means[,useCompNa[1]] - Mvalue$means[,useCompNa[2]] else {datOK <- FALSE}
-        if(length(Mval) != length(FDRval)) {datOK <- FALSE; warning(fxNa,"Lengths of extracted FDR-values and M-values does NOTG match (abort..)")}
+        if(length(Mval) != length(FDRval)) {datOK <- FALSE; warning(fxNa,"Lengths of extracted FDR-values and M-values does NOT match (abort..)")}
         if(debug) {message(fxNa,"vFi4"); vFi4 <- list(Mvalue=Mvalue,pValue=pValue,Mval=Mval,pVal=pVal,useComp=useComp,filtFin=filtFin,FCthrs=FCthrs,datOK=datOK,fxNa=fxNa)}
 
         ## 1.5)  check finFilt  & extract 
@@ -207,7 +207,7 @@ volcanoFilter <- function(Mvalue, pValue=NULL, useComp=1, filtFin=NULL, FCthrs=N
         if(is.numeric(pValue)) FDRvalue <- stats::p.adjust(pValue, method="BH")
       }
 
-      if(length(filtFin)==length(Mvalue)) { filtFin <- try(as.character(filtFin)); 
+      if(length(filtFin)==length(Mvalue) && !is.logical(filtFin)) { filtFin <- try(as.logical(as.character(filtFin))); 
         if(inherits(filtFin, "try-error")) filtFin <- NULL }
       if(length(filtFin) !=length(Mvalue)) filtFin <- rep(TRUE, length(FDRvalue))
       

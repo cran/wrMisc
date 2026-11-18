@@ -17,7 +17,7 @@ colorAccording2(
 )
 }
 \arguments{
-\item{x}{(character) color input}
+\item{x}{(numeric) main numeric input to be converted to colors}
 
 \item{gradTy}{(character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'topo.colors', 'cm.colors', 'hcl.colors', 'grey.colors', 'gray.colorsW' or 'logGray'}
 

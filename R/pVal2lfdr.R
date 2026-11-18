@@ -33,7 +33,7 @@ pVal2lfdr <- function(x, silent=TRUE, debug=FALSE, callFrom=NULL) {    ## take v
     if(inherits(z, "try-error")) stop(fxNa,"FAILED to convert 'x' into numeric data !") else {
       if(requireNamespace("fdrtool", quietly=TRUE)) {
         z <- try(fdrtool::fdrtool(z, statistic="pvalue", plot=FALSE, verbose=!silent)$lfdr, silent=TRUE)
-        if(inherits(z, "try-error")) { message(fxNa,"FAILED to calulate lfdr !  Check how to use package 'fdrtool' (data too small ?)")
+        if(inherits(z, "try-error")) { message(fxNa,"FAILED to calculate lfdr !  Check how to use package 'fdrtool' (data too small ?)")
           return(NULL) 
         } else { z <- as.numeric(z)
           lfdr <- rep(NA, length(x))

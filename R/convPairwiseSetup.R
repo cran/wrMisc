@@ -42,7 +42,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
   #combineSep=NULL,
   ## use grp as redundant (length of ncol(dat))
   ## use grpNa as levels(grp)
-  if(debug) {message(fxNa,"cUC1"); cUC1 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
+  if(debug) {message(fxNa,"cPS1"); cPS1 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
 
   ## check if experSetup exists (result from getPairwiseSetup() - use to replace empty spots
   if(length(experSetup) !=0 && is.list(experSetup)) {
@@ -59,7 +59,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
   }
   if(length(grpNa)==0) grpNa <- unique(sort(naOmit(grp)))
   if(length(grpNa)==0) warning(fxNa,"Potential problem with argument 'grp'  (all empty or NA ?), trying to find out (based on calssical separators, $grpNa possibly incomplete, $index possibly bad)")
-  if(debug) {message(fxNa,"cUC2"); cUC2 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
+  if(debug) {message(fxNa,"cPS2"); cPS2 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
 
   if(identical("all",useComparison)) {
     pwGrpNa <- t(utils::combn(grpNa, 2))
@@ -67,7 +67,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
     colnames(pwIndex) <- colnames(pwGrpNa) <- c("samp","ref")
     if(debug) message(fxNa,"Setting from useComparison='all' to ",length(grpNa)," specific names & indexes")
   }
-  if(debug) {message(fxNa,"cUC2b"); cUC2b <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
+  if(debug) {message(fxNa,"cPS2b"); cPS2b <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
 
   ## determine sep
   if(length(sep) != 1) {
@@ -90,7 +90,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
       sep <- suppressWarnings(getPWseparator(grp=grpNa, potSep=pwSeparatorList(type="split1"), silent=silent, debug=debug, callFrom=fxNa)) 
     } #else sep <- suppressWarnings(getPWseparator(grp=grpNa, potSep=sep,silent=silent, debug=debug, callFrom=fxNa)) 
   }
-  if(debug) {message(fxNa,"cUC3"); cUC3 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
+  if(debug) {message(fxNa,"cPS3"); cPS3 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
 
 
   ## main checking/extracting of index & pwGrpNa
@@ -103,7 +103,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
     useComparison <- paste(grpNa[1:2], collapse=sep)  # needed ??
   } else {
     ## may be char (rel to grp) OR matrix (index or char) 
-    if(debug) message(fxNa," ..length useComparison : ",length(useComparison),"   cUC3b")
+    if(debug) message(fxNa," ..length useComparison : ",length(useComparison),"   cPS3b")
     chNum <- all(grepl("^[[:digit:]]+$", as.character(useComparison)), na.rm=TRUE)
     if(length(dim(useComparison))==2) {
       ## 2.0  matrix
@@ -111,7 +111,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
       if(all(chNA) || length(useComparison)==0) stop(fxNa,"Removing NAs from (matrix-type) 'useComparison' - NOTHING REMAINS")
       if(any(chNA)) { useComparison <- useComparison[which(rowSums(chNA)==0),, drop=FALSE] 
         if(!silent) message(fxNa,"BEWARE, 'useComparison' contains NAs, removing ...")}
-      if(debug) {message(fxNa,"cUC3c"); cUC3c <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, pwIndex=pwIndex, grpNa=grpNa)}
+      if(debug) {message(fxNa,"cPS3c"); cPS3c <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, pwIndex=pwIndex, grpNa=grpNa)}
       
       if(isTRUE(chNum)) {             # presume as index
         ## 2.1 matrix of index
@@ -131,7 +131,7 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
           warning(fxNa,"'grp' not known, very risky to try determining based on pw-names")         
           grpNa <- unique(sort(as.character(useComparison)))     ## ++ try to extract grpNa ++
         }  ## from now on assume grp as known
-        if(debug) {message(fxNa,"cUC4"); cUC4 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
+        if(debug) {message(fxNa,"cPS4"); cPS4 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa)}
   
         pwGrpNa <- as.matrix(useComparison)
         pwIndex <- matrix(match(as.matrix(useComparison), grpNa), ncol=2)   # check if all exist
@@ -142,11 +142,11 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
           pwIndex <- pwIndex[which(rowSums(chNA)==0),,drop=FALSE]
         }
       }           # ... finished for matrix       
-      if(debug) {message(fxNa,"cUC3d"); cUC3d <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, pwIndex=pwIndex, pwGrpNa=pwGrpNa, grpNa=grpNa)}
+      if(debug) {message(fxNa,"cPS3d"); cPS3d <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, pwIndex=pwIndex, pwGrpNa=pwGrpNa, grpNa=grpNa)}
     } else {
       ## 3.0 (char) vector          
       ## is vector (not matrix ...)
-      if(debug) {message(fxNa,"cUC4a"); cUC4a <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa,chNum=chNum)} # pwIndex=pwIndex, pwGrpNa=pwGrpNa, 
+      if(debug) {message(fxNa,"cPS4a"); cPS4a <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa,chNum=chNum)} # pwIndex=pwIndex, pwGrpNa=pwGrpNa, 
       if(any(is.na(useComparison))) useComparison <- naOmit(useComparison)
       if(length(useComparison) <1) stop(fxNa,"Removing NAs from (presumed text) 'useComparison' - NOTHING REMAINS")
 
@@ -174,16 +174,16 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
         #}
       } else {           
         ## 3.2 (char) vector
-        if(debug) {message(fxNa,"cUC4c  3.2 vector") }
+        if(debug) {message(fxNa,"cPS4c  3.2 vector") }
         ## check if pair of grpNa (otherwise strsplit)
         if(all(chGrp, na.rm=TRUE)) {        # char vector of GrpNa
           ## 3.2.1 char vector of GrpNa 
-          if(debug) {message(fxNa,"cUC4d  3.2.1 char vector of GrpNa") }
+          if(debug) {message(fxNa,"cPS4d  3.2.1 char vector of GrpNa") }
           pwGrpNa <- matrix(useComparison, byrow=TRUE, ncol=2)
           if(length(grpNa) !=0) pwIndex <- matrix(match(useComparison, grpNa), byrow=TRUE, ncol=2)           
         } else {     # concatenated : strsplit
           ## 3.2.2 char vector of concatenated : strsplit
-          if(debug) {message(fxNa,"cUC4e  3.2.2 char vector of concatenated : strsplit"); cUC4e <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa,chNum=chNum)} 
+          if(debug) {message(fxNa,"cPS4e  3.2.2 char vector of concatenated : strsplit"); cPS4e <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwComb=pwComb, grpNa=grpNa,chNum=chNum)} 
           nCha <- nchar(useComparison) >2
           if(any(!nCha, na.rm=TRUE)) stop(fxNa,"Unable to perform strsplit on 'useComparison' since ",sum(nCha, na.rm=TRUE)," element(s) are too short !!")
           if(length(sep)==0) {           # identify sep from  useComparison
@@ -203,29 +203,26 @@ convPairwiseSetup <- function(useComparison, grp, experSetup=NULL, sep=NULL, sil
             }
             pwIndex <- matrix(match(pwGrpNa, grpNa),  ncol=2) 
              
-          } else {
-            if(length(sep) >1) {warning(fxNa,"Truncating sep to length=1"); sep <- sep[1]}
+          } else {if(length(sep) >1) {warning(fxNa,"Truncating sep to length=1"); sep <- sep[1]}
             spl1 <- strsplit(useComparison, sep)
             ch1 <- sapply(spl1, length)
             if(any(ch1 !=2)) stop(fxNa,"User-provided 'sep' does NOT allow to split all 'useComparison' in exactely 2 parts")
             pwGrpNa <- matrix(unlist(spl1, use.names=FALSE), byrow=TRUE, ncol=2) 
             pwIndex <- matrix(match(pwGrpNa, grpNa), ncol=2 )           
           }          
-        }      # finish split of char vector
-        
+        }      # finish split of char vector        
       }        # finish char vector
     }          # finish vector
     rownames(pwGrpNa) <- rownames(pwIndex) <- concat <- paste0(pwGrpNa[,1], sep, pwGrpNa[,2])        
-
   }
-  if(length(pwGrpNa) <= 676) names(pwGrpNa) <- if(length(pwGrpNa) <27) LETTERS[1:length(pwGrpNa)] else paste0(rep(LETTERS, each=26),rep(LETTERS, 26))[1:length(pwGrpNa)] 
-  if(debug) {message(fxNa,"cUC6"); cUC6 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwGrpNa=pwGrpNa, pwIndex=pwIndex, pwComb=pwComb, grpNa=grpNa)}
+  if(debug) {message(fxNa,"cPS6"); cPS6 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwGrpNa=pwGrpNa, pwIndex=pwIndex, pwComb=pwComb, grpNa=grpNa)}
   if(length(pwGrpNa) >0 && length(dim(pwGrpNa)) !=2) pwGrpNa <- matrix(pwGrpNa, byrow=TRUE, ncol=2) 
   if(length(pwIndex) >0 && length(dim(pwIndex)) !=2) pwIndex <- matrix(pwIndex, byrow=TRUE, ncol=2)
   if(length(pwComb)==0 && length(pwGrpNa) !=0) pwComb <- paste0(pwGrpNa[,1], sep, pwGrpNa[,2])
   dimnames(pwGrpNa) <- dimnames(pwIndex) <- list(pwComb, c("samp","ref"))
-  if(debug) {message(fxNa,"cUC7"); cUC7 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwGrpNa=pwGrpNa, pwIndex=pwIndex, pwComb=pwComb, grpNa=grpNa)}
-  list(pwGrpNa=pwGrpNa, pwIndex=pwIndex, grpNa=grpNa, sep=sep, concat=pwComb)
+  shortGrpNa <- asShortNa(grpNa)
+  if(debug) {message(fxNa,"cPS7"); cPS7 <- list(useComparison=useComparison, grp=grp, experSetup=experSetup, sep=sep, pwGrpNa=pwGrpNa, pwIndex=pwIndex, pwComb=pwComb, grpNa=grpNa)}
+  list(pwGrpNa=pwGrpNa, pwIndex=pwIndex, grpNa=grpNa, shortGrpNa=shortGrpNa, sep=sep, concat=pwComb)
 } 
   
   

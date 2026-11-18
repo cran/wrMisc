@@ -49,6 +49,7 @@ scaleXY <- function(x, min=0, max=NULL, q=c(0, 1), silent=FALSE, debug=FALSE, ca
   ## main : Compute quantiles for input, linear transformation
   qVal <- stats::quantile(x, probs=q, na.rm=TRUE)
   slope <- (ra[2] - ra[1]) / (qVal[2] - qVal[1])
+  if(!is.finite(slope)) stop(fxNa,"UNable to determine (finite) slope !")
   intercept <- ra[1] - slope * qVal[1]
   xScaled <- slope * x + intercept
   if(length(dim(x))==0) xScaled else matrix(xScaled, nrow=nrow(x), dimnames=dimnames(x))

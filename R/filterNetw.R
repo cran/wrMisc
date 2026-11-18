@@ -194,7 +194,7 @@ filterNetw <- function(lst, filtCol=3, limInt=5000, sandwLim=5000, filterAsInf=T
   names(lstLe) <- names(lst)
   ## transform list to matrix/data.frame
   lst <- lrbind(lst, silent=TRUE)
-  if(any(dim(lst) <1) && length(dim(lst)) <2) stop("Invalid input format ! Bizzare, lrbind() did NOT manage to produce a matrix or data.frame")
+  if(any(dim(lst) <1) && length(dim(lst)) <2) stop("Invalid input format ! Bizarre, lrbind() did NOT manage to produce a matrix or data.frame")
   colnames(lst)[1] <- "Node2"
   if(ncol(lst) >1) colnames(lst)[2] <- "edgeScore" 
   

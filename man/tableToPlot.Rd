@@ -2,7 +2,7 @@
 % Please edit documentation in R/tableToPlot.R
 \name{tableToPlot}
 \alias{tableToPlot}
-\title{Print matrix-content as plot}
+\title{Print Matrix-Content As Plot}
 \usage{
 tableToPlot(
   matr,
@@ -12,6 +12,7 @@ tableToPlot(
   titOffS = 0,
   useCol = 1,
   silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
@@ -30,10 +31,12 @@ tableToPlot(
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) additional messages for debugging}
+
+\item{callFrom}{(character) allows easier tracking of messages produced}
 }
 \value{
-This function returns NULL (no R-object returned), print 'plot' in current device only
+This function returns a plot only (in current device), thus on the command line it returns \code{NULL}
 }
 \description{
 This function prints all columns of matrix in plotting region for easier inclusion to reports (default values are set to work for output as A4-sized pdf).

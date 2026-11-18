@@ -16,7 +16,7 @@ summarizeCols(
 )
 }
 \arguments{
-\item{matr}{data.frame matrix of data to be summarized by comlumn (may do different method for text and numeric comlumns)}
+\item{matr}{data.frame matrix of data to be summarized by column (may do different method for text and numeric comlumns)}
 
 \item{meth}{(character) summarization method, may be 'mean','aver','median','sd','CV', 'min','max','first','last','maxOfRef','minOfRef','maxAbsLast','minAbsLast',
 'medianComplete' or 'meanComplete', 'n' (number of non-\code{NA} elements),'n.NA' (number of \code{NA} elements), 'NULL' (returns \code{NULL})}

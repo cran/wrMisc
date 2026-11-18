@@ -2,7 +2,7 @@
 #'
 #' This function returns CV for values in each column (using speed optimized standard deviation).
 #' Note : NaN values get replaced by NA.
-#' @param dat (numeric) matix 
+#' @param dat (numeric) matrix 
 #' @param autoconvert (NULL or character) allows converting simple vectors in matrix of 1 row (autoconvert="row")
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging

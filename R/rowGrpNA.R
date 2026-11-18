@@ -86,8 +86,8 @@ rowGrpNA <- function(mat, grp=NULL, initColOrder=TRUE, mode="simple", digits=2, 
       if(all(!chLst)) stop(fxNa,"Unable to find any of the list-elements 'isNA', 'raw' or 'quant' in main input '",namesXY,"'")
       #  matIni <- mat           # needed ??
       ## recuperate grp from list (if given not fittin)
-      if(length(grp) == 0 && "grp" %in% names(mat$setup)) grp <- mat$setup$grp                                         # recuperate grp from $setup
-      mat <- if(is.na(chLst[1])) is.na(mat[[naOmit(chLst)[1]]]) else mat[[chLst[1]]]    # mat as matrix of F/T (indicating results of is.na())
+      if(length(grp) == 0 && length(mat$setup$grp) !=0) grp <- mat$setup$grp                                        # recuperate grp from $setup      
+      mat <- if(is.na(chLst[1])) is.na(mat[[naOmit(chLst)[1]]]) else mat[[chLst[1]]]    # (preferably use $isNA) mat as matrix of F/T (indicating results of is.na())
       ## check grp (main)      
       if(length(grp) != 0 && length(grp) != ncol(mat)) stop(fxNa,"Invalid $setup$grp information")      
     } else {
@@ -102,7 +102,7 @@ rowGrpNA <- function(mat, grp=NULL, initColOrder=TRUE, mode="simple", digits=2, 
   } 
   if(debug) {message("rGN2"); rGN2 <- list(mat=mat,grp=grp,initColOrder=initColOrder,mode=mode,digits=digits,lstObj=lstObj,chLst=chLst,chLstNa=chLstNa,datOK=datOK)}
 
-  if(datOK && all(is.na(mat))) { datOK <- FALSE ; warning(fxNa,"Bizzare entry in argument 'mat' :  Cannot handle when data is NA - nothing to do ..")} 
+  if(datOK && all(is.na(mat))) { datOK <- FALSE ; warning(fxNa,"Bizarre entry in argument 'mat' :  Cannot handle when data is NA - nothing to do ..")} 
   if(datOK && any(length(dim(mat)) !=2, dim(mat) < 1)) {datOK <- FALSE; warning(fxNa,"Invalid argument 'mat'; must be matrix (or data.frame) with min 1 line and 1 column (returning NULL)")}
   if(datOK && length(grp) != ncol(mat)) stop(fxNa,"Length of 'grp' and number of columns of 'mat' do not match !")       
   
@@ -111,22 +111,24 @@ rowGrpNA <- function(mat, grp=NULL, initColOrder=TRUE, mode="simple", digits=2, 
     ## main : basic count per group;  recognize all different case
     nDup <- sum(duplicated(grp)) 
     if(nDup ==0) out <- 0 + mat else {
-      if(nDup == length(grp) -1) out <- rowSums(mat) else {
+      if(nDup == length(grp) -1) { out <- rowSums(mat)
+      } else {
         ## standard case  (multiple groups, not all singlets)
         colGr <- split(1:ncol(mat), grp)  
         out <- sapply(colGr, function(cols) rowSums(mat[, cols, drop=FALSE]))
-        out <- if(isTRUE(initColOrder)) out[, match(naOmit(unique(grp)), colnames(out))] else out     
+        out <- if(isTRUE(initColOrder)) out[, naOmit(match(unique(grp), sort(unique(grp))))] else out     
         if(debug) {message("rGN3"); rGN3 <- list(out=out,mat=mat,grp=grp,initColOrder=initColOrder,mode=mode,digits=digits,lstObj=lstObj,chLst=chLst)}
       
-      ## other options
+        ## other options
         dimNa <- dimnames(out) <- list( rownames(mat), paste0(if(!grepl("^simple", mode)) "nNA.", if(grepl("^ratio",mode)) "rat.", colnames(out)))
         out <- switch(mode,
           simple = out,                 # simple counts
-          simpleCollapse = do.call(paste, c(as.data.frame(out), sep=" ")), # all counts pasted in single column
-          complete = matrix(paste(out, matrix(rep(table(grp), each=nrow(out)), nrow=nrow(out)), sep="/"), ncol=ncol(out)),              # counts/ n.samples
-          completeCollapse= do.call(paste, c(as.data.frame(paste(out, matrix(rep(table(grp), each=nrow(out)), nrow=nrow(out)), sep="/")), sep=" ")),  # counts/ n.samples pasted in single column
-          ratio = round(out / matrix(rep(table(grp), each=nrow(out)), nrow=nrow(out)), digits),                     # ratio counts/n.samples
-          ratioCollapse = do.call(paste, c(as.data.frame(round(out / matrix(rep(table(grp), each=nrow(out)), nrow=nrow(out)), digits)), sep=" "))      # ratio counts/n.samples pasted in single column
+          simpleCollapse = do.call(paste, c(as.data.frame(out), sep=" ")),             # all counts pasted in single column
+          complete = matrix(paste(out, matrix(rep(table(grp)[match(unique(grp), sort(unique(grp)))], each=nrow(out)), nrow=nrow(out)), sep="/"), ncol=ncol(out)),    # ok# counts/ n.samples
+          completeCollapse= do.call(paste, c(as.data.frame(matrix(paste(out, matrix(rep(table(grp)[match(unique(grp), sort(unique(grp)))], each=nrow(out)), 
+            nrow=nrow(out)), sep="/"), ncol=ncol(out))), sep=" ")),   # counts/ n.samples pasted in single column
+          ratio = round(out / matrix(rep(table(grp)[match(unique(grp), sort(unique(grp)))], each=nrow(out)), nrow=nrow(out)), digits),             # ratio counts/n.samples
+          ratioCollapse = do.call(paste, c(as.data.frame(round(out / matrix(rep(table(grp)[match(unique(grp), sort(unique(grp)))], each=nrow(out)), nrow=nrow(out)), digits)), sep=" "))  # ratio counts/n.samples pasted in single column     
         )
         if(length(dim(out))==2) dimnames(out) <- dimNa else names(out) <- dimNa[[1]]
       out } 

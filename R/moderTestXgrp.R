@@ -204,7 +204,7 @@ moderTestXgrp <- function(dat, grp,  useComparison=NULL, limmaOutput=TRUE, addRe
     }
     if(is.null(colnames(fit1$t))) colnames(fit1$t) <- concatNa
     if(is.null(colnames(fit1$p.value))) colnames(fit1$p.value) <- concatNa
-    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue", quietly=TRUE) && !silent) message(fxNa,"NOTE: Package 'qvalue' not installed from CRAN, can't calulate ...")
+    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue", quietly=TRUE) && !silent) message(fxNa,"NOTE: Package 'qvalue' not installed from CRAN, can't calculate ...")
     if(debug) {message(fxNa,"mTX5"); mTX5 <- list(dat=dat,fit0=fit0,fit1=fit1,datDesign=datDesign,grp=grp,useComparison=useComparison,limmaOutput=limmaOutput,addResults=addResults,testOrientation=testOrientation,runTest=runTest,pwIndex=pwIndex, grpNa=grpNa,contr.matr=contr.matr,pwGrpNa=pwGrpNa)  }       
 
     ## add various multiple testing corrections

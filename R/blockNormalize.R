@@ -14,15 +14,15 @@
 #'     This is useful for making datasets directly comparable.
 #'   - `"rescale"`: Rescales each dataset **independently** to the range specified by `range`.
 #'     Preserves the shape of each distribution but standardizes the scale (e.g., to `[0, 1]`).
-#'   - `"median"`: This precedure works in a proportional matter. It centers each dataset by deviding by its group median and multiplying by the overall median.
+#'   - `"median"`: This precedure works in a proportional matter. It centers each dataset by dividing by its group median and multiplying by the overall median.
 #'     This removes location differences while preserving spread.
 #'   - `"logMedian"`: This precedure is adoped for log-data. It centers each dataset by subtracting its group-median and addding the overall median.
 #'     Removes location differences while preserving spread.
 #'   - `"none"`: No normalization
-#' @param range (numeric vector, length=2) vector specifying the target values to be used in case \code{method="rescale"} for rescaling;
+#' @param range (numeric, length=2) vector specifying the target values to be used in case \code{method="rescale"} for rescaling;
 #'   Default values 0 and 1 point to the min and max values to be adjusted to the value specified in this argument, ie the 'range'.
-#'   When argument \code{method="q"} is other than 0 and 1, the respective quantiles will get adjusted to the values of this arument, other data will treated in a linear fashion.
-#' @param q (numeric vector, length=2) vector specifying the quantiles to be used in case \code{method="rescale"} for rescaling;
+#'   When argument \code{method="rescale"} and content of \code{q} is other than 0 and 1, the respective quantiles will get adjusted to the values of this argument, other data will treated in a linear fashion.
+#' @param q (numeric, length=2) vector specifying the quantiles to be used in case \code{method="rescale"} for rescaling;
 #'   Default values 0 and 1 point to the min and max values to be adjusted to the value specified in this argument      
 #' 
 #' @param silent (logical) suppress messages
@@ -141,7 +141,7 @@ blockNormalize <- function(x, y, z=NULL, method="quantile.block", range=c(0, 1),
   medNormLogXYZ <- function(dat1, dat2, dat3) {  # median normalize to common median
     med <- c(m1=stats::median(dat1, na.rm=TRUE), m2=stats::median(dat2, na.rm=TRUE), m3=if(length(dat3) !=0) stats::median(dat3, na.rm=TRUE))
     medN <- stats::median(med, na.rm=TRUE)
-    out <- if(!is.na(medN)) list(x=dat1 -med[1] +medN, y=dat2 -medN +med[2], if(length(dat3) !=0) z=dat3 -med[2] +medN)
+    out <- if(!is.na(medN)) list(x=dat1 -med[1] +medN, y=dat2 -med[2] +medN , if(length(dat3) !=0) z=dat3 -med[3] +medN)
   }
 
   ## Main : Process x, y, z 
@@ -166,17 +166,17 @@ blockNormalize <- function(x, y, z=NULL, method="quantile.block", range=c(0, 1),
 
       ## check content of NAs
       sumNa <- sapply(isNA, sum)
-      leDat <- sapply(isNA, function(xx) if(is.data.frame(xx)) prod(dim(xx)) else length(x) )
+      leDat <- sapply(isNA, function(xx) if(is.data.frame(xx)) prod(dim(xx)) else length(xx) )
       ratNa <- sumNa / leDat 
       if(any(ratNa > 0.7) || min(ratNa) >0.3) { useAllData <- FALSE
-        if(!silent && isTRUE(useAllData)) message(fxNa,"Note : Data have too many NAs (min > 30% or any >70%) for mode useAllData =TRUE") 
+        if(!silent) message(fxNa,"Note : Data have too many NAs (min > 30% or any >70%) for mode useAllData =TRUE") 
       } else if(any(ratNa > 0.3) && !silent)  message(fxNa,"Note : Data have elevated rate of NAs  ( ",100*round(pasteC(ratNa),2),"%)")  
 
       if(isTRUE(useAllData)) {
         ## (temporarily) replace NAs
         if(any(isNA$x)) x[which(isNA$x)] <- stats::median(x, na.rm=TRUE)
         if(any(isNA$y)) y[which(isNA$y)] <- stats::median(y, na.rm=TRUE)
-        if(!is.null(z) && any(isNA$x)) z[which(isNA$z)] <- stats::median(z, na.rm=TRUE)}
+        if(!is.null(z) && any(isNA$z)) z[which(isNA$z)] <- stats::median(z, na.rm=TRUE)}
       if(debug) message(fxNa,"mNo1b quantile.block ")
 
       nonNA.idx <- if(is.null(z)) {
@@ -207,7 +207,7 @@ blockNormalize <- function(x, y, z=NULL, method="quantile.block", range=c(0, 1),
         ## Restore dimensions and NAs
         if(length(dim(x))==2) out$x <- matrix(out$x, nrow=x2$newDim[1], dimnames=dimnames(x2$isNA)) 
         if(length(dim(y))==2) out$y <- matrix(out$y, nrow=y2$newDim[1], dimnames=dimnames(y2$isNA))
-        if(!is.null(z) && length(dim(z)==2)) {
+        if(!is.null(z) && length(dim(z)) ==2) {
           out$z <- matrix(out$z, nrow=z2$newDim[1], dimnames=dimnames(z2$isNA))
         }
         if(debug) { message(fxNa,"mNo3 quantile.block "); mNo3 <- list()}
@@ -219,8 +219,8 @@ blockNormalize <- function(x, y, z=NULL, method="quantile.block", range=c(0, 1),
         if(debug) message(fxNa,"mNo4 quantile.block ")
         if(isTRUE(useAllData)) {
           if(any(isNA$x)) out$x[which(isNA$x)] <- NA
-          if(any(isNA$y)) out$x[which(isNA$y)] <- NA
-          if(!is.na(z) && any(isNA$z)) out$z[which(isNA$z)] <- NA
+          if(any(isNA$y)) out$y[which(isNA$y)] <- NA
+          if(!is.null(z) && any(isNA$z)) out$z[which(isNA$z)] <- NA
         } 
       }
       out

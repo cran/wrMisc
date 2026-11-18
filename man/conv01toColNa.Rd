@@ -2,9 +2,17 @@
 % Please edit documentation in R/conv01toColNa.R
 \name{conv01toColNa}
 \alias{conv01toColNa}
-\title{Convert matrix of integer to matrix of x-times repeated column-names}
+\title{Convert Matrix Of Integer To Matrix Of x-times Repeated Column-Names}
 \usage{
-conv01toColNa(mat, colNa = NULL, zeroTex = "", pasteCol = FALSE)
+conv01toColNa(
+  mat,
+  colNa = NULL,
+  zeroTex = "",
+  pasteCol = FALSE,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{mat}{input matrix (with integer values)}
@@ -14,9 +22,15 @@ conv01toColNa(mat, colNa = NULL, zeroTex = "", pasteCol = FALSE)
 \item{zeroTex}{text to display if 0 (default "")}
 
 \item{pasteCol}{(logical) allows to collapse all columns to single chain of characters in output}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-character vector
+This function returns a character vector
 }
 \description{
 \code{conv01toColNa} transforms matrix of integers (eg 0 and 1) to repeated & concatenated text from argument \code{colNa}, 

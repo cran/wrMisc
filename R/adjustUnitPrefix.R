@@ -16,7 +16,7 @@
 #'
 #' @param x (character) vector containing digit uunit-prefix and unit terms
 #' @param pref (character) multiplicative unit-prefixes, assumes as increasing factors of 1000
-#' @param unit (character) unit name, the numeric part may be sepatated by one space-character
+#' @param unit (character) unit name, the numeric part may be separated by one space-character
 #' @param sep (character) separator characters that may appear between integer numeric value and unit description
 #' @param minTrimNChar (integer) min number of text characters when trimming adjacent text on left and right of main numeric+prefix+unit
 #' @param returnType (character) set options for retuning results : 'NAifInvalid' .. return NA for invalid parts,'allText' .. return initial text if problem, 'trim'

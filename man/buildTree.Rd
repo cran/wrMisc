@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildTree.R
 \name{buildTree}
 \alias{buildTree}
-\title{Connect edges to from tree and extract all possible branches}
+\title{Connect Edges To Build Tree And Extract All Possible Branches}
 \usage{
 buildTree(
   disDat,
@@ -16,7 +16,7 @@ buildTree(
 \arguments{
 \item{disDat}{(matrix or data.frame) integer values with 1st column, ie start site of fragment, 2nd column as end of fragments, rownames as unique IDs (node-names)}
 
-\item{startFr}{(integer) index for 1st node (typically =1 if 'disDat' sorted by "beg"), should point to a terminal node for consective growing of branches}
+\item{startFr}{(integer) index for 1st node (typically =1 if 'disDat' sorted by "beg"), should point to a terminal node for consecutive growing of branches}
 
 \item{posCo}{(character) colnames specifying the begin & start sites in 'disDat', if NULL 1st & 2nd col will be used}
 
@@ -30,10 +30,13 @@ buildTree(
 This function returns a list with $paths (branches as matrix with columns 'sumLen' & 'n'), $usedNodes (character vector of all names used to build tree) and $tree (object from data.tree)
 }
 \description{
-It is assumed that multiple fragments from a common ancestor bay be charcterized by the their start- and end-sites by integer values.  
+This function aims at reconstructing sequences which have been broken in a set of short streches/branches (given by integer positions on a reference/original).
+}
+\details{
+It is assumed that multiple fragments from a common ancestor may be characterized by the their start- and end-sites by integer values.  
 For example, If 'abcdefg' is the ancestor, the fragments 'bcd' (from position 2 to 4) to  and 'efg' may then be assembled. 
-To do so, all fragments must be presented as matix specifying all start- and end-sites (and fragment-names).  
-\code{buildTree} searchs contiguous fragments from columns 'posCo' (start/end) from 'disDat' to build tree & extract path information starting with line 'startFr'.
+To do so, all fragments must be presented as matrix specifying all start- and end-sites (and fragment-names).  
+\code{buildTree} searches contiguous fragments from columns 'posCo' (start/end) from 'disDat' to build tree & extract path information starting with line 'startFr'.
 Made for telling if dissociated fragments contribute to long assemblies.
 This function uses various functions of package \href{https://CRAN.R-project.org/package=data.tree}{data.tree} which must be installed, too.
 }

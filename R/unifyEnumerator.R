@@ -13,18 +13,18 @@
 #'
 #' Basically enumerator separators can be constructed by combing a base-separator \code{baseSep} (like '-', '_' etc) and an enumerator-abbreviation \code{suplEnu}.
 #' Then, all possible combinations will be tested if they occur in the text \code{x}.
-#' Furthermore, the text searched has to be followd by on or multiple digts at the end of text-entry (decimal comma-separators etc are not allowed).
+#' Furthermore, the text searched has to be followed by on or multiple digts at the end of text-entry (decimal comma-separators etc are not allowed).
 #' Thus, if there is other 'free text' following to the right after the enumerator-text this function will not find any enumerators to replace.
 #'
 #' The argument \code{stringentMatch} allows defining if this text has to be found in all text-entries of \code{x} or just one of them.
-#' Whe using \code{stringentMatch=FALSE} there is risk that other text not meant to design enumerators may be picked up and modified.
+#' When using \code{stringentMatch=FALSE} there is risk that other text not meant to design enumerators may be picked up and modified.
 #'
-#' Please note, that with large data-sets (ie many columns) testing/checking a larger panel of enumerator-abreviations may result in slower performance.
+#' Please note, that with large data-sets (ie many columns) testing/checking a larger panel of enumerator-abbreviations may result in slower performance.
 #' In cases of larger data-sets it may be more effective to first study the data and then run simple subsitions using sub targeted for this very case.
 #'
 #' @param x (character) main input
 #' @param refSep (character) separator for output
-#' @param baseSep (character) basic seprators to test (you have to protect special characters)
+#' @param baseSep (character) basic separators to test (you have to protect special characters)
 #' @param suplEnu (character) additional text
 #' @param stringentMatch (logical) decide if enumerator text has to be found in all instances or only once
 #' @param silent (logical) suppress messages
@@ -35,7 +35,7 @@
 #' @examples
 #' unifyEnumerator(c("ab-1","ab-2","c-3"))
 #' unifyEnumerator(c("ab-R1","ab-R2","c-R3"))
-#' unifyEnumerator(c("ab-1","c3-2","dR3"), strin=FALSE);
+#' unifyEnumerator(c("ab-1","c3-2","dR3"), stringentMatch=FALSE)
 #'
 #' @export
 unifyEnumerator <- function(x, refSep="_", baseSep=c("\\-","\\ ","\\."), suplEnu=c("Repl","Rep","R","Number","No","Sample","Samp"), stringentMatch=TRUE, silent=FALSE, debug=FALSE, callFrom=NULL) {

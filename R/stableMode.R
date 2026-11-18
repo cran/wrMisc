@@ -10,6 +10,8 @@
 #' if "binning", the data will be binned (like in histograms) via rounding to a user-defined number of significant values ("rangeSign").
 #' If \code{method} is set to "BBmisc", the function \code{computeMode()} from package \href{https://CRAN.R-project.org/package=BBmisc}{BBmisc} will be used.
 #' If "mode" is chosen, the first most frequently occuring (exact) value will be returned, if "allModes", all ties will be returned. This last mode also works with character input. 
+#' 
+#' Please keep in mind, that estimating the mode in continuous numeric data may be ambiguous and finally depends on how 'mode' is actually defined , reflected by different search-strategies.
 #'	 
 #' @param x (numeric, or character if 'method='mode') data to find/estimate most frequent value
 #' @param method (character) There are 3 options : BBmisc, binning and density (default). If "binning" the function will search context dependent, ie like most frequent class of histogram.
@@ -18,7 +20,6 @@
 #' @param bandw (integer) only used when \code{method="binning"} or  \code{method="density"} : defines the number of points to look for density or number of classes used; 
 #'  very "critical" parameter, may change results in strong way. Note: with \code{method="binning"}: At higher values for "bandw" you will finally loose advantage of histLike-type search of mode !
 #' @param rangeSign (integer) only used when \code{method="binning"}: range of numbers used as number of significant values
-
 #' @param silent (logical) suppress messages
 #' @param callFrom (character) allows easier tracking of messages produced
 #' @param debug (logical) additional messages for debugging 
@@ -75,7 +76,7 @@ stableMode <- function(x, method="density", finiteOnly=TRUE, bandw=NULL, rangeSi
     if(requireNamespace("BBmisc", quietly=TRUE)) {
       mo <- try(sapply(rangeSign, function(y) BBmisc::computeMode(signif(x, y))), silent=TRUE)
       if(inherits(mo, "try-error")) { method <- "density"
-        warning(fxNa,"UNABLE to calulate BBmisc::computeMode(),  setting 'method' to 'density'")
+        warning(fxNa,"UNABLE to calculate BBmisc::computeMode(),  setting 'method' to 'density'")
       } else  { posi <- .firstMin(diff(mo)/mo[-length(mo)], positionOnly = TRUE)
         out <- mo[posi] }
       if(debug) {message(fxNa," stM2"); stM2 <- list(method=method,bandw=bandw,x=x,mo=mo) }

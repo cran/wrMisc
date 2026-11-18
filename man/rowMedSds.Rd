@@ -7,7 +7,7 @@
 rowMedSds(dat, nBoot = 99, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{dat}{(numeric) matix, main input}
+\item{dat}{(numeric) matrix, main input}
 
 \item{nBoot}{(integer) number if iterations for bootstrap}
 

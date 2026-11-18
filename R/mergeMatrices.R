@@ -1,7 +1,7 @@
 #' Merge Multiple Matrices
 #'
 #' This function allows merging of multiple matrix-like objects.
-#' The matix-rownames will be used to align common elements, either be returning all common elements \code{mode='intersect'} or containg all elements \code{mode='union'} (the result may contains additional \code{NA}s).
+#' The matrix-rownames will be used to align common elements, either be returning all common elements \code{mode='intersect'} or containg all elements \code{mode='union'} (the result may contains additional \code{NA}s).
 #'
 #'
 #' @details
@@ -69,7 +69,7 @@ mergeMatrices <- function(..., mode="intersect", useColumn=1, na.rm=TRUE, extrRo
 #' Merge Multiple Matrices from List
 #'
 #' This function allows merging of multiple matrix-like objects from an initial list.
-#' The matix-rownames will be used to align common elements, either be returning all common elements \code{mode='intersect'} or containg all elements \code{mode='union'} (the result may contains additional \code{NA}s).
+#' The matrix-rownames will be used to align common elements, either be returning all common elements \code{mode='intersect'} or containg all elements \code{mode='union'} (the result may contains additional \code{NA}s).
 #'
 #'
 #' @details

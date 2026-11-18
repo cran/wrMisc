@@ -16,7 +16,7 @@
 )
 }
 \arguments{
-\item{x}{data.frame matrix of data to be summarized by comlumn}
+\item{x}{data.frame matrix of data to be summarized by column}
 
 \item{me}{(character, length=1) summarization method (eg 'min','max','mean','mean.trim','median','sd','CV', 'medianComplete' or 'meanComplete' etc, see \code{\link{summarizeCols}})}
 

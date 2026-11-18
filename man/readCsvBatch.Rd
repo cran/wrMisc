@@ -2,7 +2,7 @@
 % Please edit documentation in R/readCsvBatch.R
 \name{readCsvBatch}
 \alias{readCsvBatch}
-\title{Read batch of csv-files}
+\title{Read Batch Of Csv-Files}
 \usage{
 readCsvBatch(
   fileNames = NULL,
@@ -20,9 +20,9 @@ readCsvBatch(
 )
 }
 \arguments{
-\item{fileNames}{(character) names of files to be read, if \code{NULL} all files fitting 'fileFormat'}
+\item{fileNames}{(character) names of files to be read, if \code{NULL} all files fitting 'fileFormat' will be used}
 
-\item{path}{(character) where files should be read (folders should be written in R-style)}
+\item{path}{(character) where files should be read from (folders should be written in R-style)}
 
 \item{fileFormat}{(character) may be \code{NULL} (both US and European formats will be tried), 'Eur' or 'US'}
 
@@ -30,7 +30,7 @@ readCsvBatch(
 
 \item{returnArray}{(logical) allows switching from array to list-output}
 
-\item{columns}{(NULL or character) column-headers to be extracted (if specified), 2nd value may be comlumn with rownames (if rownames are encountered as increasing rownames)}
+\item{columns}{(\code{NULL} or character) column-headers to be extracted (if specified), 2nd value may be column with rownames (if rownames are encountered as increasing rownames)}
 
 \item{excludeFiles}{(character) names of files to exclude (only used when reading all files of given directory)}
 
@@ -49,7 +49,10 @@ This function returns an array (or list if \code{returnArray=FALSE}) of all nume
 }
 \description{
 This function was designed to read screening data split in parts (with common structure) and saved to multiple files,  
-to extract the numeric columns and to compile all (numeric) data to a single array (or list).  Some screening platforms save results while progressing 
+to extract the numeric columns and to compile all (numeric) data to a single array (or list).
+}
+\details{
+Some screening platforms save results while progressing 
 through a pile of microtiter-plates separately. The organization of the resultant files is structured through file-names and all files have exactely the same organization of lines and columns/ 
 European or US-formatted csv files can be read, if argument \code{fileFormat} is \code{NULL} both types will be tested, otherwise it allows to specify a given format.
 The presence of headers (to be used as column-names) may be tested using \code{checkFormat}.

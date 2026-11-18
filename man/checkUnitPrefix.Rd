@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkUnitPrefix.R
 \name{checkUnitPrefix}
 \alias{checkUnitPrefix}
-\title{Check For Common Unit-Name in Text}
+\title{Check For Common Unit-Name In Text}
 \usage{
 checkUnitPrefix(
   x,
@@ -24,7 +24,7 @@ checkUnitPrefix(
 
 \item{pref}{(character) multiplicative unit-prefixes, assumes as increasing factors of 1000}
 
-\item{unit}{(character) unit name, the numeric part may be sepatated by one space-character}
+\item{unit}{(character) unit name, the numeric part may be separated by one space-character}
 
 \item{sep}{(character) separator character(s) that may appear between integer numeric value and unit-prefix}
 

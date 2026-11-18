@@ -23,9 +23,10 @@ presenceFilt(
 
 \item{grp}{factor of min 2 levels describing which column of 'dat' belongs to which group (levels 1 & 2 will be used)}
 
-\item{useComparison}{(character or matrix) optional argument allowing to specify which pairwise comparions sould be performed, default \code{useComparison=NULL} will run all pairwise comparisons;
+\item{useComparison}{(character or matrix or list) optional argument allowing to specify which pairwise comparions sould be performed, default \code{useComparison=NULL} will run all pairwise comparisons;
 may be character combining two group-names (from argument \code{grp}) separated by a '-' (eg 'A-B') or matrix where the rownames design the elements to be compared as pairwise;
-Note : the names of the groups may not contain any '-' to avoid confucing them with pairwise separators !}
+Note : the names of the groups may not contain any '-' to avoid confusing them with pairwise separators !
+If is list, $grpNa, $pwGrpNa (to be used as \code{useComparison}) and $sep will be extracted}
 
 \item{maxGrpMiss}{(numeric) at least 1 group has not more than this number of NAs (otherwise marke line as bad)}
 
@@ -49,7 +50,7 @@ This function returns a logical matrix (with separate col for each pairwise comb
 \description{
 This function produces a logical matrix to be used as filter for lines of 'dat' for sufficient presence of non-\code{NA} values (ie limit number of NAs per line). 
 Filter abundance/expression data for min number and/or ratio of non-\code{NA} values in at east 1 of multiple groups.
-This type of procedure is common in proteomics and tanscriptomics, where a \code{NA} can many times be assocoaued with quantitation below detetction limit.
+This type of procedure is common in proteomics and tanscriptomics, where a \code{NA} can many times be associated with quantitation below detetction limit.
 }
 \examples{
 mat <- matrix(rep(8,150), ncol=15, dimnames=list(NULL,

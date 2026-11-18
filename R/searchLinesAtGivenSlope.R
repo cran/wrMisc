@@ -38,10 +38,13 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   if(isTRUE(debug)) silent <- FALSE else { debug <- FALSE
     if(!isTRUE(silent)) silent <- FALSE }
   if(isTRUE(lmCompare)) { 
-    if(!requireNamespace("MASS", quietly=TRUE)) warning(fxNa,"Package 'MASS' not found ! Please install first from CRAN \n   setting 'lmCompare' to FALSE")
-    lmCompare <- FALSE } else lmCompare <- FALSE 
+    if(!requireNamespace("MASS", quietly=TRUE)) {
+      warning(fxNa,"Package 'MASS' not found ! Please install first from CRAN \n   setting 'lmCompare' to FALSE")
+      lmCompare <- FALSE 
+    } 
+  } else lmCompare <- FALSE  
   minNPoints <- 8                            ## min no of points to be included in primary selection of groups/clusters
-  cvThr <- c(0.06,0.09)                      ## threshold for 1st flitering of clustering results
+  cvThr <- c(0.06, 0.09)                      ## threshold for 1st flitering of clustering results
   argNa <- deparse(substitute(dat))
 
   coeff <- convToNum(coeff, spaceRemove=TRUE, convert=c(NA,"sparseChar"), remove=NULL, euroStyle=TRUE, sciIncl=TRUE, callFrom=fxNa)
@@ -72,12 +75,12 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   extrPtDis <- rep(NA,length(cluTab))
   for(j in as.numeric(names(cluTab))[which(cluTab > max(2,minNPoints))]) {
     cluLi <- which(bestPart$cluster==j)
-    disIni[[j]] <- .neigbDis(dat[filt1[cluLi],1:2], asSum=FALSE)
-    tmp <- dat[filt1[cluLi[order(rowMeans(dat[filt1[cluLi],1:2], na.rm=TRUE))]], 1:2]
+    disIni[[j]] <- .neigbDis(dat[filt1[cluLi], 1:2], asSum=FALSE)
+    tmp <- dat[filt1[cluLi[order(rowMeans(dat[filt1[cluLi], 1:2], na.rm=TRUE))]], 1:2]
     extrPtDis[j] <- sqrt(sum((tmp[1,] -tmp[length(cluLi)])^2 ))
   }
   if(debug) message(fxNa,"   ",sum(!is.na(extrPtDis))," out of ",length(extrPtDis)," distances calultated")
-  xyCor <- as.numeric(unlist(by(dat[filt1,1:2], bestPart$cluster, function(x) stats::cor(x[,1],x[,2]) )))
+  xyCor <- as.numeric(unlist(by(dat[filt1, 1:2], bestPart$cluster, function(x) stats::cor(x[,1], x[,2]) )))
   offSclu <- cbind(bestPart$cluChar, cor=xyCor)
   offSclu <- cbind(offSclu, refVa=(1-abs(offSclu[,"cor"]))*offSclu[,"centerCV"]/sqrt(offSclu[,"n"]))      ## <<== refVa
   offSclu <- cbind(offSclu, meanNeigbDi=sapply(disIni,mean,na.rm=TRUE,trim=0.2), maxSpread=extrPtDis)
@@ -105,7 +108,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
     cluN <- bestPart$cluster
     offSclu <- cbind(n=table(cluN), center=tapply(offS[filt1], cluN, mean, na.rm=TRUE), centerSd=tapply(offS[filt1], cluN, stats::sd, na.rm=TRUE))
     ## set cor to 0 if cor can't get caluclated due to indentical values in one of the colums
-    xyCor <- as.numeric(unlist(by(dat[filt1,1:2],cluN,function(x) {if(length(unique(x[,1])) >1 && length(unique(x[,2])) >1) stats::cor(x[,1],x[,2]) else 0} ))) 
+    xyCor <- as.numeric(unlist(by(dat[filt1,1:2], cluN, function(x) {if(length(unique(x[,1])) >1 && length(unique(x[,2])) >1) stats::cor(x[,1], x[,2]) else 0} ))) 
     refVa <- (1 -abs(xyCor)) *offSclu[,"centerSd"]/ (offSclu[,"center"] *sqrt(offSclu[,"n"]))
     offSclu <- cbind(offSclu ,centerCV=abs(offSclu[,"centerSd"]/offSclu[,"center"]), cor=xyCor, refVa=refVa)
     if(debug) message(fxNa,"  updated xyCor,offSclu ...")
@@ -128,10 +131,10 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   ## add parameter for checking if points are compact : sort, sum of each dist.to.neighb
   neigbDist <- rep(NA, nrow(offSclu))
   for(j in which(offSclu[,"n"] >1)) {
-    neigbDist[j] <- mean(.neigbDis(dat[filt1[which(bestPart$cluster==j)],1:2], asSum=FALSE), trim=0.1, na.rm=TRUE)}  # 10% each trimmed mean(dist)
+    neigbDist[j] <- mean(.neigbDis(dat[filt1[which(bestPart$cluster==j)], 1:2], asSum=FALSE), trim=0.1, na.rm=TRUE)}  # 10% each trimmed mean(dist)
   offSclu <- cbind(offSclu,neigbDist=neigbDist)
   ## return matrix 'offT' with line-characteristics (for selected/best) or list (line-characteristics & index)
-  reportLi <- unique(c(refCluNo, which(offSclu[,"n"] > min(4,minNPoints))))             
+  reportLi <- unique(c(refCluNo, which(offSclu[,"n"] > min(4, minNPoints))))             
   offT <- matrix(nrow=length(reportLi), ncol=10, dimnames=list(reportLi, c("n","medOffS","CVoffS","r","neigbDist",
     "CIlo","CIhi","CIov","grade","grade2")))
   for(j in reportLi){                
@@ -141,7 +144,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
       CVoffS=abs(stats::sd(offS[filt1[sel]])/mean(offS[filt1[sel]])), r=stats::cor(dat[filt1[sel],1],dat[filt1[sel],2]),
       neigbDist=.neigbDis(dat[filt1[which(bestPart$cluster==j)],1:2])/sum(bestPart$cluster==j),
       CIlo=CI[1], CIhi=CI[2], CIov=NA, grade=NA, grade2=NA) }
-  offT[,"grade"] <- signif(log(offT[,"n"])/15 + offT[,"r"] -10*offT[,"CVoffS"],3)    # 'grade' .. consider n,r & CVoffS; higher..better
+  offT[,"grade"] <- signif(log(offT[,"n"])/15 + offT[,"r"] -10*offT[,"CVoffS"], 3)    # 'grade' .. consider n,r & CVoffS; higher..better
   if(debug) message(fxNa,"  offT created, columns ",paste(colnames(offT),collapse=" "))
   refCluSel <- which(refCluNo %in% rownames(offT)[which(offT[,"neigbDist"] <= neighbDiLim)])
   if(!is.null(neighbDiLim) && length(refCluSel) >0) refCluNo <- refCluNo[refCluSel]
@@ -155,7 +158,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
   if(debug) message(fxNa,"  ..ready to refine ",length(refCluNo)," groups by lm (conserve = ",is.list(out),")")
   if(lmCompare && requireNamespace("MASS", quietly=TRUE)) {for(i in 1:length(refCluNo)) {
     j <- refCluNo[i]
-    dat2 <- as.data.frame(matrix(dat[filt1[which(bestPart$cluster==j)],1:2], ncol=2))
+    dat2 <- as.data.frame(matrix(dat[filt1[which(bestPart$cluster==j)], 1:2], ncol=2))
     colnames(dat2) <- c("slope","B")     # LETTERS[1:2]
     tryLm <- try(MASS::rlm(B ~ slope, data=dat2))
     if(debug) message("  ..i=",i," used ",c("MASS::rlm","stats::lm")[1 +as.numeric(inherits(tryLm, "try-error") )])
@@ -168,7 +171,7 @@ searchLinesAtGivenSlope <- function(dat, coeff=1.5, filtExtr=c(0,1), minMaxDistT
       c("(Intercept)","slope","pInterc","pSlope","residSE","Rsqu")))
     if(inherits(tryLm, "try-error")) message(fxNa,"Problem making regression on group",refCluNo[i],"") else if(is.list(out)) {
       tmp <- if(inherits(tryLm, "rlm")) {
-        c(2*stats::pt(-abs(stats::coef(summary(tryLm))[,3]), df=length(stats::residuals(tryLm))-1), stats::cor(tryLm$qr$qr[,1], tryLm$qr$qr[,2])^2)
+        c(2*stats::pt(-abs(stats::coef(summary(tryLm))[,3]), df=length(stats::residuals(tryLm)) -1), stats::cor(tryLm$qr$qr[,1], tryLm$qr$qr[,2])^2)
         } else c(stats::coef(summary(tryLm))[,4], summary(tryLm)$adj.r.squared)
       if(any(tmp[1:2] ==0, na.rm=TRUE)) tmp[which(tmp[1:2]==0)] <- 1e-320            # avoid p=0 ...
       out$lmSum[i,] <- c(stats::coef(tryLm), tmp[1:2], summary(tryLm)$sigma,tmp[3])

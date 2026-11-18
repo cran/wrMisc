@@ -2,7 +2,7 @@
 #'
 #' Determine standard error (sd) of median by bootstraping for multiple sets of data (rows in input matrix 'dat').
 #' Note: The package \href{https://CRAN.R-project.org/package=boot}{boot} must be installed from CRAN.
-#' @param dat (numeric) matix 
+#' @param dat (numeric) matrix 
 #' @param nBoot  (integer, length=1) number if iterations
 #' @param silent (logical) suppress messages
 #' @param debug (logical) additional messages for debugging

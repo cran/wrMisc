@@ -4,7 +4,15 @@
 \alias{transpGraySca}
 \title{Make single vector gray-gradient}
 \usage{
-transpGraySca(startGray = 0.2, endGrey = 0.8, nSteps = 5, transp = 0.3)
+transpGraySca(
+  startGray = 0.2,
+  endGrey = 0.8,
+  nSteps = 5,
+  transp = 0.3,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{startGray}{(numeric) gray shade at start}
@@ -14,9 +22,15 @@ transpGraySca(startGray = 0.2, endGrey = 0.8, nSteps = 5, transp = 0.3)
 \item{nSteps}{(integer) number of levels}
 
 \item{transp}{(numeric) transparency alpha}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-character vector (of same length as x) with color encoding
+This function returns a character vector (of same length as x) with color encoding
 }
 \description{
 This function helps making gray-gradients.

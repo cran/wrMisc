@@ -2,9 +2,16 @@
 % Please edit documentation in R/filterList.R
 \name{filterList}
 \alias{filterList}
-\title{Filter for unique elements}
+\title{Filter For Unique Elements}
 \usage{
-filterList(lst, filt, minLineRatio = 0.5, silent = FALSE, callFrom = NULL)
+filterList(
+  lst,
+  filt,
+  minLineRatio = 0.5,
+  silent = FALSE,
+  debug = FALSE,
+  callFrom = NULL
+)
 }
 \arguments{
 \item{lst}{(list) main input, each vector, matrix or data.frame in this list will be filtered if its length or number of lines fits to \code{filt}}
@@ -15,10 +22,12 @@ filterList(lst, filt, minLineRatio = 0.5, silent = FALSE, callFrom = NULL)
 
 \item{silent}{(logical) suppress messages}
 
-\item{callFrom}{(character) allow easier tracking of message(s) produced}
+\item{debug}{(logical) display additional messages for debugging}
+
+\item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-filtered list
+This function returns a filtered list
 }
 \description{
 This function aims to apply a given filter-citerium, a matrix or vector of \code{FALSE/TRUE} which is typically combined with a second layer   

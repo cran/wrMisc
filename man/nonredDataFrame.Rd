@@ -2,22 +2,28 @@
 % Please edit documentation in R/nonredDataFrame.R
 \name{nonredDataFrame}
 \alias{nonredDataFrame}
-\title{Filter for unique elements}
+\title{Filter For Unique Elements}
 \usage{
 nonredDataFrame(
   dataFr,
   useCol = c(pepID = "peptide_id", protID = "accession", seq = "sequence", mod =
     "modifications"),
   sepCollapse = "//",
+  silent = FALSE,
+  debug = FALSE,
   callFrom = NULL
 )
 }
 \arguments{
 \item{dataFr}{(data.frame) main inpput}
 
-\item{useCol}{(character,length=2) comlumn names of 'dataFr' to use : 1st value designates where redundant values should be gathered; 2nd value designes column of which information should be concatenated}
+\item{useCol}{(character,length=2) column names of 'dataFr' to use : 1st value designates where redundant values should be gathered; 2nd value designs column of which information should be concatenated}
 
 \item{sepCollapse}{(character) conatenation symbol}
+
+\item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
 
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
@@ -25,8 +31,10 @@ nonredDataFrame(
 This function returns a data.frame of filtered (fewer lines) with additional 2 columns 'nSamePep' (number of redundant entries) and 'concID' (concatenated content)
 }
 \description{
-\code{nonredDataFrame}  filters 'x' (list of char-vectors or char-vector) for elements unique (to 'ref' or if NULL to all 'x') and of character length. 
-May be used for different 'accession' for same pep sequence (same 'peptide_id').
+This function filters 'x' (list of char-vectors or char-vector) for elements unique (to 'ref' or if NULL to all 'x') and of character length.
+}
+\details{
+The function be used for different 'accession' for same content, like peptide sequences (ie same 'peptide_id').
 Note : made for treating data.frames, may be slightly slower than matrix equivalent
 }
 \examples{

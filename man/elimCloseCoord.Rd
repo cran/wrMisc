@@ -11,7 +11,8 @@ elimCloseCoord(
   refine = 2,
   nDig = 3,
   callFrom = NULL,
-  silent = FALSE
+  silent = FALSE,
+  debug = FALSE
 )
 }
 \arguments{
@@ -25,9 +26,11 @@ elimCloseCoord(
 
 \item{nDig}{(integer) number of significant digits used for rounding, if two 'similar' values are identical after this rounding the second will be eliminated.}
 
-\item{callFrom}{(character) allows easier tracking of messages produced}
+\item{callFrom}{(character) allow easier tracking of messages produced}
 
 \item{silent}{(logical) suppress messages}
+
+\item{debug}{(logical) display additional messages for debugging}
 }
 \value{
 This function returns the resultant matrix/data.frame

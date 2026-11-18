@@ -9,14 +9,15 @@
 #' @param refine (numeric) allows increasing stringency even further  (higher 'refine' .. more lines considered equal)
 #' @param nDig (integer) number of significant digits used for rounding, if two 'similar' values are identical after this rounding the second will be eliminated. 
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allows easier tracking of messages produced
+#' @param debug (logical) display additional messages for debugging
+#' @param callFrom (character) allow easier tracking of messages produced
 #' @return This function returns the resultant matrix/data.frame
 #' @seealso \code{\link{findCloseMatch}}, \code{\link{firstOfRepeated}}
 #' @examples
 #' da1 <- matrix(c(rep(0:4,5),0.01,1.1,2.04,3.07,4.5),nc=2); da1[,1] <- da1[,1]*99; head(da1)
 #' elimCloseCoord(da1)
 #' @export
-elimCloseCoord <- function(dat, useCol=1:2, elimIdentOnly=FALSE, refine=2, nDig=3, callFrom=NULL, silent=FALSE){
+elimCloseCoord <- function(dat, useCol=1:2, elimIdentOnly=FALSE, refine=2, nDig=3, callFrom=NULL, silent=FALSE, debug=FALSE){
   fxNa <- .composeCallName(callFrom, newNa="elimCloseCoord")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) { silent <- FALSE } else { debug <- FALSE }

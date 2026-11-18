@@ -2,7 +2,7 @@
 % Please edit documentation in R/matchMatrixLinesToRef.R
 \name{matchMatrixLinesToRef}
 \alias{matchMatrixLinesToRef}
-\title{Match All Lines of Matrix To Reference Note}
+\title{Match All Lines Of Matrix To Reference Note}
 \usage{
 matchMatrixLinesToRef(
   mat,
@@ -41,13 +41,13 @@ This function returns the input matrix in an adjusted order (plus an optional ad
 This function allows adjusting the order of lines of a matrix \code{mat} to a reference character-vector \code{ref},
 even when initial direct matching of character-strings using \code{match} is not possible/successful.
 In this case, various variants of using \code{grep} will be used to see if unambiguous matching is possible of characteristic parts of the text.
-All columns of \code{mat} will be tested an the column giving the bes resuts will be used.
+Besides, it will tested if common preceeding text ('words') or leading Os don't allow successful direct macthing.
 }
 \details{
 This function tests all columns of \code{mat} to find perfect matching results to the reference \code{ref}.
-In case of multiple results the
 In case no direct matching is possible, \code{grep} will be used to find the best partial matching.
-The orderof the rows of input \code{mat} will be adjusted according to the matching results.
+All columns of \code{mat} will be tested an the column giving the best resuts will be used.
+The order of the rows of input \code{mat} will be adjusted according to the matching results.
 
 If \code{addRef=TRUE}, the reference will be included as additional column to the results, too.
 }
@@ -57,8 +57,13 @@ mat0 <- cbind(a=c("mvvk","axxd","bxxd","vv"),b=c("iwwy","iyyu","kvvh","gxx"), c=
   d=c("hgf","hgf","vxc","nvnn"), e=c("_vv_","_ww_","_xx_","_yy_"))
 matchMatrixLinesToRef(mat0[,1:4], ref=mat0[,5])
 matchMatrixLinesToRef(mat0[,1:4], ref=mat0[1:3,5], inclInfo=TRUE)
+matchMatrixLinesToRef(mat0[,-2], ref=substring(mat0[,2], 2, 3), inclInfo=TRUE)   
 
-matchMatrixLinesToRef(mat0[,-2], ref=mat0[,2], inclInfo=TRUE)   # needs 'reverse grep'
+## reverse grep (grep ref in all columns of mat)
+matchMatrixLinesToRef(mat0, ref=c("iyy","vv","iw","gx"), inclInfo=TRUE)   
+
+## trimming of heading 0s
+matchMatrixLinesToRef(matrix(11:18, ncol=2), ref=c("018","16","0015","017"))
 }
 \seealso{
 \code{\link[base]{match}},  \code{\link[base]{grep}}, \code{\link{trimRedundText}}, \code{\link{replicateStructure}}

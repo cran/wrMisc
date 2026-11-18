@@ -1,17 +1,20 @@
-#' Read batch of csv-files
+#' Read Batch Of Csv-Files
 #'
 #' This function was designed to read screening data split in parts (with common structure) and saved to multiple files,  
-#' to extract the numeric columns and to compile all (numeric) data to a single array (or list).  Some screening platforms save results while progressing 
+#' to extract the numeric columns and to compile all (numeric) data to a single array (or list).  
+#' 
+#' @details
+#' Some screening platforms save results while progressing 
 #' through a pile of microtiter-plates separately. The organization of the resultant files is structured through file-names and all files have exactely the same organization of lines and columns/ 
 #' European or US-formatted csv files can be read, if argument \code{fileFormat} is \code{NULL} both types will be tested, otherwise it allows to specify a given format.
 #' The presence of headers (to be used as column-names) may be tested using \code{checkFormat}.
 #'
-#' @param fileNames (character) names of files to be read, if \code{NULL} all files fitting 'fileFormat'
-#' @param path (character) where files should be read (folders should be written in R-style)
+#' @param fileNames (character) names of files to be read, if \code{NULL} all files fitting 'fileFormat' will be used
+#' @param path (character) where files should be read from (folders should be written in R-style)
 #' @param fileFormat (character) may be \code{NULL} (both US and European formats will be tried), 'Eur' or 'US' 
 #' @param checkFormat (logical) if \code{TRUE}: check header, remove empty columns, 1st line if all empmty, set output format for each file to matrix, if rownames are increasing integeres try to use 2nd of 'columns' as rownames
 #' @param returnArray (logical) allows switching from array to list-output
-#' @param columns (NULL or character) column-headers to be extracted (if specified), 2nd value may be comlumn with rownames (if rownames are encountered as increasing rownames)
+#' @param columns (\code{NULL} or character) column-headers to be extracted (if specified), 2nd value may be column with rownames (if rownames are encountered as increasing rownames)
 #' @param excludeFiles (character) names of files to exclude (only used when reading all files of given directory)
 #' @param simpleNames (logical) allows truncating names (from beginning) to get to variable part (using .trimLeft()), but keeping 'minNamesLe'
 #' @param minNamesLe (interger) min length of column-names if simpleNames=TRUE

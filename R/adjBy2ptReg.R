@@ -5,20 +5,20 @@
 #' 
 #' 
 #' @details
-#' Since this function shares sigificant overlap with \code{\link{scaleXY}} (which has more advanced options) it is rather suggested to use _scaleXY()_ instead. 
-#' The function _adjBy2ptReg()_ will may deprecated in the future.
+#' Since this function shares significant overlap with \code{\link{scaleXY}} (which has more advanced options) it is rather suggested to use _scaleXY()_ instead. 
+#' The function _adjBy2ptReg()_  may het deprecated in the future.
 #'
 #' @param dat A numeric vector or matrix of values to adjust.
 #' @param lims A list of two numeric vectors, each of length 1 or 2, representing the lower and upper limits for rescaling.
-#'             Example: `lims = list(c(5, 9), c(60, 90))`.
+#'   Example: `lims = list(c(5, 9), c(60, 90))`.
 #' @param regrTo A numeric vector of length 2 defining the target range for rescaling (default: `c(0.1, 0.9)`).
 #' @param refLines Optional numeric or character vector specifying reference lines (rows) in `dat` to use for rescaling.
-#'                 If `NULL`, all rows are used.
-#' @param silent Logical. If `TRUE`, suppresses messages (default: `FALSE`).
-#' @param debug Logical. If `TRUE`, prints debugging messages (default: `FALSE`).
-#' @param callFrom Character string for tracking messages (default: `NULL`).
+#'   If `NULL`, all rows are used.
+#' @param silent Logical. If `TRUE`, suppresses messages (default: \code{FALSE}).
+#' @param debug Logical. If `TRUE`, prints debugging messages (default: \code{FALSE}).
+#' @param callFrom Character string for tracking messages (default: \code{NULL}).
 #'
-#' @return A numeric vector or matrix with adjusted values.
+#' @return This function returns a numeric vector or matrix with adjusted values.
 #'
 #' @examples
 #' set.seed(2016); dat1 <- round(runif(50, 0, 100), 1)
@@ -29,12 +29,13 @@
 adjBy2ptReg <- function(dat, lims, regrTo = c(0.1, 0.9), refLines = NULL, silent = FALSE, debug = FALSE, callFrom = NULL) {
   fxNa <- .composeCallName(callFrom, newNa = "adjBy2ptReg")
   ## Set silent and debug modes
-  if (!isTRUE(silent)) silent <- FALSE
+  if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
 
+  if(length(dim(dat) !=0)) dat <- if(is.data.frame(dat)) as.numeric(as.matrix(dat)) else as.numeric(dat)
   ## Handle refLines
-  if (length(refLines) > 0) {
-    if (is.character(refLines) && !is.null(rownames(dat))) {
+  if(length(refLines) > 0) {
+    if(is.character(refLines) && !is.null(names(dat))) {
       refLines <- match(refLines, names(dat))
     } else {
       refLines <- as.integer(refLines)

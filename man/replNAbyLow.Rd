@@ -2,7 +2,7 @@
 % Please edit documentation in R/replNAbyLow.R
 \name{replNAbyLow}
 \alias{replNAbyLow}
-\title{Replace NAs By Low Balues}
+\title{Replace NAs By Low Values}
 \usage{
 replNAbyLow(
   x,
@@ -39,7 +39,7 @@ replNAbyLow(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function retuirns a numeric matrix (same dim as 'x') with \code{NA} replaced
+This function returns a numeric matrix (same dim as 'x') with \code{NA} replaced
 }
 \description{
 With several screening techniques used in hight-throughput biology values at/below detection limit are returned as \code{NA}.

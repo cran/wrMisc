@@ -1,4 +1,4 @@
-#' Print matrix-content as plot
+#' Print Matrix-Content As Plot
 #'
 #' This function prints all columns of matrix in plotting region for easier inclusion to reports (default values are set to work for output as A4-sized pdf).
 #' It was made for integrating listings of text to graphical output to devices like \code{png}, \code{jpeg} or \code{pdf}. 
@@ -18,8 +18,9 @@
 #' @param useCol color specification for text (may be different for each column)
 #' @param titOffS (numeric) offset for title line (ralive to 'colPos')
 #' @param silent (logical) suppress messages
-#' @param callFrom (character) allow easier tracking of message(s) produced
-#' @return This function returns NULL (no R-object returned), print 'plot' in current device only
+#' @param callFrom (character) allows easier tracking of messages produced
+#' @param debug (logical) additional messages for debugging
+#' @return This function returns a plot only (in current device), thus on the command line it returns \code{NULL} 
 #' @seealso \code{\link[utils]{Sweave}} for more flexible framework
 #' @importFrom graphics par
 #' @examples
@@ -31,7 +32,7 @@
 #' tableToPlot(mat[,-1],colPos=c(0.01,0.4,0.46,0.6),titOffS=c(0.05,-0.03,-0.01,0.06))
 #' tableToPlot(mat,colPos=c(0,0.16,0.36,0.42,0.75),useAdj=0.5,titOffS=c(-0.01,0,-0.01,0,-0.1)) 
 #' @export
-tableToPlot <- function(matr, colPos=c(0.05,0.35,0.41,0.56), useCex=0.7, useAdj=c(0,1,1,0), titOffS=0, useCol=1, silent=FALSE, callFrom=NULL){
+tableToPlot <- function(matr, colPos=c(0.05,0.35,0.41,0.56), useCex=0.7, useAdj=c(0,1,1,0), titOffS=0, useCol=1, silent=FALSE, debug=FALSE, callFrom=NULL){
   fxNa <- .composeCallName(callFrom, newNa="tableToPlot")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
@@ -49,15 +50,15 @@ tableToPlot <- function(matr, colPos=c(0.05,0.35,0.41,0.56), useCex=0.7, useAdj=
   if(length(useAdj) < ncol(matr)) useAdj <- c(useAdj,rep(0.5,ncol(matr)-length(useAdj)))
   if(length(useCex) < ncol(matr)) useCex <- rep(useCex,ceiling(ncol(matr)/length(useCex)))
   if(length(useCol) < ncol(matr)) useCol <- rep(useCol,ceiling(ncol(matr)/length(useCol)))
-  matr <- matr[nrow(matr):1,]            # reverse order since plot starts at bottom
+  matr <- matr[nrow(matr):1, , drop=FALSE]            # reverse order since plot starts at bottom
   graphics::par(mar=c(1,1,1,1))
   graphics::plot.new()
   if(nrow(matr) <30) graphics::layout(matrix(1:2), heights=c(nrow(matr)/2,1))
   j <- 1:nrow(matr) +0.1                                               # y-position in plot
-  graphics::plot.window(xlim=c(0,1), ylim=c(1,nrow(matr) +1.7))
+  graphics::plot.window(xlim=c(0,1), ylim=c(1, nrow(matr) +1.7))
   titPos <- colPos + titOffS
   ## add col-heads
-  graphics::text(titPos, nrow(matr)+1, colnames(matr), cex=sort(c(0.5,max(useCex,na.rm=TRUE) +0.1,1.2))[2])  
+  graphics::text(titPos, nrow(matr) + 1, colnames(matr), cex=sort(c(0.5, max(useCex,na.rm=TRUE) + 0.1, 1.2))[2])  
   for(i in 1:ncol(matr)) graphics::text(colPos[i], j, matr[,i], cex=useCex[i], col=useCol[i], adj=useAdj[i])
 }
    

@@ -25,22 +25,22 @@ Example: `lims = list(c(5, 9), c(60, 90))`.}
 \item{refLines}{Optional numeric or character vector specifying reference lines (rows) in `dat` to use for rescaling.
 If `NULL`, all rows are used.}
 
-\item{silent}{Logical. If `TRUE`, suppresses messages (default: `FALSE`).}
+\item{silent}{Logical. If `TRUE`, suppresses messages (default: \code{FALSE}).}
 
-\item{debug}{Logical. If `TRUE`, prints debugging messages (default: `FALSE`).}
+\item{debug}{Logical. If `TRUE`, prints debugging messages (default: \code{FALSE}).}
 
-\item{callFrom}{Character string for tracking messages (default: `NULL`).}
+\item{callFrom}{Character string for tracking messages (default: \code{NULL}).}
 }
 \value{
-A numeric vector or matrix with adjusted values.
+This function returns a numeric vector or matrix with adjusted values.
 }
 \description{
 This function performs linear rescaling of numeric data based on specified limits (ie a specified window).
 Values are adjusted to fit within a target range defined by `regrTo`.
 }
 \details{
-Since this function shares sigificant overlap with \code{\link{scaleXY}} (which has more advanced options) it is rather suggested to use _scaleXY()_ instead. 
-The function _adjBy2ptReg()_ will may deprecated in the future.
+Since this function shares significant overlap with \code{\link{scaleXY}} (which has more advanced options) it is rather suggested to use _scaleXY()_ instead. 
+The function _adjBy2ptReg()_  may het deprecated in the future.
 }
 \examples{
 set.seed(2016); dat1 <- round(runif(50, 0, 100), 1)

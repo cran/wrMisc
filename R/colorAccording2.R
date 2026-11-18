@@ -3,7 +3,7 @@
 #' This function helps making color-gradients for plotting a numerical variable.
 #' Note : RColorBrewer palettes were not integrated here/yet.
 #'
-#' @param x (character) color input
+#' @param x (numeric) main numeric input to be converted to colors
 #' @param gradTy (character) type of gradeint may be 'rainbow', 'heat.colors', 'terrain.colors', 'topo.colors', 'cm.colors', 'hcl.colors', 'grey.colors', 'gray.colorsW' or 'logGray'
 #' @param nStartOmit (integer) omit n steps from begining of gradient range
 #' @param nEndOmit (integer or "sep") omit n steps from end of gradient range, if \code{nEndOmit="sep"} 20 percent of initial grades will be removed to obtain 'separate' ie non-closing color-circles/gradients eg with \code{rainbow}

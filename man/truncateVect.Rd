@@ -2,7 +2,7 @@
 % Please edit documentation in R/truncateVect.R
 \name{truncateVect}
 \alias{truncateVect}
-\title{Truncating Text Vector To Specific Length}
+\title{Truncating Text/Character Vector To Specific Length}
 \usage{
 truncateVect(
   x,
@@ -22,9 +22,9 @@ truncateVect(
 
 \item{sep}{(character or \code{NULL}) optional separator to be considered : Truncation will happen before the separator; set to  \code{NULL} for ignoring}
 
-\item{appendChar}{(character, length=1) optional set of characters to add at end when trucation has happened (default '...'); set to  \code{NULL} or  \code{""} for not appending anything}
+\item{appendChar}{(character, length=1) optional set of characters to add at end when truncation has happened (default '...'); set to  \code{NULL} or  \code{""} for not appending anything}
 
-\item{startFrom}{(integer, length=1) designes the first character to be extracted (see also \code{\link[base]{substr}} )}
+\item{startFrom}{(integer, length=1) designs the first character to be extracted (see also \code{\link[base]{substr}} )}
 
 \item{silent}{(logical) suppress messages}
 
@@ -33,7 +33,7 @@ truncateVect(
 \item{callFrom}{(character) allow easier tracking of messages produced}
 }
 \value{
-This function returns a data.frame or matrix (if no annotation added) with values (and annotation) conform to fiter criteria
+This function returns a character vector (of same length as initial) with truncated text
 }
 \description{
 This function allows truncating a text vector (or matrix of text) at nMax number of characters with optional adding of truncation/ending sign and trimming after last separator.
@@ -60,5 +60,5 @@ truncateVect(txt, nMax=7, sep="/", appendChar="..")
 
 }
 \seealso{
-\code{\link[base]{substr}}
+\code{\link{asShortNa}},  \code{\link[base]{substr}}
 }

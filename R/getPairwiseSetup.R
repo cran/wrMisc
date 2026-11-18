@@ -67,7 +67,7 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
         if(length(sep) >0 && !identical(sep,sep1)) {message(fxNa,"Note : 'sep' given by user seems to  DIFFER  from 'sep' found in MArrayLM-object")}
         if(length(sep)==0) sep <- sep1
       }
-      if(debug) {message(fxNa,"yy0"); yy0 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep)}
+      if(debug) {message(fxNa,"gPS0"); gPS0 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep)}
       
       ## B) pwGrpNa1 : look for 2dim table of comparisons(names)  in  $setup$useComparisonNa
       if("pwGrpNa" %in% names(pwGrpNa) && length(pwGrpNa$pwGrpNa) >0) pwGrpNa1 <- pwGrpNa$pwGrpNa else {
@@ -79,7 +79,7 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
             ## note that pwGrpNa$design is not reflecting sample-names as usual !!
             singleCompSetup <- TRUE
             if("means" %in% names(pwGrpNa)) sampGrNa <- colnames(pwGrpNa$means) else {
-              warning(fxNa,"Unabale obtain names of groups of repliaces, assuming as '1' and '2'")
+              warning(fxNa,"Unable obtain names of groups of replicates, assuming as '1' and '2'")
               sampGrNa <- 1:2
             }
             if(length(sep) !=1) sep <- getPWseparator(compNames=NULL, grp=sampGrNa, potSep=sep, includeGrp=FALSE, silent=silent, debug=debug, callFrom=fxNa)
@@ -98,7 +98,7 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
           }
         }
       } 
-      if(debug) {message(fxNa,"yy1"); yy1 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,combPwSep=combPwSep)}
+      if(debug) {message(fxNa,"gPS1"); gPS1 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,combPwSep=combPwSep)}
 
       ## C) grpNa : look names of groups (grpNa)
       if("grpNa" %in% names(pwGrpNa) && length(pwGrpNa$grpNa) >0) grpNa1 <- pwGrpNa$grpNa else {
@@ -118,20 +118,20 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
 
       ## D) useComparisonNa : recuperate useComparisonNa
       if(length(pwGrpNa$setup$useComparisonNa) >0) useComparisonNa <- pwGrpNa$setup$useComparisonNa     
-      if(debug) {message(fxNa,"yy2"); yy2 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,useComparisonNa=useComparisonNa,combPwSep=combPwSep)}
+      if(debug) {message(fxNa,"gPS2"); gPS2 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,useComparisonNa=useComparisonNa,combPwSep=combPwSep)}
       
       ## pwGrpNa D) recuperate /restore (core) pwGrpNa  (and dismiss other info attached)
       pwGrpNa <- pwGrpNa1             # dismiss rest of MArrayLM-object 
 
       if(length(sep)==0) sep <- getPWseparator(grp=pwGrpNa, potSep=pwSeparatorList(type=combPwSep, silent=silent, debug=debug, callFrom=fxNa), includeGrp=FALSE, silent=silent, debug=debug, callFrom=fxNa) 
       #if(length(sep)==0) sep <- getPWseparator(grp=pwGrpNa, potSep=pwSeparatorList(type="combine1"), includeGrp=FALSE, silent=silent, debug=debug, callFrom=fxNa) 
-      if(debug) {message(fxNa,"Finished extracting MArrayLM obj   yy3"); yy3 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,useComparisonNa=useComparisonNa)}
+      if(debug) {message(fxNa,"Finished extracting MArrayLM obj   gPS3"); gPS3 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa1=pwGrpNa1,useComparisonNa=useComparisonNa)}
       
       ## finished recuperating info from MArrayLM-obj
     } else { datOK <- length(grpNa) >0 }
     if(length(pwGrpNa) >0) grpNa <- unique(sort(grpNa)) else warning(fxNa,"Unable to isolate 'grpNa' from MArrayLM-object -  nothing to do  ")
     #pwGrpNa <- unique(sort(pwGrpNa))   #else warning(fxNa,"Found 'pwGrpNa' but seems to be of length=0 - nothing to do  ")
-    if(debug) {message(fxNa,"yy4"); yy4 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep)}
+    if(debug) {message(fxNa,"gPS4"); gPS4 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep)}
   }  
 
   if(datOK) { if(length(sep)==1 && nchar(sep) >0) {  
@@ -139,17 +139,18 @@ getPairwiseSetup <- function(pwGrpNa, grpNa=NULL, sep=NULL, combPwSep="combine1"
       
       if(length(pwGrpNa)==0 && length(dim(pwGrpNa)) !=2) {
         ## suppose combined grp -vector given - need to split
+		warning(fxNa,"The case of combined grp-vector may not get handeled correctly in this version !  gPS4b")
 
       }
       
       if(length(grpNa) >0) {
         pwGrpNa2 <- if(length(dim(pwGrpNa))==2) apply(pwGrpNa, 1, paste, collapse=sep) else paste(pwGrpNa, collapse=sep)
-        if(debug) {message(fxNa,"yy4b"); yy4b <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa2=pwGrpNa2)}
+        if(debug) {message(fxNa,"gPS4c"); gPS4c <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep,pwGrpNa2=pwGrpNa2)}
         
         out <- indexGroupsFromPW(compNames=pwGrpNa2, grp=grpNa, includeGrp=TRUE, potSep=if(length(sep) ==1) sep else NULL, silent=silent, debug=debug, callFrom=fxNa) # uses strspl ; grp may be NULL
         if(all(is.na(out$index)) && ncol(out$index) ==2) out$index <- matrix(1:2, ncol=2, dimnames=list(paste(out$pwGrpNa, collapse=out$sep), 1:2))
       }
-      if(debug) {message(fxNa,"yy5"); yy5 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep, out=out)}           
+      if(debug) {message(fxNa,"gPS5"); gPS5 <- list(pwGrpNa=pwGrpNa,grpNa=grpNa,sep=sep, out=out)}           
         
     } else {
       ## check for intra-repeating grp

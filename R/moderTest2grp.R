@@ -91,7 +91,7 @@ moderTest2grp <- function(dat, grp, limmaOutput=TRUE, addResults=c("lfdr","FDR",
       if(any(ch)) fit1$p.value[which(ch),] <- fit1$p.value[which(ch),]/2
       if(any(!ch)) fit1$p.value[which(!ch),] <- 1- fit1$p.value[which(!ch),]/2        # !(A > B)  .. A <= B
     }
-    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue", quietly=TRUE) && !silent) message(fxNa,"NOTE: package 'qvalue' not installed from CRAN, can't calulate ...")
+    if(any(c("qval","qvalue") %in% tolower(addResults)) && !requireNamespace("qvalue", quietly=TRUE) && !silent) message(fxNa,"NOTE: package 'qvalue' not installed from CRAN, can't calculate ...")
 
     if(!limmaOutput) out <- fit1$p.value[,2] else { out <- fit1
       ## further inspect & correct values of 'addResults' ?

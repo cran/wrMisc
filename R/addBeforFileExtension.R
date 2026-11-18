@@ -1,4 +1,4 @@
-#' Add Text Before File-Extension
+#' Add Text Before File-Extension (Deprecated)
 #'
 #' This function helps changing character strings like file-names and allows adding the character vector 'add'
 #' (length 1) before the extension (defined by last '.') of the input string 'x'. 
@@ -19,13 +19,14 @@
 #' @export
 addBeforFileExtension <- function(x, add, sep="_", silent=FALSE, callFrom=NULL, debug=FALSE) {
   fxNa <- .composeCallName(callFrom, newNa="addBeforFileExtension")
+  .Deprecated(new="addBeforFileExtension", package="wrMisc", msg="This function has been replaced by 'addBeforeFileExtension()' (from same package)")
   if(!isTRUE(silent)) silent <- FALSE
   if(isTRUE(debug)) silent <- FALSE else debug <- FALSE
   if(length(add) >1) add <- add[1]
-  if(length(grep("\\.",x)) >0) {
-    extLoc <- sapply(gregexpr("\\.", x),function(y) y[length(y)])
+  if(length(grep("\\.", x)) > 0) {
+    extLoc <- sapply(gregexpr("\\.", x), function(y) y[length(y)])
     if(any(extLoc <0)) extLoc[extLoc <0] <- nchar(x[extLoc <0]) +1
-    paste0(substr(x,1,extLoc-1), sep, add, substr(x,extLoc,nchar(x)))
+    paste0(substr(x, 1, extLoc-1), sep, add, substr(x, extLoc, nchar(x)))
   } else paste(x, add, sep=sep) }
 
 

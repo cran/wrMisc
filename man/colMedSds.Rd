@@ -7,7 +7,7 @@
 colMedSds(dat, nBoot = 99, silent = FALSE, debug = FALSE, callFrom = NULL)
 }
 \arguments{
-\item{dat}{(numeric) matix}
+\item{dat}{(numeric) matrix}
 
 \item{nBoot}{(integer, length=1) number if iterations}
 

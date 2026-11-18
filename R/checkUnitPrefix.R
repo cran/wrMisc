@@ -1,4 +1,4 @@
-#' Check For Common Unit-Name in Text
+#' Check For Common Unit-Name In Text
 #'
 #' This function aims to find a unit abbreviation or name occurring in all elements of a character-vector \code{x}.
 #' The unit name may be preceeded by different decimal prefixes (eg 'k','M'), as defined by argument \code{pref} and separators (\code{sep}). 
@@ -16,7 +16,7 @@
 #'
 #' @param x (character) vector containing digit uunit-prefix and unit terms
 #' @param pref (character) multiplicative unit-prefixes, assumes as increasing factors of 1000
-#' @param unit (character) unit name, the numeric part may be sepatated by one space-character
+#' @param unit (character) unit name, the numeric part may be separated by one space-character
 #' @param sep (character) separator character(s) that may appear between integer numeric value and unit-prefix
 #' @param sep2 (character) separator character(s) after \code{unit}, set to \code{sep2=""} for ignoring characters following \code{unit}
 #' @param stringentSearch (logical) if \code{TRUE} only matches with same separators (sep, sep2) pass, otherwise different elements may contain different separators
